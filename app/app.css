@@ -121,7 +121,6 @@ form button:hover {
   background-color: #f5f7f9;
 }
 .bg-bubbles {
-  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -236,16 +235,25 @@ form button:hover {
 }
 #facebook-login{
   background-color: #3b5998;
-  color: white;
-  outline: none;
 }
 .fa-github{
   margin-top: 3px;
 }
 #github-login{
   background-color: #999;
-  color: white;
-  outline: none;
+}
+.btn-social{
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: 0;
+  border: 0;
+  padding: 10px 15px;
+  border-radius: 3px;
+  width: 250px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #fff;
 }
 footer {
    text-align: center;

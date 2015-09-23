@@ -52,10 +52,8 @@
       <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
       <button type="submit">Register</button>
     </form>
-    <form>
-      <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
-      <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
-    </form>
+    <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
+    <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
   </div>
 
   <ul class="bg-bubbles">
@@ -74,19 +72,15 @@
 
 <template name="login">
   <div class="container">
-    <form>
-      <button class="button" id="register">Register</button>
-    </form>
+    <button class="button" id="register">Register</button>
   	<h1>Login</h1>
     <form class="form">
     	<input type="text" name="loginUsername" placeholder="Enter your username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your username'" required/>
     	<input type="password" name="loginPassword" placeholder="Enter your password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
     	<button type="submit">Login</button>
     </form>
-    <form>
-      <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
-      <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
-    </form>
+    <button class="btn-social" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
+    <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
   </div>
 
   <ul class="bg-bubbles">
@@ -104,8 +98,23 @@
 </template>
 
 <template name="dashboard" id="dashboard">
-  <h1>Hello {{currentUser.services.facebook.first_name}}</h1>
-  <p><a href="#" class="logout">Logout</a></p>
+  <div class="landing">
+    <h1>Hello {{currentUser.services.facebook.first_name}}</h1>
+    <a href="#" class="logout">Logout</a>
+
+    <ul class="bg-bubbles">
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    	<li></li>
+    </ul>
+  </div>
 </template>
 
 <template name="footer">
