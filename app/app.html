@@ -1,0 +1,155 @@
+<head>
+  <title>Music App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
+  <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+  <script src="https://connect.soundcloud.com/sdk.js"></script>
+  <script>
+    function init() {
+      /*SC.initialize({
+          client_id: "577d3fbbdb5fe05bb4af698d686508fe"
+      });
+
+      var sound = [];
+      SC.stream("/tracks/293", function(sound){
+          sound.play();
+      });*/
+    }
+  </script>
+</head>
+
+<body onload="init()">
+  {{#if currentUser}}
+    {{> dashboard}}
+  {{else}}
+    <!-- {{> about}} -->
+    {{> auth}}
+    {{> footer}}
+  {{/if}}
+</body>
+
+<template name="about">
+
+</template>
+
+<!-- <template name="register">
+  <div class="landing">
+  	<div class="container">
+  	  <div class="about">
+        <button class="button">About</button>
+      </div>
+  		<h1>Register</h1>
+  		<form class="form">
+  			<input type="text" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
+        <input type="email" name="registerEmail" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your email'" required>
+  			<input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
+  			<button type="submit">Register</button>
+  		</form>
+  		<form>
+  		  <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
+        <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
+  		</form>
+  	</div>
+
+  	<ul class="bg-bubbles">
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  		<li></li>
+  	</ul>
+  </div>
+</template> -->
+
+<template name="auth" id="auth">
+  <div class="landing">
+    {{> login}}
+  </div>
+</template>
+
+<template name="register">
+  <div class="container">
+    <div class="about">
+      <button class="button">About</button>
+    </div>
+    <h1>Register</h1>
+    <form class="form">
+      <input type="text" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
+      <input type="email" name="registerEmail" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your email'" required>
+      <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
+      <button type="submit">Register</button>
+    </form>
+    <form>
+      <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
+      <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
+    </form>
+  </div>
+
+  <ul class="bg-bubbles">
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</template>
+
+<template name="login">
+  <div class="container">
+    <form>
+      <button class="button" id="register">Register</button>
+    </form>
+  	<h1>Login</h1>
+    <form class="form">
+    	<input type="text" name="loginUsername" placeholder="Enter your username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your username'" required/>
+    	<input type="password" name="loginPassword" placeholder="Enter your password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
+    	<button type="submit">Login</button>
+    </form>
+    <form>
+      <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
+      <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
+    </form>
+  </div>
+
+  <ul class="bg-bubbles">
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  	<li></li>
+  </ul>
+</template>
+
+<template name="dashboard" id="dashboard">
+  <h1>Hello {{currentUser.services.facebook.first_name}}</h1>
+  <p><a href="#" class="logout">Logout</a></p>
+</template>
+
+<template name="footer">
+  <footer>
+    <form class="footer-info">
+      <p>Copyright © 2015 All Right Reserved</p>
+      <p>Built by <a href="https://github.com/AkiraLaine" target="_blank">@AkiraLaine</a> |
+      <a href="https://github.com/KrisVos130" target="_blank">@KrisVos130</a> |
+      <a href="https://github.com/Johand199" target="_blank">@Johand199</a> |
+      <a href="https://github.com/Septimus" target="_blank">@Septimus</a></p>
+    </form>
+  </footer>
+</template>
