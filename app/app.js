@@ -42,9 +42,7 @@ if (Meteor.isClient) {
     },
 
     "click #register": function(){
-        // if(!this.register){
-        //   Session.set(this.register, true);
-        // }
+
     }
   });
 

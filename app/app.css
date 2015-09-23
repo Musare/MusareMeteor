@@ -112,10 +112,10 @@ form button {
    color: white;
 }
 ::-moz-placeholder {  /* Firefox 19+ */
-   color: white;  
+   color: white;
 }
 :-ms-input-placeholder {
-   color: white;  
+   color: white;
 }
 form button:hover {
   background-color: #f5f7f9;
