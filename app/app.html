@@ -24,27 +24,21 @@
   {{#if currentUser}}
     {{> dashboard}}
   {{else}}
-    <!-- {{> about}} -->
-    {{> auth}}
-    {{> footer}}
+    <div class="landing">
+      <div id="login-view">
+        {{> login}}
+      </div>
+      <div id="register-view" style="display:none">
+        {{> register}}
+      </div>
+      {{> footer}}
+    </div>
   {{/if}}
 </body>
 
-<template name="about">
-
-</template>
-
-<template name="auth" id="auth">
-  <div class="landing">
-    {{> login}}
-  </div>
-</template>
-
 <template name="register">
   <div class="container">
-    <div class="about">
-      <button class="button">About</button>
-    </div>
+    <button class="button" id="login">Login</button>
     <h1>Register</h1>
     <form class="form">
       <input type="text" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
@@ -52,8 +46,8 @@
       <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
       <button type="submit">Register</button>
     </form>
-    <button class="btn" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
-    <button class="btn" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
+    <button class="btn-social" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
+    <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
   </div>
 
   <ul class="bg-bubbles">
@@ -119,12 +113,10 @@
 
 <template name="footer">
   <footer>
-    <form class="footer-info">
-      <p>Copyright © 2015 All Right Reserved</p>
-      <p>Built by <a href="https://github.com/AkiraLaine" target="_blank">@AkiraLaine</a> |
-      <a href="https://github.com/KrisVos130" target="_blank">@KrisVos130</a> |
-      <a href="https://github.com/Johand199" target="_blank">@Johand199</a> |
-      <a href="https://github.com/Septimus" target="_blank">@Septimus</a></p>
-    </form>
+    <p>Copyright © 2015 All Right Reserved</p>
+    <p>Built by <a href="https://github.com/AkiraLaine" target="_blank">@AkiraLaine</a> |
+    <a href="https://github.com/KrisVos130" target="_blank">@KrisVos130</a> |
+    <a href="https://github.com/Johand199" target="_blank">@Johand199</a> |
+    <a href="https://github.com/Septimus" target="_blank">@Septimus</a></p>
   </footer>
 </template>

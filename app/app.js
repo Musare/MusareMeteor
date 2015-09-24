@@ -21,7 +21,8 @@ if (Meteor.isClient) {
     },
 
     "click #login": function(){
-
+      $("#register-view").hide();
+      $("#login-view").show();
     }
   });
 
@@ -31,6 +32,15 @@ if (Meteor.isClient) {
         var username = e.target.loginUsername.value;
         var password = e.target.loginPassword.value;
         Meteor.loginWithPassword(username, password);
+        Accounts.onLoginFailure(function(){
+           $("input").css("background-color","indianred");
+           $("input").on("click",function(){
+             $("input").css({
+               "background-color": "transparent",
+               "width": "250px"
+             });
+           })
+        });
     },
 
     "click #facebook-login": function(){
@@ -42,7 +52,8 @@ if (Meteor.isClient) {
     },
 
     "click #register": function(){
-
+      $("#login-view").hide();
+      $("#register-view").show();
     }
   });
 
