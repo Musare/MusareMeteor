@@ -289,6 +289,41 @@ footer a:hover{
 .button:hover {
   background-color: #f5f7f9;
 }
-#dashboard{
-  color: black;
+#dashboard #name-container{
+  background-color: rgba(255,255,255,0.5);
+  width: 300px;
+  height: 60px;
+}
+#dashboard h1{
+  margin-left: 20px;
+  line-height: 60px;
+  color: white;
+  font-weight: 600;
+}
+#dashboard .station{
+  width: 150px;
+  height: 150px;
+  background-color: rgba(255,255,255,0.7);
+  border-radius: 100px;
+  margin-top: 100px;
+  margin-left: 300px;
+  cursor: pointer;
+}
+#dashboard .station h3{
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  font-size: 3.5em;
+  line-height: 150px;
+}
+#dashboard .station .song-info{
+  color: darkcyan;
+  margin-left: 70px;
+}
+#dashboard .station .song-title{
+  font-size: 2em;
+  font-weight: 900;
+}
+#dashboard .station .song-artist{
+  font-size: 1.5em;
 }

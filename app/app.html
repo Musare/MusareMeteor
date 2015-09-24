@@ -22,7 +22,9 @@
 
 <body onload="init()">
   {{#if currentUser}}
-    {{> dashboard}}
+    <div id="dashboard">
+      {{> dashboard}}
+    </div>
   {{else}}
     <div class="landing">
       <div id="login-view">
@@ -31,6 +33,18 @@
       <div id="register-view" style="display:none">
         {{> register}}
       </div>
+      <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
       {{> footer}}
     </div>
   {{/if}}
@@ -39,61 +53,39 @@
 <template name="register">
   <div class="container">
     <button class="button" id="login">Login</button>
-    <h1>Register</h1>
+    <h1>Sign Up</h1>
     <form class="form">
       <input type="text" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
       <input type="email" name="registerEmail" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your email'" required>
       <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
-      <button type="submit">Register</button>
+      <button type="submit">Sign Up</button>
     </form>
-    <button class="btn-social" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
-    <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
+    <button class="btn-social" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Signup with Facebook</button><p></p>
+    <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Signup with Github</button>
   </div>
-
-  <ul class="bg-bubbles">
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-  </ul>
 </template>
 
 <template name="login">
   <div class="container">
-    <button class="button" id="register">Register</button>
+    <button class="button" id="register">Sign Up</button>
   	<h1>Login</h1>
     <form class="form">
     	<input type="text" name="loginUsername" placeholder="Enter your username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your username'" required/>
-    	<input type="password" name="loginPassword" placeholder="Enter your password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
+    	<input type="password" name="loginPassword" placeholder="Enter your password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your password'" required/>
     	<button type="submit">Login</button>
     </form>
     <button class="btn-social" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Login with Facebook</button><p></p>
     <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Login with Github</button>
   </div>
-
-  <ul class="bg-bubbles">
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  	<li></li>
-  </ul>
 </template>
 
-<template name="dashboard" id="dashboard">
+<template name="dashboard">
   <div class="landing">
-    <h1>Hello {{currentUser.services.facebook.first_name}}</h1>
+    <div id="name-container"> <h1>{{currentUser.username}}{{currentUser.services.facebook.first_name}} {{currentUser.services.facebook.last_name}}{{currentUser.services.github.username}}</h1></div>
+    <div class="station">
+      <h3>EDM</h3>
+      <div class="song-info"></div>
+    </div>
     <a href="#" class="logout">Logout</a>
 
     <ul class="bg-bubbles">

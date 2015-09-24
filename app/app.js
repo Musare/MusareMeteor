@@ -33,7 +33,7 @@ if (Meteor.isClient) {
         var password = e.target.loginPassword.value;
         Meteor.loginWithPassword(username, password);
         Accounts.onLoginFailure(function(){
-           $("input").css("background-color","indianred");
+           $("input").css("background-color","indianred").addClass("animated shake");
            $("input").on("click",function(){
              $("input").css({
                "background-color": "transparent",
@@ -61,6 +61,15 @@ if (Meteor.isClient) {
     "click .logout": function(e){
         e.preventDefault();
         Meteor.logout();
+    },
+
+    "click .station": function() {
+      $(".station").css({
+        "width": "250px",
+        "height": "250px",
+        "border-radius": "150px",
+      })
+      $(".station .song-info").html("<h6 class='song-title'>Immortals</h6><p class='song-artist'>Fall Out Boy</p>")
     }
   })
 }
