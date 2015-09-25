@@ -5,17 +5,12 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
   <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-  <script src="https://connect.soundcloud.com/sdk.js"></script>
+  <script src="https://connect.soundcloud.com/sdk-2.0.0.js"></script>
   <script>
     function init() {
-      /*SC.initialize({
+      SC.initialize({
           client_id: "577d3fbbdb5fe05bb4af698d686508fe"
       });
-
-      var sound = [];
-      SC.stream("/tracks/293", function(sound){
-          sound.play();
-      });*/
     }
   </script>
 </head>
@@ -90,7 +85,9 @@
             <p class="song-title">Immortals</p>
             <p class="song-artist">Fall Out Boy</p>
           </div>
-          <button class="button-tunein">Tune in to station!</button>
+          <!-- <button class="button-tunein">Tune in to station!</button> -->
+          <i id="play" class="fa fa-play controls"></i>
+          <i id="stop" class="fa fa-stop controls" style="display:none"></i>
         </div>
       </div>
     </div>

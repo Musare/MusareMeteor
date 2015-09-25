@@ -61,6 +61,28 @@ if (Meteor.isClient) {
     "click .logout": function(e){
         e.preventDefault();
         Meteor.logout();
+    },
+
+    "click .button-tunein": function(){
+      SC.stream("/tracks/172055891/", function(sound){
+        console.log(sound);
+        sound._player._volume = 0.3;
+        sound.play();
+      });
+    },
+
+    "click #play": function(){
+      $("#play").hide();
+      SC.stream("/tracks/172055891/", function(sound){
+        sound._player._volume = 0.3;
+        sound.play();
+        $("#stop").on("click", function(){
+          $("#stop").hide();
+          $("#play").show();
+          sound._player.pause();
+        })
+      });
+      $("#stop").show();
     }
   })
 }

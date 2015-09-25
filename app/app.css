@@ -338,3 +338,8 @@ footer a:hover{
   display: block;
   margin: 0 auto;
 }
+#dashboard .station .controls{
+  font-size: 2em;
+  display: block;
+  text-align: center;
+}
