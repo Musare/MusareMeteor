@@ -61,15 +61,6 @@ if (Meteor.isClient) {
     "click .logout": function(e){
         e.preventDefault();
         Meteor.logout();
-    },
-
-    "click .station": function() {
-      $(".station").css({
-        "width": "250px",
-        "height": "250px",
-        "border-radius": "150px",
-      })
-      $(".station .song-info").html("<h6 class='song-title'>Immortals</h6><p class='song-artist'>Fall Out Boy</p>")
     }
   })
 }
