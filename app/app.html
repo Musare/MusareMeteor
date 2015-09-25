@@ -21,33 +21,6 @@
 </head>
 
 <body onload="init()">
-  {{#if currentUser}}
-    <div id="dashboard">
-      {{> dashboard}}
-    </div>
-  {{else}}
-    <div class="landing">
-      <div id="login-view">
-        {{> login}}
-      </div>
-      <div id="register-view" style="display:none">
-        {{> register}}
-      </div>
-      <ul class="bg-bubbles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-      {{> footer}}
-    </div>
-  {{/if}}
 </body>
 
 <template name="register">
@@ -111,4 +84,39 @@
     <a href="https://github.com/Johand199" target="_blank">@Johand199</a> |
     <a href="https://github.com/Septimus" target="_blank">@Septimus</a></p>
   </footer>
+</template>
+
+
+<template name="Home">
+    {{#if currentUser}}
+    <div id="dashboard">
+      {{> dashboard}}
+    </div>
+  {{else}}
+    <div class="landing">
+      <div id="login-view">
+        {{> login}}
+      </div>
+      <div id="register-view" style="display:none">
+        {{> register}}
+      </div>
+      <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+      {{> footer}}
+    </div>
+  {{/if}}    
+</template>
+
+<template name="Room">
+    <h1>{{{type}}}</h1>
 </template>
