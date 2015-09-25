@@ -23,3 +23,5 @@ accounts-github
 service-configuration
 twbs:bootstrap
 jquery
+iron:router
+ejson
