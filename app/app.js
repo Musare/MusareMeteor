@@ -63,13 +63,26 @@ if (Meteor.isClient) {
         Meteor.logout();
     },
 
-    "click .station": function() {
-      $(".station").css({
-        "width": "250px",
-        "height": "250px",
-        "border-radius": "150px",
-      })
-      $(".station .song-info").html("<h6 class='song-title'>Immortals</h6><p class='song-artist'>Fall Out Boy</p>")
+    "click .button-tunein": function(){
+      SC.stream("/tracks/172055891/", function(sound){
+        console.log(sound);
+        sound._player._volume = 0.3;
+        sound.play();
+      });
+    },
+
+    "click #play": function(){
+      $("#play").hide();
+      SC.stream("/tracks/172055891/", function(sound){
+        sound._player._volume = 0.3;
+        sound.play();
+        $("#stop").on("click", function(){
+          $("#stop").hide();
+          $("#play").show();
+          sound._player.pause();
+        })
+      });
+      $("#stop").show();
     }
   });
   

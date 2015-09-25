@@ -5,17 +5,12 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300,700' rel='stylesheet' type='text/css'>
   <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-  <script src="https://connect.soundcloud.com/sdk.js"></script>
+  <script src="https://connect.soundcloud.com/sdk-2.0.0.js"></script>
   <script>
     function init() {
-      /*SC.initialize({
+      SC.initialize({
           client_id: "577d3fbbdb5fe05bb4af698d686508fe"
       });
-
-      var sound = [];
-      SC.stream("/tracks/293", function(sound){
-          sound.play();
-      });*/
     }
   </script>
 </head>
@@ -54,12 +49,21 @@
 
 <template name="dashboard">
   <div class="landing">
-    <div id="name-container"> <h1>{{currentUser.username}}{{currentUser.services.facebook.first_name}} {{currentUser.services.facebook.last_name}}{{currentUser.services.github.username}}</h1></div>
-    <div class="station">
-      <h3>EDM</h3>
-      <div class="song-info"></div>
+    <div id="name-container"> <h1>{{currentUser.username}}{{currentUser.services.facebook.first_name}} {{currentUser.services.facebook.last_name}}{{currentUser.services.github.username}}<i class="fa fa-power-off logout" tooltip="Logout"></i></h1></div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="station">
+          <p class="station-name">EDM</p>
+          <div class="song-info">
+            <p class="song-title">Immortals</p>
+            <p class="song-artist">Fall Out Boy</p>
+          </div>
+          <!-- <button class="button-tunein">Tune in to station!</button> -->
+          <i id="play" class="fa fa-play controls"></i>
+          <i id="stop" class="fa fa-stop controls" style="display:none"></i>
+        </div>
+      </div>
     </div>
-    <a href="#" class="logout">Logout</a>
 
     <ul class="bg-bubbles">
     	<li></li>
