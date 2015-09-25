@@ -1,4 +1,4 @@
-if (Meteor.isClient) {
+if (Meteor.isClient) {  
   Template.register.events({
     "submit form": function(e){
         e.preventDefault();
@@ -84,7 +84,15 @@ if (Meteor.isClient) {
       });
       $("#stop").show();
     }
-  })
+  });
+  
+  Template.Room.helpers({
+      type: function() {
+        var parts = location.href.split('/');
+        var id = parts.pop();
+        return id;
+      }
+  });
 }
 
 if (Meteor.isServer) {
@@ -108,3 +116,11 @@ if (Meteor.isServer) {
       secret: "375939d001ef1a0ca67c11dbf8fb9aeaa551e01b"
   });
 }
+
+Router.route("/", {
+    template: "Home"
+});
+
+Router.route("/:type", {
+    template: "Room"
+});
