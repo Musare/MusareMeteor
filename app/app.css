@@ -298,40 +298,35 @@ footer a:hover{
 .button:hover {
   background-color: #f5f7f9;
 }
-#dashboard #name-container{
-  background-color: rgba(255,255,255,0.5);
-  width: 300px;
-  height: 60px;
-}
-#dashboard h1{
-  margin-left: 20px;
-  line-height: 60px;
-  color: white;
-  font-weight: 600;
-}
-#dashboard .logout{
+
+.logout{
   margin-left: 20px;
   cursor: pointer;
 }
-#dashboard .station{
-  
-}
-#dashboard .station:hover{
+.station{
   background-color: rgba(102,205,170,0.7);
+  height: 300px;
+  width: 300px;
+  border-radius: 100%;
 }
-#dashboard .station .station-name{
+.station-top{
+  height: 200px;
+}
+.station:hover{
 
 }
-#dashboard .station .song-info{
-  text-align: center;
+.station .station-name-container{
+  background-color: rgba(102,205,200,1);
+  border-radius: 20px;
+  width: 275px;
 }
-#dashboard .station .song-title{
+.station .station-name{
   font-size: 2.5em;
+  color: white;
+  text-align: center;
+  font-weight: 600;
 }
-#dashboard .station .song-artist{
-  font-size: 2em;
-}
-#dashboard .station .button-tunein{
+.station .button-tunein{
   outline: 0;
   border: 0;
   border: 2px solid white;
@@ -345,7 +340,7 @@ footer a:hover{
   display: block;
   margin: 0 auto;
 }
-#dashboard .station .controls{
+.station .controls{
   font-size: 2em;
   display: block;
   text-align: center;

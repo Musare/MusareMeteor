@@ -1,6 +1,6 @@
 History = new Mongo.Collection("history");
 
-if (Meteor.isClient) {  
+if (Meteor.isClient) {
     var hpSound = undefined;
     Template.register.events({
         "submit form": function(e){
@@ -92,7 +92,7 @@ if (Meteor.isClient) {
             $("#stop").show();
         }
     });
-  
+
     Template.Room.helpers({
         type: function() {
             var parts = location.href.split('/');
@@ -103,7 +103,7 @@ if (Meteor.isClient) {
             return Session.get("duration");
         }
     });
-  
+    
     Template.Room.onCreated(function () {
         var currentSong = undefined;
         var _sound = undefined;
@@ -112,7 +112,7 @@ if (Meteor.isClient) {
         function getTimeElapsed() {
             if (currentSong !== undefined) {
                 return Date.now() - currentSong.started;
-            } 
+            }
             return 0;
         }
 
@@ -129,7 +129,7 @@ if (Meteor.isClient) {
                 });
             }
         }
-        
+
         Meteor.subscribe("history");
         Meteor.setInterval(function() {
             var data = undefined;
@@ -149,7 +149,7 @@ if (Meteor.isClient) {
     });
 }
 
-if (Meteor.isServer) {    
+if (Meteor.isServer) {
     var startedAt = Date.now();
     var songs = [{id: 172055891, duration: 20}, {id: 194153620, duration: 60}];
     var currentSong = 0;
@@ -173,7 +173,7 @@ if (Meteor.isServer) {
             skipSong();
         }, songs[currentSong].duration * 1000);
     }
-    
+
     ServiceConfiguration.configurations.remove({
         service: "facebook"
     });
@@ -193,7 +193,7 @@ if (Meteor.isServer) {
         clientId: "dcecd720f47c0e4001f7",
         secret: "375939d001ef1a0ca67c11dbf8fb9aeaa551e01b"
     });
-  
+
     songTimer();
 
     Meteor.publish("history", function() {
