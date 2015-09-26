@@ -309,6 +309,11 @@ footer a:hover{
   height: 250px;
   color: white;
   margin-top: 1em;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#dashboard .station:hover{
+  background-color: rgba(102,205,170,0.7);
 }
 #dashboard .station .station-name{
   text-align: center;
