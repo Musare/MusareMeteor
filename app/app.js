@@ -93,18 +93,18 @@ if (Meteor.isClient) {
         }
     });
 
-    Template.Room.helpers({
+    Template.room.helpers({
         type: function() {
-            var parts = location.href.split('/');
-            var id = parts.pop();
-            return id;
+          var parts = location.href.split('/');
+          var id = parts.pop();
+          return id.toUpperCase();
         },
-        duration: function() {
-            return Session.get("duration");
+        duration: function(){
+          return Session.get("duration");
         }
     });
-    
-    Template.Room.onCreated(function () {
+
+    Template.room.onCreated(function () {
         var currentSong = undefined;
         var _sound = undefined;
         var size = 0;
@@ -122,7 +122,8 @@ if (Meteor.isClient) {
                 SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
                     _sound = sound;
                     sound._player._volume = 0.3;
-                    sound.play();
+                    //sound.play();
+                    Session.set("duration", currentSong.song.duration);
                     setTimeout(function() { // HACK, otherwise seek doesn't work.
                         sound._player.seek(getTimeElapsed());
                     }, 500);
@@ -202,9 +203,9 @@ if (Meteor.isServer) {
 }
 
 Router.route("/", {
-    template: "Home"
+    template: "home"
 });
 
 Router.route("/:type", {
-    template: "Room"
+    template: "room"
 });

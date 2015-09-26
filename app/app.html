@@ -51,7 +51,7 @@
 <template name="dashboard">
   <div class="landing">
     <div class="station">
-      
+
     </div>
 
     <ul class="bg-bubbles">
@@ -81,7 +81,7 @@
 </template>
 
 
-<template name="Home">
+<template name="home">
     {{#if currentUser}}
     <div id="dashboard">
       {{> dashboard}}
@@ -94,6 +94,7 @@
       <div id="register-view" style="display:none">
         {{> register}}
       </div>
+
       <ul class="bg-bubbles">
         <li></li>
         <li></li>
@@ -106,14 +107,30 @@
         <li></li>
         <li></li>
       </ul>
-      {{> footer}}
     </div>
   {{/if}}
 </template>
 
-<template name="Room">
-    <h1>{{{type}}}</h1>
-
-    <h2>{{duration}}</h2>
-    <h2>{{song}}</h2>
+<template name="room">
+  <div class="landing">
+    <h1 class="room-name">{{{type}}}</h1>
+    <h2>{{{duration}}}</h2>
+    <div class="player">
+      <div class="seeker-bar">
+        <i id="dot" class="fa fa-circle"></i>
+      </div>
+    </div>
+    <ul class="bg-bubbles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
 </template>
