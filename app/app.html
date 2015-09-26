@@ -26,6 +26,7 @@
       <input type="text" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
       <input type="email" name="registerEmail" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your email'" required>
       <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/>
+      <p>By registering, you agree to the Terms and Conditions and Privacy Policy.</p>
       <button type="submit">Sign Up</button>
     </form>
     <button class="btn-social" id="facebook-login"><i class="fa fa-facebook pull-left"></i>Signup with Facebook</button><p></p>
@@ -78,6 +79,7 @@
     	<li></li>
     </ul>
   </div>
+{{> footer}}
 </template>
 
 <template name="footer">
@@ -123,4 +125,7 @@
 
 <template name="Room">
     <h1>{{{type}}}</h1>
+    
+    <h2>{{duration}}</h2>
+    <h2>{{song}}</h2>
 </template>
