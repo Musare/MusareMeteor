@@ -98,6 +98,7 @@ if (Meteor.isClient) {
             return Session.get("duration");
         }
     });
+<<<<<<< HEAD
 
     var currentSong = undefined;
     var _sound = undefined;
@@ -153,9 +154,53 @@ if (Meteor.isClient) {
                   sound._player.seek(Date.now() - Session.get("start"));
                   console.log((Date.now() - Session.get("start")) + "--");
               }, 500);
+=======
+
+    Template.Room.onCreated(function () {
+        var currentSong = undefined;
+        var _sound = undefined;
+        var size = 0;
+
+        function getTimeElapsed() {
+            if (currentSong !== undefined) {
+                return Date.now() - currentSong.started;
+            }
+            return 0;
+        }
+
+        function startSong() {
+            if (currentSong !== undefined) {
+                if (_sound !== undefined)_sound.stop();
+                SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
+                    _sound = sound;
+                    sound._player._volume = 0.3;
+                    sound.play();
+                    setTimeout(function() { // HACK, otherwise seek doesn't work.
+                        sound._player.seek(getTimeElapsed());
+                    }, 500);
+                });
+            }
+        }
+
+        Meteor.subscribe("history");
+        Meteor.setInterval(function() {
+            var data = undefined;
+            var dataCursor = History.find({type: "edm"});
+            dataCursor.map(function(doc) {
+                if (data === undefined) {
+                    data = doc;
+                }
+>>>>>>> ae1154a1dccc1c6b9069136b26cbeedc256eee2d
             });
-        });*/
+            console.log(data);
+            if (data.history.length > size) {
+                currentSong = data.history[data.history.length-1];
+                size = data.history.length;
+                startSong();
+            }
+        }, 1000);
     });
+<<<<<<< HEAD
 
     Meteor.subscribe("history");
 
@@ -172,8 +217,13 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
+=======
+}
+
+if (Meteor.isServer) {
+>>>>>>> ae1154a1dccc1c6b9069136b26cbeedc256eee2d
     var startedAt = Date.now();
-    var songs = [{id: 172055891, duration: 20}, {id: 101244339, duration: 60}];
+    var songs = [{id: 172055891, duration: 20}, {id: 194153620, duration: 60}];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 
@@ -217,18 +267,6 @@ if (Meteor.isServer) {
     });
 
     songTimer();
-
-    /*Meteor.methods({
-      getDuration: function() {
-          return "100 minutes";
-      },
-      getStart: function() {
-          return startedAt;
-      },
-      getSong: function() {
-          return songs[currentSong];
-      }
-    });*/
 
     Meteor.publish("history", function() {
         return History.find({type: "edm"})
