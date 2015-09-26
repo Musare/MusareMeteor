@@ -1,6 +1,7 @@
 History = new Mongo.Collection("history");
 
 if (Meteor.isClient) {  
+    var hpSound = undefined;
     Template.register.events({
         "submit form": function(e){
             e.preventDefault();
@@ -63,6 +64,9 @@ if (Meteor.isClient) {
         "click .logout": function(e){
             e.preventDefault();
             Meteor.logout();
+            if (hpSound !== undefined) {
+                hpSound.stop();
+            }
         },
 
         "click .button-tunein": function(){
@@ -76,6 +80,7 @@ if (Meteor.isClient) {
         "click #play": function(){
             $("#play").hide();
             SC.stream("/tracks/172055891/", function(sound){
+                hpSound = sound;
                 sound._player._volume = 0.3;
                 sound.play();
                 $("#stop").on("click", function(){
