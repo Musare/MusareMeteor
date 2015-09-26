@@ -99,81 +99,54 @@ if (Meteor.isClient) {
         }
     });
   
-    var currentSong = undefined;
-    var _sound = undefined;
-    var size = 0;
-
-    function getTimeElapsed() {
-        if (currentSong !== undefined) {
-            return Date.now() - currentSong.started;
-        } 
-        return 0;
-    }
-  
-    function startSong() {
-        if (currentSong !== undefined) {
-            if (_sound !== undefined)_sound.stop();
-            SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
-                _sound = sound;
-                sound._player._volume = 0.3;
-                sound.play();
-                setTimeout(function() { // HACK, otherwise seek doesn't work.
-                    sound._player.seek(getTimeElapsed());
-                }, 500);
-            });
-        }
-    }
-  
     Template.Room.onCreated(function () {
-        /*var instance = this;
-        HTTP.get('/api/room/edm', function (err, data) {
-          instance.data = data;
-          console.log(data);
-          // PLAY SONG AND SUCH
-        });*/
-        
-        
-        /*console.log("Created!");
-        Meteor.call("getDuration", function(err, res) {
-            Session.set("duration", res);
-            console.log(res);
-        });
-        Meteor.call("getStart", function(err, res) {
-            Session.set("start", res);
-            console.log(res);
-        });
-        Meteor.call("getSong", function(err, res) {
-            Session.set("song", res);
-            console.log(res);
-            SC.stream("/tracks/" + res + "/", function(sound){
-              console.log(sound);
-              sound._player._volume = 0.3;
-              sound.play();
-              setTimeout(function() { // HACK, otherwise seek doesn't work.
-                  sound._player.seek(Date.now() - Session.get("start"));
-                  console.log((Date.now() - Session.get("start")) + "--");
-              }, 500);
-            });
-        });*/
-    });
-  
-    Meteor.subscribe("history");
-  
-  
-    Meteor.setInterval(function() {
-        var data = History.findOne();
-        if (data.history.length > size) {
-            currentSong = data.history[data.history.length-1];
-            size = data.history.length;
-            startSong();
+        var currentSong = undefined;
+        var _sound = undefined;
+        var size = 0;
+
+        function getTimeElapsed() {
+            if (currentSong !== undefined) {
+                return Date.now() - currentSong.started;
+            } 
+            return 0;
         }
-    }, 1000);
-    //console.log(History, "History");
+
+        function startSong() {
+            if (currentSong !== undefined) {
+                if (_sound !== undefined)_sound.stop();
+                SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
+                    _sound = sound;
+                    sound._player._volume = 0.3;
+                    sound.play();
+                    setTimeout(function() { // HACK, otherwise seek doesn't work.
+                        sound._player.seek(getTimeElapsed());
+                    }, 500);
+                });
+            }
+        }
+        
+        Meteor.subscribe("history");
+        Meteor.setInterval(function() {
+            var data = undefined;
+            var dataCursor = History.find({type: "edm"});
+            dataCursor.map(function(doc) {
+                if (data === undefined) {
+                    data = doc;
+                }
+            });
+            console.log(data);
+            if (data.history.length > size) {
+                currentSong = data.history[data.history.length-1];
+                size = data.history.length;
+                startSong();
+            }
+        }, 1000);
+    });
 }
 
-if (Meteor.isServer) { 
+if (Meteor.isServer) {    
     var startedAt = Date.now();
-    var songs = [{id: 172055891, duration: 20}, {id: 101244339, duration: 60}];
+    var songs = [{id: 172055891, duration: 20}, {id: 194153620, duration: 60}];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 
@@ -217,18 +190,6 @@ if (Meteor.isServer) {
     });
   
     songTimer();
-  
-    /*Meteor.methods({ 
-      getDuration: function() {
-          return "100 minutes";
-      },
-      getStart: function() {
-          return startedAt;
-      },
-      getSong: function() {
-          return songs[currentSong];
-      }
-    });*/
 
     Meteor.publish("history", function() {
         return History.find({type: "edm"})
