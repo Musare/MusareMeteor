@@ -314,20 +314,13 @@ footer a:hover{
   cursor: pointer;
 }
 #dashboard .station{
-  background-color: rgba(255,255,255,0.3);
-  height: 250px;
-  color: white;
-  margin-top: 1em;
-  cursor: pointer;
-  transition: 0.3s;
+  
 }
 #dashboard .station:hover{
   background-color: rgba(102,205,170,0.7);
 }
 #dashboard .station .station-name{
-  text-align: center;
-  font-size: 3em;
-  font-weight: 600;
+
 }
 #dashboard .station .song-info{
   text-align: center;

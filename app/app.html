@@ -50,21 +50,6 @@
 
 <template name="dashboard">
   <div class="landing">
-    <div id="name-container"> <h1>{{currentUser.username}}{{currentUser.services.facebook.first_name}} {{currentUser.services.facebook.last_name}}{{currentUser.services.github.username}}<i class="fa fa-power-off logout" tooltip="Logout"></i></h1></div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="station">
-          <p class="station-name">EDM</p>
-          <div class="song-info">
-            <p class="song-title">Immortals</p>
-            <p class="song-artist">Fall Out Boy</p>
-          </div>
-          <!-- <button class="button-tunein">Tune in to station!</button> -->
-          <i id="play" class="fa fa-play controls"></i>
-          <i id="stop" class="fa fa-stop controls" style="display:none"></i>
-        </div>
-      </div>
-    </div>
 
     <ul class="bg-bubbles">
     	<li></li>
@@ -125,7 +110,7 @@
 
 <template name="Room">
     <h1>{{{type}}}</h1>
-    
+
     <h2>{{duration}}</h2>
     <h2>{{song}}</h2>
 </template>
