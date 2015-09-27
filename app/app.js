@@ -125,7 +125,6 @@ if (Meteor.isClient) {
                     _sound = sound;
                     sound._player._volume = 0.3;
                     //sound.play();
-                    console.log(currentSong);
                     Session.set("title", currentSong.song.title || "Title");
                     Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("albumArt", currentSong.song.albumArt);
