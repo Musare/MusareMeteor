@@ -50,56 +50,32 @@
 
 <template name="dashboard">
   <div class="landing">
-<<<<<<< HEAD
-    <div class="station">
-
+    <div class="row">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="station">
+                  <h3>Name</h3>
+                  <h5>Song</h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="station">
+                  <h3>Name</h3>
+                  <h5>Song</h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="station">
+                  <h3>Name</h3>
+                  <h5>Song</h5>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="station">
+                  <h3>Name</h3>
+                  <h5>Song</h5>
+            </div>
+        </div>
     </div>
-=======
-      <!--ul>
-          <li class="station">
-              <h3>Name</h3>
-              <h5>Song</h5>
-          </li>
-          <li class="station">
-              <h3>Name</h3>
-              <h5>Song</h5>
-          </li>
-          <li class="station">
-              <h3>Name</h3>
-              <h5>Song</h5>
-          </li>
-          <li class="station">
-              <h3>Name</h3>
-              <h5>Song</h5>
-          </li>
-      </ul-->
-      <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-              </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-              </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-              </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-              </div>
-          </div>
-      </div>
->>>>>>> 62401d89e4e278a4a04db28644b2306f623b619e
 
     <ul class="bg-bubbles">
     	<li></li>
@@ -161,12 +137,8 @@
 <template name="room">
   <div class="landing">
     <h1 class="room-name">{{{type}}}</h1>
-    <h2>{{{duration}}}</h2>
-    <div class="player">
-      <div class="seeker-bar">
-        <i id="dot" class="fa fa-circle"></i>
-      </div>
-    </div>
+    <h2 class="room-title">{{{title}}}</h2>
+    <h2 class="room-artist">{{{artist}}}</h2>
     <ul class="bg-bubbles">
       <li></li>
       <li></li>

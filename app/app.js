@@ -71,7 +71,6 @@ if (Meteor.isClient) {
 
         "click .button-tunein": function(){
             SC.stream("/tracks/172055891/", function(sound){
-                console.log(sound);
                 sound._player._volume = 0.3;
                 sound.play();
             });
@@ -99,8 +98,11 @@ if (Meteor.isClient) {
           var id = parts.pop();
           return id.toUpperCase();
         },
-        duration: function(){
-          return Session.get("duration");
+        title: function(){
+          return Session.get("title");
+        },
+        artist: function(){
+          return Session.get("artist");
         }
     });
 
@@ -123,9 +125,14 @@ if (Meteor.isClient) {
                     _sound = sound;
                     sound._player._volume = 0.3;
                     //sound.play();
+                    console.log(currentSong);
+                    Session.set("title", currentSong.song.title || "Title");
+                    Session.set("artist", currentSong.song.artist || "Artist");
+                    Session.set("albumArt", currentSong.song.albumArt);
                     Session.set("duration", currentSong.song.duration);
                     setTimeout(function() { // HACK, otherwise seek doesn't work.
                         sound._player.seek(getTimeElapsed());
+                        console.log(sound._player.seek(getTimeElapsed()));
                     }, 500);
                 });
             }
@@ -140,7 +147,6 @@ if (Meteor.isClient) {
                     data = doc;
                 }
             });
-            console.log(data);
             if (data.history.length > size) {
                 currentSong = data.history[data.history.length-1];
                 size = data.history.length;
@@ -152,7 +158,7 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
     var startedAt = Date.now();
-    var songs = [{id: 172055891, duration: 20}, {id: 194153620, duration: 60}];
+    var songs = [{id: 172055891, title: "Immortals", artist: "Fall Out Boy", duration: 90}];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 
