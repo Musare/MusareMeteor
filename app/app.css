@@ -339,10 +339,18 @@ footer a:hover{
   font-size: 2.5em;
   color: white;
   font-weight: 600;
+  margin-left: 35px;
 }
 .room-artist{
   font-size: 2em;
   color: white;
+  margin-left: 35px;
+}
+#seeker-bar{
+  background-color: black;
+  width: 0;
+  height: 5px;
+  margin-left: 35px;
 }
 @media (max-width: 992px) {
     .station {
