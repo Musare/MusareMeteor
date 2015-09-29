@@ -103,9 +103,6 @@ if (Meteor.isClient) {
         },
         artist: function(){
           return Session.get("artist");
-        },
-        duration: function(){
-
         }
     });
 
@@ -127,12 +124,14 @@ if (Meteor.isClient) {
                 SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
                     _sound = sound;
                     sound._player._volume = 0.3;
+                    console.log(sound);
                     sound.play();
                     Session.set("title", currentSong.song.title || "Title");
                     Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("albumArt", currentSong.song.albumArt);
                     Session.set("duration", currentSong.song.duration);
-                    Session.set("increment", 1400 / currentSong.song.duration);
+                    $("#seeker-bar").css("transition", Session.get("duration") + "s")
+                    $("#seeker-bar").width(1400);
                     setTimeout(function() { // HACK, otherwise seek doesn't work.
                         sound._player.seek(getTimeElapsed());
                     }, 500);
@@ -154,15 +153,13 @@ if (Meteor.isClient) {
                 size = data.history.length;
                 startSong();
             }
-            $("#seeker-bar").width($("#seeker-bar").width() + Session.get("increment"));
-            console.log($("#seeker-bar").width());
         }, 1000);
     });
 }
 
 if (Meteor.isServer) {
     var startedAt = Date.now();
-    var songs = [{id: 172055891, title: "Immortals", artist: "Fall Out Boy", duration: 90}];
+    var songs = [{id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193}];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 

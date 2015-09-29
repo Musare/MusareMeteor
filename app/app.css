@@ -351,6 +351,7 @@ footer a:hover{
   width: 0;
   height: 5px;
   margin-left: 35px;
+  background-color: rgba(102,205,170,1);
 }
 @media (max-width: 992px) {
     .station {
