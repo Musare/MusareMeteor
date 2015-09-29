@@ -85,7 +85,7 @@ form input {
   outline: 0;
   border: 1px solid rgba(255, 255, 255, 0.4);
   background-color: rgba(255, 255, 255, 0.2);
-  width: 250px;
+  width: 304px;
   border-radius: 3px;
   padding: 10px 15px;
   margin: 0 auto 10px auto;
@@ -102,9 +102,26 @@ form input:hover {
 }
 form input:focus {
   /*opacity: 0.4;*/
-  width: 300px !important;
+  width: 354px !important;
   color: white;
 }
+
+.g-recaptcha {
+    -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: 0;
+  width: 304px;
+  margin: 0 auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  font-weight: 300;
+}
+
 form button {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -115,7 +132,7 @@ form button {
   padding: 10px 15px;
   color: #53e3a6;
   border-radius: 3px;
-  width: 250px;
+  width: 304px;
   cursor: pointer;
   font-size: 18px;
   -webkit-transition-duration: 0.25s;
@@ -263,7 +280,7 @@ form button:hover {
   border: 0;
   padding: 10px 15px;
   border-radius: 3px;
-  width: 250px;
+  width: 304px;
   cursor: pointer;
   font-size: 18px;
   color: #fff;
@@ -293,7 +310,7 @@ footer a:hover{
   padding: 10px 15px;
   color: #53e3a6;
   border-radius: 3px;
-  width: 250px;
+  width: 304px;
   cursor: pointer;
   font-size: 18px;
   -webkit-transition-duration: 0.25s;

@@ -1,6 +1,12 @@
 History = new Mongo.Collection("history");
 
 if (Meteor.isClient) {
+    Meteor.startup(function() {
+        reCAPTCHA.config({
+            publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
+        });
+    });
+    
     var hpSound = undefined;
     Template.register.events({
         "submit form": function(e){
@@ -8,10 +14,15 @@ if (Meteor.isClient) {
             var username = e.target.registerUsername.value;
             var email = e.target.registerEmail.value;
             var password = e.target.registerPassword.value;
-            Accounts.createUser({
-                username: username,
-                email: email,
-                password: password
+            var captchaData = grecaptcha.getResponse();
+            Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
+                grecaptcha.reset();
+                
+                if (err) {
+                    console.log(err);
+                } else {
+                    Meteor.loginWithPassword(username, password);
+                }
             });
         },
 
@@ -158,6 +169,16 @@ if (Meteor.isClient) {
 }
 
 if (Meteor.isServer) {
+    Meteor.startup(function() {
+        reCAPTCHA.config({
+            privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
+        });
+    });
+    
+    Meteor.users.deny({update: function () { return true; }});
+    Meteor.users.deny({insert: function () { return true; }});
+    Meteor.users.deny({remove: function () { return true; }});
+    
     var startedAt = Date.now();
     var songs = [{id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193}];
     var currentSong = 0;
@@ -206,6 +227,26 @@ if (Meteor.isServer) {
 
     Meteor.publish("history", function() {
         return History.find({type: "edm"})
+    });
+    
+    Meteor.methods({
+        createUserMethod: function(formData, captchaData) {
+            var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
+            if (!verifyCaptchaResponse.success) {
+                console.log('reCAPTCHA check failed!', verifyCaptchaResponse);
+                throw new Meteor.Error(422, 'reCAPTCHA Failed: ' + verifyCaptchaResponse.error);
+            } else {
+                console.log('reCAPTCHA verification passed!');
+                Accounts.createUser({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password
+                });
+            }
+            //do stuff with your formData
+
+            return true;
+        }
     });
 }
 
