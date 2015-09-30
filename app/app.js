@@ -6,7 +6,7 @@ if (Meteor.isClient) {
             publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
         });
     });
-    
+
     var hpSound = undefined;
     Template.register.events({
         "submit form": function(e){
@@ -17,7 +17,7 @@ if (Meteor.isClient) {
             var captchaData = grecaptcha.getResponse();
             Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
                 grecaptcha.reset();
-                
+
                 if (err) {
                     console.log(err);
                 } else {
@@ -174,11 +174,11 @@ if (Meteor.isServer) {
             privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
         });
     });
-    
+
     Meteor.users.deny({update: function () { return true; }});
     Meteor.users.deny({insert: function () { return true; }});
     Meteor.users.deny({remove: function () { return true; }});
-    
+
     var startedAt = Date.now();
     var songs = [{id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193}];
     var currentSong = 0;
@@ -228,7 +228,7 @@ if (Meteor.isServer) {
     Meteor.publish("history", function() {
         return History.find({type: "edm"})
     });
-    
+
     Meteor.methods({
         createUserMethod: function(formData, captchaData) {
             var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
@@ -243,8 +243,6 @@ if (Meteor.isServer) {
                     password: formData.password
                 });
             }
-            //do stuff with your formData
-
             return true;
         }
     });

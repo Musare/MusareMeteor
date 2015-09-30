@@ -370,12 +370,6 @@ footer a:hover{
   margin-left: 35px;
   background-color: rgba(102,205,170,1);
 }
-@media (max-width: 992px) {
-    .station {
-        background-color: red;
-    }
-}
-
 .privacy {
   margin: 0 auto;
   padding: 100px 0;
@@ -387,4 +381,9 @@ footer a:hover{
   padding: 100px 0;
   height: 900px;
   text-align: center;
+}
+@media (max-width: 992px) {
+    .station {
+        background-color: red;
+    }
 }
