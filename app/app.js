@@ -140,7 +140,7 @@ if (Meteor.isClient) {
                     Session.set("title", currentSong.song.title || "Title");
                     Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("albumArt", currentSong.song.albumArt);
-                    Session.set("duration", currentSong.song.duration);
+                    Session.set("duration", currentSong.song.duration)
                     $("#seeker-bar").css("transition", Session.get("duration") + "s")
                     $("#seeker-bar").width(1400);
                     setTimeout(function() { // HACK, otherwise seek doesn't work.

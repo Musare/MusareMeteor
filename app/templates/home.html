@@ -1,0 +1,29 @@
+<template name="home">
+    {{#if currentUser}}
+    <div id="dashboard">
+        {{> dashboard}}
+    </div>
+    {{else}}
+    <div class="landing">
+        <div id="login-view">
+            {{> login}}
+        </div>
+        <div id="register-view" style="display:none">
+            {{> register}}
+        </div>
+
+        <ul class="bg-bubbles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    {{/if}}
+</template>
