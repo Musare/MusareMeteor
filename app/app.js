@@ -8,6 +8,8 @@ if (Meteor.isClient) {
     });
 
     var hpSound = undefined;
+    var songsArr = [];
+    var _sound = undefined;
     Template.register.events({
         "submit form": function(e){
             e.preventDefault();
@@ -103,6 +105,44 @@ if (Meteor.isClient) {
         }
     });
 
+    Template.room.events({
+      "click #search-song": function(){
+        SC.get('/tracks', { q: $("#song-input").val()}, function(tracks) {
+          console.log(tracks);
+          songsArr = [];
+          $("#song-results").empty()
+          for(var i in tracks){
+            $("#song-results").append("<p>" + tracks[i].title + "</p>")
+            songsArr.push({title: tracks[i].title, id: tracks[i].id, duration: tracks[i].duration / 1000});
+          }
+          $("#song-results p").click(function(){
+            var title = $(this).text();
+            for(var i in songsArr){
+              if(songsArr[i].title === title){
+                var id = songsArr[i].id;
+                var duration = songsArr[i].duration;
+                var songObj = {
+                  title: songsArr[i].title,
+                  id: id,
+                  duration: duration
+                }
+              }
+            }
+            console.log(id);
+            Meteor.call("addToPlaylist", function(err,res){
+              console.log(res);
+            })
+            if (_sound !== undefined)_sound.stop();
+            SC.stream("/tracks/" + id, function(sound){
+              _sound = sound;
+              sound._player._volume = 0.3;
+              sound.play()
+            });
+          })
+        });
+      }
+    });
+
     Template.room.helpers({
         type: function() {
           var parts = location.href.split('/');
@@ -136,11 +176,12 @@ if (Meteor.isClient) {
                     _sound = sound;
                     sound._player._volume = 0.3;
                     console.log(sound);
-                    sound.play();
+                    //sound.play();
                     Session.set("title", currentSong.song.title || "Title");
                     Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("albumArt", currentSong.song.albumArt);
-                    Session.set("duration", currentSong.song.duration)
+                    Session.set("duration", currentSong.song.duration);
+                    $("#seeker-bar").width(0);
                     $("#seeker-bar").css("transition", Session.get("duration") + "s")
                     $("#seeker-bar").width(1400);
                     setTimeout(function() { // HACK, otherwise seek doesn't work.
@@ -180,7 +221,10 @@ if (Meteor.isServer) {
     Meteor.users.deny({remove: function () { return true; }});
 
     var startedAt = Date.now();
-    var songs = [{id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193}];
+    var songs = [
+      {id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193},
+      {id: 7971238, title: "The Time (Dirty Bit)", artist: "Black Eyed Pea", duration: 308}
+    ];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 
@@ -244,6 +288,9 @@ if (Meteor.isServer) {
                 });
             }
             return true;
+        },
+        addToPlaylist: function(){
+          return songs;
         }
     });
 }

@@ -368,7 +368,7 @@ footer a:hover{
   width: 0;
   height: 5px;
   margin-left: 35px;
-  background-color: rgba(102,205,170,1);
+  background-color: rgb(16, 140, 146);
 }
 .privacy {
   margin: 0 auto;
@@ -381,6 +381,45 @@ footer a:hover{
   padding: 100px 0;
   height: 900px;
   text-align: center;
+}
+#song-input{
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 304px;
+  border-radius: 3px;
+  padding: 10px 15px;
+  margin: 1em auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  font-weight: 300;
+}
+#search-song{
+  display: block;
+  margin: 0 auto;
+}
+#song-results{
+  margin: 0 auto;
+  color: white;
+  margin-top: 1em;
+  font-size: 1.5em;
+  width: 500px;
+  text-align: center;
+}
+#song-results p{
+  margin: 0;
+  padding: 5px;
+}
+#song-results p:hover{
+  background-color: cadetblue;
+  cursor: pointer;
 }
 @media (max-width: 992px) {
     .station {
