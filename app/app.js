@@ -188,6 +188,27 @@ if (Meteor.isClient) {
                         sound._player.seek(getTimeElapsed());
                     }, 500);
                 });
+                    if (currentSong.song.type === "soundcloud") {
+                        $("#player").attr("src", "")
+                        SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
+                        _sound = sound;
+                        sound._player._volume = 0.3;
+                        console.log(sound);
+                        sound.play();
+                        Session.set("title", currentSong.song.title || "Title");
+                        Session.set("artist", currentSong.song.artist || "Artist");
+                        Session.set("albumArt", currentSong.song.albumArt);
+                        Session.set("duration", currentSong.song.duration)
+                        $("#seeker-bar").css("transition", Session.get("duration") + "s")
+                        $("#seeker-bar").width(1400);
+                        setTimeout(function() { // HACK, otherwise seek doesn't work.
+                            sound._player.seek(getTimeElapsed());
+                        }, 500);
+                    });
+                } else {
+                    console.log("YT!");
+                    $("#player").attr("src", "http://www.youtube.com/embed/" + currentSong.song.id + "?autoplay=1&controls=0&autohide=1");
+                }
             }
         }
 
@@ -225,6 +246,7 @@ if (Meteor.isServer) {
       {id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193},
       {id: 7971238, title: "The Time (Dirty Bit)", artist: "Black Eyed Pea", duration: 308}
     ];
+    var songs = [{id: "jofNR_WkoCE", title: "The Fox", artist: "Ylvis", duration: 15, type: "youtube"}, {id: 216112412, title: "How Deep Is Your Love", artist: "Calvin Harris", duration: 193, type: "soundcloud"}];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 
