@@ -2,14 +2,17 @@
     {{#if currentUser}}
     <div id="dashboard">
         {{> dashboard}}
+        {{> footer}}
     </div>
     {{else}}
-    <div class="landing">
+    <div class="loginlanding">
         <div id="login-view">
             {{> login}}
+            {{> footer}}
         </div>
         <div id="register-view" style="display:none">
             {{> register}}
+            {{> footer}}
         </div>
 
         <ul class="bg-bubbles">
