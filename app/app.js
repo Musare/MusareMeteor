@@ -143,6 +143,13 @@ if (Meteor.isClient) {
       }
     });
 
+    Template.footer.events({
+        "click #APIButton": function(){
+            $("#login-view").hide();
+            $("#register-view").show();
+        }
+    });
+
     Template.room.helpers({
         type: function() {
           var parts = location.href.split('/');
