@@ -439,18 +439,17 @@ footer a:hover{
         background-color: red;
     }
 }
-
 #player {
     visibility: hidden;
 }
 .footerButtons {
-background:none!important;
-     border:none; 
-     padding:0!important;
-     font: inherit;
-     /*border is optional*/
-     border-bottom:1px solid #444; 
-     cursor: pointer;
+  background:none!important;
+  border:none;
+  padding:0!important;
+  font: inherit;
+  /*border is optional*/
+  border-bottom:1px solid #444;
+  cursor: pointer;
 }
 .footerButtons:hover {
   background-color: #f5f7f9;
