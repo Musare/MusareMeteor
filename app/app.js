@@ -205,6 +205,10 @@ if (Meteor.isClient) {
             }
           })
         }
+        
+        function resizeSeekerbar() {
+            $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
+        }
 
         function startSong() {
             if (currentSong !== undefined) {
@@ -222,33 +226,34 @@ if (Meteor.isClient) {
                     Session.set("title", currentSong.song.title || "Title");
                     Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("duration", currentSong.song.duration);
-                    $("#seeker-bar").css("transition", "none");
-                    $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
-                    $("#seeker-bar")[0].offsetHeight;
-                    $("#seeker-bar").css("transition", (Session.get("duration") - (getTimeElapsed() / 1000)) + "s");
-                    $("#seeker-bar").width("calc(100% - 75px)");
+                    resizeSeekerbar();
                     setTimeout(function() { // HACK, otherwise seek doesn't work.
                         sound._player.seek(getTimeElapsed());
                     }, 500);
                   });
                 } else {
-                    yt_player = new YT.Player("player", {
-                        height: 540,
-                        width: 960,
-                        videoId: currentSong.song.id,
-                        events: {
-                            'onReady': function(event) {
-                                event.target.seekTo(getTimeElapsed() / 1000);
-                                event.target.playVideo();
-                                $("#seeker-bar").css("transition", "none");
-                                $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
-                                $("#seeker-bar")[0].offsetHeight;
-                                $("#seeker-bar").css("transition", (Session.get("duration") - (getTimeElapsed() / 1000)) + "s");
-                                $("#seeker-bar").width("calc(100% - 75px)");
-                            },
-                            'onStateChange': function(){}
-                        }
-                    })
+                    if (yt_player === undefined) {
+                        yt_player = new YT.Player("player", {
+                            height: 540,
+                            width: 960,
+                            videoId: currentSong.song.id,
+                            events: {
+                                'onReady': function(event) {
+                                    event.target.seekTo(getTimeElapsed() / 1000);
+                                    event.target.playVideo();
+                                    resizeSeekerbar();
+                                },
+                                'onStateChange': function(event){
+                                    if (event.data == YT.PlayerState.PAUSED) {
+                                        event.target.seekTo(getTimeElapsed() / 1000);
+                                        event.target.playVideo();
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        yt_player.loadVideoById(currentSong.song.id);
+                    }
 
                     Session.set("title", currentSong.song.title || "Title");
                     Session.set("artist", currentSong.song.artist || "Artist");
@@ -270,10 +275,13 @@ if (Meteor.isClient) {
             if (data.history.length > size) {
                 currentSong = data.history[data.history.length-1];
                 size = data.history.length;
-                $(".room-artist").after("<div id='seeker-bar'></div>")
                 startSong();
             }
         }, 1000);
+        
+        Meteor.setInterval(function() {
+            resizeSeekerbar();
+        }, 50);
     });
 }
 
@@ -290,7 +298,7 @@ if (Meteor.isServer) {
 
     var startedAt = Date.now();
     var songs = [
-      {id: "YqeW9_5kURI", title: "Lean On", artist: "Major Lazer", duration: 193, type: "youtube"}
+      {id: "YqeW9_5kURI", title: "Lean On", artist: "Major Lazer", duration: 178, type: "youtube"}
     ];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);

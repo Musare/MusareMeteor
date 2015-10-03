@@ -381,7 +381,6 @@ footer a:hover{
   width: 0;
   height: 5px;
   clear: both;
-  margin-left: 35px;
   background-color: rgb(16, 140, 146);
 }
 .privacy {
@@ -456,4 +455,11 @@ footer a:hover{
 #albumart{
   width: 170px;
   margin-left: 35px;
+}
+
+#seeker-container {
+    width: calc(100% - 70px);
+    margin-left: 35px;
+    margin-right: 35px;
+    overflow: hidden;
 }
