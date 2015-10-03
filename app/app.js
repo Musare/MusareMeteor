@@ -270,7 +270,7 @@ if (Meteor.isClient) {
             if (data.history.length > size) {
                 currentSong = data.history[data.history.length-1];
                 size = data.history.length;
-                $("#seeker-bar").remove();
+                $(".room-artist").after("<div id='seeker-bar'></div>")
                 startSong();
             }
         }, 1000);
