@@ -380,6 +380,7 @@ footer a:hover{
   background-color: black;
   width: 0;
   height: 5px;
+  clear: both;
   margin-left: 35px;
   background-color: rgb(16, 140, 146);
 }
@@ -451,4 +452,8 @@ footer a:hover{
 }
 .footerButtons:hover {
   background-color: #f5f7f9;
+}
+#albumart{
+  width: 170px;
+  margin-left: 35px;
 }

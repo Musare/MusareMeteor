@@ -170,18 +170,49 @@ if (Meteor.isClient) {
             return 0;
         }
 
+        function getSongInfo(query){
+          query = query.toLowerCase().split(" ").join("%20");
+          $.ajax({
+            type: "GET",
+            url: 'https://api.spotify.com/v1/search?q=' + query + '&type=track',
+            applicationType: "application/json",
+            contentType: "json",
+            success: function(data){
+              console.log(data);
+              for(var i in data){
+                // for(var j in data[i].items){
+                  // data[i].items[j] - each indivudual object in response
+                  // console.log(data[i].items[j].name)
+                  // for(var k in data[i].items[j].artists){
+                  //   if(data[i].items[j].artists[k].name);
+                  // }
+                  Session.set("title", data[i].items[0].name);
+                  for(var j in data[i].items[0].artists){
+                     Session.set("artist", data[i].items[0].artists[j].name);
+                  }
+                  $("#albumart").remove();
+                  $(".room-title").before("<img id='albumart' src='" + data[i].items[0].album.images[1].url + "' />")
+                  //Session.set("artist", currentSong.song.artist);
+                  //Session.set("duration", currentSong.song.duration)
+                //}
+              }
+            }
+          })
+        }
+
         function startSong() {
             if (currentSong !== undefined) {
                 if (_sound !== undefined)_sound.stop();
                 if (currentSong.song.type === "soundcloud") {
                   $("#player").attr("src", "")
+                  getSongInfo(currentSong.song.title);
                   SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
                     _sound = sound;
                     sound._player._volume = 0.3;
                     console.log(sound);
                     sound.play();
-                    Session.set("title", currentSong.song.title || "Title");
-                    Session.set("artist", currentSong.song.artist || "Artist");
+                    //Session.set("title", currentSong.song.title || "Title");
+                    //Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("duration", currentSong.song.duration)
                     $("#seeker-bar").css("transition", Session.get("duration") + "s")
                     $("#seeker-bar").width(1400);
@@ -191,9 +222,10 @@ if (Meteor.isClient) {
                   });
                 } else {
                     console.log("YT!");
+                    getSongInfo(currentSong.song.title);
                     $("#player").attr("src", "http://www.youtube.com/embed/" + currentSong.song.id + "?autoplay=1&controls=0&autohide=1");
-                    Session.set("title", currentSong.song.title || "Title");
-                    Session.set("artist", currentSong.song.artist || "Artist");
+                    //Session.set("title", currentSong.song.title || "Title");
+                    //Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("duration", currentSong.song.duration);
                     $("#seeker-bar").css("transition", Session.get("duration") + "s");
                     $("#seeker-bar").width(1400);
@@ -213,6 +245,8 @@ if (Meteor.isClient) {
             if (data.history.length > size) {
                 currentSong = data.history[data.history.length-1];
                 size = data.history.length;
+                $("#seeker-bar").remove();
+                $(".room-artist").after("<div id='seeker-bar'></div>")
                 startSong();
             }
         }, 1000);
@@ -232,8 +266,7 @@ if (Meteor.isServer) {
 
     var startedAt = Date.now();
     var songs = [
-      {id: "eMrh3wYb1mM", title: "Where Are U Now", artist: "Pentatonix", duration: 244, type: "youtube"},
-      {id: 170202151, title: "Runnaway (U & I)", artist: "Galantis", duration: 193, type: "soundcloud"}
+      {id: "YqeW9_5kURI", title: "Lean On", artist: "Major Lazer", duration: 193, type: "youtube"}
     ];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
