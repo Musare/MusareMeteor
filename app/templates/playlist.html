@@ -1,0 +1,10 @@
+<template name="playlist">
+    <h4>Default Playlist</h4>
+    <ul id="playlist">
+        {{#each playlist_songs}}
+        <li class="playlist-song">
+            {{title}} - {{artist}}
+        </li>
+        {{/each}}
+    </ul>
+</template>

@@ -157,6 +157,12 @@ if (Meteor.isClient) {
           return Session.get("artist");
         }
     });
+    
+    Template.playlist.helpers({
+        playlist_songs: function() {
+            return [{title: "Foo", artist: "Bar"}, {title: "Ying", artist: "Yang"}];
+        }
+    });
 
     Template.room.onCreated(function () {
         var tag = document.createElement("script");
