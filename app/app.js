@@ -131,7 +131,7 @@ if (Meteor.isClient) {
             }
             console.log(id);
             Meteor.call("addToPlaylist", songObj, function(err,res){
-              console.log(res);
+              return true;
             });
             // if (_sound !== undefined)_sound.stop();
             // SC.stream("/tracks/" + id, function(sound){
@@ -157,10 +157,13 @@ if (Meteor.isClient) {
           return Session.get("artist");
         }
     });
-    
+
     Template.playlist.helpers({
         playlist_songs: function() {
-            return [{title: "Foo", artist: "Bar"}, {title: "Ying", artist: "Yang"}];
+            // return [
+            //   {title: "Foo", artist: "Bar"},
+            //   {title: "Ying", artist: "Yang"}
+            // ];
         }
     });
 
@@ -169,11 +172,12 @@ if (Meteor.isClient) {
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        
+
         var currentSong = undefined;
         var _sound = undefined;
         var yt_player = undefined;
         var size = 0;
+        var timeMS = 0;
 
         function getTimeElapsed() {
             if (currentSong !== undefined) {
@@ -192,26 +196,17 @@ if (Meteor.isClient) {
             success: function(data){
               console.log(data);
               for(var i in data){
-                // for(var j in data[i].items){
-                  // data[i].items[j] - each indivudual object in response
-                  // console.log(data[i].items[j].name)
-                  // for(var k in data[i].items[j].artists){
-                  //   if(data[i].items[j].artists[k].name);
-                  // }
                   Session.set("title", data[i].items[0].name);
                   for(var j in data[i].items[0].artists){
                      Session.set("artist", data[i].items[0].artists[j].name);
                   }
                   $("#albumart").remove();
                   $(".room-title").before("<img id='albumart' src='" + data[i].items[0].album.images[1].url + "' />")
-                  //Session.set("artist", currentSong.song.artist);
-                  //Session.set("duration", currentSong.song.duration)
-                //}
               }
             }
           })
         }
-        
+
         function resizeSeekerbar() {
             $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
         }
@@ -220,7 +215,7 @@ if (Meteor.isClient) {
             if (currentSong !== undefined) {
                 if (_sound !== undefined) _sound.stop();
                 if (yt_player !== undefined && yt_player.stopVideo !== undefined) yt_player.stopVideo();
-                
+
                 if (currentSong.song.type === "soundcloud") {
                   $("#player").attr("src", "")
                   getSongInfo(currentSong.song.title);
@@ -229,13 +224,10 @@ if (Meteor.isClient) {
                     sound._player._volume = 0.3;
                     console.log(sound);
                     sound.play();
-                    Session.set("title", currentSong.song.title || "Title");
-                    Session.set("artist", currentSong.song.artist || "Artist");
+                    // Session.set("title", currentSong.song.title || "Title");
+                    // Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("duration", currentSong.song.duration);
                     resizeSeekerbar();
-                    setTimeout(function() { // HACK, otherwise seek doesn't work.
-                        sound._player.seek(getTimeElapsed());
-                    }, 500);
                   });
                 } else {
                     if (yt_player === undefined) {
@@ -261,8 +253,8 @@ if (Meteor.isClient) {
                         yt_player.loadVideoById(currentSong.song.id);
                     }
 
-                    Session.set("title", currentSong.song.title || "Title");
-                    Session.set("artist", currentSong.song.artist || "Artist");
+                    // Session.set("title", currentSong.song.title || "Title");
+                    // Session.set("artist", currentSong.song.artist || "Artist");
                     getSongInfo(currentSong.song.title);
                     Session.set("duration", currentSong.song.duration);
                 }
@@ -284,10 +276,11 @@ if (Meteor.isClient) {
                 startSong();
             }
         }, 1000);
-        
+
         Meteor.setInterval(function() {
             resizeSeekerbar();
         }, 50);
+
     });
 }
 
@@ -304,7 +297,8 @@ if (Meteor.isServer) {
 
     var startedAt = Date.now();
     var songs = [
-      {id: "YqeW9_5kURI", title: "Lean On", artist: "Major Lazer", duration: 178, type: "youtube"}
+      // {id: "YqeW9_5kURI", title: "Lean On", artist: "Major Lazer", duration: 178, type: "youtube"}
+      {id: 172055891, title: "Immortals", artist: "Fall Out Boy", duration: 244, type: "soundcloud"}
     ];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
@@ -372,7 +366,6 @@ if (Meteor.isServer) {
         },
         addToPlaylist: function(songObj){
           songs.push(songObj);
-          return songs;
         }
     });
 }
