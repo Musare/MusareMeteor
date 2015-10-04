@@ -219,11 +219,17 @@ if (Meteor.isClient) {
                 if (currentSong.song.type === "soundcloud") {
                   $("#player").attr("src", "")
                   getSongInfo(currentSong.song.title);
-                  SC.stream("/tracks/" + currentSong.song.id + "/", function(sound){
+                  SC.stream("/tracks/" + currentSong.song.id + "#t=20s", function(sound){
+                    console.log(sound);
                     _sound = sound;
                     sound._player._volume = 0.3;
-                    console.log(sound);
                     sound.play();
+                    var interval = setInterval(function() {
+                        if (sound.getState() === "playing") {
+                            sound.seek(getTimeElapsed());
+                            window.clearInterval(interval);
+                        }
+                    }, 200);
                     // Session.set("title", currentSong.song.title || "Title");
                     // Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("duration", currentSong.song.duration);
