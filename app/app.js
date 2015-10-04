@@ -160,10 +160,7 @@ if (Meteor.isClient) {
 
     Template.playlist.helpers({
         playlist_songs: function() {
-            // return [
-            //   {title: "Foo", artist: "Bar"},
-            //   {title: "Ying", artist: "Yang"}
-            // ];
+
         }
     });
 
@@ -224,6 +221,7 @@ if (Meteor.isClient) {
                     sound._player._volume = 0.3;
                     console.log(sound);
                     sound.play();
+                    console.log(getTimeElapsed());
                     // Session.set("title", currentSong.song.title || "Title");
                     // Session.set("artist", currentSong.song.artist || "Artist");
                     Session.set("duration", currentSong.song.duration);
