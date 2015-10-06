@@ -174,7 +174,8 @@ if (Meteor.isClient) {
         var _sound = undefined;
         var yt_player = undefined;
         var size = 0;
-        var timeMS = 0;
+        var artistStr;
+        var temp = "";
 
         function getTimeElapsed() {
             if (currentSong !== undefined) {
@@ -183,7 +184,7 @@ if (Meteor.isClient) {
             return 0;
         }
 
-        function getSongInfo(query){
+        function getSongInfo(query, type){
           query = query.toLowerCase().split(" ").join("%20");
           $.ajax({
             type: "GET",
@@ -194,9 +195,26 @@ if (Meteor.isClient) {
               console.log(data);
               for(var i in data){
                   Session.set("title", data[i].items[0].name);
-                  for(var j in data[i].items[0].artists){
-                     Session.set("artist", data[i].items[0].artists[j].name);
+                  if(type === "youtube"){
+                    Session.set("duration", data[i].items[0].duration_ms / 1000)
                   }
+                  Meteor.call("setDuration", Session.get("duration"))
+                  temp = "";
+                  if(data[i].items[0].artists.length >= 2){
+                    for(var j in data[i].items[0].artists){
+                       temp = temp + data[i].items[0].artists[j].name + ", ";
+                    }
+                  } else{
+                    for(var j in data[i].items[0].artists){
+                       temp = temp + data[i].items[0].artists[j].name;
+                    }
+                  }
+                  if(temp[temp.length-2] === ","){
+                    artistStr = temp.substr(0,temp.length-2);
+                  } else{
+                    artistStr = temp;
+                  }
+                  Session.set("artist", artistStr);
                   $("#albumart").remove();
                   $(".room-title").before("<img id='albumart' src='" + data[i].items[0].album.images[1].url + "' />")
               }
@@ -259,8 +277,8 @@ if (Meteor.isClient) {
 
                     // Session.set("title", currentSong.song.title || "Title");
                     // Session.set("artist", currentSong.song.artist || "Artist");
-                    getSongInfo(currentSong.song.title);
-                    Session.set("duration", currentSong.song.duration);
+                    getSongInfo(currentSong.song.title, "youtube");
+                    //Session.set("duration", currentSong.song.duration);
                 }
             }
         }
@@ -295,14 +313,17 @@ if (Meteor.isServer) {
         });
     });
 
+    var duration = 226440;
+
     Meteor.users.deny({update: function () { return true; }});
     Meteor.users.deny({insert: function () { return true; }});
     Meteor.users.deny({remove: function () { return true; }});
 
     var startedAt = Date.now();
     var songs = [
-      // {id: "YqeW9_5kURI", title: "Lean On", artist: "Major Lazer", duration: 178, type: "youtube"}
-      {id: 172055891, title: "Immortals", artist: "Fall Out Boy", duration: 244, type: "soundcloud"}
+      {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: 264, type: "youtube"},
+      {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: 300, type: "youtube"}
+      // {id: 172055891, title: "Immortals", artist: "Fall Out Boy", duration: 244, type: "soundcloud"}
     ];
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
@@ -323,7 +344,7 @@ if (Meteor.isServer) {
         startedAt = Date.now();
         Meteor.setTimeout(function() {
             skipSong();
-        }, songs[currentSong].duration * 1000);
+        }, duration);
     }
 
     ServiceConfiguration.configurations.remove({
@@ -370,6 +391,10 @@ if (Meteor.isServer) {
         },
         addToPlaylist: function(songObj){
           songs.push(songObj);
+        },
+        setDuration: function(d){
+          duration = d * 1000;
+          console.log(duration);
         }
     });
 }
