@@ -1,4 +1,5 @@
 History = new Mongo.Collection("history");
+Playlists = new Mongo.Collection("playlists");
 
 if (Meteor.isClient) {
     Meteor.startup(function() {
@@ -160,7 +161,8 @@ if (Meteor.isClient) {
 
     Template.playlist.helpers({
         playlist_songs: function() {
-
+            console.log(Playlists.find({type: "edm"}).fetch());
+            return Playlists.find({type: "edm"}).fetch()[0].songs;
         }
     });
 
@@ -284,6 +286,7 @@ if (Meteor.isClient) {
         }
 
         Meteor.subscribe("history");
+        Meteor.subscribe("playlists");
         Meteor.setInterval(function() {
             var data = undefined;
             var dataCursor = History.find({type: "edm"});
@@ -313,6 +316,10 @@ if (Meteor.isServer) {
         });
     });
 
+    if (Playlists.find({type: "edm"}).fetch().length === 0) {
+        Playlists.insert({type: "edm", songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: 264, type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: 300, type: "youtube"}]});
+    }
+
     var duration = 226440;
 
     Meteor.users.deny({update: function () { return true; }});
@@ -320,11 +327,7 @@ if (Meteor.isServer) {
     Meteor.users.deny({remove: function () { return true; }});
 
     var startedAt = Date.now();
-    var songs = [
-      {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: 264, type: "youtube"},
-      {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: 300, type: "youtube"}
-      // {id: 172055891, title: "Immortals", artist: "Fall Out Boy", duration: 244, type: "soundcloud"}
-    ];
+    var songs = Playlists.find({type: "edm"}).fetch()[0].songs;
     var currentSong = 0;
     addToHistory(songs[currentSong], startedAt);
 
@@ -371,6 +374,10 @@ if (Meteor.isServer) {
 
     Meteor.publish("history", function() {
         return History.find({type: "edm"})
+    });
+
+    Meteor.publish("playlists", function() {
+        return Playlists.find({type: "edm"})
     });
 
     Meteor.methods({

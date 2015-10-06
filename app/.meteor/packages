@@ -26,3 +26,4 @@ ejson
 joncursi:socket-io-client
 meteorhacks:async
 altapp:recaptcha
+http
