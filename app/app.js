@@ -12,6 +12,9 @@ if (Meteor.isClient) {
     var songsArr = [];
     var ytArr = [];
     var _sound = undefined;
+    var parts = location.href.split('/');
+    var id = parts.pop();
+    var type = id.toLowerCase();
     Template.register.events({
         "submit form": function(e){
             e.preventDefault();
@@ -132,9 +135,9 @@ if (Meteor.isClient) {
                     title: ytArr[i].title,
                     type: "youtube"
                   }
-                  Meteor.call("addToPlaylist", songObj, function(err,res){
+                  /*Meteor.call("addToPlaylist", songObj, function(err,res){
                     console.log(res);
-                  })
+                  })*/
                 }
               }
             })
@@ -161,9 +164,9 @@ if (Meteor.isClient) {
               }
             }
             console.log(id);
-            Meteor.call("addToPlaylist", songObj, function(err,res){
+            /*Meteor.call("addToPlaylist", songObj, function(err,res){
               return true;
-            });
+            });*/
             // if (_sound !== undefined)_sound.stop();
             // SC.stream("/tracks/" + id, function(sound){
             //   _sound = sound;
@@ -191,8 +194,12 @@ if (Meteor.isClient) {
 
     Template.playlist.helpers({
         playlist_songs: function() {
-            console.log(Playlists.find({type: "edm"}).fetch());
-            return Playlists.find({type: "edm"}).fetch()[0].songs;
+            var data = Playlists.find({type: type}).fetch();
+            if (data !== undefined && data.length > 0) {
+                return data[0].songs;
+            } else {
+                return [];
+            }
         }
     });
 
@@ -224,13 +231,11 @@ if (Meteor.isClient) {
             applicationType: "application/json",
             contentType: "json",
             success: function(data){
-              console.log(data);
               for(var i in data){
                   Session.set("title", data[i].items[0].name);
                   if(type === "youtube"){
                     Session.set("duration", data[i].items[0].duration_ms / 1000)
                   }
-                  Meteor.call("setDuration", Session.get("duration"))
                   temp = "";
                   if(data[i].items[0].artists.length >= 2){
                     for(var j in data[i].items[0].artists){
@@ -317,15 +322,21 @@ if (Meteor.isClient) {
 
         Meteor.subscribe("history");
         Meteor.subscribe("playlists");
+
+        var room_types = ["edm", "nightcore"];
+        if (room_types.indexOf(type) === -1) {
+            window.location = "/";
+        }
+
         Meteor.setInterval(function() {
             var data = undefined;
-            var dataCursor = History.find({type: "edm"});
+            var dataCursor = History.find({type: type});
             dataCursor.map(function(doc) {
                 if (data === undefined) {
                     data = doc;
                 }
             });
-            if (data.history.length > size) {
+            if (data !== undefined && data.history.length > size) {
                 currentSong = data.history[data.history.length-1];
                 size = data.history.length;
                 startSong();
@@ -346,39 +357,52 @@ if (Meteor.isServer) {
         });
     });
 
-    if (Playlists.find({type: "edm"}).fetch().length === 0) {
-        Playlists.insert({type: "edm", songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: 264, type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: 300, type: "youtube"}]});
-    }
-
-    var duration = 226440;
-
     Meteor.users.deny({update: function () { return true; }});
     Meteor.users.deny({insert: function () { return true; }});
     Meteor.users.deny({remove: function () { return true; }});
 
-    var startedAt = Date.now();
-    var songs = Playlists.find({type: "edm"}).fetch()[0].songs;
-    var currentSong = 0;
-    addToHistory(songs[currentSong], startedAt);
+    var room_types = ["edm", "nightcore"];
 
-    function addToHistory(song, startedAt) {
-        History.update({type: "edm"}, {$push: {history: {song: song, started: startedAt}}});
-    }
+    room_types.forEach(function(type) {
+        if (Playlists.find({type: type}).fetch().length === 0) {
+            if (type === "edm") {
+                Playlists.insert({type: type, songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: 226, type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: 300, type: "youtube"}]});
+            } else if (type === "nightcore") {
+                Playlists.insert({type: type, songs: [{"id": "7vQRbHY9CAU", "title": "Meg & Dia - Monster (DotEXE Remix)", "duration": 183, "type": "youtube"}]});
+            }
+        }
+        if (History.find({type: type}).fetch().length === 0) {
+            History.insert({type: type, history: []});
+        }
 
-    function skipSong() {
-        if (currentSong < (songs.length - 1)) {
-            currentSong++;
-        } else currentSong = 0;
-        songTimer();
+        var startedAt = Date.now();
+        var songs = Playlists.find({type: type}).fetch()[0].songs;
+        var currentSong = 0;
         addToHistory(songs[currentSong], startedAt);
-    }
 
-    function songTimer() {
-        startedAt = Date.now();
-        Meteor.setTimeout(function() {
-            skipSong();
-        }, duration);
-    }
+        function addToHistory(song, startedAt) {
+            History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
+        }
+
+        function skipSong() {
+            if (currentSong < (songs.length - 1)) {
+                currentSong++;
+            } else currentSong = 0;
+            songTimer();
+            addToHistory(songs[currentSong], startedAt);
+        }
+
+        function songTimer() {
+            startedAt = Date.now();
+            Meteor.setTimeout(function() {
+                skipSong();
+            }, songs[currentSong].duration * 1000);
+        }
+
+        songTimer();
+    });
+
+
 
     ServiceConfiguration.configurations.remove({
         service: "facebook"
@@ -400,14 +424,12 @@ if (Meteor.isServer) {
         secret: "375939d001ef1a0ca67c11dbf8fb9aeaa551e01b"
     });
 
-    songTimer();
-
     Meteor.publish("history", function() {
-        return History.find({type: "edm"})
+        return History.find({})
     });
 
     Meteor.publish("playlists", function() {
-        return Playlists.find({type: "edm"})
+        return Playlists.find({})
     });
 
     Meteor.methods({
@@ -425,14 +447,6 @@ if (Meteor.isServer) {
                 });
             }
             return true;
-        },
-        addToPlaylist: function(songObj){
-          songs.push(songObj);
-          return songs;
-        },
-        setDuration: function(d){
-          duration = d * 1000;
-          console.log(duration);
         }
     });
 }
