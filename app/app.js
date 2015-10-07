@@ -107,10 +107,39 @@ if (Meteor.isClient) {
 
     Template.room.events({
       "click #search-song": function(){
+        $("#song-results").empty()
+        $.ajax({
+          type: "GET",
+          url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=clarity&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
+          applicationType: "application/json",
+          contentType: "json",
+          success: function(data){
+            console.log(data);
+            for(var i in data.items){
+              songsArr.push({title: data.items[i].snippet.title, id: data.items[i].id.videoId});
+              $("#song-results").append("<p>" + data.items[i].snippet.title + "</p>")
+            }
+            console.log(songsArr);
+            // $("#song-results p").click(function(){
+            //   var title = $(this).text();
+            //   for(var i in songsArr){
+            //     if(songsArr[i].title === title){
+            //       console.log(songsArr[i].title)
+            //       var songObj = {
+            //         id: songsArr[i].id,
+            //         title: songsArr[i].title,
+            //         type: "youtube"
+            //       }
+            //       Meteor.call("addToPlaylist", songObj, function(err,res){
+            //         console.log(res);
+            //       })
+            //     }
+            //   }
+            // })
+          }
+        })
         SC.get('/tracks', { q: $("#song-input").val()}, function(tracks) {
           console.log(tracks);
-          songsArr = [];
-          $("#song-results").empty()
           for(var i in tracks){
             $("#song-results").append("<p>" + tracks[i].title + "</p>")
             songsArr.push({title: tracks[i].title, id: tracks[i].id, duration: tracks[i].duration / 1000});
@@ -391,6 +420,7 @@ if (Meteor.isServer) {
         },
         addToPlaylist: function(songObj){
           songs.push(songObj);
+          return songs;
         },
         setDuration: function(d){
           duration = d * 1000;
