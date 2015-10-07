@@ -10,6 +10,7 @@ if (Meteor.isClient) {
 
     var hpSound = undefined;
     var songsArr = [];
+    var ytArr = [];
     var _sound = undefined;
     Template.register.events({
         "submit form": function(e){
@@ -111,32 +112,32 @@ if (Meteor.isClient) {
         $("#song-results").empty()
         $.ajax({
           type: "GET",
-          url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=clarity&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
+          url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" +  $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
           applicationType: "application/json",
           contentType: "json",
           success: function(data){
             console.log(data);
             for(var i in data.items){
-              songsArr.push({title: data.items[i].snippet.title, id: data.items[i].id.videoId});
               $("#song-results").append("<p>" + data.items[i].snippet.title + "</p>")
+              ytArr.push({title: data.items[i].snippet.title, id: data.items[i].id.videoId});
             }
-            console.log(songsArr);
-            // $("#song-results p").click(function(){
-            //   var title = $(this).text();
-            //   for(var i in songsArr){
-            //     if(songsArr[i].title === title){
-            //       console.log(songsArr[i].title)
-            //       var songObj = {
-            //         id: songsArr[i].id,
-            //         title: songsArr[i].title,
-            //         type: "youtube"
-            //       }
-            //       Meteor.call("addToPlaylist", songObj, function(err,res){
-            //         console.log(res);
-            //       })
-            //     }
-            //   }
-            // })
+            console.log(ytArr);
+            $("#song-results p").click(function(){
+              var title = $(this).text();
+              for(var i in ytArr){
+                if(ytArr[i].title === title){
+                  console.log(ytArr[i].title)
+                  var songObj = {
+                    id: ytArr[i].id,
+                    title: ytArr[i].title,
+                    type: "youtube"
+                  }
+                  Meteor.call("addToPlaylist", songObj, function(err,res){
+                    console.log(res);
+                  })
+                }
+              }
+            })
           }
         })
         SC.get('/tracks', { q: $("#song-input").val()}, function(tracks) {
