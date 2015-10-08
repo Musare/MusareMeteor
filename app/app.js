@@ -135,9 +135,6 @@ if (Meteor.isClient) {
                     title: ytArr[i].title,
                     type: "youtube"
                   }
-                  /*Meteor.call("addToPlaylist", songObj, function(err,res){
-                    console.log(res);
-                  })*/
                 }
               }
             })
@@ -164,15 +161,6 @@ if (Meteor.isClient) {
               }
             }
             console.log(id);
-            /*Meteor.call("addToPlaylist", songObj, function(err,res){
-              return true;
-            });*/
-            // if (_sound !== undefined)_sound.stop();
-            // SC.stream("/tracks/" + id, function(sound){
-            //   _sound = sound;
-            //   sound._player._volume = 0.3;
-            //   sound.play()
-            // });
           })
         });
       }
@@ -377,22 +365,21 @@ if (Meteor.isServer) {
     Meteor.users.deny({remove: function () { return true; }});
 
     function getSongDuration(query){
-      var duration;
-      search = query;
-      query = query.toLowerCase().split(" ").join("%20");
+        var duration;
+        var search = query;
+        query = query.toLowerCase().split(" ").join("%20");
 
-      var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
+        var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
 
-      for(var i in res.data){
-         for(var j in res.data[i].items){
-           if(search.indexOf(res.data[i].items[j].name) !== -1){
-             duration = res.data[i].items[j].duration_ms / 1000;
-           }
-         }
-       }
+        for(var i in res.data){
+            for(var j in res.data[i].items){
+                if(search.indexOf(res.data[i].items[j].name) !== -1){
+                    duration = res.data[i].items[j].duration_ms / 1000;
+                }
+            }
+        }
 
-       console.log(duration);
-       return duration;
+        return duration;
     }
 
     var room_types = ["edm", "nightcore"];
