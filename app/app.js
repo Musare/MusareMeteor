@@ -135,9 +135,6 @@ if (Meteor.isClient) {
                     title: ytArr[i].title,
                     type: "youtube"
                   }
-                  /*Meteor.call("addToPlaylist", songObj, function(err,res){
-                    console.log(res);
-                  })*/
                 }
               }
             })
@@ -164,15 +161,6 @@ if (Meteor.isClient) {
               }
             }
             console.log(id);
-            /*Meteor.call("addToPlaylist", songObj, function(err,res){
-              return true;
-            });*/
-            // if (_sound !== undefined)_sound.stop();
-            // SC.stream("/tracks/" + id, function(sound){
-            //   _sound = sound;
-            //   sound._player._volume = 0.3;
-            //   sound.play()
-            // });
           })
         });
       }
@@ -411,6 +399,7 @@ if (Meteor.isServer) {
 
     var room_types = ["edm", "nightcore"];
     var songsArr = [];
+
 
     room_types.forEach(function(type) {
         if (Playlists.find({type: type}).fetch().length === 0) {
