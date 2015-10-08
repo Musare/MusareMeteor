@@ -377,20 +377,21 @@ if (Meteor.isServer) {
     Meteor.users.deny({remove: function () { return true; }});
 
     function getSongDuration(query){
-      search = query;
-      query = query.toLowerCase().split(" ").join("%20");
+        var duration;
+        var search = query;
+        query = query.toLowerCase().split(" ").join("%20");
 
-      Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track', function(err, res) {
+        var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
+
         for(var i in res.data){
-           for(var j in res.data[i].items){
-             if(search.indexOf(res.data[i].items[j].name) !== -1){
-               var duration = res.data[i].items[j].duration_ms / 1000;
-               console.log(res.data[i].items[j].name + ": " + duration)
-               return duration;
-             }
-           }
-         }
-      });
+            for(var j in res.data[i].items){
+                if(search.indexOf(res.data[i].items[j].name) !== -1){
+                    duration = res.data[i].items[j].duration_ms / 1000;
+                }
+            }
+        }
+
+        return duration;
     }
 
     var room_types = ["edm", "nightcore"];
