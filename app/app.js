@@ -89,7 +89,7 @@ if (Meteor.isClient) {
 
         "click .button-tunein": function(){
             SC.stream("/tracks/172055891/", function(sound){
-                sound._player._volume = 0.3;
+             sound._player._volume = 0.3;
                 sound.play();
             });
         },
@@ -224,6 +224,9 @@ if (Meteor.isClient) {
         }
 
         function getSongInfo(query, type){
+          var search = query;
+          var titles = [];
+          var artists = [];
           query = query.toLowerCase().split(" ").join("%20");
           $.ajax({
             type: "GET",
@@ -231,29 +234,41 @@ if (Meteor.isClient) {
             applicationType: "application/json",
             contentType: "json",
             success: function(data){
+              console.log(data);
               for(var i in data){
-                  Session.set("title", data[i].items[0].name);
-                  if(type === "youtube"){
-                    Session.set("duration", data[i].items[0].duration_ms / 1000)
-                  }
-                  temp = "";
-                  if(data[i].items[0].artists.length >= 2){
-                    for(var j in data[i].items[0].artists){
-                       temp = temp + data[i].items[0].artists[j].name + ", ";
+                  for(var j in data[i].items){
+                    if(search.indexOf(data[i].items[j].name) !== -1){
+                      console.log(data[i].items[j].name);
+                      titles.push(data[i].items[j].name);
+                      var info = data[i].items[j];
+                      Session.set("title", titles[0]);
+                      console.log("Info: " + info);
+                      if(type === "youtube"){
+                        Session.set("duration", data[i].items[j].duration_ms / 1000)
+                      }
+                      temp = "";
+                      if(data[i].items[j].artists.length >= 2){
+                        for(var k in data[i].items[j].artists){
+                           temp = temp + data[i].items[j].artists[k].name + ", ";
+                        }
+                      } else{
+                        for(var k in data[i].items[j].artists){
+                           temp = temp + data[i].items[j].artists[k].name;
+                        }
+                      }
+                      if(temp[temp.length-2] === ","){
+                        artistStr = temp.substr(0,temp.length-2);
+                      } else{
+                        artistStr = temp;
+                      }
+                      Session.set("artist", artistStr);
+                      $("#albumart").remove();
+                      $(".room-title").before("<img id='albumart' src='" + data[i].items[j].album.images[1].url + "' />")
+                      return true;
                     }
-                  } else{
-                    for(var j in data[i].items[0].artists){
-                       temp = temp + data[i].items[0].artists[j].name;
-                    }
                   }
-                  if(temp[temp.length-2] === ","){
-                    artistStr = temp.substr(0,temp.length-2);
-                  } else{
-                    artistStr = temp;
-                  }
-                  Session.set("artist", artistStr);
-                  $("#albumart").remove();
-                  $(".room-title").before("<img id='albumart' src='" + data[i].items[0].album.images[1].url + "' />")
+                  //---------------------------------------------------------------//
+
               }
             }
           })
@@ -361,14 +376,31 @@ if (Meteor.isServer) {
     Meteor.users.deny({insert: function () { return true; }});
     Meteor.users.deny({remove: function () { return true; }});
 
+    function getSongDuration(query){
+      search = query;
+      query = query.toLowerCase().split(" ").join("%20");
+
+      Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track', function(err, res) {
+        for(var i in res.data){
+           for(var j in res.data[i].items){
+             if(search.indexOf(res.data[i].items[j].name) !== -1){
+               var duration = res.data[i].items[j].duration_ms / 1000;
+               console.log(res.data[i].items[j].name + ": " + duration)
+               return duration;
+             }
+           }
+         }
+      });
+    }
+
     var room_types = ["edm", "nightcore"];
 
     room_types.forEach(function(type) {
         if (Playlists.find({type: type}).fetch().length === 0) {
             if (type === "edm") {
-                Playlists.insert({type: type, songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: 226, type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: 300, type: "youtube"}]});
+                Playlists.insert({type: type, songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), type: "youtube"}]});
             } else if (type === "nightcore") {
-                Playlists.insert({type: type, songs: [{"id": "7vQRbHY9CAU", "title": "Meg & Dia - Monster (DotEXE Remix)", "duration": 183, "type": "youtube"}]});
+                Playlists.insert({type: type, songs: [{id: "7vQRbHY9CAU", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)") , type: "youtube"}]});
             }
         }
         if (History.find({type: type}).fetch().length === 0) {
