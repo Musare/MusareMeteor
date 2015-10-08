@@ -363,6 +363,21 @@ if (Meteor.isClient) {
         }, 50);
 
     });
+
+    Template.admin.events({
+        "submit form": function(e){
+            e.preventDefault();
+            var genre = e.target.genre.value;
+            var type = e.target.type.value;
+            var id = e.target.id.value;
+            var title = e.target.title.value;
+            var artist = e.target.artist.value;
+            var songData = {type: type, id: id, title: title, artist: artist};
+            Meteor.call("addPlaylistSong", genre, songData, function(err, res) {
+                console.log(err, res);
+            });
+        }
+    });
 }
 
 if (Meteor.isServer) {
@@ -395,6 +410,7 @@ if (Meteor.isServer) {
     }
 
     var room_types = ["edm", "nightcore"];
+    var songsArr = [];
 
     room_types.forEach(function(type) {
         if (Playlists.find({type: type}).fetch().length === 0) {
@@ -418,6 +434,7 @@ if (Meteor.isServer) {
         }
 
         function skipSong() {
+            songs = Playlists.find({type: type}).fetch()[0].songs;
             if (currentSong < (songs.length - 1)) {
                 currentSong++;
             } else currentSong = 0;
@@ -480,12 +497,30 @@ if (Meteor.isServer) {
                 });
             }
             return true;
+        },
+        addPlaylistSong: function(type, songData) {
+            type = type.toLowerCase();
+            if (room_types.indexOf(type) !== -1) {
+                if (songData !== undefined && Object.keys(songData).length === 4 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined) {
+                    songData.duration = getSongDuration(songData.title);
+                    Playlists.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, type: songData.type}}});
+                    return true;
+                } else {
+                    throw new Meteor.error(403, "Invalid data.");
+                }
+            } else {
+                throw new Meteor.error(403, "Invalid genre.");
+            }
         }
     });
 }
 
 Router.route("/", {
     template: "home"
+});
+
+Router.route("/admin", {
+    template: "admin"
 });
 
 Router.route("/:type", {
