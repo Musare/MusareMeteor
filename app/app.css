@@ -463,3 +463,15 @@ footer a:hover{
     margin-right: 35px;
     overflow: hidden;
 }
+
+#spinner {
+  font-size: 200px;
+  color: bisque;
+}
+
+#spinner-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+  margin-top: 10%;
+}
