@@ -223,7 +223,6 @@ if (Meteor.isClient) {
         function getSongInfo(query, type){
           var search = query;
           var titles = [];
-          var artists = [];
           query = query.toLowerCase().split(" ").join("%20");
           $.ajax({
             type: "GET",
@@ -236,12 +235,12 @@ if (Meteor.isClient) {
                   for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1){
                       console.log(data[i].items[j].name);
-                      titles.push(data[i].items[j].name);
                       var info = data[i].items[j];
-                      Session.set("title", titles[0]);
+                      Session.set("title", data[i].items[j].name);
                       console.log("Info: " + info);
                       if(type === "youtube"){
                         Session.set("duration", data[i].items[j].duration_ms / 1000)
+                        console.log(Session.get("duration"));
                       }
                       temp = "";
                       if(data[i].items[j].artists.length >= 2){
@@ -400,12 +399,12 @@ if (Meteor.isServer) {
             for(var j in res.data[i].items){
                 if(search.indexOf(res.data[i].items[j].name) !== -1){
                     duration = res.data[i].items[j].duration_ms / 1000;
+                    console.log(duration);
+                    return duration;
                 }
             }
         }
-
-        return duration;
-    }
+      }
 
     //var room_types = ["edm", "nightcore"];
     var songsArr = [];
@@ -416,7 +415,7 @@ if (Meteor.isServer) {
             if (type === "edm") {
                 Playlists.insert({type: type, songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), type: "youtube"}]});
             } else if (type === "nightcore") {
-                Playlists.insert({type: type, songs: [{id: "7vQRbHY9CAU", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)") , type: "youtube"}]});
+                Playlists.insert({type: type, songs: [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)") , type: "youtube"}]});
             }
         }
         if (History.find({type: type}).fetch().length === 0) {

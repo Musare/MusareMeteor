@@ -1,5 +1,6 @@
 <template name="playlist">
-    <h4>Default Playlist</h4>
+  <div class="pl-container">
+    <h4>Playlist</h4>
     <ul id="playlist">
         {{#each playlist_songs}}
         <li class="playlist-song">
@@ -7,4 +8,5 @@
         </li>
         {{/each}}
     </ul>
+  </div>
 </template>

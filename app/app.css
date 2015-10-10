@@ -463,6 +463,15 @@ footer a:hover{
     margin-right: 35px;
     overflow: hidden;
 }
+.pl-container{
+  color: white;
+  font-size: 1.5em;
+  margin-left: 35px;
+}
+.pl-container h4{
+  text-decoration: underline;
+}
+
 
 #spinner {
   font-size: 200px;
