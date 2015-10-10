@@ -115,7 +115,7 @@ form input:hover {
 }
 form input:focus {
   /*opacity: 0.4;*/
-  width: 354px !important;
+  width: 354px;
   color: white;
 }
 
@@ -474,4 +474,18 @@ footer a:hover{
   margin-right: auto;
   width: 200px;
   margin-top: 10%;
+}
+
+#croom_container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 304px !important;
+}
+
+#croom_label {
+  color: white;
+}
+
+#croom {
+  width: 304px !important;
 }

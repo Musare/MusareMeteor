@@ -108,6 +108,11 @@ if (Meteor.isClient) {
                 })
             });
             $("#stop").show();
+        },
+        "click #croom_create": function(){
+            Meteor.call("createRoom", $("#croom").val(), function(err, res) {
+                console.log(err, res);
+            });
         }
     });
 
