@@ -1,6 +1,7 @@
 <template name="room">
     <div class="landing">
         <h1 class="room-name">{{{type}}}</h1>
+      {{#if loaded}}
         <h2 class="room-title">{{{title}}}</h2>
         <h2 class="room-artist">{{{artist}}}</h2>
         <div id="seeker-container">
@@ -14,20 +15,9 @@
 
         <div width="960" height="540" id="player">
         </div>
-        <h1 class="room-name">{{{type}}}</h1>
-        <h2 class="room-title">{{{title}}}</h2>
-        <h2 class="room-artist">{{{artist}}}</h2>
-        <div id="seeker-container">
-            <div id="seeker-bar"></div>
-        </div>
-        {{> playlist}}
-        <input type="text" id="song-input">
-        <button type="button" id="search-song" class="button">Search</button>
-        <div id="song-results"></div>
-        <!--src="http://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1&controls=0&autohide=1">-->
-
-        <div width="960" height="540" id="player">
-        </div>
+      {else}
+        {{> loading}}
+      {{/if}}
         <ul class="bg-bubbles">
             <li></li>
             <li></li>
