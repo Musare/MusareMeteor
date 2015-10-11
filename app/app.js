@@ -111,7 +111,11 @@ if (Meteor.isClient) {
         },
         "click #croom_create": function() {
             Meteor.call("createRoom", $("#croom").val(), function (err, res) {
-                console.log(err, res);
+                if (err) {
+                    alert("Error " + err.error + ": " + err.reason);
+                } else {
+                    window.location = "/" + $("#croom").val();
+                }
             });
         }
     });
@@ -427,49 +431,63 @@ if (Meteor.isServer) {
     //var room_types = ["edm", "nightcore"];
     var songsArr = [];
 
+    function getSongsByType(type) {
+        if (type === "edm") {
+            return [
+                {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), albumart: getSongAlbumArt("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"},
+                {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), albumart: getSongAlbumArt("Crystallize"), type: "youtube"}
+            ];
+        } else if (type === "nightcore") {
+            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)"), albumart: getSongAlbumArt("Monster (DotEXE Remix)"), type: "youtube"}];
+        } else {
+            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up"), albumart: getSongAlbumArt("Never Gonna Give You Up"), type: "youtube"}];
+        }
+    }
 
     Rooms.find({}).fetch().forEach(function(room) {
         var type = room.type;
-        if (Playlists.find({type: type}).fetch().length === 0) {
+        if (Playlists.find({type: type}).count() === 0) {
             if (type === "edm") {
-                Playlists.insert({type: type, songs: [
-                  {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), albumart: getSongAlbumArt("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"},
-                  {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), albumart: getSongAlbumArt("Crystallize"), type: "youtube"}
-                ]});
+                Playlists.insert({type: type, songs: getSongsByType(type)});
             } else if (type === "nightcore") {
-                Playlists.insert({type: type, songs: [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)"), albumart: getSongAlbumArt("Monster (DotEXE Remix)"), type: "youtube"}]});
+                Playlists.insert({type: type, songs: getSongsByType(type)});
+            } else {
+                Playlists.insert({type: type, songs: getSongsByType(type)});
             }
         }
-        if (History.find({type: type}).fetch().length === 0) {
+        if (History.find({type: type}).count() === 0) {
             History.insert({type: type, history: []});
         }
-
-        var startedAt = Date.now();
-        var songs = Playlists.find({type: type}).fetch()[0].songs;
-        var currentSong = 0;
-        addToHistory(songs[currentSong], startedAt);
-
-        function addToHistory(song, startedAt) {
-            History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
-        }
-
-        function skipSong() {
-            songs = Playlists.find({type: type}).fetch()[0].songs;
-            if (currentSong < (songs.length - 1)) {
-                currentSong++;
-            } else currentSong = 0;
-            songTimer();
+        if (Playlists.find({type: type}).fetch()[0].songs.length === 0) {
+            // Add a global video to Playlist so it can proceed
+        } else {
+            var startedAt = Date.now();
+            var songs = Playlists.find({type: type}).fetch()[0].songs;
+            var currentSong = 0;
             addToHistory(songs[currentSong], startedAt);
-        }
 
-        function songTimer() {
-            startedAt = Date.now();
-            Meteor.setTimeout(function() {
-                skipSong();
-            }, songs[currentSong].duration * 1000);
-        }
+            function addToHistory(song, startedAt) {
+                History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
+            }
 
-        songTimer();
+            function skipSong() {
+                songs = Playlists.find({type: type}).fetch()[0].songs;
+                if (currentSong < (songs.length - 1)) {
+                    currentSong++;
+                } else currentSong = 0;
+                songTimer();
+                addToHistory(songs[currentSong], startedAt);
+            }
+
+            function songTimer() {
+                startedAt = Date.now();
+                Meteor.setTimeout(function() {
+                    skipSong();
+                }, songs[currentSong].duration * 1000);
+            }
+
+            songTimer();
+        }
     });
 
 
@@ -534,6 +552,81 @@ if (Meteor.isServer) {
                 }
             } else {
                 throw new Meteor.error(403, "Invalid genre.");
+            }
+        },
+        createRoom: function(type) {
+            if (Rooms.find({type: type}).count() === 0) {
+                Rooms.insert({type: type}, function(err) {
+                    if (err) {
+                        throw err;
+                    } else {
+                        if (Playlists.find({type: type}).count() === 1) {
+                            if (History.find({type: type}).count() === 0) {
+                                History.insert({type: type, history: []}, function(err3) {
+                                    if (err3) {
+                                        throw err3;
+                                    } else {
+                                        startStation();
+                                        return true;
+                                    }
+                                });
+                            } else {
+                                startStation();
+                                return true;
+                            }
+                        } else {
+                            Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
+                                if (err2) {
+                                    throw err2;
+                                } else {
+                                    if (History.find({type: type}).count() === 0) {
+                                        History.insert({type: type, history: []}, function(err3) {
+                                            if (err3) {
+                                                throw err3;
+                                            } else {
+                                                startStation();
+                                                return true;
+                                            }
+                                        });
+                                    } else {
+                                        startStation();
+                                        return true;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                throw "Room already exists";
+            }
+            function startStation() {
+                var startedAt = Date.now();
+                var songs = Playlists.find({type: type}).fetch()[0].songs;
+                var currentSong = 0;
+                addToHistory(songs[currentSong], startedAt);
+
+                function addToHistory(song, startedAt) {
+                    History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
+                }
+
+                function skipSong() {
+                    songs = Playlists.find({type: type}).fetch()[0].songs;
+                    if (currentSong < (songs.length - 1)) {
+                        currentSong++;
+                    } else currentSong = 0;
+                    songTimer();
+                    addToHistory(songs[currentSong], startedAt);
+                }
+
+                function songTimer() {
+                    startedAt = Date.now();
+                    Meteor.setTimeout(function() {
+                        skipSong();
+                    }, songs[currentSong].duration * 1000);
+                }
+
+                songTimer();
             }
         }
     });
