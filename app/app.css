@@ -452,11 +452,10 @@ footer a:hover{
 .footerButtons:hover {
   background-color: #f5f7f9;
 }
-#albumart{
-  width: 170px;
+.current{
+  width: 210px;
   margin-left: 35px;
 }
-
 #seeker-container {
     width: calc(100% - 70px);
     margin-left: 35px;

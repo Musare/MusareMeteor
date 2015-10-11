@@ -211,7 +211,7 @@ if (Meteor.isClient) {
             return 0;
         }
 
-        function getSongInfo(query, type){
+        function getSongInfo(query, platform){
           var search = query;
           var titles = [];
           query = query.toLowerCase().split(" ").join("%20");
@@ -229,7 +229,7 @@ if (Meteor.isClient) {
                       var info = data[i].items[j];
                       Session.set("title", data[i].items[j].name);
                       console.log("Info: " + info);
-                      if(type === "youtube"){
+                      if(platform === "youtube"){
                         Session.set("duration", data[i].items[j].duration_ms / 1000)
                         console.log(Session.get("duration"));
                       }
@@ -249,8 +249,8 @@ if (Meteor.isClient) {
                         artistStr = temp;
                       }
                       Session.set("artist", artistStr);
-                      $("#albumart").remove();
-                      $(".room-title").before("<img id='albumart' src='" + data[i].items[j].album.images[1].url + "' />")
+                      $(".current").remove();
+                      $(".room-title").before("<img class='current' src='" + data[i].items[j].album.images[1].url + "' />");
                       return true;
                     }
                   }
@@ -394,7 +394,24 @@ if (Meteor.isServer) {
                 }
             }
         }
-      }
+    }
+
+    function getSongAlbumArt(query){
+        var albumart;
+        var search = query;
+        query = query.toLowerCase().split(" ").join("%20");
+
+        var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
+
+        for(var i in res.data){
+            for(var j in res.data[i].items){
+                if(search.indexOf(res.data[i].items[j].name) !== -1){
+                    albumart = res.data[i].items[j].album.images[1].url
+                    return albumart;
+                }
+            }
+        }
+    }
 
     var room_types = ["edm", "nightcore"];
     var songsArr = [];
@@ -403,9 +420,12 @@ if (Meteor.isServer) {
     room_types.forEach(function(type) {
         if (Playlists.find({type: type}).fetch().length === 0) {
             if (type === "edm") {
-                Playlists.insert({type: type, songs: [{id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"}, {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), type: "youtube"}]});
+                Playlists.insert({type: type, songs: [
+                  {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), albumart: getSongAlbumArt("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"},
+                  {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), albumart: getSongAlbumArt("Crystallize"), type: "youtube"}
+                ]});
             } else if (type === "nightcore") {
-                Playlists.insert({type: type, songs: [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)") , type: "youtube"}]});
+                Playlists.insert({type: type, songs: [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)"), albumart: getSongAlbumArt("Monster (DotEXE Remix)"), type: "youtube"}]});
             }
         }
         if (History.find({type: type}).fetch().length === 0) {
