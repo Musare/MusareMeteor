@@ -1,6 +1,5 @@
 History = new Mongo.Collection("history");
 Playlists = new Mongo.Collection("playlists");
-Rooms = new Mongo.Collection("rooms");
 
 if (Meteor.isClient) {
     Meteor.startup(function() {
@@ -108,11 +107,6 @@ if (Meteor.isClient) {
                 })
             });
             $("#stop").show();
-        },
-        "click #croom_create": function(){
-            Meteor.call("createRoom", $("#croom").val(), function(err, res) {
-                console.log(err, res);
-            });
         }
     });
 
@@ -183,9 +177,6 @@ if (Meteor.isClient) {
         },
         artist: function(){
           return Session.get("artist");
-        },
-        loaded: function() {
-            return Session.get("loaded");
         }
     });
 
@@ -333,32 +324,31 @@ if (Meteor.isClient) {
 
         Meteor.subscribe("history");
         Meteor.subscribe("playlists");
-        Meteor.subscribe("rooms", function() {
-            Session.set("loaded", false);
-            if (Rooms.find({type: type}).fetch().length === 1) {
-                window.location = "/";
-            } else {
-                Session.set("loaded", true);
-                Meteor.setInterval(function() {
-                    var data = undefined;
-                    var dataCursor = History.find({type: type});
-                    dataCursor.map(function(doc) {
-                        if (data === undefined) {
-                            data = doc;
-                        }
-                    });
-                    if (data !== undefined && data.history.length > size) {
-                        currentSong = data.history[data.history.length-1];
-                        size = data.history.length;
-                        startSong();
-                    }
-                }, 1000);
 
-                Meteor.setInterval(function() {
-                    resizeSeekerbar();
-                }, 50);
+        var room_types = ["edm", "nightcore"];
+        if (room_types.indexOf(type) === -1) {
+            window.location = "/";
+        }
+
+        Meteor.setInterval(function() {
+            var data = undefined;
+            var dataCursor = History.find({type: type});
+            dataCursor.map(function(doc) {
+                if (data === undefined) {
+                    data = doc;
+                }
+            });
+            if (data !== undefined && data.history.length > size) {
+                currentSong = data.history[data.history.length-1];
+                size = data.history.length;
+                startSong();
             }
-        });
+        }, 1000);
+
+        Meteor.setInterval(function() {
+            resizeSeekerbar();
+        }, 50);
+
     });
 
     Template.admin.events({
@@ -423,11 +413,11 @@ if (Meteor.isServer) {
         }
     }
 
-    //var room_types = ["edm", "nightcore"];
+    var room_types = ["edm", "nightcore"];
     var songsArr = [];
 
-    Rooms.find({}).fetch().forEach(function(room) {
-        var type = room.type;
+
+    room_types.forEach(function(type) {
         if (Playlists.find({type: type}).fetch().length === 0) {
             if (type === "edm") {
                 Playlists.insert({type: type, songs: [
@@ -452,7 +442,6 @@ if (Meteor.isServer) {
         }
 
         function skipSong() {
-            songs = Playlists.find({type: type}).fetch()[0].songs;
             if (currentSong < (songs.length - 1)) {
                 currentSong++;
             } else currentSong = 0;
@@ -469,6 +458,8 @@ if (Meteor.isServer) {
 
         songTimer();
     });
+
+
 
     ServiceConfiguration.configurations.remove({
         service: "facebook"
@@ -498,10 +489,6 @@ if (Meteor.isServer) {
         return Playlists.find({})
     });
 
-    Meteor.publish("rooms", function() {
-        return Rooms.find()
-    });
-
     Meteor.methods({
         createUserMethod: function(formData, captchaData) {
             var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
@@ -520,7 +507,7 @@ if (Meteor.isServer) {
         },
         addPlaylistSong: function(type, songData) {
             type = type.toLowerCase();
-            if (Rooms.find({type: type}).fetch().length === 1) {
+            if (room_types.indexOf(type) !== -1) {
                 if (songData !== undefined && Object.keys(songData).length === 4 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined) {
                     songData.duration = getSongDuration(songData.title);
                     Playlists.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, type: songData.type}}});
