@@ -193,6 +193,12 @@ if (Meteor.isClient) {
         }
     });
 
+    Template.admin.helpers({
+        rooms: function() {
+            return Rooms.find({});
+        }
+    });
+
     Template.playlist.helpers({
         playlist_songs: function() {
             var data = Playlists.find({type: type}).fetch();
@@ -203,6 +209,8 @@ if (Meteor.isClient) {
             }
         }
     });
+
+    Meteor.subscribe("rooms");
 
     Template.room.onCreated(function () {
         var tag = document.createElement("script");
@@ -337,6 +345,7 @@ if (Meteor.isClient) {
 
         Meteor.subscribe("history");
         Meteor.subscribe("playlists");
+        Session.set("loaded", true);
         Meteor.subscribe("rooms", function() {
             Session.set("loaded", false);
             console.log(Rooms.find({type: type}).fetch().length);
