@@ -212,6 +212,7 @@ if (Meteor.isClient) {
         var size = 0;
         var artistStr;
         var temp = "";
+        var currentArt;
 
         function getTimeElapsed() {
             if (currentSong !== undefined) {
@@ -354,7 +355,6 @@ if (Meteor.isClient) {
                         startSong();
                     }
                 }, 1000);
-
                 Meteor.setInterval(function () {
                     resizeSeekerbar();
                 }, 50);
