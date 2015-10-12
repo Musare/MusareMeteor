@@ -88,27 +88,6 @@ if (Meteor.isClient) {
             }
         },
 
-        "click .button-tunein": function(){
-            SC.stream("/tracks/172055891/", function(sound){
-             sound._player._volume = 0.3;
-                sound.play();
-            });
-        },
-
-        "click #play": function(){
-            $("#play").hide();
-            SC.stream("/tracks/172055891/", function(sound){
-                hpSound = sound;
-                sound._player._volume = 0.3;
-                sound.play();
-                $("#stop").on("click", function(){
-                    $("#stop").hide();
-                    $("#play").show();
-                    sound._player.pause();
-                })
-            });
-            $("#stop").show();
-        },
         "click #croom_create": function() {
             Meteor.call("createRoom", $("#croom").val(), function (err, res) {
                 if (err) {
@@ -150,29 +129,32 @@ if (Meteor.isClient) {
             })
           }
         })
-        SC.get('/tracks', { q: $("#song-input").val()}, function(tracks) {
-          console.log(tracks);
-          for(var i in tracks){
-            $("#song-results").append("<p>" + tracks[i].title + "</p>")
-            songsArr.push({title: tracks[i].title, id: tracks[i].id, duration: tracks[i].duration / 1000});
-          }
-          $("#song-results p").click(function(){
-            var title = $(this).text();
-            for(var i in songsArr){
-              if(songsArr[i].title === title){
-                var id = songsArr[i].id;
-                var duration = songsArr[i].duration;
-                var songObj = {
-                  title: songsArr[i].title,
-                  id: id,
-                  duration: duration,
-                  type: "soundcloud"
-                }
-              }
-            }
-            console.log(id);
-          })
-        });
+        // SC.get('/tracks', { q: $("#song-input").val()}, function(tracks) {
+        //   console.log(tracks);
+        //   for(var i in tracks){
+        //     $("#song-results").append("<p>" + tracks[i].title + "</p>")
+        //     songsArr.push({title: tracks[i].title, id: tracks[i].id, duration: tracks[i].duration / 1000});
+        //   }
+        //   $("#song-results p").click(function(){
+        //     var title = $(this).text();
+        //     for(var i in songsArr){
+        //       if(songsArr[i].title === title){
+        //         var id = songsArr[i].id;
+        //         var duration = songsArr[i].duration;
+        //         var songObj = {
+        //           title: songsArr[i].title,
+        //           id: id,
+        //           duration: duration,
+        //           type: "soundcloud"
+        //         }
+        //       }
+        //     }
+        //     console.log(id);
+        //   })
+        // });
+      },
+      "click #add-songs": function(){
+        $("#add-songs-modal").show();
       }
     });
 

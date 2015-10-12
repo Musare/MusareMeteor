@@ -423,7 +423,6 @@ footer a:hover{
   color: white;
   margin-top: 1em;
   font-size: 1.5em;
-  width: 500px;
   text-align: center;
 }
 #song-results p{
@@ -474,7 +473,6 @@ footer a:hover{
   font-size: 200px;
   color: bisque;
 }
-
 #spinner-container {
   margin-left: auto;
   margin-right: auto;
@@ -492,15 +490,20 @@ footer a:hover{
 #croom {
   width: 304px !important;
 }
-
 #spinner {
   font-size: 200px;
   color: bisque;
 }
-
 #spinner-container {
   margin-left: auto;
   margin-right: auto;
   width: 200px;
   margin-top: 10%;
+}
+#song-modal{
+  margin: 10px 0 10px 35px;
+}
+.modal-content{
+  background-color: rgb(107, 197, 164);
+  color: white;
 }

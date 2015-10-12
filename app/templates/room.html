@@ -7,10 +7,30 @@
             <div id="seeker-container">
                 <div id="seeker-bar"></div>
             </div>
+            <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
             {{> playlist}}
-            <input type="text" id="song-input">
-            <button type="button" id="search-song" class="button">Search</button>
-            <div id="song-results"></div>
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Search for a song</h4>
+                  </div>
+                  <div class="modal-body">
+                    <input type="text" id="song-input">
+                    <button type="button" id="search-song" class="button">Search</button>
+                    <div id="song-results"></div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
             <!--src="http://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1&controls=0&autohide=1">-->
 
             <div width="960" height="540" id="player">
