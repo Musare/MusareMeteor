@@ -4,8 +4,10 @@
         <form>
             <label for="genre">Song Genre</label>
             <select name="genre" id="genre">
-                <option name="edm" id="edm">EDM</option>
-                <option name="nightcore" id="nightcore">Nightcore</option>
+                {{#each rooms}}
+                    <option name="{{type}}" id="{{type}}">{{type}}</option>
+                {{/each}}
+                <!--option name="nightcore" id="nightcore">Nightcore</option-->
             </select>
             <label for="type">Song Type</label>
             <select name="type" id="type">
