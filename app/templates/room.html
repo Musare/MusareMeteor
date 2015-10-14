@@ -20,9 +20,22 @@
                     <h4 class="modal-title">Search for a song</h4>
                   </div>
                   <div class="modal-body">
-                    <input type="text" id="song-input">
-                    <button type="button" id="search-song" class="button">Search</button>
-                    <div id="song-results"></div>
+                      <label for="type" class="song-input-label">Song Type</label>
+                      <select name="type" id="type" class="song-input-select">
+                          <option name="youtube" id="youtube">YouTube</option>
+                          <option name="soundcloud" id="soundcloud">SoundCloud</option>
+                      </select>
+                      <label for="id" class="song-input-label">Song ID</label>
+                      <input class="song-input" name="id" id="id" type="text" />
+                      <label for="id" class="song-input-label">Song Artist</label>
+                      <input class="song-input" name="artist" id="artist" type="text" />
+                      <label for="title" class="song-input-label">Song Title</label>
+                      <input class="song-input" name="title" id="title" type="text" />
+                      <hr />
+                      <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->
+                      <input type="text" id="song-input" class="song-input">
+                      <button type="button" id="search-song" class="button">Search</button>
+                      <div id="song-results"></div>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

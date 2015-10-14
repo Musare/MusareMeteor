@@ -395,7 +395,7 @@ footer a:hover{
   height: 900px;
   text-align: center;
 }
-#song-input{
+.song-input{
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
@@ -414,6 +414,48 @@ footer a:hover{
           transition-duration: 0.25s;
   font-weight: 300;
 }
+.song-input-select{
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 304px;
+  border-radius: 3px;
+  padding: 10px 15px;
+  margin: 1em auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  -webkit-transition-duration: 0.25s;
+          transition-duration: 0.25s;
+  font-weight: 300;
+}
+
+.song-input:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.song-input:focus {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.song-input-select:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.song-input-select > option {
+  color: black;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.song-input:focus {
+  width: 354px;
+  color: white;
+}
+
 #search-song{
   display: block;
   margin: 0 auto;
@@ -506,4 +548,9 @@ footer a:hover{
 .modal-content{
   background-color: rgb(107, 197, 164);
   color: white;
+}
+
+.song-input-label {
+  width: 100%;
+  text-align: center;
 }
