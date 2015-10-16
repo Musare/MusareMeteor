@@ -484,7 +484,8 @@ footer a:hover{
     }
 }
 #player {
-    visibility: hidden;
+  visibility: hidden;
+  height: 0;
 }
 .footerButtons {
   background:none!important;
