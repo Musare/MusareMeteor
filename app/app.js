@@ -663,6 +663,14 @@ Router.route("/", {
     template: "home"
 });
 
+Router.route("/terms", {
+    template: "terms"
+});
+
+Router.route("/privacy", {
+    template: "privacy"
+});
+
 Router.route("/admin", {
     template: "admin"
 });
