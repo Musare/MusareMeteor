@@ -3,14 +3,11 @@
          <i class="fa fa-power-off logout" tooltip="Logout"></i>
         <div class="row">
           {{#each rooms}}
-            <a href="/{{type}}">
-              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                  <div class="station">
-                      <h3>{{type}}</h3>
-                      <h5>Song</h5>
-                  </div>
-              </div>
-            </a>
+            <div class="station">
+                <h3>{{type}}</h3>
+                <h5>Song</h5>
+                <a href="/{{type}}" class="station_link"></a>
+            </div>
           {{/each}}
         </div>
         <div class="col-md-4"></div>
@@ -20,7 +17,7 @@
                 <div class="input-group">
                     <input type="text" id="croom" name="croom" required />
                 </div>
-                <button class="btn btn-warning" id="croom_create">Create</button>
+                <button class="btn btn-warning btn-block" id="croom_create">Create</button>
             </div>
         </div>
         <div class="col-md-4"></div>
