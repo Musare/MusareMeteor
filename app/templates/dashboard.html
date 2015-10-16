@@ -2,30 +2,16 @@
     <div class="landing">
          <i class="fa fa-power-off logout" tooltip="Logout"></i>
         <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="station">
-                    <h3>Name</h3>
-                    <h5>Song</h5>
-                </div>
-            </div>
+          {{#each rooms}}
+            <a href="/{{type}}">
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                  <div class="station">
+                      <h3>{{type}}</h3>
+                      <h5>Song</h5>
+                  </div>
+              </div>
+            </a>
+          {{/each}}
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-4">

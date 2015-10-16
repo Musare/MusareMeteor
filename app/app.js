@@ -99,6 +99,12 @@ if (Meteor.isClient) {
         }
     });
 
+    Template.dashboard.helpers({
+      rooms: function() {
+        return Rooms.find({});
+      }
+    })
+
     Template.room.events({
       "click #search-song": function(){
         $("#song-results").empty()
@@ -171,7 +177,7 @@ if (Meteor.isClient) {
           return Session.get("artist");
         },
         loaded: function() {
-            return Session.get("loaded");
+          return Session.get("loaded");
         }
     });
 
