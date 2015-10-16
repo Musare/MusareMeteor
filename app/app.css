@@ -59,7 +59,7 @@ ul {
   height: 100%; /*400px*/
   /*margin-top: -200px;*/
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .container {
   max-width: 600px;
@@ -167,8 +167,10 @@ form button:hover {
   top: 0;
   left: 0;
   width: 100%;
-  height: 0px;
+  height: 100%;
+  position: absolute;
   z-index: 1;
+  margin: 0px;
 }
 .bg-bubbles li {
   position: absolute;
@@ -178,7 +180,7 @@ form button:hover {
   height: 40px;
   border-radius: 100px;
   background-color: rgba(255, 255, 255, 0.15);
-  bottom: -160px;
+  bottom: 0px;
   -webkit-animation: square 25s infinite;
   animation: square 25s infinite;
   -webkit-transition-timing-function: linear;
