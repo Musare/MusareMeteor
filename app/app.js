@@ -334,9 +334,11 @@ if (Meteor.isClient) {
 
         Meteor.subscribe("history");
         Meteor.subscribe("playlists");
-        Session.set("loaded", true);
+        Session.set("loaded", false);
         Meteor.subscribe("rooms", function() {
-            Session.set("loaded", false);
+            var parts = location.href.split('/');
+            var id = parts.pop();
+            var type = id.toLowerCase();
             console.log(Rooms.find({type: type}).fetch().length);
             if (Rooms.find({type: type}).count() !== 1) {
                 window.location = "/";
