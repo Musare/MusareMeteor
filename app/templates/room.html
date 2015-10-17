@@ -2,8 +2,23 @@
     <div class="landing">
         {{#if loaded}}
             <h1 class="room-name">{{{type}}}</h1>
-            <h2 class="room-title">{{{title}}}</h2>
-            <h2 class="room-artist">{{{artist}}}</h2>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-xs-12" id="s1">
+                    <img class="song-img" id="song-img"/>
+                    <h2 class="room-title">{{{title}}}</h2>
+                    <h2 class="room-artist">{{{artist}}}</h2>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12" id="s2">
+                    <img class="song-img" id="song-img-next"/>
+                    <h2 class="room-title">{{{title_next}}}</h2>
+                    <h2 class="room-artist">{{{artist_next}}}</h2>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12" id="s3">
+                    <img class="song-img" id="song-img-after"/>
+                    <h2 class="room-title">{{{title_after}}}</h2>
+                    <h2 class="room-artist">{{{artist_after}}}</h2>
+                </div>
+            </div>
             <div id="seeker-container">
                 <div id="seeker-bar"></div>
             </div>
@@ -33,6 +48,7 @@
                       <input class="song-input" name="artist" id="artist" type="text" />
                       <label for="title" class="song-input-label">Song Title</label>
                       <input class="song-input" name="title" id="title" type="text" />
+                      <button type="button" id="add-song-button" class="button">Add Song</button>
                       <hr />
                       <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->
                       <input type="text" id="song-input" class="song-input">

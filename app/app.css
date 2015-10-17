@@ -521,7 +521,7 @@ footer a:hover{
 .footerButtons:hover {
   background-color: #f5f7f9;
 }
-.current{
+.song-img {
   width: 210px;
   margin-left: 35px;
 }
@@ -597,4 +597,24 @@ footer a:hover{
 }
 #playlist {
 
+}
+#s2 {
+  opacity: 0.66666666666666;
+}
+#s3 {
+  opacity: 0.33333333333333;
+}
+@media (max-width: 992px) {
+  /* some think */
+  #s3 {
+    visibility: hidden;
+    height: 0;
+  }
+}
+@media (max-width: 768px) {
+  /* some think */
+  #s2 {
+    visibility: hidden;
+    height: 0;
+  }
 }
