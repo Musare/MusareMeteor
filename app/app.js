@@ -483,7 +483,7 @@ if (Meteor.isClient) {
                                 if (index + 2 < songs.length) {
                                     console.log("OOO 1");
                                     afterSong = songs[index + 2];
-                                } else if (songs.length === index + 1) {
+                                } else if (songs.length === index + 1 && songs.length > 1 ) {
                                     afterSong = songs[1];
                                 } else {
                                     afterSong = songs[0];
