@@ -317,6 +317,24 @@ footer a{
 footer a:hover{
   color: white;
 }
+.button-nowidth {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #53e3a6;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+.button-nowidth:hover {
+  background-color: #f5f7f9;
+}
 .button {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -514,12 +532,15 @@ footer a:hover{
     overflow: hidden;
 }
 .pl-container{
-  color: white;
-  font-size: 1.5em;
-  margin-left: 35px;
+  color: #53e3a6;
+  background-color: white;
+  border-radius: 3px;
+  font-size: 18px;
 }
 .pl-container h4{
-  text-decoration: underline;
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 10px;
 }
 #spinner {
   font-size: 200px;
@@ -554,7 +575,8 @@ footer a:hover{
   margin-top: 10%;
 }
 #song-modal{
-  margin: 10px 0 10px 35px;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
 .modal-content{
   background-color: rgb(107, 197, 164);
@@ -572,4 +594,7 @@ footer a:hover{
   top:0;
   left: 0;
   border-radius: 100%;
+}
+#playlist {
+
 }

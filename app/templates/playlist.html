@@ -1,12 +1,14 @@
 <template name="playlist">
-  <div class="pl-container">
-    <h4>Playlist</h4>
-    <ul id="playlist">
-        {{#each playlist_songs}}
-        <li class="playlist-song">
-            {{title}} - {{artist}}
-        </li>
-        {{/each}}
-    </ul>
-  </div>
+    <div class="row">
+        <div class="pl-container col-md-4 col-sm-4 col-xs-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4">
+            <h4>Playlist</h4>
+            <ul id="playlist">
+                {{#each playlist_songs}}
+                <li class="playlist-song">
+                    {{title}} - {{artist}}
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
 </template>
