@@ -2,13 +2,15 @@
     <div class="landing">
          <i class="fa fa-power-off logout" tooltip="Logout"></i>
         <div class="row">
-          {{#each rooms}}
-            <div class="station">
-                <h3>{{type}}</h3>
-                <h5>Song</h5>
-                <a href="/{{type}}" class="station_link"></a>
-            </div>
-          {{/each}}
+           {{#each rooms}}
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                  <div class="station">
+                      <h3>{{type}}</h3>
+                      <h5>Song</h5>
+                      <a href="/{{type}}" class="station_link"></a>
+                  </div>
+              </div>
+           {{/each}}
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-4">
