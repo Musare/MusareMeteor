@@ -617,7 +617,14 @@ if (Meteor.isServer) {
         }
     });
 
-
+    Accounts.onCreateUser(function(options, user) {
+        console.log(options, user);
+        if (options.profile) {
+            user.profile = options.profile;
+            user.profile.rank = "default";
+        }
+        return user;
+    });
 
     ServiceConfiguration.configurations.remove({
         service: "facebook"
