@@ -524,12 +524,14 @@ footer a:hover{
 .song-img {
   width: 210px;
   margin-left: 35px;
+  margin-bottom: 10px;
+  float: left;
 }
 #seeker-container {
-    width: calc(100% - 70px);
-    margin-left: 35px;
-    margin-right: 35px;
-    overflow: hidden;
+  width: calc(100% - 70px);
+  margin-left: 20px;
+  margin-right: 35px;
+  overflow: hidden;
 }
 .pl-container{
   color: #53e3a6;
@@ -603,6 +605,13 @@ footer a:hover{
 }
 #s3 {
   opacity: 0.33333333333333;
+}
+.song-item{
+  float: left;
+}
+#add-song-button{
+  display: block;
+  margin: 0 auto;
 }
 @media (max-width: 992px) {
   /* some think */

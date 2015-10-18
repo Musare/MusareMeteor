@@ -169,6 +169,8 @@ if (Meteor.isClient) {
                     }
                     console.log(ytArr);
                     $("#song-results p").click(function(){
+                        $("#search-info").hide();
+                        $("#add-info").show();
                         var title = $(this).text();
                         for(var i in ytArr){
                             if(ytArr[i].title === title){
@@ -230,6 +232,10 @@ if (Meteor.isClient) {
         },
         "click #add-songs": function(){
           $("#add-songs-modal").show();
+        },
+        "click #close-modal": function(){
+          $("#search-info").show();
+          $("#add-info").hide();
         }
     });
 
