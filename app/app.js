@@ -779,8 +779,12 @@ Router.route("/privacy", {
     template: "privacy"
 });
 
-Router.route("/admin", {
-    template: "admin"
+Router.route("/admin", function() {
+    if (Meteor.user() !== undefined && Meteor.user().profile !== undefined && Meteor.user().profile.rank === "admin") {
+        this.render("admin");
+    } else {
+        this.redirect("/");
+    }
 });
 
 Router.route("/:type", {
