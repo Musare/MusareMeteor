@@ -524,8 +524,6 @@ footer a:hover{
 .song-img {
   width: 210px;
   margin-left: 35px;
-  margin-bottom: 10px;
-  float: left;
 }
 #seeker-container {
   width: calc(100% - 70px);
@@ -605,9 +603,6 @@ footer a:hover{
 }
 #s3 {
   opacity: 0.33333333333333;
-}
-.song-item{
-  float: left;
 }
 #add-song-button{
   display: block;
