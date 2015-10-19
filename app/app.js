@@ -61,6 +61,7 @@ if (Meteor.isClient) {
 
                 if (err) {
                     console.log(err);
+                    $(".container").after('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>')
                 } else {
                     Meteor.loginWithPassword(username, password);
                 }

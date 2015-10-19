@@ -608,6 +608,9 @@ footer a:hover{
   display: block;
   margin: 0 auto;
 }
+.alert{
+  text-align: center;
+}
 @media (max-width: 992px) {
   /* some think */
   #s3 {
