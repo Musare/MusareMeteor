@@ -625,3 +625,6 @@ footer a:hover{
     height: 0;
   }
 }
+.column-small {
+  width: 1px;
+}

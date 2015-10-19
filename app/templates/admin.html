@@ -1,27 +1,42 @@
 <template name="admin">
-    <div class="landing">
-
-        <form>
-            <label for="genre">Song Genre</label>
-            <select name="genre" id="genre">
-                {{#each rooms}}
-                    <option name="{{type}}" id="{{type}}">{{type}}</option>
-                {{/each}}
-                <!--option name="nightcore" id="nightcore">Nightcore</option-->
-            </select>
-            <label for="type">Song Type</label>
-            <select name="type" id="type">
-                <option name="youtube" id="youtube">YouTube</option>
-                <option name="soundcloud" id="soundcloud">SoundCloud</option>
-            </select>
-            <label for="id">Song ID</label>
-            <input name="id" id="id" type="text" />
-            <label for="id">Song Artist</label>
-            <input name="artist" id="artist" type="text" />
-            <label for="title">Song Title</label>
-            <input name="title" id="title" type="text" />
-            <button type="submit">Submit</button>
-        </form>
+    <div class="landing row">
+        {{#each queues}}
+            <div class="col-md-8 col-md-offset-2 ">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{type}} review queue</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Artist(s)</th>
+                                    <th>Type</th>
+                                    <th>Id</th>
+                                    <th>Preview</th>
+                                    <th>Add</th>
+                                    <th colspan="10">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each songs}}
+                                    <tr>
+                                        <th scope="row">{{title}}</th>
+                                        <td>{{artist}}</td>
+                                        <td>{{type}}</td>
+                                        <td>{{id}}</td>
+                                        <td class="column-small"><button class="btn btn-primary">Preview</button></td>
+                                        <td class="column-small"><button class="btn btn-success"><i class="fa fa-check-circle"></i></button></td>
+                                        <td class="column-small"><button class="btn btn-danger"><i class="fa fa-ban"></i></button></td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
 
         <ul class="bg-bubbles">
             <li></li>

@@ -1,6 +1,7 @@
 History = new Mongo.Collection("history");
 Playlists = new Mongo.Collection("playlists");
 Rooms = new Mongo.Collection("rooms");
+Queues = new Mongo.Collection("queues");
 
 if (Meteor.isClient) {
     Meteor.startup(function() {
@@ -8,6 +9,8 @@ if (Meteor.isClient) {
             publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
         });
     });
+
+    Meteor.subscribe("queues");
 
     var hpSound = undefined;
     var songsArr = [];
@@ -151,7 +154,7 @@ if (Meteor.isClient) {
             var artist = $("#artist").val();
             var songData = {type: type, id: id, title: title, artist: artist};
             console.log(songData);
-            Meteor.call("addPlaylistSong", genre, songData, function(err, res) {
+            Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
             });
         },
@@ -270,8 +273,8 @@ if (Meteor.isClient) {
     });
 
     Template.admin.helpers({
-        rooms: function() {
-            return Rooms.find({});
+        queues: function() {
+            return Queues.find({});
         }
     });
 
@@ -562,13 +565,13 @@ if (Meteor.isServer) {
     function getSongsByType(type) {
         if (type === "edm") {
             return [
-                {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), albumart: getSongAlbumArt("Radioactive - Lindsey Stirling and Pentatonix"), type: "youtube"},
+                {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), albumart: getSongAlbumArt("Radioactive - Lindsey Stirling and Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "youtube"},
                 {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Linsdey Stirling", duration: getSongDuration("Crystallize"), albumart: getSongAlbumArt("Crystallize"), type: "youtube"}
             ];
         } else if (type === "nightcore") {
-            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)"), albumart: getSongAlbumArt("Monster (DotEXE Remix)"), type: "youtube"}];
+            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)"), albumart: getSongAlbumArt("Monster (DotEXE Remix)"), artist: "Meg & Dia", type: "youtube"}];
         } else {
-            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up"), albumart: getSongAlbumArt("Never Gonna Give You Up"), type: "youtube"}];
+            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up"), albumart: getSongAlbumArt("Never Gonna Give You Up"), artist: "Rick Astley", type: "youtube"}];
         }
     }
 
@@ -656,7 +659,15 @@ if (Meteor.isServer) {
     });
 
     Meteor.publish("rooms", function() {
-        return Rooms.find()
+        return Rooms.find({});
+    });
+
+    Meteor.publish("queues", function() {
+        return Queues.find({});
+    });
+
+    Meteor.publish("isAdmin", function() {
+        return Meteor.users.find({_id: this.userId, "profile.rank": "admin"});
     });
 
     Meteor.methods({
@@ -675,13 +686,16 @@ if (Meteor.isServer) {
             }
             return true;
         },
-        addPlaylistSong: function(type, songData) {
+        addSongToQueue: function(type, songData) {
             type = type.toLowerCase();
             if (Rooms.find({type: type}).count() === 1) {
                 console.log(songData);
+                if (Queues.find({type: type}).count() === 0) {
+                    Queues.insert({type: type, songs: []});
+                }
                 if (songData !== undefined && Object.keys(songData).length === 4 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined) {
                     songData.duration = getSongDuration(songData.title);
-                    Playlists.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, type: songData.type}}});
+                    Queues.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, type: songData.type}}});
                     return true;
                 } else {
                     throw new Meteor.error(403, "Invalid data.");
@@ -768,6 +782,19 @@ if (Meteor.isServer) {
     });
 }
 
+/*Router.waitOn(function() {
+    Meteor.subscribe("isAdmin", Meteor.userId());
+});*/
+
+/*Router.onBeforeAction(function() {
+    /*Meteor.autorun(function () {
+        if (admin.ready()) {
+            this.next();
+        }
+    });*/
+    /*this.next();
+});*/
+
 Router.route("/", {
     template: "home"
 });
@@ -780,11 +807,17 @@ Router.route("/privacy", {
     template: "privacy"
 });
 
-Router.route("/admin", function() {
-    if (Meteor.user() !== undefined && Meteor.user().profile !== undefined && Meteor.user().profile.rank === "admin") {
-        this.render("admin");
-    } else {
-        this.redirect("/");
+Router.route("/admin", {
+    waitOn: function() {
+        return Meteor.subscribe("isAdmin", Meteor.userId());
+    },
+    action: function() {
+        var user = Meteor.users.find({}).fetch();
+        if (user[0] !== undefined && user[0].profile !== undefined && user[0].profile.rank === "admin") {
+            this.render("admin");
+        } else {
+            this.redirect("/");
+        }
     }
 });
 
