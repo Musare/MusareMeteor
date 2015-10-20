@@ -278,6 +278,78 @@ if (Meteor.isClient) {
         }
     });
 
+    var yt_player = undefined;
+
+    Template.admin.events({
+        "click .preview-button": function(e){
+            Session.set("song", this);
+        },
+        "click #add-song-button": function(e){
+            var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+            Meteor.call("addSongToPlaylist", genre, this);
+        },
+        "click #deny-song-button": function(e){
+            var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+            Meteor.call("removeSongFromQueue", genre, this.id);
+        },
+        "click #play": function() {
+            $("#play").attr("disabled", true);
+            $("#stop").attr("disabled", false);
+            var song = Session.get("song");
+            var id = song.id;
+            var type = song.type;
+
+            console.log(this);
+            console.log(id, type);
+            if (type === "YouTube") {
+                if (yt_player === undefined) {
+                    console.log("STUFF!");
+                    yt_player = new YT.Player("previewPlayer", {
+                        height: 540,
+                        width: 568,
+                        videoId: id,
+                        playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3},
+                        events: {
+                            'onReady': function(event) {
+                                console.log("WOOH! Does it work?");
+                                event.target.playVideo();
+                            }
+                        }
+                    });
+                } else {
+                    console.log("YEEE");
+                    yt_player.loadVideoById(id);
+                }
+                $("#previewPlayer").show();
+            }
+        },
+        "click #stop": function() {
+            $("#play").attr("disabled", false);
+            $("#stop").attr("disabled", true);
+            yt_player.stopVideo();
+        }
+    });
+
+    Template.admin.onCreated(function() {
+        var tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    });
+
+    Template.admin.onRendered(function() {
+        $("#previewModal").on("hidden.bs.modal", function() {
+            if (yt_player !== undefined) {
+                $("#play").attr("disabled", false);
+                $("#stop").attr("disabled", true);
+                $("#previewPlayer").hide();
+                yt_player.loadVideoById("", 0);
+                yt_player.seekTo(0);
+                yt_player.stopVideo();
+            }
+        });
+    });
+
     Template.playlist.helpers({
         playlist_songs: function() {
             var data = Playlists.find({type: type}).fetch();
@@ -696,6 +768,28 @@ if (Meteor.isServer) {
                 if (songData !== undefined && Object.keys(songData).length === 4 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined) {
                     songData.duration = getSongDuration(songData.title);
                     Queues.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, type: songData.type}}});
+                    return true;
+                } else {
+                    throw new Meteor.error(403, "Invalid data.");
+                }
+            } else {
+                throw new Meteor.error(403, "Invalid genre.");
+            }
+        },
+        removeSongFromQueue: function(type, songId) {
+            type = type.toLowerCase();
+            Queues.update({type: type}, {$pull: {songs: {id: songId}}});
+        },
+        addSongToPlaylist: function(type, songData) {
+            type = type.toLowerCase();
+            if (Rooms.find({type: type}).count() === 1) {
+                console.log(songData);
+                if (Playlists.find({type: type}).count() === 0) {
+                    Playlists.insert({type: type, songs: []});
+                }
+                if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined) {
+                    Playlists.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, type: songData.type}}});
+                    Queues.update({type: type}, {$pull: {songs: {id: songData.id}}});
                     return true;
                 } else {
                     throw new Meteor.error(403, "Invalid data.");
