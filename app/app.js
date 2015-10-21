@@ -386,7 +386,7 @@ if (Meteor.isClient) {
             return 0;
         }
 
-        function getSongInfo(query, platform){
+        function getSongInfo(query, artistName, platform){
             var search = query;
             var titles = [];
 
@@ -394,7 +394,7 @@ if (Meteor.isClient) {
                 console.log(data);
                 for(var i in data){
                     for(var j in data[i].items){
-                        if(search.indexOf(data[i].items[j].name) !== -1){
+                        if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
                             console.log(data[i].items[j].name);
                             var info = data[i].items[j];
                             Session.set("title", data[i].items[j].name);
@@ -415,7 +415,7 @@ if (Meteor.isClient) {
             });
         }
 
-        function getNextSongInfo(query, platform){
+        function getNextSongInfo(query, artistName, platform){
             var search = query;
             var titles = [];
 
@@ -423,7 +423,7 @@ if (Meteor.isClient) {
                 console.log(data);
                 for(var i in data){
                     for(var j in data[i].items){
-                        if(search.indexOf(data[i].items[j].name) !== -1){
+                        if(search.indexOf(data[i].items[j].name) !== -1  && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
                             console.log(data[i].items[j].name);
                             var info = data[i].items[j];
                             Session.set("title_next", data[i].items[j].name);
@@ -439,7 +439,7 @@ if (Meteor.isClient) {
             });
         }
 
-        function getAfterSongInfo(query, platform){
+        function getAfterSongInfo(query, artistName, platform){
             var search = query;
             var titles = [];
 
@@ -447,7 +447,7 @@ if (Meteor.isClient) {
                 console.log(data);
                 for(var i in data){
                     for(var j in data[i].items){
-                        if(search.indexOf(data[i].items[j].name) !== -1){
+                        if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
                             console.log(data[i].items[j].name);
                             var info = data[i].items[j];
                             Session.set("title_after", data[i].items[j].name);
@@ -518,7 +518,7 @@ if (Meteor.isClient) {
 
                     // Session.set("title", currentSong.song.title || "Title");
                     // Session.set("artist", currentSong.song.artist || "Artist");
-                    getSongInfo(currentSong.song.title, "youtube");
+                    getSongInfo(currentSong.song.title, currentSong.song.artist, "youtube");
                     //Session.set("duration", currentSong.song.duration);
                 }
             }
@@ -561,7 +561,7 @@ if (Meteor.isClient) {
                                     nextSong = songs[0];
                                 }
                                 console.log(nextSong, 5555);
-                                getNextSongInfo(nextSong.title, nextSong.type);
+                                getNextSongInfo(nextSong.title, nextSong.artist, nextSong.type);
                                 if (index + 2 < songs.length) {
                                     console.log("OOO 1");
                                     afterSong = songs[index + 2];
@@ -570,7 +570,7 @@ if (Meteor.isClient) {
                                 } else {
                                     afterSong = songs[0];
                                 }
-                                getAfterSongInfo(afterSong.title, afterSong.type);
+                                getAfterSongInfo(afterSong.title, afterSong.artist, afterSong.type);
                             }
                         });
                         size = data.history.length;
