@@ -57,6 +57,35 @@ if (Meteor.isClient) {
         return artist;
     }
 
+    curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
+
+    Handlebars.registerHelper('active', function(path) {
+        return curPath() == path ? 'active' : '';
+    });
+
+    Template.header.helpers({
+        currentUser: function() {
+            return Meteor.user();
+        },
+        isAdmin: function() {
+            if (Meteor.user() && Meteor.user().profile) {
+                return Meteor.user().profile.rank === "admin";
+            } else {
+                return false;
+            }
+        }
+    });
+
+    Template.header.events({
+        "click .logout": function(e){
+            e.preventDefault();
+            Meteor.logout();
+            if (hpSound !== undefined) {
+                hpSound.stop();
+            }
+        }
+    });
+
     Template.register.events({
         "submit form": function(e){
             e.preventDefault();
@@ -122,14 +151,6 @@ if (Meteor.isClient) {
     });
 
     Template.dashboard.events({
-        "click .logout": function(e){
-            e.preventDefault();
-            Meteor.logout();
-            if (hpSound !== undefined) {
-                hpSound.stop();
-            }
-        },
-
         "click #croom_create": function() {
             Meteor.call("createRoom", $("#croom").val(), function (err, res) {
                 if (err) {
@@ -651,8 +672,6 @@ if (Meteor.isServer) {
                 playlist = Playlists.find({type: type}).fetch()[0];
                 songs = playlist.songs;
             }
-            console.log(playlist.lastSong, type);
-            console.log(playlist.lastSong, type);
             var currentSong = playlist.lastSong;
             addToHistory(songs[currentSong], startedAt);
 
