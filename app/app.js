@@ -644,8 +644,16 @@ if (Meteor.isServer) {
             // Add a global video to Playlist so it can proceed
         } else {
             var startedAt = Date.now();
-            var songs = Playlists.find({type: type}).fetch()[0].songs;
-            var currentSong = 0;
+            var playlist = Playlists.find({type: type}).fetch()[0];
+            var songs = playlist.songs;
+            if (playlist.lastSong === undefined) {
+                Playlists.update({type: type}, {$set: {lastSong: 0}});
+                playlist = Playlists.find({type: type}).fetch()[0];
+                songs = playlist.songs;
+            }
+            console.log(playlist.lastSong, type);
+            console.log(playlist.lastSong, type);
+            var currentSong = playlist.lastSong;
             addToHistory(songs[currentSong], startedAt);
 
             function addToHistory(song, startedAt) {
@@ -657,6 +665,7 @@ if (Meteor.isServer) {
                 if (currentSong < (songs.length - 1)) {
                     currentSong++;
                 } else currentSong = 0;
+                Playlists.update({type: type}, {$set: {lastSong: currentSong}});
                 songTimer();
                 addToHistory(songs[currentSong], startedAt);
             }
