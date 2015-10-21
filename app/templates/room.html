@@ -38,23 +38,28 @@
                   </div>
                   <div class="modal-body">
                     <div id="search-info">
-                      <input type="text" id="song-input" class="song-input">
-                      <button type="button" id="search-song" class="button">Search</button>
-                      <div id="song-results"></div>
+                        <select name="type" id="search_type" class="song-input-select">
+                            <option name="youtube" id="search_youtube">YouTube</option>
+                            <option name="soundcloud" id="search_soundcloud">SoundCloud</option>
+                        </select>
+                        <input type="text" id="song-input" class="song-input">
+                        <button type="button" id="search-song" class="button">Search</button>
+                        <div id="song-results"></div>
                     </div>
                     <div id="add-info" style="display:none">
-                      <label for="type" class="song-input-label">Song Type</label>
-                      <select name="type" id="type" class="song-input-select">
-                          <option name="youtube" id="youtube">YouTube</option>
-                          <option name="soundcloud" id="soundcloud">SoundCloud</option>
-                      </select>
-                      <label for="id" class="song-input-label">Song ID</label>
-                      <input class="song-input" name="id" id="id" type="text" />
-                      <label for="id" class="song-input-label">Song Artist</label>
-                      <input class="song-input" name="artist" id="artist" type="text" />
-                      <label for="title" class="song-input-label">Song Title</label>
-                      <input class="song-input" name="title" id="title" type="text" />
-                      <button type="button" id="add-song-button" class="button">Add Song</button>
+                        <button type="button" id="return" class="button">Return</button>
+                        <label for="type" class="song-input-label">Song Type</label>
+                        <select name="type" id="type" class="song-input-select">
+                            <option name="youtube" id="youtube">YouTube</option>
+                            <option name="soundcloud" id="soundcloud">SoundCloud</option>
+                        </select>
+                        <label for="id" class="song-input-label">Song ID</label>
+                        <input class="song-input" name="id" id="id" type="text" />
+                        <label for="id" class="song-input-label">Song Artist</label>
+                        <input class="song-input" name="artist" id="artist" type="text" />
+                        <label for="title" class="song-input-label">Song Title</label>
+                        <input class="song-input" name="title" id="title" type="text" />
+                        <button type="button" id="add-song-button" class="button">Add Song</button>
                     </div>
                       <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->
                   </div>
