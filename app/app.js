@@ -2,6 +2,7 @@ History = new Mongo.Collection("history");
 Playlists = new Mongo.Collection("playlists");
 Rooms = new Mongo.Collection("rooms");
 Queues = new Mongo.Collection("queues");
+Chat = new Mongo.Collection("chat");
 
 function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -261,6 +262,10 @@ if (Meteor.isClient) {
         "click #close-modal": function(){
           $("#search-info").show();
           $("#add-info").hide();
+        },
+        "click #submit-message": function(){
+            var message = $("#chat-input").val();
+            Meteor.call("sendMessage", type, message);
         }
     });
 
@@ -290,6 +295,14 @@ if (Meteor.isClient) {
         },
         loaded: function() {
           return Session.get("loaded");
+        },
+        chat: function() {
+            var chatArr = Chat.find({type: type}).fetch();
+            if (chatArr.length === 0) {
+                return [];
+            } else {
+                return chatArr[0].messages;
+            }
         }
     });
 
@@ -330,7 +343,6 @@ if (Meteor.isClient) {
                         playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3},
                         events: {
                             'onReady': function(event) {
-                                console.log("WOOH! Does it work?");
                                 event.target.playVideo();
                             }
                         }
@@ -396,6 +408,7 @@ if (Meteor.isClient) {
     });
 
     Meteor.subscribe("rooms");
+    Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
         var tag = document.createElement("script");
@@ -703,6 +716,10 @@ if (Meteor.isServer) {
         return Queues.find({});
     });
 
+    Meteor.publish("chat", function() {
+        return Chat.find({});
+    });
+
     Meteor.publish("isAdmin", function() {
         return Meteor.users.find({_id: this.userId, "profile.rank": "admin"});
     });
@@ -722,6 +739,12 @@ if (Meteor.isServer) {
                 });
             }
             return true;
+        },
+        sendMessage: function(type, message) {
+            if (Chat.find({type: type}).count() === 0) {
+                Chat.insert({type: type, messages: []});
+            }
+            Chat.update({type: type}, {$push: {messages: {message: message, userid: "Kris"}}})
         },
         addSongToQueue: function(type, songData) {
             type = type.toLowerCase();
