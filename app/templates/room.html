@@ -3,25 +3,29 @@
     <div class="landing">
         {{#if loaded}}
             <h1 class="room-name">{{{type}}}</h1>
-            <div class="row">
+            <div class="row" id="songs">
                 <div class="col-md-3 col-sm-6 col-xs-12" id="s1">
                     <img class="song-img" id="song-img"/>
                     <h2 class="room-title">{{{title}}}</h2>
                     <h2 class="room-artist">{{{artist}}}</h2>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-12" id="s2">
+                <div class="col-md-3 col-sm-6" id="s2">
                     <img class="song-img" id="song-img-next"/>
                     <h2 class="room-title">{{{title_next}}}</h2>
                     <h2 class="room-artist">{{{artist_next}}}</h2>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-12" id="s3">
+                <div class="col-md-3" id="s3">
                     <img class="song-img" id="song-img-after"/>
                     <h2 class="room-title">{{{title_after}}}</h2>
                     <h2 class="room-artist">{{{artist_after}}}</h2>
                 </div>
+                <div width="960" height="540" id="player" class="hidden col-md-3 col-sm-12 col-xs-12"></div>
             </div>
             <div id="seeker-container">
                 <div id="seeker-bar"></div>
+            </div>
+            <div class="row">
+                <button type="button" id="toggle-video" class="button-nowidth col-md-4 col-sm-4 col-xs-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4" >Show video</button>
             </div>
             <div class="row">
                 <button type="button" id="song-modal" class="button-nowidth col-md-4 col-sm-4 col-xs-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4" data-toggle="modal" data-target="#myModal">Add songs</button>
@@ -88,10 +92,6 @@
                 </div>
 
               </div>
-            </div>
-            <!--src="http://www.youtube.com/embed/XGSy3_Czz8k?autoplay=1&controls=0&autohide=1">-->
-
-            <div width="960" height="540" id="player">
             </div>
         {{else}}
             {{> loading}}

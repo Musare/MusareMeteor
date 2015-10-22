@@ -513,6 +513,10 @@ footer a:hover{
   cursor: pointer;
 }
 #player {
+  margin-left: auto;
+  margin-right: auto;
+}
+.hidden {
   visibility: hidden;
   height: 0;
 }
@@ -678,4 +682,7 @@ footer a:hover{
 }
 .admin-queue-panel:first-child {
   margin-top: 100px;
+}
+#songs {
+  margin-bottom: 20px;
 }

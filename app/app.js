@@ -207,6 +207,19 @@ if (Meteor.isClient) {
                 console.log(err, res);
             });
         },
+        "click #toggle-video": function(e){
+            e.preventDefault();
+            Session.set("videoShown", !Session.get("videoShown"))
+            if (Session.get("videoShown")) {
+                $("#player").removeClass("hidden");
+                $("#toggle-video").text("Hide video");
+                var player = document.getElementById("player");
+                player.style.height = (player.offsetWidth / 16 * 9) + "px";
+            } else {
+                $("#player").addClass("hidden");
+                $("#toggle-video").text("Show video");
+            }
+        },
         "click #return": function(e){
             $("#add-info").hide();
             $("#search-info").show();
@@ -311,6 +324,13 @@ if (Meteor.isClient) {
             var message = $("#chat-input").val();
             Meteor.call("sendMessage", type, message);
         }
+    });
+
+    Template.room.onRendered(function() {
+        $(window).resize(function() {
+            var player = document.getElementById("player");
+            player.style.height = (player.offsetWidth / 16 * 9) + "px";
+        });
     });
 
     Template.room.helpers({
@@ -464,6 +484,7 @@ if (Meteor.isClient) {
     Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
+        Session.set("videoShown", false);
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
