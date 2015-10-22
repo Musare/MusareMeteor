@@ -676,3 +676,6 @@ footer a:hover{
   margin-left: auto;
   text-align: center;
 }
+.admin-queue-panel:first-child {
+  margin-top: 100px;
+}

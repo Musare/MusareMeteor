@@ -185,18 +185,6 @@ if (Meteor.isClient) {
         }
     });
 
-    Template.dashboard.events({
-        "click #croom_create": function() {
-            Meteor.call("createRoom", $("#croom").val(), function (err, res) {
-                if (err) {
-                    alert("Error " + err.error + ": " + err.reason);
-                } else {
-                    window.location = "/" + $("#croom").val();
-                }
-            });
-        }
-    });
-
     Template.dashboard.helpers({
       rooms: function() {
         return Rooms.find({});
@@ -424,6 +412,15 @@ if (Meteor.isClient) {
             if (_sound !== undefined) {
                 _sound.stop();
             }
+        },
+        "click #croom_create": function() {
+            Meteor.call("createRoom", $("#croom").val(), function (err, res) {
+                if (err) {
+                    alert("Error " + err.error + ": " + err.reason);
+                } else {
+                    window.location = "/" + $("#croom").val();
+                }
+            });
         }
     });
 
@@ -860,50 +857,55 @@ if (Meteor.isServer) {
             }
         },
         createRoom: function(type) {
-            if (Rooms.find({type: type}).count() === 0) {
-                Rooms.insert({type: type}, function(err) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        if (Playlists.find({type: type}).count() === 1) {
-                            if (History.find({type: type}).count() === 0) {
-                                History.insert({type: type, history: []}, function(err3) {
-                                    if (err3) {
-                                        throw err3;
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                if (Rooms.find({type: type}).count() === 0) {
+                    Rooms.insert({type: type}, function(err) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            if (Playlists.find({type: type}).count() === 1) {
+                                if (History.find({type: type}).count() === 0) {
+                                    History.insert({type: type, history: []}, function(err3) {
+                                        if (err3) {
+                                            throw err3;
+                                        } else {
+                                            startStation();
+                                            return true;
+                                        }
+                                    });
+                                } else {
+                                    startStation();
+                                    return true;
+                                }
+                            } else {
+                                Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
+                                    if (err2) {
+                                        throw err2;
                                     } else {
-                                        startStation();
-                                        return true;
+                                        if (History.find({type: type}).count() === 0) {
+                                            History.insert({type: type, history: []}, function(err3) {
+                                                if (err3) {
+                                                    throw err3;
+                                                } else {
+                                                    startStation();
+                                                    return true;
+                                                }
+                                            });
+                                        } else {
+                                            startStation();
+                                            return true;
+                                        }
                                     }
                                 });
-                            } else {
-                                startStation();
-                                return true;
                             }
-                        } else {
-                            Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
-                                if (err2) {
-                                    throw err2;
-                                } else {
-                                    if (History.find({type: type}).count() === 0) {
-                                        History.insert({type: type, history: []}, function(err3) {
-                                            if (err3) {
-                                                throw err3;
-                                            } else {
-                                                startStation();
-                                                return true;
-                                            }
-                                        });
-                                    } else {
-                                        startStation();
-                                        return true;
-                                    }
-                                }
-                            });
                         }
-                    }
-                });
+                    });
+                } else {
+                    throw "Room already exists";
+                }
             } else {
-                throw "Room already exists";
+                return false;
             }
             function startStation() {
                 var startedAt = Date.now();
