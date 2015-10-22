@@ -66,20 +66,25 @@ if (Meteor.isClient) {
         },
         "rank": function() {
             return Session.get("rank");
+        },
+        loaded: function() {
+            return Session.get("loaded");
         }
     });
 
     Template.profile.onCreated(function() {
         var parts = location.href.split('/');
         var username = parts.pop();
+        Session.set("loaded", false);
         Meteor.subscribe("userProfiles", function() {
-            if (Meteor.users.find({"profile.username": username}).count() === 0) {
-                // Return to homepage
+            if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() === 0) {
+                window.location = "/";
             } else {
-                var data = Meteor.users.find({"profile.username": username}).fetch()[0];
-                Session.set("username", username);
+                var data = Meteor.users.find({"profile.usernameL": username.toLowerCase()}).fetch()[0];
+                Session.set("username", data.profile.username);
                 Session.set("first_joined", data.createdAt);
                 Session.set("rank", data.profile.rank);
+                Session.set("loaded", true);
             }
         });
     });
@@ -741,7 +746,7 @@ if (Meteor.isServer) {
                 username = user.username;
             }
         }
-        user.profile = {username: username, rank: "default"};
+        user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default"};
         return user;
     });
 
