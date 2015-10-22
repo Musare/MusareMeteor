@@ -562,6 +562,7 @@ if (Meteor.isClient) {
                                 }
                                 console.log(nextSong, 5555);
                                 getNextSongInfo(nextSong.title, nextSong.artist, nextSong.type);
+                                console.log("nextSongArtist: " + nextSong.artist);
                                 if (index + 2 < songs.length) {
                                     console.log("OOO 1");
                                     afterSong = songs[index + 2];
@@ -571,6 +572,7 @@ if (Meteor.isClient) {
                                     afterSong = songs[0];
                                 }
                                 getAfterSongInfo(afterSong.title, afterSong.artist, afterSong.type);
+                                console.log("afterSongArtist: " + afterSong.artist);
                             }
                         });
                         size = data.history.length;
