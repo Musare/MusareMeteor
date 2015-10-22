@@ -57,11 +57,39 @@ if (Meteor.isClient) {
         return artist;
     }
 
+    Template.profile.helpers({
+        "username": function() {
+            return Session.get("username");
+        },
+        "first_joined": function() {
+            return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
+        },
+        "rank": function() {
+            return Session.get("rank");
+        }
+    });
+
+    Template.profile.onCreated(function() {
+        var parts = location.href.split('/');
+        var username = parts.pop();
+        Meteor.subscribe("userProfiles", function() {
+            if (Meteor.users.find({"profile.username": username}).count() === 0) {
+                // Return to homepage
+            } else {
+                var data = Meteor.users.find({"profile.username": username}).fetch()[0];
+                Session.set("username", username);
+                Session.set("first_joined", data.createdAt);
+                Session.set("rank", data.profile.rank);
+            }
+        });
+    });
+
     curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
 
     Handlebars.registerHelper('active', function(path) {
         return curPath() == path ? 'active' : '';
     });
+
 
     Template.header.helpers({
         currentUser: function() {
@@ -757,6 +785,11 @@ if (Meteor.isServer) {
         return Chat.find({});
     });
 
+    Meteor.publish("userProfiles", function() {
+        //console.log(Meteor.users.find({}, {profile: 1, createdAt: 1, services: 0, username: 0, emails: 0})).fetch();
+        return Meteor.users.find({}, {fields: {profile: 1, createdAt: 1}});
+    });
+
     Meteor.publish("isAdmin", function() {
         return Meteor.users.find({_id: this.userId, "profile.rank": "admin"});
     });
@@ -940,4 +973,8 @@ Router.route("/admin", {
 
 Router.route("/:type", {
     template: "room"
+});
+
+Router.route("/u/:user", {
+    template: "profile"
 });

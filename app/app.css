@@ -665,3 +665,14 @@ footer a:hover{
 #header {
   margin-bottom: 0px;
 }
+.user-stat {
+  font-size: 20px;
+  color: #53e3a6;
+}
+#profile-name {
+  font-size: 60px;
+  color: #FFFFFF;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+}
