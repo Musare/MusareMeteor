@@ -96,10 +96,12 @@ if (Meteor.isClient) {
             Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
                 grecaptcha.reset();
 
+                console.log(username, password, err, res);
                 if (err) {
                     console.log(err);
                     $(".container").after('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>')
                 } else {
+                    console.log();
                     Meteor.loginWithPassword(username, password);
                 }
             });
@@ -701,10 +703,17 @@ if (Meteor.isServer) {
     });
 
     Accounts.onCreateUser(function(options, user) {
-        if (options.profile) {
-            user.profile = options.profile;
-            user.profile.rank = "default";
+        var username;
+        if (user.services) {
+            if (user.services.github) {
+                username = user.services.github.username;
+            } else if (user.services.facebook) {
+                //username = user.services.facebook.username;
+            } else if (user.services.password) {
+                username = user.username;
+            }
         }
+        user.profile = {username: username, rank: "default"};
         return user;
     });
 
