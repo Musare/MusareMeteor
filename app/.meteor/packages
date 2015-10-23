@@ -28,3 +28,4 @@ meteorhacks:async
 altapp:recaptcha
 http
 zimme:iron-router-active
+momentjs:moment

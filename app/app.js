@@ -53,11 +53,44 @@ if (Meteor.isClient) {
         return artist;
     }
 
+    Template.profile.helpers({
+        "username": function() {
+            return Session.get("username");
+        },
+        "first_joined": function() {
+            return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
+        },
+        "rank": function() {
+            return Session.get("rank");
+        },
+        loaded: function() {
+            return Session.get("loaded");
+        }
+    });
+
+    Template.profile.onCreated(function() {
+        var parts = location.href.split('/');
+        var username = parts.pop();
+        Session.set("loaded", false);
+        Meteor.subscribe("userProfiles", function() {
+            if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() === 0) {
+                window.location = "/";
+            } else {
+                var data = Meteor.users.find({"profile.usernameL": username.toLowerCase()}).fetch()[0];
+                Session.set("username", data.profile.username);
+                Session.set("first_joined", data.createdAt);
+                Session.set("rank", data.profile.rank);
+                Session.set("loaded", true);
+            }
+        });
+    });
+
     curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
 
     Handlebars.registerHelper('active', function(path) {
         return curPath() == path ? 'active' : '';
     });
+
 
     Template.header.helpers({
         currentUser: function() {
@@ -92,10 +125,12 @@ if (Meteor.isClient) {
             Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
                 grecaptcha.reset();
 
+                console.log(username, password, err, res);
                 if (err) {
                     console.log(err);
                     $(".container").after('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>')
                 } else {
+                    console.log();
                     Meteor.loginWithPassword(username, password);
                 }
             });
@@ -146,18 +181,6 @@ if (Meteor.isClient) {
         }
     });
 
-    Template.dashboard.events({
-        "click #croom_create": function() {
-            Meteor.call("createRoom", $("#croom").val(), function (err, res) {
-                if (err) {
-                    alert("Error " + err.error + ": " + err.reason);
-                } else {
-                    window.location = "/" + $("#croom").val();
-                }
-            });
-        }
-    });
-
     Template.dashboard.helpers({
       rooms: function() {
         return Rooms.find({});
@@ -179,6 +202,19 @@ if (Meteor.isClient) {
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
             });
+        },
+        "click #toggle-video": function(e){
+            e.preventDefault();
+            Session.set("videoShown", !Session.get("videoShown"))
+            if (Session.get("videoShown")) {
+                $("#player").removeClass("hidden");
+                $("#toggle-video").text("Hide video");
+                var player = document.getElementById("player");
+                player.style.height = (player.offsetWidth / 16 * 9) + "px";
+            } else {
+                $("#player").addClass("hidden");
+                $("#toggle-video").text("Show video");
+            }
         },
         "click #return": function(e){
             $("#add-info").hide();
@@ -282,8 +318,17 @@ if (Meteor.isClient) {
         },
         "click #submit-message": function(){
             var message = $("#chat-input").val();
+            $("#chat-ul").scrollTop(1000000);
+            $("#chat-input").val("");
             Meteor.call("sendMessage", type, message);
         }
+    });
+
+    Template.room.onRendered(function() {
+        $(window).resize(function() {
+            var player = document.getElementById("player");
+            player.style.height = (player.offsetWidth / 16 * 9) + "px";
+        });
     });
 
     Template.room.helpers({
@@ -385,6 +430,15 @@ if (Meteor.isClient) {
             if (_sound !== undefined) {
                 _sound.stop();
             }
+        },
+        "click #croom_create": function() {
+            Meteor.call("createRoom", $("#croom").val(), function (err, res) {
+                if (err) {
+                    alert("Error " + err.error + ": " + err.reason);
+                } else {
+                    window.location = "/" + $("#croom").val();
+                }
+            });
         }
     });
 
@@ -428,6 +482,7 @@ if (Meteor.isClient) {
     Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
+        Session.set("videoShown", false);
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -697,10 +752,17 @@ if (Meteor.isServer) {
     });
 
     Accounts.onCreateUser(function(options, user) {
-        if (options.profile) {
-            user.profile = options.profile;
-            user.profile.rank = "default";
+        var username;
+        if (user.services) {
+            if (user.services.github) {
+                username = user.services.github.username;
+            } else if (user.services.facebook) {
+                //username = user.services.facebook.username;
+            } else if (user.services.password) {
+                username = user.username;
+            }
         }
+        user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default"};
         return user;
     });
 
@@ -742,6 +804,11 @@ if (Meteor.isServer) {
 
     Meteor.publish("chat", function() {
         return Chat.find({});
+    });
+
+    Meteor.publish("userProfiles", function() {
+        //console.log(Meteor.users.find({}, {profile: 1, createdAt: 1, services: 0, username: 0, emails: 0})).fetch();
+        return Meteor.users.find({}, {fields: {profile: 1, createdAt: 1}});
     });
 
     Meteor.publish("isAdmin", function() {
@@ -809,50 +876,55 @@ if (Meteor.isServer) {
             }
         },
         createRoom: function(type) {
-            if (Rooms.find({type: type}).count() === 0) {
-                Rooms.insert({type: type}, function(err) {
-                    if (err) {
-                        throw err;
-                    } else {
-                        if (Playlists.find({type: type}).count() === 1) {
-                            if (History.find({type: type}).count() === 0) {
-                                History.insert({type: type, history: []}, function(err3) {
-                                    if (err3) {
-                                        throw err3;
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                if (Rooms.find({type: type}).count() === 0) {
+                    Rooms.insert({type: type}, function(err) {
+                        if (err) {
+                            throw err;
+                        } else {
+                            if (Playlists.find({type: type}).count() === 1) {
+                                if (History.find({type: type}).count() === 0) {
+                                    History.insert({type: type, history: []}, function(err3) {
+                                        if (err3) {
+                                            throw err3;
+                                        } else {
+                                            startStation();
+                                            return true;
+                                        }
+                                    });
+                                } else {
+                                    startStation();
+                                    return true;
+                                }
+                            } else {
+                                Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
+                                    if (err2) {
+                                        throw err2;
                                     } else {
-                                        startStation();
-                                        return true;
+                                        if (History.find({type: type}).count() === 0) {
+                                            History.insert({type: type, history: []}, function(err3) {
+                                                if (err3) {
+                                                    throw err3;
+                                                } else {
+                                                    startStation();
+                                                    return true;
+                                                }
+                                            });
+                                        } else {
+                                            startStation();
+                                            return true;
+                                        }
                                     }
                                 });
-                            } else {
-                                startStation();
-                                return true;
                             }
-                        } else {
-                            Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
-                                if (err2) {
-                                    throw err2;
-                                } else {
-                                    if (History.find({type: type}).count() === 0) {
-                                        History.insert({type: type, history: []}, function(err3) {
-                                            if (err3) {
-                                                throw err3;
-                                            } else {
-                                                startStation();
-                                                return true;
-                                            }
-                                        });
-                                    } else {
-                                        startStation();
-                                        return true;
-                                    }
-                                }
-                            });
                         }
-                    }
-                });
+                    });
+                } else {
+                    throw "Room already exists";
+                }
             } else {
-                throw "Room already exists";
+                return false;
             }
             function startStation() {
                 var startedAt = Date.now();
@@ -927,4 +999,8 @@ Router.route("/admin", {
 
 Router.route("/:type", {
     template: "room"
+});
+
+Router.route("/u/:user", {
+    template: "profile"
 });
