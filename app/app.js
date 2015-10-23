@@ -845,6 +845,7 @@ if (Meteor.isServer) {
                 }
                 if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
                     songData.duration = getSongDuration(songData.title);
+                    songData.img = getSongAlbumArt(songsData.title);
                     Queues.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, img: songData.img, type: songData.type}}});
                     return true;
                 } else {

@@ -589,7 +589,6 @@ footer a:hover{
   background-color: rgb(107, 197, 164);
   color: white;
 }
-
 .song-input-label {
   width: 100%;
   text-align: center;
@@ -639,6 +638,9 @@ footer a:hover{
   display: block;
   margin: 0 auto 20px auto;
 }
+#song-media{
+  margin-left: 10px;
+}
 #station-main{
   margin: 0;
   padding: 0;
@@ -681,9 +683,6 @@ footer a:hover{
 .chat-message:nth-child(odd) {
   color: darkblue;
 }
-#chat-input-container{
-
-}
 #submit{
   margin-left: 10px;
   font-size: 1.5em;
@@ -716,4 +715,7 @@ footer a:hover{
 }
 .back:hover{
   color: white;
+}
+#doorbell-button{
+  margin-right: 500px;
 }
