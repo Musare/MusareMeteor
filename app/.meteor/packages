@@ -27,3 +27,4 @@ joncursi:socket-io-client
 meteorhacks:async
 altapp:recaptcha
 http
+zimme:iron-router-active

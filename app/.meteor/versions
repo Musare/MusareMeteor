@@ -17,6 +17,7 @@ caching-compiler@1.0.0
 caching-html-compiler@1.0.2
 callback-hook@1.0.4
 check@1.0.6
+coffeescript@1.0.10
 ddp@1.2.2
 ddp-client@1.2.1
 ddp-common@1.2.1
@@ -92,3 +93,5 @@ underscore@1.0.4
 url@1.0.5
 webapp@1.2.2
 webapp-hashing@1.0.5
+zimme:active-route@2.0.4_1
+zimme:iron-router-active@2.0.1
