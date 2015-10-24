@@ -434,11 +434,23 @@ if (Meteor.isClient) {
                         height: 540,
                         width: 568,
                         videoId: id,
-                        playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3},
+                        playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
                         events: {
                             'onReady': function(event) {
                                 event.target.playVideo();
                                 event.target.setVolume(volume);
+                            },
+                            'onStateChange': function(event){
+                                if (event.data == YT.PlayerState.PAUSED) {
+                                    event.target.playVideo();
+                                }
+                                if (event.data == YT.PlayerState.PLAYING) {
+                                    $("#play").attr("disabled", true);
+                                    $("#stop").attr("disabled", false);
+                                } else {
+                                    $("#play").attr("disabled", false);
+                                    $("#stop").attr("disabled", true);
+                                }
                             }
                         }
                     });
@@ -498,6 +510,29 @@ if (Meteor.isClient) {
                 $("#stop").attr("disabled", true);
             }
         });
+        $(document).ready(function() {
+            function makeSlider(){
+                var slider = $("#volume-slider").slider();
+                var volume = localStorage.getItem("volume") || 20;
+                $("#volume-slider").slider("setValue", volume);
+                if (slider.length === 0) {
+                    Meteor.setTimeout(function() {
+                        makeSlider();
+                    }, 500);
+                } else {
+                    slider.on("slide", function(val) {
+                        localStorage.setItem("volume", val.value);
+                        if (yt_player !== undefined) {
+                            yt_player.setVolume(val.value);
+                        } else if (_sound !== undefined) {
+                            var volume = val.value / 100;
+                            _sound.setVolume(volume);
+                        }
+                    });
+                }
+            }
+            makeSlider();
+        });
     });
 
     Template.playlist.helpers({
@@ -517,7 +552,6 @@ if (Meteor.isClient) {
     Template.room.onCreated(function () {
         yt_player = undefined;
         _sound = undefined;
-        console.log("Room created!");
         Session.set("videoShown", false);
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
@@ -687,7 +721,6 @@ if (Meteor.isServer) {
     Meteor.users.deny({remove: function () { return true; }});
 
     function getSongDuration(query, artistName){
-        console.log(artistName);
         var duration;
         var search = query;
         query = query.toLowerCase().split(" ").join("%20");
@@ -705,7 +738,6 @@ if (Meteor.isServer) {
     }
 
     function getSongAlbumArt(query, artistName){
-        console.log(artistName);
         var albumart;
         var search = query;
         query = query.toLowerCase().split(" ").join("%20");

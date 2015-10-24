@@ -835,10 +835,23 @@ footer a:hover{
   height: 100%;
   background-color: #97D8C8;
 }
-.slider {
+#volume-container > .slider {
   top: 40%;
   transform: translateY(-40%);
   padding-right: 12px;
   padding-left: 12px;
+  margin-left: 12px;
+}
+
+#volume-container-admin {
+  display: inline-block;
+  width: 174px;
+  margin-left: 10px;
+}
+
+#volume-container-admin > .slider {
+  width: 150px !important;
+  padding-left: 12px;
+  padding-right: 12px;
   margin-left: 12px;
 }
