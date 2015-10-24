@@ -189,6 +189,7 @@ if (Meteor.isClient) {
     });
 
     Template.dashboard.onCreated(function() {
+        if (_sound !== undefined) _sound.stop();
         Meteor.subscribe("history");
     });
 
@@ -437,7 +438,7 @@ if (Meteor.isClient) {
                         events: {
                             'onReady': function(event) {
                                 event.target.playVideo();
-                                evenet.target.setVolume(volume);
+                                event.target.setVolume(volume);
                             }
                         }
                     });
@@ -514,6 +515,9 @@ if (Meteor.isClient) {
     Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
+        yt_player = undefined;
+        _sound = undefined;
+        console.log("Room created!");
         Session.set("videoShown", false);
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
