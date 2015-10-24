@@ -174,10 +174,23 @@ if (Meteor.isClient) {
     });
 
     Template.dashboard.helpers({
-      rooms: function() {
-        return Rooms.find({});
-      }
-    })
+        rooms: function() {
+          return Rooms.find({});
+        },
+        currentSong: function() {
+            var history = History.find({type: this.type}).fetch();
+            if (history.length < 1) {
+                return {};
+            } else {
+                history = history[0];
+                return history.history[history.history.length - 1];
+            }
+        }
+    });
+
+    Template.dashboard.onCreated(function() {
+        Meteor.subscribe("history");
+    });
 
     Template.room.events({
         "click #add-song-button": function(e){
