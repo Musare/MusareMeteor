@@ -276,12 +276,6 @@ form button:hover {
             transform: translateY(-700px) rotate(600deg);
   }
 }
-.fa-facebook{
-  margin-top: 3px;
-}
-#facebook-login{
-  background-color: #3b5998;
-}
 .fa-github{
   margin-top: 3px;
 }
@@ -662,33 +656,6 @@ footer a:hover{
 .embed-responsive{
   margin-top: 15px;
 }
-#chat {
-  /*margin-top: 100px;*/
-  height: 100vh;
-  background-color: rgba(255,255,255,0.4);
-}
-.chat-message {
-  font-size: 20px;
-  color: white;
-}
-#chat-ul {
-  height: 90vh;
-  overflow-y: scroll;
-  margin: 0;
-  padding: 0;
-}
-.chat-message:nth-child(even) {
-  color: white;
-}
-.chat-message:nth-child(odd) {
-  color: darkblue;
-}
-#submit{
-  margin-left: 10px;
-  font-size: 1.5em;
-  cursor: pointer;
-  display: inline-block;
-}
 #header {
   margin-bottom: 0px;
 }
@@ -717,5 +684,5 @@ footer a:hover{
   color: white;
 }
 #doorbell-button{
-  margin-right: 500px;
+  margin-right: 2000px;
 }
