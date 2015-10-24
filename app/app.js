@@ -136,10 +136,6 @@ if (Meteor.isClient) {
             });
         },
 
-        "click #facebook-login": function(){
-            Meteor.loginWithFacebook()
-        },
-
         "click #github-login": function(){
             Meteor.loginWithGithub()
         },
@@ -165,10 +161,6 @@ if (Meteor.isClient) {
                      });
                 })
             });
-        },
-
-        "click #facebook-login": function(){
-            Meteor.loginWithFacebook()
         },
 
         "click #github-login": function(){
@@ -677,7 +669,8 @@ if (Meteor.isServer) {
     Meteor.users.deny({insert: function () { return true; }});
     Meteor.users.deny({remove: function () { return true; }});
 
-    function getSongDuration(query){
+    function getSongDuration(query, artistName){
+        console.log(artistName);
         var duration;
         var search = query;
         query = query.toLowerCase().split(" ").join("%20");
@@ -686,7 +679,7 @@ if (Meteor.isServer) {
 
         for(var i in res.data){
             for(var j in res.data[i].items){
-                if(search.indexOf(res.data[i].items[j].name) !== -1){
+                if(search.indexOf(res.data[i].items[j].name) !== -1 && artistName.indexOf(res.data[i].items[j].artists[0].name) !== -1){
                     duration = res.data[i].items[j].duration_ms / 1000;
                     return duration;
                 }
@@ -694,7 +687,8 @@ if (Meteor.isServer) {
         }
     }
 
-    function getSongAlbumArt(query){
+    function getSongAlbumArt(query, artistName){
+        console.log(artistName);
         var albumart;
         var search = query;
         query = query.toLowerCase().split(" ").join("%20");
@@ -703,7 +697,7 @@ if (Meteor.isServer) {
 
         for(var i in res.data){
             for(var j in res.data[i].items){
-                if(search.indexOf(res.data[i].items[j].name) !== -1){
+                if(search.indexOf(res.data[i].items[j].name) !== -1 && artistName.indexOf(res.data[i].items[j].artists[0].name) !== -1){
                     albumart = res.data[i].items[j].album.images[1].url
                     return albumart;
                 }
@@ -717,13 +711,13 @@ if (Meteor.isServer) {
     function getSongsByType(type) {
         if (type === "edm") {
             return [
-                {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "youtube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
-                {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize"), type: "youtube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
+                {id: "aE2GCa-_nyU", title: "Radioactive - Lindsey Stirling and Pentatonix", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix", "Lindsey Stirling, Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "youtube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
+                {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize", "Lindsey Stirling"), type: "youtube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
             ];
         } else if (type === "nightcore") {
-            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)"), artist: "Meg & Dia", type: "youtube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
+            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)", "Meg & Dia"), artist: "Meg & Dia", type: "youtube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
         } else {
-            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up"), artist: "Rick Astley", type: "youtube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
+            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up", "Rick Astley"), artist: "Rick Astley", type: "youtube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
         }
     }
 
@@ -786,7 +780,7 @@ if (Meteor.isServer) {
             if (user.services.github) {
                 username = user.services.github.username;
             } else if (user.services.facebook) {
-                //username = user.services.facebook.username;
+                username = user.services.facebook.first_name;
             } else if (user.services.password) {
                 username = user.username;
             }
@@ -873,7 +867,8 @@ if (Meteor.isServer) {
                     Queues.insert({type: type, songs: []});
                 }
                 if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
-                    songData.duration = getSongDuration(songData.title);
+                    songData.duration = getSongDuration(songData.title, songData.artist);
+                    songData.img = getSongAlbumArt(songData.title, songData.artist);
                     Queues.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, img: songData.img, type: songData.type}}});
                     return true;
                 } else {
