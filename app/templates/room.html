@@ -13,7 +13,7 @@
               <div id="seeker-container">
                   <div id="seeker-bar"></div>
               </div>
-              <div class="row">
+              <div class="row" id="song-media">
                 <div class="col-md-8">
                   <div class="embed-responsive embed-responsive-16by9">
                     <div id="player" class="embed-responsive-item"></div>
@@ -27,26 +27,8 @@
               </div>
               <button type="button" id="song-modal" class="button-nowidth col-md-4 col-sm-4 col-xs-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4" data-toggle="modal" data-target="#myModal">Add songs</button>
             </div>
-            <div class="col-md-4" id="chat">
-              <ul id="chat-ul">
-                {{#each chat}}
-                    <li class="chat-message"><b class="bold">{{userid}}:</b> {{message}}</li>
-                {{/each}}
-              </ul>
-              <!-- <div class="row" id="chat-container">
-                <div class="col-md-10">
-                  <input id="chat-input"/>
-                </div>
-                <div class="col-md-2" id="submit">
-                  <i id="submit-message" class="fa fa-paper-plane-o"></i>
-                </div>
-              </div> -->
-              <div id="chat-input-container">
-                <input id="chat-input" placeholder="Type a message...">
-                <div id="submit">
-                  <i id="submit-message" class="fa fa-paper-plane-o"></i>
-                </div>
-              </div>
+            <div class="col-md-4" id="side-panel">
+
             </div>
           </div>
             <!--<h1 class="room-name">{{{type}}}</h1>

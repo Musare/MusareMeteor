@@ -418,12 +418,6 @@ form button:hover {
             transform: translateY(-700px) rotate(600deg);
   }
 }
-.fa-facebook{
-  margin-top: 3px;
-}
-#facebook-login{
-  background-color: #3b5998;
-}
 .fa-github{
   margin-top: 3px;
 }
@@ -731,7 +725,6 @@ footer a:hover{
   background-color: rgb(107, 197, 164);
   color: white;
 }
-
 .song-input-label {
   width: 100%;
   text-align: center;
@@ -781,6 +774,9 @@ footer a:hover{
   display: block;
   margin: 0 auto 20px auto;
 }
+#song-media{
+  margin-left: 10px;
+}
 #station-main{
   margin: 0;
   padding: 0;
@@ -801,36 +797,6 @@ footer a:hover{
 }
 .embed-responsive{
   margin-top: 15px;
-}
-#chat {
-  /*margin-top: 100px;*/
-  height: 100vh;
-  background-color: rgba(255,255,255,0.4);
-}
-.chat-message {
-  font-size: 20px;
-  color: white;
-}
-#chat-ul {
-  height: 90vh;
-  overflow-y: scroll;
-  margin: 0;
-  padding: 0;
-}
-.chat-message:nth-child(even) {
-  color: white;
-}
-.chat-message:nth-child(odd) {
-  color: darkblue;
-}
-#chat-input-container{
-
-}
-#submit{
-  margin-left: 10px;
-  font-size: 1.5em;
-  cursor: pointer;
-  display: inline-block;
 }
 #header {
   margin-bottom: 0px;
@@ -859,6 +825,10 @@ footer a:hover{
 .back:hover{
   color: white;
 }
+#doorbell-button{
+  margin-right: 2000px;
+}
+
 #volume-container {
   width: 160px; /*12.5 px each side*/
   float: right;
