@@ -1056,6 +1056,10 @@ Router.route("/privacy", {
     template: "privacy"
 });
 
+Router.route("/about", {
+    template: "about"
+});
+
 Router.route("/admin", {
     waitOn: function() {
         return Meteor.subscribe("isAdmin", Meteor.userId());
