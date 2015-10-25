@@ -653,6 +653,10 @@ footer a:hover{
   margin-left: 50%;
   font-size: 2em;
 }
+#side-panel{
+  height: 100vh;
+  background-color: rgba(255,255,255,0.4);
+}
 .embed-responsive{
   margin-top: 15px;
 }
