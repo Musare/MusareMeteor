@@ -3,7 +3,7 @@
   <ul id="playlist">
       {{#each playlist_songs}}
         <li>
-            <strong>{{title}}</strong> - {{artist}}
+            {{#if current}}<i class="fa fa-arrow-right" style="color: red;"></i>{{/if}} <strong>{{title}}</strong> - {{artist}}
         </li>
       {{/each}}
   </ul>

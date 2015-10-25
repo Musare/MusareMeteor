@@ -334,10 +334,6 @@ if (Meteor.isClient) {
     });
 
     Template.room.onRendered(function() {
-        $(window).resize(function() {
-            var player = document.getElementById("player");
-            player.style.height = (player.offsetWidth / 16 * 9) + "px";
-        });
         $(document).ready(function() {
             function makeSlider(){
                 var slider = $("#volume-slider").slider();
@@ -534,6 +530,14 @@ if (Meteor.isClient) {
         playlist_songs: function() {
             var data = Playlists.find({type: type}).fetch();
             if (data !== undefined && data.length > 0) {
+                data[0].songs.map(function(song) {
+                    if (song.title === Session.get("title")) {
+                        song.current = true;
+                    } else {
+                        song.current = false;
+                    }
+                    return song;
+                });
                 return data[0].songs;
             } else {
                 return [];
@@ -587,6 +591,7 @@ if (Meteor.isClient) {
                 var volume = localStorage.getItem("volume") || 20;
 
                 $("#media-container").empty();
+                yt_player = undefined;
                 if (currentSong.type === "SoundCloud") {
                     // Change id from visualizer to media-container
                     $("#player").attr("src", "");
