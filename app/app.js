@@ -211,15 +211,16 @@ if (Meteor.isClient) {
         },
         "click #toggle-video": function(e){
             e.preventDefault();
-            Session.set("videoShown", !Session.get("videoShown"))
-            if (Session.get("videoShown")) {
+            if (Session.get("videoHidden")) {
                 $("#player").removeClass("hidden");
                 $("#toggle-video").text("Hide video");
                 var player = document.getElementById("player");
                 player.style.height = (player.offsetWidth / 16 * 9) + "px";
+                Session.set("videoHidden", false);
             } else {
                 $("#player").addClass("hidden");
                 $("#toggle-video").text("Show video");
+                Session.set("videoHidden", true);
             }
         },
         "click #return": function(e){
@@ -388,14 +389,6 @@ if (Meteor.isClient) {
         },
         loaded: function() {
           return Session.get("loaded");
-        },
-        chat: function() {
-            var chatArr = Chat.find({type: type}).fetch();
-            if (chatArr.length === 0) {
-                return [];
-            } else {
-                return chatArr[0].messages;
-            }
         }
     });
 
@@ -552,7 +545,7 @@ if (Meteor.isClient) {
     Template.room.onCreated(function () {
         yt_player = undefined;
         _sound = undefined;
-        Session.set("videoShown", false);
+        Session.set("videoHidden", false)
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
