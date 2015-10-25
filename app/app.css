@@ -177,6 +177,20 @@ body :-ms-input-placeholder {
 ul {
     list-style: none;
 }
+.navbar{
+  background-color: transparent;
+  border: none;
+}
+.navbar a{
+  color: white !important;
+  font-size: 1.3em;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus{
+  background-color: transparent;
+  font-weight: 900;
+}
 .loginlanding {
   background: #50a3a2;
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
@@ -705,10 +719,6 @@ footer a:hover{
   width: 200px;
   margin-top: 10%;
 }
-#song-modal{
-  margin-top: 40px;
-  margin-bottom: 40px;
-}
 .modal-content{
   background-color: rgb(107, 197, 164);
   color: white;
@@ -725,8 +735,16 @@ footer a:hover{
   left: 0;
   border-radius: 100%;
 }
+.playlist-title{
+  text-align: center;
+  color: white;
+  font-weight: 600;
+}
 #playlist {
-
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-size: 1.5em;
 }
 #s2 {
   opacity: 0.66666666666666;
@@ -783,6 +801,10 @@ footer a:hover{
   margin-left: 50%;
   font-size: 2em;
 }
+#side-panel{
+  height: 100vh;
+  background-color: rgba(255,255,255,0.4);
+}
 .embed-responsive{
   margin-top: 15px;
 }
@@ -821,7 +843,6 @@ footer a:hover{
   width: 160px; /*12.5 px each side*/
   float: right;
   height: 100%;
-  background-color: #97D8C8;
 }
 #volume-container > .slider {
   top: 40%;
@@ -842,4 +863,13 @@ footer a:hover{
   padding-left: 12px;
   padding-right: 12px;
   margin-left: 12px;
+}
+
+#volume-icon{
+  margin-left: 320px !important;
+}
+
+#settings{
+  margin-top: 10px;
+  margin-left: 10px;
 }
