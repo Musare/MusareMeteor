@@ -839,7 +839,7 @@ footer a:hover{
 }
 
 #volume-container {
-  width: 160px; /*12.5 px each side*/
+  width: 172px; /*12.5 px each side*/
   float: right;
   height: 100%;
 }
@@ -849,6 +849,7 @@ footer a:hover{
   padding-right: 12px;
   padding-left: 12px;
   margin-left: 12px;
+  float: left;
 }
 
 #volume-container-admin {
@@ -865,7 +866,10 @@ footer a:hover{
 }
 
 #volume-icon{
-  margin-left: 320px !important;
+  /*margin-left: 320px !important;*/
+  margin: 0 !important;
+  float: left;
+  margin-top: 7px !important;
 }
 
 #settings{
