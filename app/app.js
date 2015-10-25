@@ -22,10 +22,15 @@ if (Meteor.isClient) {
     var id = parts.pop();
     var type = id.toLowerCase();
 
-    function getSpotifyInfo(title, cb) {
+    function getSpotifyInfo(title, cb, artist) {
+        var q = "";
+        q = title;
+        if (artist !== undefined) {
+            q += " artist:" + artist;
+        }
         $.ajax({
             type: "GET",
-            url: 'https://api.spotify.com/v1/search?q=' + encodeURIComponent(title.toLowerCase()) + '&type=track',
+            url: 'https://api.spotify.com/v1/search?q=' + encodeURIComponent(q) + '&type=track',
             applicationType: "application/json",
             contentType: "json",
             success: function (data) {
@@ -403,6 +408,16 @@ if (Meteor.isClient) {
         "click .preview-button": function(e){
             Session.set("song", this);
         },
+        "click .edit-button": function(e){
+            Session.set("song", this);
+            Session.set("genre", $(e.toElement).data("genre"));
+            $("#type").val(this.type);
+            $("#artist").val(this.artist);
+            $("#title").val(this.title);
+            $("#img").val(this.img);
+            $("#id").val(this.id);
+            $("#duration").val(this.duration);
+        },
         "click #add-song-button": function(e){
             var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
             Meteor.call("addSongToPlaylist", genre, this);
@@ -474,6 +489,24 @@ if (Meteor.isClient) {
                 } else {
                     window.location = "/" + $("#croom").val();
                 }
+            });
+        },
+        "click #find-img-button": function() {
+            getSpotifyInfo($("#title").val().replace(/\[.*\]/g, ""), function(data) {
+                if (data.tracks.items.length > 0) {
+                    $("#img").val(data.tracks.items[0].album.images[1].url);
+                }
+            }, $("#artist").val());
+        },
+        "click #save-song-button": function() {
+            var newSong = {};
+            newSong.title = $("#title").val();
+            newSong.artist = $("#artist").val();
+            newSong.img = $("#img").val();
+            newSong.type = $("#type").val();
+            newSong.duration = $("#duration").val();
+            Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function() {
+                $('#editModal').modal('hide');
             });
         }
     });
@@ -930,6 +963,11 @@ if (Meteor.isServer) {
             } else {
                 throw new Meteor.error(403, "Invalid genre.");
             }
+        },
+        updateQueueSong: function(genre, oldSong, newSong) {
+            newSong.id = oldSong.id;
+            Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
+            return true;
         },
         removeSongFromQueue: function(type, songId) {
             type = type.toLowerCase();
