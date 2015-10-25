@@ -13,6 +13,7 @@ if (Meteor.isClient) {
 
     Meteor.subscribe("queues");
 
+    var minterval;
     var hpSound = undefined;
     var songsArr = [];
     var ytArr = [];
@@ -190,6 +191,9 @@ if (Meteor.isClient) {
 
     Template.dashboard.onCreated(function() {
         if (_sound !== undefined) _sound.stop();
+        if (minterval !== undefined) {
+            Meteor.clearInterval(minterval);
+        }
         Meteor.subscribe("history");
     });
 
@@ -647,7 +651,7 @@ if (Meteor.isClient) {
                 window.location = "/";
             } else {
                 Session.set("loaded", true);
-                Meteor.setInterval(function () {
+                minterval = Meteor.setInterval(function () {
                     var data = undefined;
                     var dataCursorH = History.find({type: type});
                     var dataCursorP = Playlists.find({type: type});
