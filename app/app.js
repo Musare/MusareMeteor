@@ -174,10 +174,24 @@ if (Meteor.isClient) {
     });
 
     Template.dashboard.helpers({
-      rooms: function() {
-        return Rooms.find({});
-      }
-    })
+        rooms: function() {
+          return Rooms.find({});
+        },
+        currentSong: function() {
+            var history = History.find({type: this.type}).fetch();
+            if (history.length < 1) {
+                return {};
+            } else {
+                history = history[0];
+                return history.history[history.history.length - 1];
+            }
+        }
+    });
+
+    Template.dashboard.onCreated(function() {
+        if (_sound !== undefined) _sound.stop();
+        Meteor.subscribe("history");
+    });
 
     Template.room.events({
         "click #add-song-button": function(e){
@@ -321,6 +335,31 @@ if (Meteor.isClient) {
             var player = document.getElementById("player");
             player.style.height = (player.offsetWidth / 16 * 9) + "px";
         });
+        $(document).ready(function() {
+            function makeSlider(){
+                var slider = $("#volume-slider").slider();
+                var volume = localStorage.getItem("volume") || 20;
+                $("#volume-slider").slider("setValue", volume);
+                if (slider.length === 0) {
+                    Meteor.setTimeout(function() {
+                        makeSlider();
+                    }, 500);
+                } else {
+                    slider.on("slide", function(val) {
+                        if (yt_player !== undefined) {
+                            yt_player.setVolume(val.value);
+                            localStorage.setItem("volume", val.value);
+                        } else if (_sound !== undefined) {
+                            //_sound
+                            var volume = val.value / 100;
+                            _sound.setVolume(volume);
+                            localStorage.setItem("volume", val.value);
+                        }
+                    });
+                }
+            }
+            makeSlider();
+        });
     });
 
     Template.room.helpers({
@@ -387,6 +426,7 @@ if (Meteor.isClient) {
             var song = Session.get("song");
             var id = song.id;
             var type = song.type;
+            var volume = localStorage.getItem("volume") || 20;
 
             if (type === "YouTube") {
                 if (yt_player === undefined) {
@@ -394,10 +434,23 @@ if (Meteor.isClient) {
                         height: 540,
                         width: 568,
                         videoId: id,
-                        playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3},
+                        playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
                         events: {
                             'onReady': function(event) {
                                 event.target.playVideo();
+                                event.target.setVolume(volume);
+                            },
+                            'onStateChange': function(event){
+                                if (event.data == YT.PlayerState.PAUSED) {
+                                    event.target.playVideo();
+                                }
+                                if (event.data == YT.PlayerState.PLAYING) {
+                                    $("#play").attr("disabled", true);
+                                    $("#stop").attr("disabled", false);
+                                } else {
+                                    $("#play").attr("disabled", false);
+                                    $("#stop").attr("disabled", true);
+                                }
                             }
                         }
                     });
@@ -408,7 +461,7 @@ if (Meteor.isClient) {
             } else if (type === "SoundCloud") {
                 SC.stream("/tracks/" + song.id, function(sound) {
                     _sound = sound;
-                    sound._player._volume = 0.3;
+                    sound.setVolume(volume / 100);
                     sound.play();
                 });
             }
@@ -457,6 +510,29 @@ if (Meteor.isClient) {
                 $("#stop").attr("disabled", true);
             }
         });
+        $(document).ready(function() {
+            function makeSlider(){
+                var slider = $("#volume-slider").slider();
+                var volume = localStorage.getItem("volume") || 20;
+                $("#volume-slider").slider("setValue", volume);
+                if (slider.length === 0) {
+                    Meteor.setTimeout(function() {
+                        makeSlider();
+                    }, 500);
+                } else {
+                    slider.on("slide", function(val) {
+                        localStorage.setItem("volume", val.value);
+                        if (yt_player !== undefined) {
+                            yt_player.setVolume(val.value);
+                        } else if (_sound !== undefined) {
+                            var volume = val.value / 100;
+                            _sound.setVolume(volume);
+                        }
+                    });
+                }
+            }
+            makeSlider();
+        });
     });
 
     Template.playlist.helpers({
@@ -474,6 +550,8 @@ if (Meteor.isClient) {
     Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
+        yt_player = undefined;
+        _sound = undefined;
         Session.set("videoShown", false);
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
@@ -483,8 +561,6 @@ if (Meteor.isClient) {
         var currentSong = undefined;
         var nextSong = undefined;
         var afterSong = undefined;
-        var _sound = undefined;
-        var yt_player = undefined;
         var size = 0;
         var artistStr;
         var temp = "";
@@ -513,12 +589,14 @@ if (Meteor.isClient) {
                 if (_sound !== undefined) _sound.stop();
                 if (yt_player !== undefined && yt_player.stopVideo !== undefined) yt_player.stopVideo();
 
-                if (currentSong.type === "soundcloud") {
+                var volume = localStorage.getItem("volume") || 20;
+
+                if (currentSong.type === "SoundCloud") {
                   $("#player").attr("src", "")
                   getSongInfo(currentSong);
                   SC.stream("/tracks/" + currentSong.id + "#t=20s", function(sound){
                     _sound = sound;
-                    sound._player._volume = 0.3;
+                    sound.setVolume(volume / 100);
                     sound.play();
                     var interval = setInterval(function() {
                         if (sound.getState() === "playing") {
@@ -537,10 +615,12 @@ if (Meteor.isClient) {
                             height: 540,
                             width: 960,
                             videoId: currentSong.id,
+                            playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
                             events: {
                                 'onReady': function(event) {
                                     event.target.seekTo(getTimeElapsed() / 1000);
                                     event.target.playVideo();
+                                    event.target.setVolume(volume);
                                     resizeSeekerbar();
                                 },
                                 'onStateChange': function(event){
@@ -641,7 +721,6 @@ if (Meteor.isServer) {
     Meteor.users.deny({remove: function () { return true; }});
 
     function getSongDuration(query, artistName){
-        console.log(artistName);
         var duration;
         var search = query;
         query = query.toLowerCase().split(" ").join("%20");
@@ -659,7 +738,6 @@ if (Meteor.isServer) {
     }
 
     function getSongAlbumArt(query, artistName){
-        console.log(artistName);
         var albumart;
         var search = query;
         query = query.toLowerCase().split(" ").join("%20");
@@ -976,6 +1054,10 @@ Router.route("/terms", {
 
 Router.route("/privacy", {
     template: "privacy"
+});
+
+Router.route("/about", {
+    template: "about"
 });
 
 Router.route("/admin", {

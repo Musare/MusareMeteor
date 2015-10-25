@@ -4,8 +4,11 @@
           <div class="row">
             <div class="col-md-9" id="station-main">
               <nav>
-                <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
-                <h3>{{{type}}}</h3>
+                  <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
+                  <h3>{{{type}}}</h3>
+                  <div id="volume-container">
+                      <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
+                  </div>
               </nav>
               <div id="seeker-container">
                   <div id="seeker-bar"></div>
