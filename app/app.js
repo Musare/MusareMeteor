@@ -215,16 +215,14 @@ if (Meteor.isClient) {
         },
         "click #toggle-video": function(e){
             e.preventDefault();
-            if (Session.get("videoHidden")) {
-                $("#player").removeClass("hidden");
+            if (Session.get("mediaHidden")) {
+                $("#media-container").removeClass("hidden");
                 $("#toggle-video").text("Hide video");
-                var player = document.getElementById("player");
-                player.style.height = (player.offsetWidth / 16 * 9) + "px";
-                Session.set("videoHidden", false);
+                Session.set("mediaHidden", false);
             } else {
-                $("#player").addClass("hidden");
+                $("#media-container").addClass("hidden");
                 $("#toggle-video").text("Show video");
-                Session.set("videoHidden", true);
+                Session.set("mediaHidden", true);
             }
         },
         "click #return": function(e){
@@ -588,25 +586,29 @@ if (Meteor.isClient) {
 
                 var volume = localStorage.getItem("volume") || 20;
 
+                $("#media-container").empty();
                 if (currentSong.type === "SoundCloud") {
-                  $("#player").attr("src", "")
-                  getSongInfo(currentSong);
-                  SC.stream("/tracks/" + currentSong.id + "#t=20s", function(sound){
-                    _sound = sound;
-                    sound.setVolume(volume / 100);
-                    sound.play();
-                    var interval = setInterval(function() {
-                        if (sound.getState() === "playing") {
-                            sound.seek(getTimeElapsed());
-                            window.clearInterval(interval);
-                        }
-                    }, 200);
-                    // Session.set("title", currentSong.title || "Title");
-                    // Session.set("artist", currentSong.artist || "Artist");
-                    Session.set("duration", currentSong.duration);
-                    resizeSeekerbar();
-                  });
+                    // Change id from visualizer to media-container
+                    $("#player").attr("src", "");
+                    getSongInfo(currentSong);
+                    SC.stream("/tracks/" + currentSong.id, function(sound){
+                        _sound = sound;
+                        sound.setVolume(volume / 100);
+                        startVisualizer(sound._player._html5Audio);
+                        sound.play();
+                        var interval = setInterval(function() {
+                            if (sound.getState() === "playing") {
+                                sound.seek(getTimeElapsed());
+                                window.clearInterval(interval);
+                            }
+                        }, 200);
+                        // Session.set("title", currentSong.title || "Title");
+                        // Session.set("artist", currentSong.artist || "Artist");
+                        Session.set("duration", currentSong.duration);
+                        resizeSeekerbar();
+                    });
                 } else {
+                    $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
                     if (yt_player === undefined) {
                         yt_player = new YT.Player("player", {
                             height: 540,
@@ -1069,6 +1071,10 @@ Router.route("/admin", {
             this.redirect("/");
         }
     }
+});
+
+Router.route("/vis", {
+    template: "visualizer"
 });
 
 Router.route("/:type", {

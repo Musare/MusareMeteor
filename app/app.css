@@ -654,7 +654,6 @@ footer a:hover{
 }
 .hidden {
   visibility: hidden;
-  height: 0;
 }
 .footerButtons {
   background:none!important;
