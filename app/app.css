@@ -537,18 +537,6 @@ footer a:hover{
   clear: both;
   background-color: rgba(16, 140, 146, 0.8);
 }
-.privacy {
-  margin: 0 auto;
-  padding: 100px 0;
-  height: 900px;
-  text-align: center;
-}
-.terms {
-  margin: 0 auto;
-  padding: 100px 0;
-  height: 900px;
-  text-align: center;
-}
 .song-input{
   -webkit-appearance: none;
      -moz-appearance: none;
