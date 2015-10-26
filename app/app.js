@@ -389,6 +389,14 @@ if (Meteor.isClient) {
         },
         loaded: function() {
           return Session.get("loaded");
+        },
+        playlist_songs: function() {
+          var data = Playlists.find({type: type}).fetch();
+          if (data !== undefined && data.length > 0) {
+              return data[0].songs;
+          } else {
+              return [];
+          }
         }
     });
 
@@ -695,7 +703,7 @@ if (Meteor.isClient) {
                     }
                 }, 1000);
                 Meteor.setInterval(function () {
-                    resizeSeekerbar();
+                  resizeSeekerbar();
                 }, 50);
             }
         });
