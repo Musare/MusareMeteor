@@ -551,18 +551,6 @@ footer a:hover{
   clear: both;
   background-color: rgba(16, 140, 146, 0.8);
 }
-.privacy {
-  margin: 0 auto;
-  padding: 100px 0;
-  height: 900px;
-  text-align: center;
-}
-.terms {
-  margin: 0 auto;
-  padding: 100px 0;
-  height: 900px;
-  text-align: center;
-}
 .song-input{
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -666,7 +654,6 @@ footer a:hover{
 }
 .hidden {
   visibility: hidden;
-  height: 0;
 }
 .footerButtons {
   background:none!important;
@@ -764,7 +751,7 @@ footer a:hover{
 #s3 {
   opacity: 0.33333333333333;
 }
-#add-song-button{
+#add-song-button, #find-img-button, #save-song-button {
   display: block;
   margin: 0 auto;
 }
@@ -852,7 +839,7 @@ footer a:hover{
 }
 
 #volume-container {
-  width: 160px; /*12.5 px each side*/
+  width: 172px; /*12.5 px each side*/
   float: right;
   height: 100%;
 }
@@ -862,6 +849,7 @@ footer a:hover{
   padding-right: 12px;
   padding-left: 12px;
   margin-left: 12px;
+  float: left;
 }
 
 #volume-container-admin {
@@ -878,7 +866,10 @@ footer a:hover{
 }
 
 #volume-icon{
-  margin-left: 320px !important;
+  /*margin-left: 320px !important;*/
+  margin: 0 !important;
+  float: left;
+  margin-top: 7px !important;
 }
 
 #settings{

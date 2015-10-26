@@ -13,6 +13,7 @@ if (Meteor.isClient) {
 
     Meteor.subscribe("queues");
 
+    var minterval;
     var hpSound = undefined;
     var songsArr = [];
     var ytArr = [];
@@ -21,10 +22,15 @@ if (Meteor.isClient) {
     var id = parts.pop();
     var type = id.toLowerCase();
 
-    function getSpotifyInfo(title, cb) {
+    function getSpotifyInfo(title, cb, artist) {
+        var q = "";
+        q = title;
+        if (artist !== undefined) {
+            q += " artist:" + artist;
+        }
         $.ajax({
             type: "GET",
-            url: 'https://api.spotify.com/v1/search?q=' + encodeURIComponent(title.toLowerCase()) + '&type=track',
+            url: 'https://api.spotify.com/v1/search?q=' + encodeURIComponent(q) + '&type=track',
             applicationType: "application/json",
             contentType: "json",
             success: function (data) {
@@ -190,6 +196,9 @@ if (Meteor.isClient) {
 
     Template.dashboard.onCreated(function() {
         if (_sound !== undefined) _sound.stop();
+        if (minterval !== undefined) {
+            Meteor.clearInterval(minterval);
+        }
         Meteor.subscribe("history");
     });
 
@@ -211,16 +220,14 @@ if (Meteor.isClient) {
         },
         "click #toggle-video": function(e){
             e.preventDefault();
-            if (Session.get("videoHidden")) {
-                $("#player").removeClass("hidden");
+            if (Session.get("mediaHidden")) {
+                $("#media-container").removeClass("hidden");
                 $("#toggle-video").text("Hide video");
-                var player = document.getElementById("player");
-                player.style.height = (player.offsetWidth / 16 * 9) + "px";
-                Session.set("videoHidden", false);
+                Session.set("mediaHidden", false);
             } else {
-                $("#player").addClass("hidden");
+                $("#media-container").addClass("hidden");
                 $("#toggle-video").text("Show video");
-                Session.set("videoHidden", true);
+                Session.set("mediaHidden", true);
             }
         },
         "click #return": function(e){
@@ -332,10 +339,6 @@ if (Meteor.isClient) {
     });
 
     Template.room.onRendered(function() {
-        $(window).resize(function() {
-            var player = document.getElementById("player");
-            player.style.height = (player.offsetWidth / 16 * 9) + "px";
-        });
         $(document).ready(function() {
             function makeSlider(){
                 var slider = $("#volume-slider").slider();
@@ -413,6 +416,16 @@ if (Meteor.isClient) {
         "click .preview-button": function(e){
             Session.set("song", this);
         },
+        "click .edit-button": function(e){
+            Session.set("song", this);
+            Session.set("genre", $(e.toElement).data("genre"));
+            $("#type").val(this.type);
+            $("#artist").val(this.artist);
+            $("#title").val(this.title);
+            $("#img").val(this.img);
+            $("#id").val(this.id);
+            $("#duration").val(this.duration);
+        },
         "click #add-song-button": function(e){
             var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
             Meteor.call("addSongToPlaylist", genre, this);
@@ -485,6 +498,24 @@ if (Meteor.isClient) {
                     window.location = "/" + $("#croom").val();
                 }
             });
+        },
+        "click #find-img-button": function() {
+            getSpotifyInfo($("#title").val().replace(/\[.*\]/g, ""), function(data) {
+                if (data.tracks.items.length > 0) {
+                    $("#img").val(data.tracks.items[0].album.images[1].url);
+                }
+            }, $("#artist").val());
+        },
+        "click #save-song-button": function() {
+            var newSong = {};
+            newSong.title = $("#title").val();
+            newSong.artist = $("#artist").val();
+            newSong.img = $("#img").val();
+            newSong.type = $("#type").val();
+            newSong.duration = $("#duration").val();
+            Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function() {
+                $('#editModal').modal('hide');
+            });
         }
     });
 
@@ -540,6 +571,14 @@ if (Meteor.isClient) {
         playlist_songs: function() {
             var data = Playlists.find({type: type}).fetch();
             if (data !== undefined && data.length > 0) {
+                data[0].songs.map(function(song) {
+                    if (song.title === Session.get("title")) {
+                        song.current = true;
+                    } else {
+                        song.current = false;
+                    }
+                    return song;
+                });
                 return data[0].songs;
             } else {
                 return [];
@@ -592,25 +631,30 @@ if (Meteor.isClient) {
 
                 var volume = localStorage.getItem("volume") || 20;
 
+                $("#media-container").empty();
+                yt_player = undefined;
                 if (currentSong.type === "SoundCloud") {
-                  $("#player").attr("src", "")
-                  getSongInfo(currentSong);
-                  SC.stream("/tracks/" + currentSong.id + "#t=20s", function(sound){
-                    _sound = sound;
-                    sound.setVolume(volume / 100);
-                    sound.play();
-                    var interval = setInterval(function() {
-                        if (sound.getState() === "playing") {
-                            sound.seek(getTimeElapsed());
-                            window.clearInterval(interval);
-                        }
-                    }, 200);
-                    // Session.set("title", currentSong.title || "Title");
-                    // Session.set("artist", currentSong.artist || "Artist");
-                    Session.set("duration", currentSong.duration);
-                    resizeSeekerbar();
-                  });
+                    // Change id from visualizer to media-container
+                    $("#player").attr("src", "");
+                    getSongInfo(currentSong);
+                    SC.stream("/tracks/" + currentSong.id, function(sound){
+                        _sound = sound;
+                        sound.setVolume(volume / 100);
+                        startVisualizer(sound._player._html5Audio);
+                        sound.play();
+                        var interval = setInterval(function() {
+                            if (sound.getState() === "playing") {
+                                sound.seek(getTimeElapsed());
+                                window.clearInterval(interval);
+                            }
+                        }, 200);
+                        // Session.set("title", currentSong.title || "Title");
+                        // Session.set("artist", currentSong.artist || "Artist");
+                        Session.set("duration", currentSong.duration);
+                        resizeSeekerbar();
+                    });
                 } else {
+                    $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
                     if (yt_player === undefined) {
                         yt_player = new YT.Player("player", {
                             height: 540,
@@ -655,7 +699,7 @@ if (Meteor.isClient) {
                 window.location = "/";
             } else {
                 Session.set("loaded", true);
-                Meteor.setInterval(function () {
+                minterval = Meteor.setInterval(function () {
                     var data = undefined;
                     var dataCursorH = History.find({type: type});
                     var dataCursorP = Playlists.find({type: type});
@@ -928,6 +972,11 @@ if (Meteor.isServer) {
                 throw new Meteor.error(403, "Invalid genre.");
             }
         },
+        updateQueueSong: function(genre, oldSong, newSong) {
+            newSong.id = oldSong.id;
+            Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
+            return true;
+        },
         removeSongFromQueue: function(type, songId) {
             type = type.toLowerCase();
             Queues.update({type: type}, {$pull: {songs: {id: songId}}});
@@ -1073,6 +1122,10 @@ Router.route("/admin", {
             this.redirect("/");
         }
     }
+});
+
+Router.route("/vis", {
+    template: "visualizer"
 });
 
 Router.route("/:type", {
