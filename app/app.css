@@ -191,7 +191,7 @@ ul {
   background-color: transparent;
   font-weight: 900;
 }
-.loginlanding {
+.homepage {
   background: #50a3a2;
   background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
   background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
@@ -876,4 +876,7 @@ footer a:hover{
 #settings{
   margin-top: 10px;
   margin-left: 10px;
+}
+#loginregistercontainer {
+  margin-bottom: 100px;
 }

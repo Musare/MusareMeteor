@@ -1,31 +1,18 @@
 <template name="home">
-    {{#if currentUser}}
-    <div id="dashboard">
+    <div class="homepage">
+        {{> header}}
+        {{#if currentUser}}
+        {{else}}
+            <div id="loginregistercontainer">
+                <div id="login-view">
+                    {{> login}}
+                </div>
+                <div id="register-view" style="display:none">
+                    {{> register}}
+                </div>
+            </div>
+        {{/if}}
         {{> dashboard}}
         {{> footer}}
     </div>
-    {{else}}
-    <div class="loginlanding">
-        <div id="login-view">
-            {{> login}}
-        </div>
-        <div id="register-view" style="display:none">
-            {{> register}}
-        </div>
-
-        <ul class="bg-bubbles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-    </div>
-    {{> footer}}
-    {{/if}}
 </template>
