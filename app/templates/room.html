@@ -36,15 +36,7 @@
               </div>
             </div>
             <div class="col-md-3" id="side-panel">
-              <!-- {{> playlist}} -->
-              <h2 class="playlist-title">Playlist</h2>
-              <ul id="playlist">
-                {{#each playlist_songs}}
-                  <li>
-                      <strong>{{title}}</strong> - {{artist}}
-                  </li>
-                {{/each}}
-              </ul>
+              {{> playlist}}
             </div>
           </div>
             <!--<h1 class="room-name">{{{type}}}</h1>
@@ -170,12 +162,13 @@
          */
 
         var SoundCloudAudioSource = function(player) {
+            player.crossOrigin = "anonymous";
             var self = this;
             var analyser;
             var audioCtx = new (window.AudioContext || window.webkitAudioContext);
             analyser = audioCtx.createAnalyser();
             analyser.fftSize = 256;
-            player.crossOrigin = "anonymous";
+            console.log(player);
             var source = audioCtx.createMediaElementSource(player);
             source.connect(analyser);
             analyser.connect(audioCtx.destination);

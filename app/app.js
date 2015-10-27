@@ -639,7 +639,9 @@ if (Meteor.isClient) {
                     getSongInfo(currentSong);
                     SC.stream("/tracks/" + currentSong.id, function(sound){
                         _sound = sound;
+                        console.log(sound);
                         sound.setVolume(volume / 100);
+                        console.log(sound._player._html5Audio);
                         startVisualizer(sound._player._html5Audio);
                         sound.play();
                         var interval = setInterval(function() {
