@@ -9,6 +9,12 @@ if (Meteor.isClient) {
         reCAPTCHA.config({
             publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
         });
+        var stations = ["edm", "pop"]; //Rooms to be set on server startup
+        for(var i in stations){
+          if(Rooms.find({type: stations[i]}).count() === 0){
+            Meteor.call("createRoom", stations[i]);
+          }
+        }
     });
 
     Meteor.subscribe("queues");
@@ -396,14 +402,6 @@ if (Meteor.isClient) {
         },
         loaded: function() {
           return Session.get("loaded");
-        },
-        playlist_songs: function() {
-          var data = Playlists.find({type: type}).fetch();
-          if (data !== undefined && data.length > 0) {
-              return data[0].songs;
-          } else {
-              return [];
-          }
         }
     });
 
@@ -573,6 +571,9 @@ if (Meteor.isClient) {
 
     Template.playlist.helpers({
         playlist_songs: function() {
+            parts = location.href.split('/');
+            id = parts.pop();
+            type = id.toLowerCase();
             var data = Playlists.find({type: type}).fetch();
             if (data !== undefined && data.length > 0) {
                 data[0].songs.map(function(song) {
@@ -583,6 +584,7 @@ if (Meteor.isClient) {
                     }
                     return song;
                 });
+                console.log(data[0].songs);
                 return data[0].songs;
             } else {
                 return [];
@@ -600,7 +602,7 @@ if (Meteor.isClient) {
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
         var currentSong = undefined;
         var nextSong = undefined;
@@ -658,7 +660,7 @@ if (Meteor.isClient) {
                         // Session.set("title", currentSong.title || "Title");
                         // Session.set("artist", currentSong.artist || "Artist");
                         Session.set("duration", currentSong.duration);
-                        resizeSeekerbar();
+                        //resizeSeekerbar();
                     });
                 } else {
                     $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
@@ -673,7 +675,7 @@ if (Meteor.isClient) {
                                     event.target.seekTo(getTimeElapsed() / 1000);
                                     event.target.playVideo();
                                     event.target.setVolume(volume);
-                                    resizeSeekerbar();
+                                    //resizeSeekerbar();
                                 },
                                 'onStateChange': function(event){
                                     if (event.data == YT.PlayerState.PAUSED) {
@@ -755,7 +757,7 @@ if (Meteor.isClient) {
                 }, 1000);
                 Meteor.setInterval(function () {
                   resizeSeekerbar();
-                }, 50);
+                }, 500);
             }
         });
     });
