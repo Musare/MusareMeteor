@@ -9,6 +9,12 @@ if (Meteor.isClient) {
         reCAPTCHA.config({
             publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
         });
+        var stations = ["edm", "pop"]; //Rooms to be set on server startup
+        for(var i in stations){
+          if(Rooms.find({type: stations[i]}).count() === 0){
+            Meteor.call("createRoom", stations[i]);
+          }
+        }
     });
 
     Meteor.subscribe("queues");
@@ -134,7 +140,11 @@ if (Meteor.isClient) {
                 console.log(username, password, err, res);
                 if (err) {
                     console.log(err);
-                    $(".container").after('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>')
+                    var errAlert = $('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
+                    $("#login").after(errAlert);
+                    errAlert.fadeOut(20000, function() {
+                        errAlert.remove();
+                    });
                 } else {
                     console.log();
                     Meteor.loginWithPassword(username, password);
@@ -561,6 +571,9 @@ if (Meteor.isClient) {
 
     Template.playlist.helpers({
         playlist_songs: function() {
+            parts = location.href.split('/');
+            id = parts.pop();
+            type = id.toLowerCase();
             var data = Playlists.find({type: type}).fetch();
             if (data !== undefined && data.length > 0) {
                 data[0].songs.map(function(song) {
@@ -588,7 +601,7 @@ if (Meteor.isClient) {
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
 
         var currentSong = undefined;
         var nextSong = undefined;
@@ -738,7 +751,7 @@ if (Meteor.isClient) {
                 }, 1000);
                 Meteor.setInterval(function () {
                     resizeSeekerbar();
-                }, 50);
+                }, 500);
             }
         });
     });
@@ -938,54 +951,89 @@ if (Meteor.isServer) {
             }
             return true;
         },
-        sendMessage: function(type, message) {
-            if (Chat.find({type: type}).count() === 0) {
-                Chat.insert({type: type, messages: []});
-            }
-            Chat.update({type: type}, {$push: {messages: {message: message, userid: "Kris"}}})
-        },
         addSongToQueue: function(type, songData) {
-            type = type.toLowerCase();
-            if (Rooms.find({type: type}).count() === 1) {
-                if (Queues.find({type: type}).count() === 0) {
-                    Queues.insert({type: type, songs: []});
-                }
-                if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
-                    songData.duration = getSongDuration(songData.title, songData.artist);
-                    songData.img = getSongAlbumArt(songData.title, songData.artist);
-                    Queues.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, img: songData.img, type: songData.type}}});
-                    return true;
+            if (Meteor.userId()) {
+                type = type.toLowerCase();
+                if (Rooms.find({type: type}).count() === 1) {
+                    if (Queues.find({type: type}).count() === 0) {
+                        Queues.insert({type: type, songs: []});
+                    }
+                    if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
+                        songData.duration = getSongDuration(songData.title, songData.artist);
+                        songData.img = getSongAlbumArt(songData.title, songData.artist);
+                        Queues.update({type: type}, {
+                            $push: {
+                                songs: {
+                                    id: songData.id,
+                                    title: songData.title,
+                                    artist: songData.artist,
+                                    duration: songData.duration,
+                                    img: songData.img,
+                                    type: songData.type
+                                }
+                            }
+                        });
+                        return true;
+                    } else {
+                        throw new Meteor.error(403, "Invalid data.");
+                    }
                 } else {
-                    throw new Meteor.error(403, "Invalid data.");
+                    throw new Meteor.error(403, "Invalid genre.");
                 }
             } else {
-                throw new Meteor.error(403, "Invalid genre.");
+                throw new Meteor.error(403, "Invalid permissions.");
             }
         },
         updateQueueSong: function(genre, oldSong, newSong) {
-            newSong.id = oldSong.id;
-            Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
-            return true;
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                newSong.id = oldSong.id;
+                Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
+                return true;
+            } else {
+                throw new Meteor.error(403, "Invalid permissions.");
+            }
         },
         removeSongFromQueue: function(type, songId) {
-            type = type.toLowerCase();
-            Queues.update({type: type}, {$pull: {songs: {id: songId}}});
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                type = type.toLowerCase();
+                Queues.update({type: type}, {$pull: {songs: {id: songId}}});
+            } else {
+                throw new Meteor.error(403, "Invalid permissions.");
+            }
         },
         addSongToPlaylist: function(type, songData) {
-            type = type.toLowerCase();
-            if (Rooms.find({type: type}).count() === 1) {
-                if (Playlists.find({type: type}).count() === 0) {
-                    Playlists.insert({type: type, songs: []});
-                }
-                if (songData !== undefined && Object.keys(songData).length === 6 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.img !== undefined) {
-                    Playlists.update({type: type}, {$push: {songs: {id: songData.id, title: songData.title, artist: songData.artist, duration: songData.duration, img: songData.img, type: songData.type}}});
-                    Queues.update({type: type}, {$pull: {songs: {id: songData.id}}});
-                    return true;
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                type = type.toLowerCase();
+                if (Rooms.find({type: type}).count() === 1) {
+                    if (Playlists.find({type: type}).count() === 0) {
+                        Playlists.insert({type: type, songs: []});
+                    }
+                    if (songData !== undefined && Object.keys(songData).length === 6 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.img !== undefined) {
+                        Playlists.update({type: type}, {
+                            $push: {
+                                songs: {
+                                    id: songData.id,
+                                    title: songData.title,
+                                    artist: songData.artist,
+                                    duration: songData.duration,
+                                    img: songData.img,
+                                    type: songData.type
+                                }
+                            }
+                        });
+                        Queues.update({type: type}, {$pull: {songs: {id: songData.id}}});
+                        return true;
+                    } else {
+                        throw new Meteor.error(403, "Invalid data.");
+                    }
                 } else {
-                    throw new Meteor.error(403, "Invalid data.");
+                    throw new Meteor.error(403, "Invalid genre.");
                 }
             } else {
-                throw new Meteor.error(403, "Invalid genre.");
+                throw new Meteor.error(403, "Invalid permissions.");
             }
         },
         createRoom: function(type) {
