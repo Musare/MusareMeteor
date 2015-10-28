@@ -9,12 +9,6 @@ if (Meteor.isClient) {
         reCAPTCHA.config({
             publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
         });
-        var stations = ["edm", "pop"]; //Rooms to be set on server startup
-        for(var i in stations){
-          if(Rooms.find({type: stations[i]}).count() === 0){
-            Meteor.call("createRoom", stations[i]);
-          }
-        }
     });
 
     Meteor.subscribe("queues");
@@ -771,7 +765,89 @@ if (Meteor.isServer) {
         reCAPTCHA.config({
             privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
         });
+        var stations = ["edm", "pop"]; //Rooms to be set on server startup
+        for(var i in stations){
+            if(Rooms.find({type: stations[i]}).count() === 0){
+                createRoom(stations[i]);
+            }
+        }
     });
+
+    function createRoom(type) {
+        if (Rooms.find({type: type}).count() === 0) {
+            Rooms.insert({type: type}, function(err) {
+                if (err) {
+                    throw err;
+                } else {
+                    if (Playlists.find({type: type}).count() === 1) {
+                        if (History.find({type: type}).count() === 0) {
+                            History.insert({type: type, history: []}, function(err3) {
+                                if (err3) {
+                                    throw err3;
+                                } else {
+                                    startStation();
+                                    return true;
+                                }
+                            });
+                        } else {
+                            startStation();
+                            return true;
+                        }
+                    } else {
+                        Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
+                            if (err2) {
+                                throw err2;
+                            } else {
+                                if (History.find({type: type}).count() === 0) {
+                                    History.insert({type: type, history: []}, function(err3) {
+                                        if (err3) {
+                                            throw err3;
+                                        } else {
+                                            startStation();
+                                            return true;
+                                        }
+                                    });
+                                } else {
+                                    startStation();
+                                    return true;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+            throw "Room already exists";
+        }
+        function startStation() {
+            var startedAt = Date.now();
+            var songs = Playlists.find({type: type}).fetch()[0].songs;
+            var currentSong = 0;
+            addToHistory(songs[currentSong], startedAt);
+
+            function addToHistory(song, startedAt) {
+                History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
+            }
+
+            function skipSong() {
+                songs = Playlists.find({type: type}).fetch()[0].songs;
+                if (currentSong < (songs.length - 1)) {
+                    currentSong++;
+                } else currentSong = 0;
+                songTimer();
+                addToHistory(songs[currentSong], startedAt);
+            }
+
+            function songTimer() {
+                startedAt = Date.now();
+                Meteor.setTimeout(function() {
+                    skipSong();
+                }, songs[currentSong].duration * 1000);
+            }
+
+            songTimer();
+        }
+    }
 
     Meteor.users.deny({update: function () { return true; }});
     Meteor.users.deny({insert: function () { return true; }});
@@ -1048,81 +1124,9 @@ if (Meteor.isServer) {
         createRoom: function(type) {
             var userData = Meteor.users.find(Meteor.userId());
             if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
-                if (Rooms.find({type: type}).count() === 0) {
-                    Rooms.insert({type: type}, function(err) {
-                        if (err) {
-                            throw err;
-                        } else {
-                            if (Playlists.find({type: type}).count() === 1) {
-                                if (History.find({type: type}).count() === 0) {
-                                    History.insert({type: type, history: []}, function(err3) {
-                                        if (err3) {
-                                            throw err3;
-                                        } else {
-                                            startStation();
-                                            return true;
-                                        }
-                                    });
-                                } else {
-                                    startStation();
-                                    return true;
-                                }
-                            } else {
-                                Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
-                                    if (err2) {
-                                        throw err2;
-                                    } else {
-                                        if (History.find({type: type}).count() === 0) {
-                                            History.insert({type: type, history: []}, function(err3) {
-                                                if (err3) {
-                                                    throw err3;
-                                                } else {
-                                                    startStation();
-                                                    return true;
-                                                }
-                                            });
-                                        } else {
-                                            startStation();
-                                            return true;
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                } else {
-                    throw "Room already exists";
-                }
+                createRoom(type);
             } else {
                 return false;
-            }
-            function startStation() {
-                var startedAt = Date.now();
-                var songs = Playlists.find({type: type}).fetch()[0].songs;
-                var currentSong = 0;
-                addToHistory(songs[currentSong], startedAt);
-
-                function addToHistory(song, startedAt) {
-                    History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
-                }
-
-                function skipSong() {
-                    songs = Playlists.find({type: type}).fetch()[0].songs;
-                    if (currentSong < (songs.length - 1)) {
-                        currentSong++;
-                    } else currentSong = 0;
-                    songTimer();
-                    addToHistory(songs[currentSong], startedAt);
-                }
-
-                function songTimer() {
-                    startedAt = Date.now();
-                    Meteor.setTimeout(function() {
-                        skipSong();
-                    }, songs[currentSong].duration * 1000);
-                }
-
-                songTimer();
             }
         }
     });
