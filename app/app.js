@@ -626,13 +626,11 @@ if (Meteor.isClient) {
                 $("#media-container").empty();
                 yt_player = undefined;
                 if (currentSong.type === "SoundCloud") {
-                    // Change id from visualizer to media-container
-                    $("#player").attr("src", "");
+                    $("#media-container").append('<img src="/soundcloud-image.png" class="embed-responsive-item" />');
                     getSongInfo(currentSong);
                     SC.stream("/tracks/" + currentSong.id, function(sound){
                         _sound = sound;
                         sound.setVolume(volume / 100);
-                        startVisualizer(sound._player._html5Audio);
                         sound.play();
                         var interval = setInterval(function() {
                             if (sound.getState() === "playing") {
