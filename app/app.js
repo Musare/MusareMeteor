@@ -660,7 +660,7 @@ if (Meteor.isClient) {
                         // Session.set("title", currentSong.title || "Title");
                         // Session.set("artist", currentSong.artist || "Artist");
                         Session.set("duration", currentSong.duration);
-                        //resizeSeekerbar();
+                        resizeSeekerbar();
                     });
                 } else {
                     $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
@@ -675,7 +675,7 @@ if (Meteor.isClient) {
                                     event.target.seekTo(getTimeElapsed() / 1000);
                                     event.target.playVideo();
                                     event.target.setVolume(volume);
-                                    //resizeSeekerbar();
+                                    resizeSeekerbar();
                                 },
                                 'onStateChange': function(event){
                                     if (event.data == YT.PlayerState.PAUSED) {
