@@ -27,6 +27,7 @@ if (Meteor.isClient) {
     var parts = location.href.split('/');
     var id = parts.pop();
     var type = id.toLowerCase();
+    var resizeSeekerbarInterval;
 
     function getSpotifyInfo(title, cb, artist) {
         var q = "";
@@ -208,6 +209,10 @@ if (Meteor.isClient) {
         if (_sound !== undefined) _sound.stop();
         if (minterval !== undefined) {
             Meteor.clearInterval(minterval);
+        }
+        if (resizeSeekerbarInterval !== undefined) {
+            Meteor.clearInterval(resizeSeekerbarInterval);
+            resizeSeekerbarInterval = undefined;
         }
         Meteor.subscribe("history");
     });
@@ -595,6 +600,10 @@ if (Meteor.isClient) {
     Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
+        if (resizeSeekerbarInterval !== undefined) {
+            Meteor.clearInterval(resizeSeekerbarInterval);
+            resizeSeekerbarInterval = undefined;
+        }
         yt_player = undefined;
         _sound = undefined;
         Session.set("videoHidden", false)
@@ -749,7 +758,7 @@ if (Meteor.isClient) {
                         startSong();
                     }
                 }, 1000);
-                Meteor.setInterval(function () {
+                resizeSeekerbarInterval = Meteor.setInterval(function () {
                     resizeSeekerbar();
                 }, 500);
             }
