@@ -646,6 +646,7 @@ if (Meteor.isClient) {
                         console.log(sound);
                         sound.setVolume(volume / 100);
                         console.log(sound._player._html5Audio);
+                        sound._player._html5Audio.crossorigin = "anonymous";
                         startVisualizer(sound._player._html5Audio);
                         sound.play();
                         var interval = setInterval(function() {
