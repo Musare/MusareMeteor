@@ -226,6 +226,7 @@ if (Meteor.isClient) {
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
             });
+            $("#close-modal").click();
         },
         "click #toggle-video": function(e){
             e.preventDefault();
