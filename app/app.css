@@ -842,10 +842,6 @@ footer a:hover{
 .back:hover{
   color: white;
 }
-#doorbell-button{
-  margin-right: 2000px;
-}
-
 #volume-container {
   width: 172px; /*12.5 px each side*/
   float: right;
