@@ -411,7 +411,7 @@ form button:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 .bg-bubbles li:nth-child(10) {
-  left: 90%;
+  left: 80%;
   width: 160px;
   height: 160px;
   -webkit-animation-delay: 11s;
@@ -463,7 +463,6 @@ footer {
   height: 60px;
   margin-top: 95px;
   color: white;
-  background-color: rgba(255,255,255,0.4);
   padding-top: 5px;
 }
 .push {
@@ -708,7 +707,7 @@ footer a:hover{
 #croom_container {
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 100px;
+  margin-bottom: 10px;
   width: 304px !important;
 }
 #croom_label {
@@ -831,7 +830,7 @@ footer a:hover{
   text-align: center;
 }
 .admin-queue-panel:first-child {
-  margin-top: 100px;
+  margin-top: 20px;
 }
 #songs {
   margin-top: -200px;
