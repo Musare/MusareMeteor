@@ -374,7 +374,12 @@ if (Meteor.isClient) {
                     }, 500);
                 } else {
                     slider.on("slide", function(val) {
-                        $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
+                        if (val.value === 0) {
+                            $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
+                        } else {
+                            $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
+                        }
+
                         if (yt_player !== undefined) {
                             yt_player.setVolume(val.value);
                             localStorage.setItem("volume", val.value);
