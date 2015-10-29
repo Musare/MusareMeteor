@@ -345,6 +345,20 @@ if (Meteor.isClient) {
             $("#chat-ul").scrollTop(1000000);
             $("#chat-input").val("");
             Meteor.call("sendMessage", type, message);
+        },
+        "click #volume-icon": function(){
+          var volume = 0;
+          var slider = $("#volume-slider").slider();
+          $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
+          if (yt_player !== undefined) {
+              yt_player.setVolume(volume);
+              localStorage.setItem("volume", volume);
+              $("#volume-slider").slider("setValue", volume);
+          } else if (_sound !== undefined) {
+              _sound.setVolume(volume);
+              localStorage.setItem("volume", volume);
+              $("#volume-slider").slider("setValue", volume);
+          }
         }
     });
 
@@ -360,6 +374,7 @@ if (Meteor.isClient) {
                     }, 500);
                 } else {
                     slider.on("slide", function(val) {
+                        $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
                         if (yt_player !== undefined) {
                             yt_player.setVolume(val.value);
                             localStorage.setItem("volume", val.value);
