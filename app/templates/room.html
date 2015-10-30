@@ -30,6 +30,8 @@
                 <div class="col-md-4">
                   {{#if currentUser}}
                     <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
+                    {{else}}
+                    <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
                   {{/if}}
                 </div>
                 <div class="col-md-4">
