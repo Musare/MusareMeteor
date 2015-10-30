@@ -25,6 +25,11 @@
                   <ul class="nav navbar-nav navbar-right">
                     <li><a href="#" class="logout navbar-right">Logout</a></li>
                   </ul>
+                  {{else}}
+                    <ul class="nav navbar-nav navbar-right">
+                      <li><a href="/login" class="navbar-right">Login</a></li>
+                      <li><a href="/signup" class="navbar-right">Sign Up</a></li>
+                    </ul>
                 {{/if}}
                 <!--form class="navbar-form navbar-left" role="search">
                     <div class="form-group">

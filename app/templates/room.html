@@ -28,7 +28,9 @@
               </div>
               <div class="row" id="settings">
                 <div class="col-md-4">
-                  <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
+                  {{#if currentUser}}
+                    <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
+                  {{/if}}
                 </div>
                 <div class="col-md-4">
                   <button type="button" id="toggle-video" class="button">Hide video</button>
