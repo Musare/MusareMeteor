@@ -12,6 +12,7 @@ if (Meteor.isClient) {
     });
 
     Meteor.subscribe("queues");
+    Meteor.subscribe("playlists");
 
     var minterval;
     var hpSound = undefined;
@@ -428,6 +429,9 @@ if (Meteor.isClient) {
     Template.admin.helpers({
         queues: function() {
             return Queues.find({});
+        },
+        playlists: function() {
+            return Playlists.find({});
         }
     });
 
@@ -438,9 +442,10 @@ if (Meteor.isClient) {
         "click .preview-button": function(e){
             Session.set("song", this);
         },
-        "click .edit-button": function(e){
+        "click .edit-queue-button": function(e){
             Session.set("song", this);
             Session.set("genre", $(e.toElement).data("genre"));
+            Session.set("type", "queue");
             $("#type").val(this.type);
             $("#artist").val(this.artist);
             $("#title").val(this.title);
@@ -448,13 +453,28 @@ if (Meteor.isClient) {
             $("#id").val(this.id);
             $("#duration").val(this.duration);
         },
-        "click #add-song-button": function(e){
+        "click .edit-playlist-button": function(e){
+            Session.set("song", this);
+            Session.set("genre", $(e.toElement).data("genre"));
+            Session.set("type", "playlist");
+            $("#type").val(this.type);
+            $("#artist").val(this.artist);
+            $("#title").val(this.title);
+            $("#img").val(this.img);
+            $("#id").val(this.id);
+            $("#duration").val(this.duration);
+        },
+        "click .add-song-button": function(e){
             var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
             Meteor.call("addSongToPlaylist", genre, this);
         },
-        "click #deny-song-button": function(e){
+        "click .deny-song-button": function(e){
             var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
             Meteor.call("removeSongFromQueue", genre, this.id);
+        },
+        "click .remove-song-button": function(e){
+            var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+            Meteor.call("removeSongFromPlaylist", genre, this.id);
         },
         "click #play": function() {
             $("#play").attr("disabled", true);
@@ -535,9 +555,15 @@ if (Meteor.isClient) {
             newSong.img = $("#img").val();
             newSong.type = $("#type").val();
             newSong.duration = $("#duration").val();
-            Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function() {
-                $('#editModal').modal('hide');
-            });
+            if (Session.get("type") === "playlist") {
+                Meteor.call("updatePlaylistSong", Session.get("genre"), Session.get("song"), newSong, function() {
+                    $('#editModal').modal('hide');
+                });
+            } else {
+                Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function() {
+                    $('#editModal').modal('hide');
+                });
+            }
         }
     });
 
@@ -612,7 +638,6 @@ if (Meteor.isClient) {
     });
 
     Meteor.subscribe("rooms");
-    Meteor.subscribe("chat");
 
     Template.room.onCreated(function () {
         if (resizeSeekerbarInterval !== undefined) {
@@ -716,7 +741,6 @@ if (Meteor.isClient) {
         }
 
         Meteor.subscribe("history");
-        Meteor.subscribe("playlists");
         Session.set("loaded", false);
         Meteor.subscribe("rooms", function() {
             var parts = location.href.split('/');
@@ -829,7 +853,7 @@ if (Meteor.isServer) {
                                         }
                                     });
                                 } else {
-                                    startStation();
+                                    startStation(type);
                                     return true;
                                 }
                             }
@@ -840,34 +864,43 @@ if (Meteor.isServer) {
         } else {
             throw "Room already exists";
         }
-        function startStation() {
-            var startedAt = Date.now();
-            var songs = Playlists.find({type: type}).fetch()[0].songs;
-            var currentSong = 0;
-            addToHistory(songs[currentSong], startedAt);
+    }
 
-            function addToHistory(song, startedAt) {
-                History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
-            }
-
-            function skipSong() {
-                songs = Playlists.find({type: type}).fetch()[0].songs;
-                if (currentSong < (songs.length - 1)) {
-                    currentSong++;
-                } else currentSong = 0;
-                songTimer();
-                addToHistory(songs[currentSong], startedAt);
-            }
-
-            function songTimer() {
-                startedAt = Date.now();
-                Meteor.setTimeout(function() {
-                    skipSong();
-                }, songs[currentSong].duration * 1000);
-            }
-
-            songTimer();
+    function startStation(type) {
+        var startedAt = Date.now();
+        var playlist = Playlists.find({type: type}).fetch()[0];
+        var songs = playlist.songs;
+        if (playlist.lastSong === undefined) {
+            Playlists.update({type: type}, {$set: {lastSong: 0}});
+            playlist = Playlists.find({type: type}).fetch()[0];
+            songs = playlist.songs;
         }
+        var currentSong = playlist.lastSong;
+        addToHistory(songs[currentSong], startedAt);
+
+        function addToHistory(song, startedAt) {
+            History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
+        }
+
+        function skipSong() {
+            songs = Playlists.find({type: type}).fetch()[0].songs;
+            if (currentSong < (songs.length - 1)) {
+                currentSong++;
+            } else currentSong = 0;
+            Playlists.update({type: type}, {$set: {lastSong: currentSong}});
+            songTimer();
+            addToHistory(songs[currentSong], startedAt);
+        }
+
+        function songTimer() {
+            startedAt = Date.now();
+            var ctimer = Meteor.setTimeout(function() {
+                skipSong();
+                Meteor.clearTimeout(ctimer);
+            }, songs[currentSong].duration * 1000);
+        }
+
+        songTimer();
     }
 
     Meteor.users.deny({update: function () { return true; }});
@@ -914,13 +947,13 @@ if (Meteor.isServer) {
     function getSongsByType(type) {
         if (type === "edm") {
             return [
-                {id: "aE2GCa-_nyU", title: "Radioactive", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix", "Lindsey Stirling, Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "youtube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
-                {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize", "Lindsey Stirling"), type: "youtube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
+                {id: "aE2GCa-_nyU", title: "Radioactive", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix", "Lindsey Stirling, Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "YouTube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
+                {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize", "Lindsey Stirling"), type: "YouTube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
             ];
         } else if (type === "nightcore") {
-            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)", "Meg & Dia"), artist: "Meg & Dia", type: "youtube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
+            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)", "Meg & Dia"), artist: "Meg & Dia", type: "YouTube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
         } else {
-            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up", "Rick Astley"), artist: "Rick Astley", type: "youtube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
+            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up", "Rick Astley"), artist: "Rick Astley", type: "YouTube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
         }
     }
 
@@ -941,39 +974,7 @@ if (Meteor.isServer) {
         if (Playlists.find({type: type}).fetch()[0].songs.length === 0) {
             // Add a global video to Playlist so it can proceed
         } else {
-            var startedAt = Date.now();
-            var playlist = Playlists.find({type: type}).fetch()[0];
-            var songs = playlist.songs;
-            if (playlist.lastSong === undefined) {
-                Playlists.update({type: type}, {$set: {lastSong: 0}});
-                playlist = Playlists.find({type: type}).fetch()[0];
-                songs = playlist.songs;
-            }
-            var currentSong = playlist.lastSong;
-            addToHistory(songs[currentSong], startedAt);
-
-            function addToHistory(song, startedAt) {
-                History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
-            }
-
-            function skipSong() {
-                songs = Playlists.find({type: type}).fetch()[0].songs;
-                if (currentSong < (songs.length - 1)) {
-                    currentSong++;
-                } else currentSong = 0;
-                Playlists.update({type: type}, {$set: {lastSong: currentSong}});
-                songTimer();
-                addToHistory(songs[currentSong], startedAt);
-            }
-
-            function songTimer() {
-                startedAt = Date.now();
-                Meteor.setTimeout(function() {
-                    skipSong();
-                }, songs[currentSong].duration * 1000);
-            }
-
-            songTimer();
+            startStation(type);
         }
     });
 
@@ -1100,11 +1101,30 @@ if (Meteor.isServer) {
                 throw new Meteor.error(403, "Invalid permissions.");
             }
         },
+        updatePlaylistSong: function(genre, oldSong, newSong) {
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                newSong.id = oldSong.id;
+                Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
+                return true;
+            } else {
+                throw new Meteor.error(403, "Invalid permissions.");
+            }
+        },
         removeSongFromQueue: function(type, songId) {
             var userData = Meteor.users.find(Meteor.userId());
             if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
                 type = type.toLowerCase();
                 Queues.update({type: type}, {$pull: {songs: {id: songId}}});
+            } else {
+                throw new Meteor.error(403, "Invalid permissions.");
+            }
+        },
+        removeSongFromPlaylist: function(type, songId) {
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                type = type.toLowerCase();
+                Playlists.update({type: type}, {$pull: {songs: {id: songId}}});
             } else {
                 throw new Meteor.error(403, "Invalid permissions.");
             }

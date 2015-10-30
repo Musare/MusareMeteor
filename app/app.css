@@ -884,3 +884,11 @@ footer a:hover{
 #loginregistercontainer {
   margin-bottom: 100px;
 }
+.admin-header {
+  color: white;
+}
+.admin-panel-body {
+  max-height: 400px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
