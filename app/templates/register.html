@@ -1,6 +1,7 @@
 <template name="register">
+  <div class="landing">
+    {{> header}}
     <div class="container">
-        <button class="button" id="login">Login</button>
         <h1>Sign Up</h1>
         <form class="form">
             <input id="usernameInput" type="text" autocorrect="off" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
@@ -11,4 +12,19 @@
         </form>
         <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Signup with Github</button>
     </div>
+
+    <ul class="bg-bubbles">
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+
+  </div>
 </template>

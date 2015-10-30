@@ -1,18 +1,11 @@
 <template name="home">
     <div class="homepage">
       {{> header}}
-        {{#if currentUser}}
-          {{> dashboard}}
-        {{else}}
-            <div id="loginregistercontainer">
-                <div id="login-view">
-                    {{> login}}
-                </div>
-                <div id="register-view" style="display:none">
-                    {{> register}}
-                </div>
-            </div>
-        {{/if}}
+      {{#if currentUser}}
+        {{> dashboard}}
+      {{else}}
+        {{> dashboard}}
+      {{/if}}
         <div class="push"></div>
     </div>
     {{> footer}}

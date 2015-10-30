@@ -143,17 +143,18 @@ if (Meteor.isClient) {
                 } else {
                     console.log();
                     Meteor.loginWithPassword(username, password);
+                    Accounts.onLogin(function(){
+                      window.location.href = "/";
+                    })
                 }
             });
         },
 
         "click #github-login": function(){
             Meteor.loginWithGithub()
-        },
-
-        "click #login": function(){
-            $("#register-view").hide();
-            $("#login-view").show();
+            Accounts.onLogin(function(){
+               window.location.href = "/"
+            });
         }
     });
 
@@ -163,24 +164,47 @@ if (Meteor.isClient) {
             var username = e.target.loginUsername.value;
             var password = e.target.loginPassword.value;
             Meteor.loginWithPassword(username, password);
+            Accounts.onLogin(function(){
+              window.location.href = "/";
+            })
             Accounts.onLoginFailure(function(){
-                $("input").css("background-color","indianred").addClass("animated shake");
-                    $("input").on("click",function(){
-                        $("input").css({
-                            "background-color": "transparent",
-                            "width": "250px"
-                     });
+                $("input").css("background-color","indianred");
+                $("input").on("click",function(){
+                    $("input").css({
+                      "-webkit-appearance": "none",
+                      "   -moz-appearance": "none",
+                      "        appearance": "none",
+                      "outline": "0",
+                      "border": "1px solid rgba(255, 255, 255, 0.4)",
+                      "background-color": "rgba(255, 255, 255, 0.2)",
+                      "width": "304px",
+                      "border-radius": "3px",
+                      "padding": "10px 15px",
+                      "margin": "0 auto 10px auto",
+                      "display": "block",
+                      "text-align": "center",
+                      "font-size": "18px",
+                      "color": "white",
+                      "-webkit-transition-duration": "0.25s",
+                      "        transition-duration": "0.25s",
+                      "font-weight": "300"
+                    });
+                    $("input:focus").css({
+                      "width": "354px",
+                      "color": "white"
+                    })
+                    $("input").on("blur", function(){
+                      $(this).css("width", "304px");
+                    })
                 })
             });
         },
 
         "click #github-login": function(){
             Meteor.loginWithGithub()
-        },
-
-        "click #register": function(){
-            $("#login-view").hide();
-            $("#register-view").show();
+            Accounts.onLogin(function(){
+               window.location.href = "/"
+            });
         }
     });
 
@@ -1164,6 +1188,14 @@ if (Meteor.isServer) {
 Router.route("/", {
     template: "home"
 });
+
+Router.route("/login", {
+  template: "login"
+})
+
+Router.route("/signup", {
+  template: "register"
+})
 
 Router.route("/terms", {
     template: "terms"
