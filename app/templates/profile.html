@@ -1,12 +1,13 @@
 <template name="profile">
-    {{> header}}
-    <div class="landing row">
+    <div class="landing">
+      {{> header}}
+      <div class="row">
         {{#if loaded}}
             <h1 id="profile-name">{{username}}</h1>
 
             <div class="col-md-4 col-md-offset-4">
                 <div class="panel panel-primary">
-                    <div class="panel-heading">{{username}}</div>
+                    <div class="panel-heading">Basic Info</div>
                     <div class="panel-body">
                         <ul>
                             <li class="user-stat"><b>Joined: </b>{{first_joined}}</li>
@@ -18,17 +19,18 @@
         {{else}}
             {{> loading}}
         {{/if}}
-        <ul class="bg-bubbles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
+      </div>
+      <ul class="bg-bubbles">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+      </ul>
     </div>
 </template>
