@@ -133,7 +133,6 @@ if (Meteor.isClient) {
             Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
                 grecaptcha.reset();
 
-                console.log(username, password, err, res);
                 if (err) {
                     console.log(err);
                     var errAlert = $('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
@@ -142,7 +141,6 @@ if (Meteor.isClient) {
                         errAlert.remove();
                     });
                 } else {
-                    console.log();
                     Meteor.loginWithPassword(username, password);
                     Accounts.onLogin(function(){
                       window.location.href = "/";
@@ -365,12 +363,6 @@ if (Meteor.isClient) {
           $("#search-info").show();
           $("#add-info").hide();
         },
-        "click #submit-message": function(){
-            var message = $("#chat-input").val();
-            $("#chat-ul").scrollTop(1000000);
-            $("#chat-input").val("");
-            Meteor.call("sendMessage", type, message);
-        },
         "click #volume-icon": function(){
           var volume = 0;
           var slider = $("#volume-slider").slider();
@@ -384,6 +376,12 @@ if (Meteor.isClient) {
               localStorage.setItem("volume", volume);
               $("#volume-slider").slider("setValue", volume);
           }
+        },
+        "click #play": function() {
+            Meteor.call("resumeRoom", type);
+        },
+        "click #pause": function() {
+            Meteor.call("pauseRoom", type);
         }
     });
 
@@ -447,6 +445,16 @@ if (Meteor.isClient) {
         },
         loaded: function() {
           return Session.get("loaded");
+        },
+        isAdmin: function() {
+            if (Meteor.user() && Meteor.user().profile) {
+                return Meteor.user().profile.rank === "admin";
+            } else {
+                return false;
+            }
+        },
+        paused: function() {
+            return Session.get("state") === "paused";
         }
     });
 
@@ -568,17 +576,16 @@ if (Meteor.isClient) {
         "click #get-spotify-info": function() {
             var search = $("#title").val();
             var artistName = $("#artist").val();
-            console.log(artistName)
             getSpotifyInfo(search, function(data) {
-              console.log(data);
-              for(var i in data){
-                for(var j in data[i].items){
-                  if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                      $("#img").val(data[i].items[j].album.images[1].url);
-                      $("#duration").val(data[i].items[j].duration_ms / 1000);
-                  }
+                for(var i in data){
+                    for(var j in data[i].items){
+                        if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
+                            $("#img").val(data[i].items[j].album.images[1].url);
+                            $("#duration").val(data[i].items[j].duration_ms / 1000);
+                            return;
+                        }
+                    }
                 }
-              }
             }, artistName);
         },
         "click #save-song-button": function() {
@@ -689,13 +696,14 @@ if (Meteor.isClient) {
         var nextSong = undefined;
         var afterSong = undefined;
         var size = 0;
-        var artistStr;
-        var temp = "";
-        var currentArt;
 
         function getTimeElapsed() {
             if (currentSong !== undefined) {
-                return Date.now() - currentSong.started;
+                var rooms = Rooms.find({type: type}).fetch();
+                if (rooms && rooms.length === 1) {
+                    var room = rooms[0];
+                    return Date.now() - currentSong.started + room.timePaused;
+                }
             }
             return 0;
         }
@@ -708,7 +716,9 @@ if (Meteor.isClient) {
         }
 
         function resizeSeekerbar() {
-            $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
+            if (Session.get("state") === "playing") {
+                $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
+            }
         }
 
         function startSong() {
@@ -754,9 +764,13 @@ if (Meteor.isClient) {
                                     resizeSeekerbar();
                                 },
                                 'onStateChange': function(event){
-                                    if (event.data == YT.PlayerState.PAUSED) {
+                                    if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
                                         event.target.seekTo(getTimeElapsed() / 1000);
                                         event.target.playVideo();
+                                    }
+                                    if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                        event.target.seekTo(getTimeElapsed() / 1000);
+                                        event.target.pauseVideo();
                                     }
                                 }
                             }
@@ -784,6 +798,24 @@ if (Meteor.isClient) {
             } else {
                 Session.set("loaded", true);
                 minterval = Meteor.setInterval(function () {
+                    var rooms = Rooms.find({type: type}).fetch();
+                    if (rooms && rooms.length === 1) {
+                        var room = rooms[0];
+                        if (room.state === "paused") {
+                            Session.set("state", "paused");
+                            if (yt_player !== undefined && yt_player.getPlayerState() === 1) {
+                                yt_player.pauseVideo();
+                            } else if (_sound !== undefined && _sound.getState().indexOf("playing") !== -1) {
+                                _sound.pause();
+                            }
+                        } else {
+                            Session.set("state", "playing");
+                            if (yt_player !== undefined && yt_player.getPlayerState() !== 1) {
+                                yt_player.playVideo();
+                                _sound.play();
+                            }
+                        }
+                    }
                     var data = undefined;
                     var dataCursorH = History.find({type: type});
                     var dataCursorP = Playlists.find({type: type});
@@ -829,6 +861,9 @@ if (Meteor.isClient) {
                         size = data.history.length;
                         startSong();
                     }
+                    if (data !== undefined) {
+
+                    }
                 }, 1000);
                 resizeSeekerbarInterval = Meteor.setInterval(function () {
                     resizeSeekerbar();
@@ -851,6 +886,17 @@ if (Meteor.isServer) {
         }
     });
 
+    var stations = [];
+
+    function getStation(type, cb) {
+        stations.forEach(function(station) {
+            if (station.type === type) {
+                cb(station);
+                return;
+            }
+        });
+    }
+
     function createRoom(type) {
         if (Rooms.find({type: type}).count() === 0) {
             Rooms.insert({type: type}, function(err) {
@@ -863,12 +909,12 @@ if (Meteor.isServer) {
                                 if (err3) {
                                     throw err3;
                                 } else {
-                                    startStation();
+                                    stations.push(new Station(type));
                                     return true;
                                 }
                             });
                         } else {
-                            startStation();
+                            stations.push(new Station(type));
                             return true;
                         }
                     } else {
@@ -881,12 +927,12 @@ if (Meteor.isServer) {
                                         if (err3) {
                                             throw err3;
                                         } else {
-                                            startStation();
+                                            stations.push(new Station(type));
                                             return true;
                                         }
                                     });
                                 } else {
-                                    startStation(type);
+                                    stations.push(new Station(type));
                                     return true;
                                 }
                             }
@@ -899,10 +945,11 @@ if (Meteor.isServer) {
         }
     }
 
-    function startStation(type) {
+    function Station(type) {
         var startedAt = Date.now();
         var playlist = Playlists.find({type: type}).fetch()[0];
         var songs = playlist.songs;
+
         if (playlist.lastSong === undefined) {
             Playlists.update({type: type}, {$set: {lastSong: 0}});
             playlist = Playlists.find({type: type}).fetch()[0];
@@ -926,22 +973,99 @@ if (Meteor.isServer) {
             if (currentSong < (songs.length - 1)) {
                 currentSong++;
             } else currentSong = 0;
-            if (songs)
+            if (songs);
+            if (currentSong === 0) {
+                Playlists.update({type: type}, {$set: {"songs": []}});
+                songs = shuffle(songs);
+                songs.forEach(function(song) {
+                    Playlists.update({type: type}, {$push: {"songs": song}});
+                });
+            }
             currentTitle = songs[currentSong].title;
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
+            Rooms.update({type: type}, {$set: {timePaused: 0}});
             songTimer();
             addToHistory(songs[currentSong], startedAt);
         }
 
+        Rooms.update({type: type}, {$set: {timePaused: 0}});
+
+        var timer;
+
         function songTimer() {
             startedAt = Date.now();
-            var ctimer = Meteor.setTimeout(function() {
+
+            timer = new Timer(function() {
                 skipSong();
-                Meteor.clearTimeout(ctimer);
             }, songs[currentSong].duration * 1000);
         }
 
+        var state = Rooms.find({type: type}).fetch()[0].state;
+
+        this.pauseRoom = function() {
+            if (state !== "paused") {
+                timer.pause();
+                Rooms.update({type: type}, {$set: {state: "paused"}});
+                state = "paused";
+            }
+        };
+        this.resumeRoom = function() {
+            if (state !== "playing") {
+                timer.resume();
+                Rooms.update({type: type}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
+                state = "playing";
+            }
+        };
+        this.getState = function() {
+            return state;
+        };
+        this.type = type;
+
         songTimer();
+    }
+
+    function shuffle(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex ;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+        }
+
+        return array;
+    }
+
+    function Timer(callback, delay) {
+        var timerId, start, remaining = delay;
+        var timeWhenPaused = 0;
+        var timePaused = new Date();
+
+        this.pause = function() {
+            Meteor.clearTimeout(timerId);
+            remaining -= new Date() - start;
+            timePaused = new Date();
+        };
+
+        this.resume = function() {
+            start = new Date();
+            Meteor.clearTimeout(timerId);
+            timerId = Meteor.setTimeout(callback, remaining);
+            timeWhenPaused += new Date() - timePaused;
+        };
+
+        this.timeWhenPaused = function() {
+            return timeWhenPaused;
+        };
+
+        this.resume();
     }
 
     Meteor.users.deny({update: function () { return true; }});
@@ -1015,7 +1139,7 @@ if (Meteor.isServer) {
         if (Playlists.find({type: type}).fetch()[0].songs.length === 0) {
             // Add a global video to Playlist so it can proceed
         } else {
-            startStation(type);
+            stations.push(new Station(type));
         }
     });
 
@@ -1084,6 +1208,34 @@ if (Meteor.isServer) {
     });
 
     Meteor.methods({
+        pauseRoom: function(type) {
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                    getStation(type, function(station) {
+                    if (station === undefined) {
+                        throw new Meteor.error(403, "Room doesn't exist.");
+                    } else {
+                        station.pauseRoom();
+                    }
+                });
+            } else {
+                throw new Meteor.error(403, "Invalid permissions.");
+            }
+        },
+        resumeRoom: function(type) {
+            var userData = Meteor.users.find(Meteor.userId());
+            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+                getStation(type, function(station) {
+                    if (station === undefined) {
+                        throw new Meteor.error(403, "Room doesn't exist.");
+                    } else {
+                        station.resumeRoom();
+                    }
+                });
+            } else {
+                throw new Meteor.error(403, "Invalid permissions.");
+            }
+        },
         createUserMethod: function(formData, captchaData) {
             var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
             if (!verifyCaptchaResponse.success) {

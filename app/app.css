@@ -1025,3 +1025,6 @@ footer .fa {
 .terms, .privacy, .about {
   color: white;
 }
+#play, #pause {
+    cursor: pointer;
+}

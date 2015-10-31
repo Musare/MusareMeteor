@@ -3,41 +3,50 @@
         {{#if loaded}}
           <div class="row">
             <div class="col-md-9" id="station-main">
-              <nav>
-                  <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
-                  <h3>{{{type}}}</h3>
-                  <div id="volume-container">
-                      <i class="fa fa-volume-down" id="volume-icon"></i>
-                      <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
-                  </div>
-              </nav>
-              <div id="seeker-container">
-                  <div id="seeker-bar"></div>
-              </div>
-              <div class="row" id="song-media">
-                <div class="col-md-8">
-                    <div class="embed-responsive embed-responsive-16by9" id="media-container">
-                        <!--div id="player" class="embed-responsive-item"></div-->
+                <nav>
+                    <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
+                    {{#if isAdmin}}
+                        {{#if paused}}
+                            <i class="fa fa-play fa-1" id="play"></i>
+                        {{else}}
+                            <i class="fa fa-pause fa-1" id="pause"></i>
+                        {{/if}}
+                    {{/if}}
+                    <h3>
+                        {{{type}}}
+                    </h3>
+                    <div id="volume-container">
+                        <i class="fa fa-volume-down" id="volume-icon"></i>
+                        <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
                     </div>
+                </nav>
+                <div id="seeker-container">
+                    <div id="seeker-bar"></div>
                 </div>
-                <div class="col-md-4" style="margin-top:15px">
-                  <img class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
-                  <h2 class="room-title">{{{title}}}</h2>
-                  <h2 class="room-artist">{{{artist}}}</h2>
+                <div class="row" id="song-media">
+                  <div class="col-md-8">
+                      <div class="embed-responsive embed-responsive-16by9" id="media-container">
+                          <!--div id="player" class="embed-responsive-item"></div-->
+                      </div>
+                  </div>
+                  <div class="col-md-4" style="margin-top:15px">
+                    <img class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
+                    <h2 class="room-title">{{{title}}}</h2>
+                    <h2 class="room-artist">{{{artist}}}</h2>
+                  </div>
                 </div>
-              </div>
-              <div class="row" id="settings">
-                <div class="col-md-4">
-                  {{#if currentUser}}
-                    <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
-                    {{else}}
-                    <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
-                  {{/if}}
+                <div class="row" id="settings">
+                  <div class="col-md-4">
+                    {{#if currentUser}}
+                      <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
+                      {{else}}
+                      <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
+                    {{/if}}
+                  </div>
+                  <div class="col-md-4">
+                    <button type="button" id="toggle-video" class="button">Hide video</button>
+                  </div>
                 </div>
-                <div class="col-md-4">
-                  <button type="button" id="toggle-video" class="button">Hide video</button>
-                </div>
-              </div>
             </div>
             <div class="col-md-3" id="side-panel">
               {{> playlist}}
