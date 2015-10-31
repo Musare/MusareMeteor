@@ -918,7 +918,7 @@ if (Meteor.isServer) {
 
         function skipSong() {
             songs = Playlists.find({type: type}).fetch()[0].songs;
-            song.forEach(function(song, index) {
+            songs.forEach(function(song, index) {
                 if (song.title === currentTitle) {
                     currentSong = index;
                 }
