@@ -565,12 +565,21 @@ if (Meteor.isClient) {
                 }
             });
         },
-        "click #find-img-button": function() {
-            getSpotifyInfo($("#title").val().replace(/\[.*\]/g, ""), function(data) {
-                if (data.tracks.items.length > 0) {
-                    $("#img").val(data.tracks.items[0].album.images[1].url);
+        "click #get-spotify-info": function() {
+            var search = $("#title").val();
+            var artistName = $("#artist").val();
+            console.log(artistName)
+            getSpotifyInfo(search, function(data) {
+              console.log(data);
+              for(var i in data){
+                for(var j in data[i].items){
+                  if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
+                      $("#img").val(data[i].items[j].album.images[1].url);
+                      $("#duration").val(data[i].items[j].duration_ms / 1000);
+                  }
                 }
-            }, $("#artist").val());
+              }
+            }, artistName);
         },
         "click #save-song-button": function() {
             var newSong = {};

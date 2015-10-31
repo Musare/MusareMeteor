@@ -759,7 +759,7 @@ footer a:hover{
 #s3 {
   opacity: 0.33333333333333;
 }
-#add-song-button, #find-img-button, #save-song-button {
+#add-song-button, #get-spotify-info, #save-song-button {
   display: block;
   margin: 0 auto;
 }
