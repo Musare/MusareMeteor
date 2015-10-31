@@ -909,6 +909,7 @@ if (Meteor.isServer) {
             songs = playlist.songs;
         }
         var currentSong = playlist.lastSong;
+        var currentTitle = songs[currentSong].title;
         addToHistory(songs[currentSong], startedAt);
 
         function addToHistory(song, startedAt) {
@@ -917,9 +918,16 @@ if (Meteor.isServer) {
 
         function skipSong() {
             songs = Playlists.find({type: type}).fetch()[0].songs;
+            song.forEach(function(song, index) {
+                if (song.title === currentTitle) {
+                    currentSong = index;
+                }
+            });
             if (currentSong < (songs.length - 1)) {
                 currentSong++;
             } else currentSong = 0;
+            if (songs)
+            currentTitle = songs[currentSong].title;
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
             songTimer();
             addToHistory(songs[currentSong], startedAt);
