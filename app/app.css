@@ -1022,3 +1022,6 @@ footer .fa {
     overflow-y: scroll;
     overflow-x: hidden;
 }
+.terms, .privacy, .about {
+  color: white;
+}
