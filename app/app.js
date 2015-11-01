@@ -792,6 +792,7 @@ if (Meteor.isClient) {
                             Session.set("state", "playing");
                             if (yt_player !== undefined && yt_player.getPlayerState() !== 1) {
                                 yt_player.playVideo();
+                            } else if (_sound !== undefined && _sound.getState().indexOf("paused") !== -1) {
                                 _sound.play();
                             }
                         }
