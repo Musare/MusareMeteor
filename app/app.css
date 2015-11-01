@@ -901,6 +901,7 @@ footer .fa {
 
 #song-media {
     margin-left: 10px;
+    min-height: 460px;
 }
 
 #station-main {
