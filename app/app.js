@@ -41,26 +41,6 @@ if (Meteor.isClient) {
         });
     }
 
-    function getSpotifyArtist(data) {
-        var temp = "";
-        var artist;
-        if(data.artists.length >= 2){
-            for(var k in data.artists){
-                temp = temp + data.artists[k].name + ", ";
-            }
-        } else{
-            for(var k in data.artists){
-                temp = temp + data.artists[k].name;
-            }
-        }
-        if(temp[temp.length-2] === ","){
-            artist = temp.substr(0,temp.length-2);
-        } else{
-            artist = temp;
-        }
-        return artist;
-    }
-
     Template.profile.helpers({
         "username": function() {
             return Session.get("username");
