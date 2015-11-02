@@ -964,6 +964,7 @@ if (Meteor.isServer) {
     }
 
     function Station(type) {
+        var _this = this;
         var startedAt = Date.now();
         var playlist = Playlists.find({type: type}).fetch()[0];
         var songs = playlist.songs;
@@ -1026,7 +1027,7 @@ if (Meteor.isServer) {
             startedAt = Date.now();
 
             timer = new Timer(function() {
-                this.skipSong();
+                _this.skipSong();
             }, songs[currentSong].duration * 1000);
         };
 
