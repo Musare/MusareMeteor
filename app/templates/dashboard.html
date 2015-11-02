@@ -3,10 +3,10 @@
        {{#each rooms}}
           <div class="col-md-4 col-sm-6 col-xs-12">
               <div class="station">
-                  <h3>{{type}}</h3>
+                  <h3>{{display}}</h3>
                   {{#with type=type}}
-                    <h5>{{currentSong.song.title}}</h5>
-                    <h6>{{currentSong.song.artist}}</h6>
+                      <h5>{{currentSong.song.title}}</h5>
+                      <h6>{{currentSong.song.artist}}</h6>
                   {{/with}}
                   <a href="/{{type}}" class="station_link"></a>
               </div>
@@ -15,12 +15,12 @@
     </div>
     
     <script type="text/javascript">
-      window.doorbellOptions = {
-          appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM',
-          hideEmail: true
-      };
-      (function(d, t) {
-          var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/2408?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g);
-      }(document, 'script'));
+        window.doorbellOptions = {
+            appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM',
+            hideEmail: true
+        };
+        (function(d, t) {
+            var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/2408?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g);
+        }(document, 'script'));
     </script>
 </template>

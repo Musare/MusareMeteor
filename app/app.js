@@ -407,9 +407,9 @@ if (Meteor.isClient) {
 
     Template.room.helpers({
         type: function() {
-          var parts = location.href.split('/');
-          var id = parts.pop();
-          return id.toUpperCase();
+            var parts = location.href.split('/');
+            var id = parts.pop().toLowerCase();
+            return Rooms.findOne({type: id}).display;
         },
         title: function(){
           return Session.get("title");
@@ -551,11 +551,11 @@ if (Meteor.isClient) {
             }
         },
         "click #croom_create": function() {
-            Meteor.call("createRoom", $("#croom").val(), function (err, res) {
+            Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
                 if (err) {
                     alert("Error " + err.error + ": " + err.reason);
                 } else {
-                    window.location = "/" + $("#croom").val();
+                    window.location = "/" + $("#croom_tag").val();
                 }
             });
         },
@@ -889,9 +889,10 @@ if (Meteor.isServer) {
         });
     }
 
-    function createRoom(type) {
+    function createRoom(display, tag) {
+        var type = tag;
         if (Rooms.find({type: type}).count() === 0) {
-            Rooms.insert({type: type}, function(err) {
+            Rooms.insert({display: display, type: type}, function(err) {
                 if (err) {
                     throw err;
                 } else {
@@ -1347,10 +1348,10 @@ if (Meteor.isServer) {
                 throw new Meteor.error(403, "Invalid permissions.");
             }
         },
-        createRoom: function(type) {
+        createRoom: function(display, tag) {
             var userData = Meteor.users.find(Meteor.userId());
             if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
-                createRoom(type);
+                createRoom(display, tag);
             } else {
                 return false;
             }
@@ -1382,11 +1383,11 @@ Router.route("/", {
 
 Router.route("/login", {
   template: "login"
-})
+});
 
 Router.route("/signup", {
   template: "register"
-})
+});
 
 Router.route("/terms", {
     template: "terms"

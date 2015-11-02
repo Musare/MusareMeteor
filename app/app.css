@@ -287,7 +287,7 @@ form {
     z-index: 2;
 }
 
-form input, #croom {
+form input, .croom {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -805,11 +805,11 @@ footer .fa {
     width: 304px !important;
 }
 
-#croom_label {
+.croom_label {
     color: white;
 }
 
-#croom {
+.croom {
     width: 304px !important;
 }
 
