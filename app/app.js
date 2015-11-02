@@ -214,6 +214,12 @@ if (Meteor.isClient) {
         Meteor.subscribe("history");
     });
 
+    Template.dashboard.events({
+        "click #delete-room": function(){
+           console.log(type);
+        }
+    })
+
     Template.room.events({
         "click #add-song-button": function(e){
             e.preventDefault();
@@ -584,6 +590,11 @@ if (Meteor.isClient) {
                     $('#editModal').modal('hide');
                 });
             }
+        },
+        "click #delete-room": function(){
+            var typeDel = $(this)[0].type;
+            console.log(typeDel);
+            Meteor.call("deleteRoom", typeDel);
         }
     });
 
@@ -1343,6 +1354,11 @@ if (Meteor.isServer) {
             } else {
                 return false;
             }
+        },
+        deleteRoom: function(type){
+            Rooms.remove({type: type})
+            Playlists.remove({type: type});
+            Queues.remove({type: type});
         }
     });
 }
