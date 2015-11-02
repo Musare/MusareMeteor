@@ -368,6 +368,12 @@ if (Meteor.isClient) {
         },
         "click #pause": function() {
             Meteor.call("pauseRoom", type);
+        },
+        "click #skip": function() {
+            Meteor.call("skipSong", type);
+        },
+        "click #shuffle": function() {
+            Meteor.call("shufflePlaylist", type);
         }
     });
 
@@ -975,8 +981,8 @@ if (Meteor.isServer) {
             History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
         }
 
-        function skipSong() {
-            songs = Playlists.find({type: type}).fetch()[0].songs;
+        this.skipSong = function() {
+            songs = Playlists.findOne({type: type}).songs;
             songs.forEach(function(song, index) {
                 if (song.title === currentTitle) {
                     currentSong = index;
@@ -987,30 +993,42 @@ if (Meteor.isServer) {
             } else currentSong = 0;
             if (songs);
             if (currentSong === 0) {
-                Playlists.update({type: type}, {$set: {"songs": []}});
-                songs = shuffle(songs);
-                songs.forEach(function(song) {
-                    Playlists.update({type: type}, {$push: {"songs": song}});
-                });
+                this.shufflePlaylist();
+            } else {
+                currentTitle = songs[currentSong].title;
+                Playlists.update({type: type}, {$set: {lastSong: currentSong}});
+                Rooms.update({type: type}, {$set: {timePaused: 0}});
+                this.songTimer();
+                addToHistory(songs[currentSong], startedAt);
             }
+        };
+
+        this.shufflePlaylist = function() {
+            songs = Playlists.findOne({type: type}).songs;
+            currentSong = 0;
+            Playlists.update({type: type}, {$set: {"songs": []}});
+            songs = shuffle(songs);
+            songs.forEach(function(song) {
+                Playlists.update({type: type}, {$push: {"songs": song}});
+            });
             currentTitle = songs[currentSong].title;
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
             Rooms.update({type: type}, {$set: {timePaused: 0}});
-            songTimer();
+            this.songTimer();
             addToHistory(songs[currentSong], startedAt);
-        }
+        };
 
         Rooms.update({type: type}, {$set: {timePaused: 0}});
 
         var timer;
 
-        function songTimer() {
+        this.songTimer = function() {
             startedAt = Date.now();
 
             timer = new Timer(function() {
-                skipSong();
+                this.skipSong();
             }, songs[currentSong].duration * 1000);
-        }
+        };
 
         var state = Rooms.find({type: type}).fetch()[0].state;
 
@@ -1028,12 +1046,15 @@ if (Meteor.isServer) {
                 state = "playing";
             }
         };
+        this.cancelTimer = function() {
+            timer.pause();
+        };
         this.getState = function() {
             return state;
         };
         this.type = type;
 
-        songTimer();
+        this.songTimer();
     }
 
     function shuffle(array) {
@@ -1229,6 +1250,29 @@ if (Meteor.isServer) {
     }
 
     Meteor.methods({
+        shufflePlaylist: function(type) {
+            if (isAdmin()) {
+                getStation(type, function(station) {
+                    if (station === undefined) {
+                        throw new Meteor.Error(404, "Station not found.");
+                    } else {
+                        station.cancelTimer();
+                        station.shufflePlaylist();
+                    }
+                });
+            }
+        },
+        skipSong: function(type) {
+            if (isAdmin()) {
+                getStation(type, function(station) {
+                    if (station === undefined) {
+                        throw new Meteor.Error(404, "Station not found.");
+                    } else {
+                        station.skipSong();
+                    }
+                });
+            }
+        },
         pauseRoom: function(type) {
             if (isAdmin()) {
                     getStation(type, function(station) {

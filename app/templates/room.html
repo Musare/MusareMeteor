@@ -1,148 +1,104 @@
 <template name="room">
     <div class="landing">
         {{#if loaded}}
-          <div class="row">
-            <div class="col-md-9" id="station-main">
-                <nav>
-                    <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
-                    {{#if isAdmin}}
-                        {{#if paused}}
-                            <i class="fa fa-play fa-1" id="play"></i>
-                        {{else}}
-                            <i class="fa fa-pause fa-1" id="pause"></i>
+            <div class="row">
+                <div class="col-md-9" id="station-main">
+                    <nav>
+                        <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
+                        {{#if isAdmin}}
+                            {{#if paused}}
+                                <i class="fa fa-play fa-1" id="play"></i>
+                            {{else}}
+                                <i class="fa fa-pause fa-1" id="pause"></i>
+                            {{/if}}
+                        <i class="fa fa-step-forward fa-1" id="skip"></i>
+                        <i class="fa fa-random fa-1" id="shuffle"></i>
                         {{/if}}
-                    {{/if}}
-                    <h3>
-                        {{{type}}}
-                    </h3>
-                    <div id="volume-container">
-                        <i class="fa fa-volume-down" id="volume-icon"></i>
-                        <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
+                        <h3>
+                            {{{type}}}
+                        </h3>
+                        <div id="volume-container">
+                            <i class="fa fa-volume-down" id="volume-icon"></i>
+                            <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
+                        </div>
+                    </nav>
+                    <div id="seeker-container">
+                        <div id="seeker-bar"></div>
                     </div>
-                </nav>
-                <div id="seeker-container">
-                    <div id="seeker-bar"></div>
-                </div>
-                <div class="row" id="song-media">
-                  <div class="col-md-8">
-                      <div class="embed-responsive embed-responsive-16by9" id="media-container">
-                          <!--div id="player" class="embed-responsive-item"></div-->
-                      </div>
-                  </div>
-                  <div class="col-md-4" style="margin-top:15px">
-                    <img class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
-                    <h2 class="room-title">{{{title}}}</h2>
-                    <h2 class="room-artist">{{{artist}}}</h2>
-                  </div>
-                </div>
-                <div class="row" id="settings">
-                  <div class="col-md-4">
-                    {{#if currentUser}}
-                      <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
-                      {{else}}
-                      <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
-                    {{/if}}
-                  </div>
-                  <div class="col-md-4">
-                    <button type="button" id="toggle-video" class="button">Hide video</button>
-                  </div>
-                </div>
-            </div>
-            <div class="col-md-3" id="side-panel">
-              {{> playlist}}
-            </div>
-          </div>
-            <!--<h1 class="room-name">{{{type}}}</h1>
-            <div class="row" id="songs">
-                <div class="col-md-3 col-sm-6 col-xs-12" id="s1">
-                    <img class="song-img" id="song-img"/>
-                    <h2 class="room-title">{{{title}}}</h2>
-                    <h2 class="room-artist">{{{artist}}}</h2>
-                </div>
-                <div class="col-md-3 col-sm-6" id="s2">
-                    <img class="song-img" id="song-img-next"/>
-                    <h2 class="room-title">{{{title_next}}}</h2>
-                    <h2 class="room-artist">{{{artist_next}}}</h2>
-                </div>
-                <div class="col-md-3" id="s3">
-                    <img class="song-img" id="song-img-after"/>
-                    <h2 class="room-title">{{{title_after}}}</h2>
-                    <h2 class="room-artist">{{{artist_after}}}</h2>
-                </div>
-                <div width="960" height="540" id="player" class="hidden col-md-3 col-sm-12 col-xs-12"></div>
-            </div>
-            <div id="seeker-container">
-                <div id="seeker-bar"></div>
-            </div>
-            <div class="row">
-                <button type="button" id="toggle-video" class="button-nowidth col-md-4 col-sm-4 col-xs-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4" >Show video</button>
-            </div>
-            <div class="row">
-                <button type="button" id="song-modal" class="button-nowidth col-md-4 col-sm-4 col-xs-4 col-md-offset-4 col-sm-offset-4 col-xs-offset-4" data-toggle="modal" data-target="#myModal">Add songs</button>
-            </div>
-            {{> playlist}}
-
-            <div class="row" id="chat">
-                <div class="panel panel-success col-md-6 col-md-offset-3" id="chat-container">
-                    <div class="panel-heading">Chat</div>
-                    <div class="panel-body">
-                        <ul id="chat-ul">
-                            {{#each chat}}
-                                <li class="chat-message"><b class="bold">{{userid}}:</b> {{message}}</li>
-                            {{/each}}
-                        </ul>
-                        <input id="chat-input"/>
-                        <button id="submit-message" class="button-nowidth">Submit Message</button>
+                    <div class="row" id="song-media">
+                        <div class="col-md-8">
+                            <div class="embed-responsive embed-responsive-16by9" id="media-container">
+                                <!--div id="player" class="embed-responsive-item"></div-->
+                            </div>
+                        </div>
+                        <div class="col-md-4" style="margin-top:15px">
+                          <img class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
+                          <h2 class="room-title">{{{title}}}</h2>
+                          <h2 class="room-artist">{{{artist}}}</h2>
+                        </div>
+                    </div>
+                    <div class="row" id="settings">
+                        <div class="col-md-4">
+                            {{#if currentUser}}
+                                <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
+                                {{else}}
+                                <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
+                            {{/if}}
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" id="toggle-video" class="button">Hide video</button>
+                        </div>
                     </div>
                 </div>
+                <div class="col-md-3" id="side-panel">
+                  {{> playlist}}
+                </div>
             </div>
-          -->
-
             <!-- Modal -->
             <div id="myModal" class="modal fade" role="dialog">
-              <div class="modal-dialog">
+                <div class="modal-dialog">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Search for a song</h4>
-                  </div>
-                  <div class="modal-body">
-                    <div id="search-info">
-                        <select name="type" id="search_type" class="song-input-select">
-                            <option name="youtube" id="search_youtube">YouTube</option>
-                            <option name="soundcloud" id="search_soundcloud">SoundCloud</option>
-                        </select>
-                        <input type="text" id="song-input" class="song-input">
-                        <button type="button" id="search-song" class="button">Search</button>
-                        <div id="song-results"></div>
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Search for a song</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div id="search-info">
+                                <select name="type" id="search_type" class="song-input-select">
+                                    <option name="youtube" id="search_youtube">YouTube</option>
+                                    <option name="soundcloud" id="search_soundcloud">SoundCloud</option>
+                                </select>
+                                <input type="text" id="song-input" class="song-input">
+                                <button type="button" id="search-song" class="button">Search</button>
+                                <div id="song-results"></div>
+                            </div>
+                            <div id="add-info" style="display:none">
+                                <button type="button" id="return" class="button">Return</button>
+                                <label for="type" class="song-input-label">Song Type</label>
+                                <select name="type" id="type" class="song-input-select">
+                                    <option name="youtube" id="youtube">YouTube</option>
+                                    <option name="soundcloud" id="soundcloud">SoundCloud</option>
+                                </select>
+                                <label for="id" class="song-input-label">Song ID</label>
+                                <input class="song-input" name="id" id="id" type="text" />
+                                <label for="id" class="song-input-label">Song Artist</label>
+                                <input class="song-input" name="artist" id="artist" type="text" />
+                                <label for="title" class="song-input-label">Song Title</label>
+                                <input class="song-input" name="title" id="title" type="text" />
+                                <label for="img" class="song-input-label">Song Img</label>
+                                <input class="song-input" name="img" id="img" type="text" />
+                                <button type="button" id="add-song-button" class="button">Add Song</button>
+                            </div>
+                            <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->
+                        </div>
+                        <div class="modal-footer">
+                            <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
                     </div>
-                    <div id="add-info" style="display:none">
-                        <button type="button" id="return" class="button">Return</button>
-                        <label for="type" class="song-input-label">Song Type</label>
-                        <select name="type" id="type" class="song-input-select">
-                            <option name="youtube" id="youtube">YouTube</option>
-                            <option name="soundcloud" id="soundcloud">SoundCloud</option>
-                        </select>
-                        <label for="id" class="song-input-label">Song ID</label>
-                        <input class="song-input" name="id" id="id" type="text" />
-                        <label for="id" class="song-input-label">Song Artist</label>
-                        <input class="song-input" name="artist" id="artist" type="text" />
-                        <label for="title" class="song-input-label">Song Title</label>
-                        <input class="song-input" name="title" id="title" type="text" />
-                        <label for="img" class="song-input-label">Song Img</label>
-                        <input class="song-input" name="img" id="img" type="text" />
-                        <button type="button" id="add-song-button" class="button">Add Song</button>
-                    </div>
-                      <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->
-                  </div>
-                  <div class="modal-footer">
-                    <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
+
                 </div>
-
-              </div>
             </div>
         {{else}}
             {{> loading}}
