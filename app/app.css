@@ -1031,3 +1031,13 @@ footer .fa {
 #play, #pause {
     cursor: pointer;
 }
+.delete-room {
+    display: inline-block;
+    cursor: pointer;
+}
+.delete-room:hover {
+    color: red;
+}
+.panel-title {
+    display: inline-block;
+}

@@ -446,10 +446,29 @@ if (Meteor.isClient) {
 
     Template.admin.helpers({
         queues: function() {
-            return Queues.find({});
+            var queues = Queues.find({}).fetch();
+            queues.map(function(queue) {
+                if (Rooms.find({type: queue.type}).count() !== 1) {
+                    return;
+                } else {
+                    queue.display = Rooms.findOne({type: queue.type}).display;
+                    return queue;
+                }
+            });
+            return queues;
         },
         playlists: function() {
-            return Playlists.find({});
+            var playlists = Playlists.find({}).fetch();
+            playlists.map(function(playlist) {
+                if (Rooms.find({type: playlist.type}).count() !== 1) {
+                    return;
+                } else {
+                    playlist.display = Rooms.findOne({type: playlist.type}).display;
+                    return playlist;
+                }
+            });
+            console.log(playlists);
+            return playlists;
         }
     });
 
@@ -591,7 +610,7 @@ if (Meteor.isClient) {
                 });
             }
         },
-        "click #delete-room": function(){
+        "click .delete-room": function(){
             var typeDel = $(this)[0].type;
             console.log(typeDel);
             Meteor.call("deleteRoom", typeDel);
@@ -1200,33 +1219,40 @@ if (Meteor.isServer) {
         return Meteor.users.find({_id: this.userId, "profile.rank": "admin"});
     });
 
+    function isAdmin() {
+        var userData = Meteor.users.find(Meteor.userId());
+        if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     Meteor.methods({
         pauseRoom: function(type) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                     getStation(type, function(station) {
                     if (station === undefined) {
-                        throw new Meteor.error(403, "Room doesn't exist.");
+                        throw new Meteor.Error(403, "Room doesn't exist.");
                     } else {
                         station.pauseRoom();
                     }
                 });
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         resumeRoom: function(type) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 getStation(type, function(station) {
                     if (station === undefined) {
-                        throw new Meteor.error(403, "Room doesn't exist.");
+                        throw new Meteor.Error(403, "Room doesn't exist.");
                     } else {
                         station.resumeRoom();
                     }
                 });
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         createUserMethod: function(formData, captchaData) {
@@ -1268,56 +1294,51 @@ if (Meteor.isServer) {
                         });
                         return true;
                     } else {
-                        throw new Meteor.error(403, "Invalid data.");
+                        throw new Meteor.Error(403, "Invalid data.");
                     }
                 } else {
-                    throw new Meteor.error(403, "Invalid genre.");
+                    throw new Meteor.Error(403, "Invalid genre.");
                 }
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         updateQueueSong: function(genre, oldSong, newSong) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 newSong.id = oldSong.id;
                 Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
                 return true;
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         updatePlaylistSong: function(genre, oldSong, newSong) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 newSong.id = oldSong.id;
                 Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
                 return true;
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         removeSongFromQueue: function(type, songId) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 type = type.toLowerCase();
                 Queues.update({type: type}, {$pull: {songs: {id: songId}}});
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         removeSongFromPlaylist: function(type, songId) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 type = type.toLowerCase();
                 Playlists.update({type: type}, {$pull: {songs: {id: songId}}});
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         addSongToPlaylist: function(type, songData) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 type = type.toLowerCase();
                 if (Rooms.find({type: type}).count() === 1) {
                     if (Playlists.find({type: type}).count() === 0) {
@@ -1339,27 +1360,31 @@ if (Meteor.isServer) {
                         Queues.update({type: type}, {$pull: {songs: {id: songData.id}}});
                         return true;
                     } else {
-                        throw new Meteor.error(403, "Invalid data.");
+                        throw new Meteor.Error(403, "Invalid data.");
                     }
                 } else {
-                    throw new Meteor.error(403, "Invalid genre.");
+                    throw new Meteor.Error(403, "Invalid genre.");
                 }
             } else {
-                throw new Meteor.error(403, "Invalid permissions.");
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         createRoom: function(display, tag) {
-            var userData = Meteor.users.find(Meteor.userId());
-            if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
+            if (isAdmin()) {
                 createRoom(display, tag);
             } else {
-                return false;
+                throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
         deleteRoom: function(type){
-            Rooms.remove({type: type})
-            Playlists.remove({type: type});
-            Queues.remove({type: type});
+            if (isAdmin()) {
+                Rooms.remove({type: type});
+                Playlists.remove({type: type});
+                Queues.remove({type: type});
+                return true;
+            } else {
+                throw new Meteor.Error(403, "Invalid permissions.");
+            }
         }
     });
 }
