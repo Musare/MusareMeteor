@@ -806,7 +806,7 @@ if (Meteor.isClient) {
                         //var playlist = Playlists.findOne({type: type});
                         currentSongR = room.currentSong;
                         currentSong = room.currentSong.song;
-                        currentSong.startedAt = room.currentSong.startedAt;
+                        currentSong.started = room.currentSong.started;
                         //var songArray = playlist.songs;
                         //songArray.forEach(function(song) {
                         //    if (song.id === currentSongR.song.id) {
@@ -888,9 +888,7 @@ if (Meteor.isServer) {
         var currentSong = playlist.lastSong;
         var currentTitle = songs[currentSong].title;
 
-        if (Rooms.findOne({type: type}).currentSong === undefined) {
-            Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
-        }
+        Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
 
         this.skipSong = function() {
             songs = Playlists.findOne({type: type}).songs;
