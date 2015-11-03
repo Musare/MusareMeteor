@@ -959,7 +959,7 @@ if (Meteor.isServer) {
                 }
             });
         } else {
-            throw "Room already exists";
+            return "Room already exists";
         }
     }
 
