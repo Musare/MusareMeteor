@@ -229,6 +229,30 @@ if (Meteor.isClient) {
             });
             $("#close-modal").click();
         },
+        "click #smile-modal": function(e){
+            e.preventDefault();
+            if (Session.get("smileClicked")) {
+                $("#smile-modal").removeClass("active");
+                Session.set("smileClicked", false);
+            } else {
+				$("#meh-modal").removeClass("active");
+				Session.set("mehClicked", false);
+                $("#smile-modal").addClass("active");
+                Session.set("smileClicked", true);
+            }
+        },
+        "click #meh-modal": function(e){
+            e.preventDefault();
+            if (Session.get("mehClicked")) {
+                $("#meh-modal").removeClass("active");
+                Session.set("mehClicked", false);
+            } else {
+				$("#smile-modal").removeClass("active");
+				Session.set("smileClicked", false);
+                $("#meh-modal").addClass("active");
+                Session.set("mehClicked", true);
+            }
+        },
         "click #toggle-video": function(e){
             e.preventDefault();
             if (Session.get("mediaHidden")) {
