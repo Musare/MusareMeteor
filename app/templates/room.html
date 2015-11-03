@@ -38,15 +38,26 @@
                         </div>
                     </div>
                     <div class="row" id="settings">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             {{#if currentUser}}
                                 <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
                                 {{else}}
                                 <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
                             {{/if}}
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <button type="button" id="toggle-video" class="button">Hide video</button>
+                        </div>
+                        <div class="col-md-3">
+                            {{#if currentUser}}
+							<button title="Smile to this song." type="button" id="song-modal" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-smile-o"> 79</i></button>
+                            <button title="I dislike this song." type="button" id="song-modal" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-meh-o"> 14</i></button>
+							<button title="Report this song!" type="button" id="song-modal" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-flag"></i></button> 
+                            {{else}}
+                            <button title="You need to be logged to smile to this song." type="button" id="song-modal" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-smile-o"> 79</i></button>
+                            <button title="You need to be logge to dislike this song." type="button" id="song-modal" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-meh-o"> 14</i></button>
+							<button title="You need to be logged to report this song!" type="button" id="song-modal" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-flag"></i></button>
+							{{/if}}
                         </div>
                     </div>
                 </div>
