@@ -867,7 +867,7 @@ footer .fa {
     opacity: 0.33333333333333;
 }
 
-#add-song-button, #get-spotify-info, #save-song-button {
+#add-song-button, #get-spotify-info, #save-song-button, #report-song-button {
     display: block;
     margin: 0 auto;
 }
@@ -1040,4 +1040,26 @@ footer .fa {
 }
 .panel-title {
     display: inline-block;
+}
+.report-layer-1 {
+    margin-left: 19%;
+}
+.report-layer-2 {
+    margin-left: 80px;
+}
+.other-textarea {
+    outline: 0px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    width: 304px;
+    border-radius: 3px;
+    padding: 10px 15px;
+    margin: 5px -285.578px 10px 0px;
+    display: block;
+    text-align: left;
+    font-size: 18px;
+    color: white;
+    transition-duration: 0.25s;
+    font-weight: 300;
+    background-color: rgba(255, 255, 255, 0.2);
+    resize: vertical;
 }

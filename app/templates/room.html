@@ -52,12 +52,11 @@
                             {{#if currentUser}}
 							<button title="Smile to this song." type="button" id="song-modal" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-smile-o"> 79</i></button>
                             <button title="I dislike this song." type="button" id="song-modal" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-meh-o"> 14</i></button>
-							<button title="Report this song!" type="button" id="song-modal" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-flag"></i></button> 
                             {{else}}
                             <button title="You need to be logged to smile to this song." type="button" id="song-modal" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-smile-o"> 79</i></button>
                             <button title="You need to be logge to dislike this song." type="button" id="song-modal" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-meh-o"> 14</i></button>
-							<button title="You need to be logged to report this song!" type="button" id="song-modal" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-flag"></i></button>
 							{{/if}}
+                            <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
                         </div>
                     </div>
                 </div>
@@ -105,7 +104,228 @@
                             <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->
                         </div>
                         <div class="modal-footer">
-                            <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button id="close-modal-a" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- Report Modal -->
+            <div id="reportModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Report this song</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <button type="button" id="report-prev" class="btn btn-warning btn-lg btn-block">Report previous song ({{previousSongR.title}})</button>
+                            <button type="button" id="report-curr" class="btn btn-warning btn-lg btn-block" disabled>Report current song ({{currentSongR.title}})</button>
+
+                            <h3 class="text-primary"><b>Reporting:</b> {{reportingSong.title}} by {{reportingSong.artist}}</h3>
+
+                            <div class="report-layer-1">
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-song">
+                                    <label for="report-song">
+                                        Song
+                                    </label>
+                                </div>
+                                    <!-- Layer2 -->
+                                    {{#if reportSong}}
+                                    <div class="report-layer-2" id="report-song-list">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-song-not-playing">
+                                            <label for="report-song-not-playing">
+                                                Not playing
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-song-does-not-exist">
+                                            <label for="report-song-does-not-exist">
+                                                Does not exist
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-song-other">
+                                            <label for="report-song-other">
+                                                Other: <br>
+                                                <textarea class="other-textarea" id="report-song-other-ta" type="text"></textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {{/if}}
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-title">
+                                    <label for="report-title">
+                                        Title
+                                    </label>
+                                </div>
+                                    <!-- Layer2 -->
+                                {{#if reportTitle}}
+                                    <div class="report-layer-2" id="report-title-list">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-title-incorrect">
+                                            <label for="report-title-incorrect">
+                                                Incorrect
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-title-inappropriate">
+                                            <label for="report-title-inappropriate">
+                                                Inappropriate
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-title-other">
+                                            <label for="report-title-other">
+                                                Other: <br>
+                                                <textarea class="other-textarea" id="report-title-other-ta" type="text"></textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-author">
+                                    <label for="report-author">
+                                        Author
+                                    </label>
+                                </div>
+                                    <!-- Layer2 -->
+                                {{#if reportAuthor}}
+                                    <div class="report-layer-2" id="report-author-list">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-author-incorrect">
+                                            <label for="report-author-incorrect">
+                                                Incorrect
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-author-inappropriate">
+                                            <label for="report-author-inappropriate">
+                                                Inappropriate
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-author-other">
+                                            <label for="report-author-other">
+                                                Other: <br>
+                                                <textarea class="other-textarea" id="report-author-other-ta" type="text"></textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-duration">
+                                    <label for="report-duration">
+                                        Duration
+                                    </label>
+                                </div>
+                                    <!-- Layer2 -->
+                                {{#if reportDuration}}
+                                    <div class="report-layer-2" id="report-duration-list">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-duration-long">
+                                            <label for="report-duration-long">
+                                                Too long
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-duration-short">
+                                            <label for="report-duration-short">
+                                                Too short
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-duration-other">
+                                            <label for="report-duration-other">
+                                                Other: <br>
+                                                <textarea class="other-textarea" id="report-duration-other-ta" type="text"></textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-audio">
+                                    <label for="report-audio">
+                                        Audio
+                                    </label>
+                                </div>
+                                    <!-- Layer2 -->
+                                {{#if reportAudio}}
+                                    <div class="report-layer-2" id="report-audio-list">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-audio-inappropriate">
+                                            <label for="report-audio-inappropriate">
+                                                Inappropriate
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-audio-not-playing">
+                                            <label for="report-audio-not-playing">
+                                                Not playing
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-audio-other">
+                                            <label for="report-audio-other">
+                                                Other: <br>
+                                                <textarea class="other-textarea" id="report-audio-other-ta" type="text"></textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-albumart">
+                                    <label for="report-albumart">
+                                        Albumart
+                                    </label>
+                                </div>
+                                    <!-- Layer2 -->
+                                {{#if reportAlbumart}}
+                                    <div class="report-layer-2" id="report-albumart-list">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-albumart-incorrect">
+                                            <label for="report-albumart-incorrect">
+                                                Incorrect
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-albumart-inappropriate">
+                                            <label for="report-albumart-inappropriate">
+                                                Inappropriate
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-albumart-not-showing">
+                                            <label for="report-albumart-not-showing">
+                                                Not showing
+                                            </label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="report-albumart-other">
+                                            <label for="report-albumart-other">
+                                                Other: <br>
+                                                <textarea class="other-textarea" id="report-albumart-other-ta" type="text"></textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {{/if}}
+                                <div class="checkbox">
+                                    <input class="checkbox-box" type="checkbox" id="report-other">
+                                    <label for="report-other">
+                                        Other: <br>
+                                        <textarea class="other-textarea" id="report-other-ta" type="text"></textarea>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="button" id="report-song-button" class="button">Submit</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="close-modal-r" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
 

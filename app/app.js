@@ -1,7 +1,7 @@
 Playlists = new Mongo.Collection("playlists");
 Rooms = new Mongo.Collection("rooms");
 Queues = new Mongo.Collection("queues");
-Chat = new Mongo.Collection("chat");
+Reports = new Mongo.Collection("reports");
 
 if (Meteor.isClient) {
     Meteor.startup(function() {
@@ -213,6 +213,22 @@ if (Meteor.isClient) {
     });
 
     Template.room.events({
+        "click #report-prev": function(e) {
+            if (Session.get("previousSong") !== undefined) {
+                Session.set("reportPrevious", true);
+                $("#report-prev").prop("disabled", true);
+                $("#report-curr").prop("disabled", false);
+            }
+        },
+        "click #report-curr": function(e) {
+            Session.set("reportPrevious", false);
+            $("#report-prev").prop("disabled", false);
+            $("#report-curr").prop("disabled", true);
+        },
+        "click #report-modal": function() {
+            Session.set("currentSongR", Session.get("currentSong"));
+            Session.set("previousSongR", Session.get("previousSong"));
+        },
         "click #add-song-button": function(e){
             e.preventDefault();
             parts = location.href.split('/');
@@ -227,7 +243,7 @@ if (Meteor.isClient) {
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
             });
-            $("#close-modal").click();
+            $("#close-modal-a").click();
         },
         "click #toggle-video": function(e){
             e.preventDefault();
@@ -337,7 +353,7 @@ if (Meteor.isClient) {
         "click #add-songs": function(){
           $("#add-songs-modal").show();
         },
-        "click #close-modal": function(){
+        "click #close-modal-a": function(){
           $("#search-info").show();
           $("#add-info").hide();
         },
@@ -366,6 +382,86 @@ if (Meteor.isClient) {
         },
         "click #shuffle": function() {
             Meteor.call("shufflePlaylist", type);
+        },
+        "change ": function(e) {
+            if (e.target && e.target.id) {
+                var partsOfId = e.target.id.split("-");
+                partsOfId[1] = partsOfId[1].charAt(0).toUpperCase() + partsOfId[1].slice(1);
+                var camelCase = partsOfId.join("");
+                Session.set(camelCase, e.target.checked);
+            }
+        },
+        "click #report-song-button": function() {
+            var report = {};
+            report.reportSongB = $("#report-song").is(":checked");
+            report.reportTitleB = $("#report-title").is(":checked");
+            report.reportAuthorB = $("#report-author").is(":checked");
+            report.reportDurationB = $("#report-duration").is(":checked");
+            report.reportAudioB = $("#report-audio").is(":checked");
+            report.reportAlbumartB = $("#report-albumart").is(":checked");
+            report.reportOtherB = $("#report-other").is(":checked");
+            
+            if (report.reportSongB) {
+                report.reportSong = {};
+                report.reportSong.notPlayingB = $("#report-song-not-playing").is(":checked");
+                report.reportSong.doesNotExistB = $("#report-song-does-not-exist").is(":checked");
+                report.reportSong.otherB = $("#report-song-other").is(":checked");
+                if (report.reportSong.otherB) {
+                    report.reportSong.other = $("#report-song-other-ta").val();
+                }
+            }
+            if (report.reportTitleB) {
+                report.reportTitle = {};
+                report.reportTitle.incorrectB = $("#report-title-incorrect").is(":checked");
+                report.reportTitle.inappropriateB = $("#report-title-inappropriate").is(":checked");
+                report.reportTitle.otherB = $("#report-title-other").is(":checked");
+                if (report.reportTitle.otherB) {
+                    report.reportTitle.other = $("#report-title-other-ta").val();
+                }
+            }
+            if (report.reportAuthorB) {
+                report.reportAuthor = {};
+                report.reportAuthor.incorrectB = $("#report-author-incorrect").is(":checked");
+                report.reportAuthor.inappropriateB = $("#report-author-inappropriate").is(":checked");
+                report.reportAuthor.otherB = $("#report-author-other").is(":checked");
+                if (report.reportAuthor.otherB) {
+                    report.reportAuthor.other = $("#report-author-other-ta").val();
+                }
+            }
+            if (report.reportDurationB) {
+                report.reportDuration = {};
+                report.reportDuration.longB = $("#report-duration-incorrect").is(":checked");
+                report.reportDuration.shortB = $("#report-duration-inappropriate").is(":checked");
+                report.reportDuration.otherB = $("#report-duration-other").is(":checked");
+                if (report.reportDuration.otherB) {
+                    report.reportDuration.other = $("#report-duration-other-ta").val();
+                }
+            }
+            if (report.reportAudioB) {
+                report.reportAudio = {};
+                report.reportAudio.inappropriate = $("#report-audio-inappropriate").is(":checked");
+                report.reportAudio.notPlayingB = $("#report-audio-incorrect").is(":checked");
+                report.reportAudio.otherB = $("#report-audio-other").is(":checked");
+                if (report.reportAudio.otherB) {
+                    report.reportAudio.other = $("#report-audio-other-ta").val();
+                }
+            }
+            if (report.reportAlbumartB) {
+                report.reportAlbumart = {};
+                report.reportAlbumart.incorrectB = $("#report-albumart-incorrect").is(":checked");
+                report.reportAlbumart.inappropriateB = $("#report-albumart-inappropriate").is(":checked");
+                report.reportAlbumart.notShowingB = $("#report-albumart-inappropriate").is(":checked");
+                report.reportAlbumart.otherB = $("#report-albumart-other").is(":checked");
+                if (report.reportAlbumart.otherB) {
+                    report.reportAlbumart.other = $("#report-albumart-other-ta").val();
+                }
+            }
+            if (report.reportOtherB) {
+                report.other = $("#report-other-ta").val();
+            }
+            Meteor.call("submitReport", report, Session.get("id"), function() {
+                $("#close-modal-r").click();
+            });
         }
     });
 
@@ -427,6 +523,49 @@ if (Meteor.isClient) {
         },
         paused: function() {
             return Session.get("state") === "paused";
+        },
+        report: function() {
+            return Session.get("reportObj");
+        },
+        reportSong: function() {
+            return Session.get("reportSong");
+        },
+        reportTitle: function() {
+            return Session.get("reportTitle");
+        },
+        reportAuthor: function() {
+            return Session.get("reportAuthor");
+        },
+        reportDuration: function() {
+            return Session.get("reportDuration");
+        },
+        reportAudio: function() {
+            return Session.get("reportAudio");
+        },
+        reportAlbumart: function() {
+            return Session.get("reportAlbumart");
+        },
+        reportOther: function() {
+            return Session.get("reportOther");
+        },
+        currentSong: function() {
+            return Session.get("currentSong");
+        },
+        previousSong: function() {
+            return Session.get("previousSong");
+        },
+        currentSongR: function() {
+            return Session.get("currentSongR");
+        },
+        previousSongR: function() {
+            return Session.get("previousSongR");
+        },
+        reportingSong: function() {
+            if (Session.get("reportPrevious")) {
+                return Session.get("previousSongR");
+            } else {
+                return Session.get("currentSongR");
+            }
         }
     });
 
@@ -674,6 +813,13 @@ if (Meteor.isClient) {
     Meteor.subscribe("rooms");
 
     Template.room.onCreated(function () {
+        Session.set("reportSong", false);
+        Session.set("reportTitle", false);
+        Session.set("reportAuthor", false);
+        Session.set("reportDuration", false);
+        Session.set("reportAudio", false);
+        Session.set("reportAlbumart", false);
+        Session.set("reportOther", false);
         if (resizeSeekerbarInterval !== undefined) {
             Meteor.clearInterval(resizeSeekerbarInterval);
             resizeSeekerbarInterval = undefined;
@@ -702,6 +848,7 @@ if (Meteor.isClient) {
         function getSongInfo(songData){
             Session.set("title", songData.title);
             Session.set("artist", songData.artist);
+            Session.set("id", songData.id);
             $("#song-img").attr("src", songData.img);
             Session.set("duration", songData.duration);
         }
@@ -803,16 +950,12 @@ if (Meteor.isClient) {
                     }
 
                     if (currentSongR === undefined || room.currentSong.started !== currentSongR.started) {
-                        //var playlist = Playlists.findOne({type: type});
+                        Session.set("previousSong", currentSong);
                         currentSongR = room.currentSong;
+
                         currentSong = room.currentSong.song;
                         currentSong.started = room.currentSong.started;
-                        //var songArray = playlist.songs;
-                        //songArray.forEach(function(song) {
-                        //    if (song.id === currentSongR.song.id) {
-                        //        currentSong = song;
-                        //    }
-                        //});
+                        Session.set("currentSong", currentSong);
 
                         startSong();
                     }
@@ -1151,6 +1294,11 @@ if (Meteor.isServer) {
     }
 
     Meteor.methods({
+        submitReport: function(report, id) {
+            var obj = report;
+            obj.id = id;
+            Reports.insert(obj);
+        },
         shufflePlaylist: function(type) {
             if (isAdmin()) {
                 getStation(type, function(station) {
