@@ -776,6 +776,7 @@ if (Meteor.isClient) {
                                 'onReady': function(event) {
                                     event.target.seekTo(getTimeElapsed() / 1000);
                                     event.target.playVideo();
+                                    console.log("Playing YT video")
                                     event.target.setVolume(volume);
                                     resizeSeekerbar();
                                 },
@@ -1129,7 +1130,6 @@ if (Meteor.isServer) {
         query = query.toLowerCase().split(" ").join("%20");
 
         var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
-
         for(var i in res.data){
             for(var j in res.data[i].items){
                 if(search.indexOf(res.data[i].items[j].name) !== -1 && artistName.indexOf(res.data[i].items[j].artists[0].name) !== -1){
