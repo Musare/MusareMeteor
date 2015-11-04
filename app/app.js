@@ -210,6 +210,7 @@ if (Meteor.isClient) {
             Meteor.clearInterval(resizeSeekerbarInterval);
             resizeSeekerbarInterval = undefined;
         }
+        Session.set("type", undefined);
     });
 
     Template.room.events({
@@ -524,6 +525,11 @@ if (Meteor.isClient) {
     });
 
     Template.room.helpers({
+        songDuration: function() {
+            var duration = Session.get("duration");
+            var d = moment.duration(duration, 'seconds');
+            return d.minutes() + ":" + ("0" + d.seconds()).slice(-2);
+        },
         type: function() {
             var parts = location.href.split('/');
             var id = parts.pop().toLowerCase();
@@ -949,6 +955,7 @@ if (Meteor.isClient) {
             var parts = location.href.split('/');
             var id = parts.pop();
             var type = id.toLowerCase();
+            Session.set("type", type);
             if (Rooms.find({type: type}).count() !== 1) {
                 window.location = "/";
             } else {
@@ -982,6 +989,14 @@ if (Meteor.isClient) {
                         Session.set("currentSong", currentSong);
 
                         startSong();
+                    }
+
+                    if (currentSong !== undefined) {
+                        if (room !== undefined) {
+                            var duration = (Date.now() - currentSong.started + room.timePaused) / 1000;
+                            var d = moment.duration(duration, 'seconds');
+                            $("#time-elapsed").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
+                        }
                     }
                 }, 1000);
                 resizeSeekerbarInterval = Meteor.setInterval(function () {
