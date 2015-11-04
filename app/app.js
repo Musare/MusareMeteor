@@ -773,7 +773,6 @@ if (Meteor.isClient) {
                                 'onReady': function(event) {
                                     event.target.seekTo(getTimeElapsed() / 1000);
                                     event.target.playVideo();
-                                    console.log("Playing YT video")
                                     event.target.setVolume(volume);
                                     resizeSeekerbar();
                                 },
@@ -855,10 +854,10 @@ if (Meteor.isServer) {
         reCAPTCHA.config({
             privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
         });
-        var stations = [{tag: "edm", dislay: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
+        var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
         for(var i in stations){
             if(Rooms.find({type: stations[i]}).count() === 0){
-                createRoom(stations[i].tag, stations[i].display);
+                createRoom(stations[i].display, stations[i].tag);
             }
         }
     });

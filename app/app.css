@@ -471,6 +471,31 @@ form button:hover {
     -webkit-animation-delay: 11s;
     animation-delay: 11s;
 }
+/*Tablet view fix*/
+@media (max-width: 768px){
+    #station-main nav h3{
+        margin-left: 20% !important;
+    }
+    .bg-bubbles li:nth-child(10) {
+        display: none;
+    }
+    #song-media{
+        margin-left: 0;
+    }
+    .col-md-4{
+        margin: 15px auto;
+        width: 200px;
+    }
+    #settings{
+        margin: 0 auto !important;
+        width: 300px !important;
+        margin-bottom: 100px !important;
+    }
+    #side-panel{
+        display: none;
+    }
+}
+/*-----*/
 
 @-webkit-keyframes square {
     0% {
