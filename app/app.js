@@ -1,4 +1,3 @@
-History = new Mongo.Collection("history");
 Playlists = new Mongo.Collection("playlists");
 Rooms = new Mongo.Collection("rooms");
 Queues = new Mongo.Collection("queues");
@@ -64,7 +63,7 @@ if (Meteor.isClient) {
             if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() === 0) {
                 window.location = "/";
             } else {
-                var data = Meteor.users.find({"profile.usernameL": username.toLowerCase()}).fetch()[0];
+                var data = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
                 Session.set("username", data.profile.username);
                 Session.set("first_joined", data.createdAt);
                 Session.set("rank", data.profile.rank);
@@ -192,12 +191,12 @@ if (Meteor.isClient) {
           return Rooms.find({});
         },
         currentSong: function() {
-            var history = History.find({type: this.type}).fetch();
-            if (history.length < 1) {
-                return {};
+            var type = this.type;
+            var room = Rooms.findOne({type: type});
+            if (room !== undefined) {
+                return room.currentSong;
             } else {
-                history = history[0];
-                return history.history[history.history.length - 1];
+                return {};
             }
         }
     });
@@ -211,14 +210,7 @@ if (Meteor.isClient) {
             Meteor.clearInterval(resizeSeekerbarInterval);
             resizeSeekerbarInterval = undefined;
         }
-        Meteor.subscribe("history");
     });
-
-    Template.dashboard.events({
-        "click #delete-room": function(){
-           console.log(type);
-        }
-    })
 
     Template.room.events({
         "click #add-song-button": function(e){
@@ -236,6 +228,30 @@ if (Meteor.isClient) {
                 console.log(err, res);
             });
             $("#close-modal").click();
+        },
+        "click #smile-modal": function(e){
+            e.preventDefault();
+            if (Session.get("smileClicked")) {
+                $("#smile-modal").removeClass("active");
+                Session.set("smileClicked", false);
+            } else {
+				$("#meh-modal").removeClass("active");
+				Session.set("mehClicked", false);
+                $("#smile-modal").addClass("active");
+                Session.set("smileClicked", true);
+            }
+        },
+        "click #meh-modal": function(e){
+            e.preventDefault();
+            if (Session.get("mehClicked")) {
+                $("#meh-modal").removeClass("active");
+                Session.set("mehClicked", false);
+            } else {
+				$("#smile-modal").removeClass("active");
+				Session.set("smileClicked", false);
+                $("#meh-modal").addClass("active");
+                Session.set("mehClicked", true);
+            }
         },
         "click #toggle-video": function(e){
             e.preventDefault();
@@ -423,18 +439,6 @@ if (Meteor.isClient) {
         artist: function(){
           return Session.get("artist");
         },
-        title_next: function(){
-            return Session.get("title_next");
-        },
-        artist_next: function(){
-            return Session.get("artist_next");
-        },
-        title_after: function(){
-            return Session.get("title_after");
-        },
-        artist_after: function(){
-            return Session.get("artist_after");
-        },
         loaded: function() {
           return Session.get("loaded");
         },
@@ -473,7 +477,6 @@ if (Meteor.isClient) {
                     return playlist;
                 }
             });
-            console.log(playlists);
             return playlists;
         }
     });
@@ -618,7 +621,6 @@ if (Meteor.isClient) {
         },
         "click .delete-room": function(){
             var typeDel = $(this)[0].type;
-            console.log(typeDel);
             Meteor.call("deleteRoom", typeDel);
         }
     });
@@ -676,9 +678,9 @@ if (Meteor.isClient) {
             parts = location.href.split('/');
             id = parts.pop();
             type = id.toLowerCase();
-            var data = Playlists.find({type: type}).fetch();
-            if (data !== undefined && data.length > 0) {
-                data[0].songs.map(function(song) {
+            var data = Playlists.findOne({type: type});
+            if (data !== undefined) {
+                data.songs.map(function(song) {
                     if (song.title === Session.get("title")) {
                         song.current = true;
                     } else {
@@ -686,7 +688,7 @@ if (Meteor.isClient) {
                     }
                     return song;
                 });
-                return data[0].songs;
+                return data.songs;
             } else {
                 return [];
             }
@@ -702,22 +704,19 @@ if (Meteor.isClient) {
         }
         yt_player = undefined;
         _sound = undefined;
-        Session.set("videoHidden", false)
+        Session.set("videoHidden", false);
         var tag = document.createElement("script");
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         var currentSong = undefined;
-        var nextSong = undefined;
-        var afterSong = undefined;
-        var size = 0;
+        var currentSongR = undefined;
 
         function getTimeElapsed() {
             if (currentSong !== undefined) {
-                var rooms = Rooms.find({type: type}).fetch();
-                if (rooms && rooms.length === 1) {
-                    var room = rooms[0];
+                var room = Rooms.findOne({type: type});
+                if (room !== undefined) {
                     return Date.now() - currentSong.started + room.timePaused;
                 }
             }
@@ -759,8 +758,6 @@ if (Meteor.isClient) {
                                 window.clearInterval(interval);
                             }
                         }, 200);
-                        // Session.set("title", currentSong.title || "Title");
-                        // Session.set("artist", currentSong.artist || "Artist");
                         Session.set("duration", currentSong.duration);
                         resizeSeekerbar();
                     });
@@ -796,15 +793,11 @@ if (Meteor.isClient) {
                         yt_player.loadVideoById(currentSong.id);
                     }
 
-                    // Session.set("title", currentSong.title || "Title");
-                    // Session.set("artist", currentSong.artist || "Artist");
                     getSongInfo(currentSong);
-                    //Session.set("duration", currentSong.duration);
                 }
             }
         }
 
-        Meteor.subscribe("history");
         Session.set("loaded", false);
         Meteor.subscribe("rooms", function() {
             var parts = location.href.split('/');
@@ -815,72 +808,38 @@ if (Meteor.isClient) {
             } else {
                 Session.set("loaded", true);
                 minterval = Meteor.setInterval(function () {
-                    var rooms = Rooms.find({type: type}).fetch();
-                    if (rooms && rooms.length === 1) {
-                        var room = rooms[0];
+                    var room = Rooms.findOne({type: type});
+                    if (room !== undefined) {
                         if (room.state === "paused") {
                             Session.set("state", "paused");
-                            if (yt_player !== undefined && yt_player.getPlayerState() === 1) {
+                            if (yt_player !== undefined && yt_player.getPlayerState !== undefined && yt_player.getPlayerState() === 1) {
                                 yt_player.pauseVideo();
                             } else if (_sound !== undefined && _sound.getState().indexOf("playing") !== -1) {
                                 _sound.pause();
                             }
                         } else {
                             Session.set("state", "playing");
-                            if (yt_player !== undefined && yt_player.getPlayerState() !== 1) {
+                            if (yt_player !== undefined && yt_player.getPlayerState !== undefined && yt_player.getPlayerState() !== 1) {
                                 yt_player.playVideo();
                             } else if (_sound !== undefined && _sound.getState().indexOf("paused") !== -1) {
                                 _sound.play();
                             }
                         }
                     }
-                    var data = undefined;
-                    var dataCursorH = History.find({type: type});
-                    var dataCursorP = Playlists.find({type: type});
-                    dataCursorH.forEach(function (doc) {
-                        if (data === undefined) {
-                            data = doc;
-                        }
-                    });
-                    if (data !== undefined && data.history.length > size) {
-                        //currentSong = data.history[data.history.length - 1];
-                        var songArray = Playlists.find({type: type}).fetch()[0].songs;
-                        var historyObj = data.history[data.history.length - 1];
-                        songArray.forEach(function(song) {
-                            if (song.id === historyObj.song.id) {
-                                currentSong = song;
-                            }
-                        });
-                        currentSong.started = historyObj.started;
-                        var songs = dataCursorP.fetch()[0].songs;
-                        songs.forEach(function(song, index) {
-                            if (currentSong.title === song.title) {
-                                if (index + 1 < songs.length) {
-                                    nextSong = songs[index + 1];
-                                } else {
-                                    nextSong = songs[0];
-                                }
-                                Session.set("title_next", nextSong.title);
-                                Session.set("artist_next", nextSong.artist);
-                                $("#song-img-next").attr("src", nextSong.img);
 
-                                if (index + 2 < songs.length) {
-                                    afterSong = songs[index + 2];
-                                } else if (songs.length === index + 1 && songs.length > 1 ) {
-                                    afterSong = songs[1];
-                                } else {
-                                    afterSong = songs[0];
-                                }
-                                Session.set("title_after", afterSong.title);
-                                Session.set("artist_after", afterSong.artist);
-                                $("#song-img-after").attr("src",afterSong.img);
-                            }
-                        });
-                        size = data.history.length;
+                    if (currentSongR === undefined || room.currentSong.started !== currentSongR.started) {
+                        //var playlist = Playlists.findOne({type: type});
+                        currentSongR = room.currentSong;
+                        currentSong = room.currentSong.song;
+                        currentSong.started = room.currentSong.started;
+                        //var songArray = playlist.songs;
+                        //songArray.forEach(function(song) {
+                        //    if (song.id === currentSongR.song.id) {
+                        //        currentSong = song;
+                        //    }
+                        //});
+
                         startSong();
-                    }
-                    if (data !== undefined) {
-
                     }
                 }, 1000);
                 resizeSeekerbarInterval = Meteor.setInterval(function () {
@@ -896,10 +855,10 @@ if (Meteor.isServer) {
         reCAPTCHA.config({
             privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
         });
-        var stations = ["edm", "pop"]; //Rooms to be set on server startup
+        var stations = [{tag: "edm", dislay: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
         for(var i in stations){
             if(Rooms.find({type: stations[i]}).count() === 0){
-                createRoom(stations[i]);
+                createRoom(stations[i].tag, stations[i].display);
             }
         }
     });
@@ -923,65 +882,38 @@ if (Meteor.isServer) {
                     throw err;
                 } else {
                     if (Playlists.find({type: type}).count() === 1) {
-                        if (History.find({type: type}).count() === 0) {
-                            History.insert({type: type, history: []}, function(err3) {
-                                if (err3) {
-                                    throw err3;
-                                } else {
-                                    stations.push(new Station(type));
-                                    return true;
-                                }
-                            });
-                        } else {
-                            stations.push(new Station(type));
-                            return true;
-                        }
+                        stations.push(new Station(type));
                     } else {
                         Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
                             if (err2) {
                                 throw err2;
                             } else {
-                                if (History.find({type: type}).count() === 0) {
-                                    History.insert({type: type, history: []}, function(err3) {
-                                        if (err3) {
-                                            throw err3;
-                                        } else {
-                                            stations.push(new Station(type));
-                                            return true;
-                                        }
-                                    });
-                                } else {
-                                    stations.push(new Station(type));
-                                    return true;
-                                }
+                                stations.push(new Station(type));
                             }
                         });
                     }
                 }
             });
         } else {
-            throw "Room already exists";
+            return "Room already exists";
         }
     }
 
     function Station(type) {
         var _this = this;
         var startedAt = Date.now();
-        var playlist = Playlists.find({type: type}).fetch()[0];
+        var playlist = Playlists.findOne({type: type});
         var songs = playlist.songs;
 
         if (playlist.lastSong === undefined) {
             Playlists.update({type: type}, {$set: {lastSong: 0}});
-            playlist = Playlists.find({type: type}).fetch()[0];
+            playlist = Playlists.findOne({type: type});
             songs = playlist.songs;
         }
         var currentSong = playlist.lastSong;
         var currentTitle = songs[currentSong].title;
-        addToHistory(songs[currentSong], startedAt);
 
-        function addToHistory(song, startedAt) {
-            History.update({type: type}, {$push: {history: {song: song, started: startedAt}}});
-        }
+        Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
 
         this.skipSong = function() {
             songs = Playlists.findOne({type: type}).songs;
@@ -1001,7 +933,7 @@ if (Meteor.isServer) {
                 Playlists.update({type: type}, {$set: {lastSong: currentSong}});
                 Rooms.update({type: type}, {$set: {timePaused: 0}});
                 this.songTimer();
-                addToHistory(songs[currentSong], startedAt);
+                Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
             }
         };
 
@@ -1017,7 +949,7 @@ if (Meteor.isServer) {
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
             Rooms.update({type: type}, {$set: {timePaused: 0}});
             this.songTimer();
-            addToHistory(songs[currentSong], startedAt);
+            Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
         };
 
         Rooms.update({type: type}, {$set: {timePaused: 0}});
@@ -1032,7 +964,7 @@ if (Meteor.isServer) {
             }, songs[currentSong].duration * 1000);
         };
 
-        var state = Rooms.find({type: type}).fetch()[0].state;
+        var state = Rooms.findOne({type: type}).state;
 
         this.pauseRoom = function() {
             if (state !== "paused") {
@@ -1167,10 +1099,7 @@ if (Meteor.isServer) {
                 Playlists.insert({type: type, songs: getSongsByType(type)});
             }
         }
-        if (History.find({type: type}).count() === 0) {
-            History.insert({type: type, history: []});
-        }
-        if (Playlists.find({type: type}).fetch()[0].songs.length === 0) {
+        if (Playlists.findOne({type: type}).songs.length === 0) {
             // Add a global video to Playlist so it can proceed
         } else {
             stations.push(new Station(type));
@@ -1212,10 +1141,6 @@ if (Meteor.isServer) {
         secret: "375939d001ef1a0ca67c11dbf8fb9aeaa551e01b"
     });
 
-    Meteor.publish("history", function() {
-        return History.find({})
-    });
-
     Meteor.publish("playlists", function() {
         return Playlists.find({})
     });
@@ -1233,7 +1158,6 @@ if (Meteor.isServer) {
     });
 
     Meteor.publish("userProfiles", function() {
-        //console.log(Meteor.users.find({}, {profile: 1, createdAt: 1, services: 0, username: 0, emails: 0})).fetch();
         return Meteor.users.find({}, {fields: {profile: 1, createdAt: 1}});
     });
 
@@ -1476,8 +1400,8 @@ Router.route("/admin", {
         return Meteor.subscribe("isAdmin", Meteor.userId());
     },
     action: function() {
-        var user = Meteor.users.find({}).fetch();
-        if (user[0] !== undefined && user[0].profile !== undefined && user[0].profile.rank === "admin") {
+        var user = Meteor.users.findOne({});
+        if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
             this.render("admin");
         } else {
             this.redirect("/");
