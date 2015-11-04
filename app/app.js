@@ -245,6 +245,30 @@ if (Meteor.isClient) {
             });
             $("#close-modal-a").click();
         },
+        "click #smile-modal": function(e){
+            e.preventDefault();
+            if (Session.get("smileClicked")) {
+                $("#smile-modal").removeClass("active");
+                Session.set("smileClicked", false);
+            } else {
+				$("#meh-modal").removeClass("active");
+				Session.set("mehClicked", false);
+                $("#smile-modal").addClass("active");
+                Session.set("smileClicked", true);
+            }
+        },
+        "click #meh-modal": function(e){
+            e.preventDefault();
+            if (Session.get("mehClicked")) {
+                $("#meh-modal").removeClass("active");
+                Session.set("mehClicked", false);
+            } else {
+				$("#smile-modal").removeClass("active");
+				Session.set("smileClicked", false);
+                $("#meh-modal").addClass("active");
+                Session.set("mehClicked", true);
+            }
+        },
         "click #toggle-video": function(e){
             e.preventDefault();
             if (Session.get("mediaHidden")) {
@@ -973,10 +997,10 @@ if (Meteor.isServer) {
         reCAPTCHA.config({
             privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
         });
-        var stations = [{tag: "edm", dislay: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
+        var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
         for(var i in stations){
             if(Rooms.find({type: stations[i]}).count() === 0){
-                createRoom(stations[i].tag, stations[i].display);
+                createRoom(stations[i].display, stations[i].tag);
             }
         }
     });
@@ -1180,7 +1204,6 @@ if (Meteor.isServer) {
         query = query.toLowerCase().split(" ").join("%20");
 
         var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
-
         for(var i in res.data){
             for(var j in res.data[i].items){
                 if(search.indexOf(res.data[i].items[j].name) !== -1 && artistName.indexOf(res.data[i].items[j].artists[0].name) !== -1){
