@@ -4,17 +4,20 @@
             <div class="row">
                 <div class="col-md-9" id="station-main">
                     <nav>
-                        <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
-                        {{#if isAdmin}}
+                        <div id="room-icons">
+                            <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
+                            {{#if isAdmin}}
                             {{#if paused}}
-                                <i class="fa fa-play fa-1" id="play"></i>
+                            <i class="fa fa-play fa-1" id="play"></i>
                             {{else}}
-                                <i class="fa fa-pause fa-1" id="pause"></i>
+                            <i class="fa fa-pause fa-1" id="pause"></i>
                             {{/if}}
-                        <i class="fa fa-step-forward fa-1" id="skip"></i>
-                        <i class="fa fa-random fa-1" id="shuffle"></i>
-                        {{/if}}
-                        <h3>
+                            <i class="fa fa-step-forward fa-1" id="skip"></i>
+                            <i class="fa fa-random fa-1" id="shuffle"></i>
+                            {{/if}}
+                        </div>
+
+                        <h3 id="room-header">
                             {{{type}}}
                         </h3>
                         <div id="volume-container">

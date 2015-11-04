@@ -474,9 +474,6 @@ form button:hover {
 
 /* Tablet view fix */
 @media (max-width: 768px){
-    #station-main nav h3{
-        margin-left: 20% !important;
-    }
     .bg-bubbles li:nth-child(10) {
         display: none;
     }
@@ -1101,4 +1098,16 @@ footer .fa {
     font-weight: 300;
     background-color: rgba(255, 255, 255, 0.2);
     resize: vertical;
+}
+#room-header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px;
+}
+#room-icons {
+    margin-top: 11px;
+    float: left;
 }
