@@ -546,14 +546,14 @@ form button:hover {
 footer {
     text-align: center;
     width: 100%;
-    height: 60px;
+    height: 75px;
     margin-top: 75px;
     color: white;
     padding-top: 5px;
 }
 
 .push {
-    height: 60px; /* .push must be the same height as .footer */
+    height: 75px; /* .push must be the same height as .footer */
 }
 
 footer a {
@@ -940,6 +940,19 @@ footer .fa {
 #station-main nav {
     height: 50px;
     color: white;
+}
+
+/*Navbar HAMBURGUR*/
+.navbar-default .navbar-toggle .icon-bar{
+    background-color: white;
+}
+
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
+    background-color: transparent;
+}
+
+.navbar-default .navbar-toggle{
+    background-color: transparent;
 }
 
 #station-main nav i {
