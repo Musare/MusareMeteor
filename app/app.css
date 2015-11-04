@@ -471,7 +471,8 @@ form button:hover {
     -webkit-animation-delay: 11s;
     animation-delay: 11s;
 }
-/*Tablet view fix*/
+
+/* Tablet view fix */
 @media (max-width: 768px){
     #station-main nav h3{
         margin-left: 20% !important;
@@ -495,7 +496,7 @@ form button:hover {
         display: none;
     }
 }
-/*-----*/
+/**/
 
 @-webkit-keyframes square {
     0% {
