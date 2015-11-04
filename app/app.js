@@ -407,7 +407,7 @@ if (Meteor.isClient) {
         "click #shuffle": function() {
             Meteor.call("shufflePlaylist", type);
         },
-        "change ": function(e) {
+        "change input": function(e) {
             if (e.target && e.target.id) {
                 var partsOfId = e.target.id.split("-");
                 partsOfId[1] = partsOfId[1].charAt(0).toUpperCase() + partsOfId[1].slice(1);
@@ -655,11 +655,11 @@ if (Meteor.isClient) {
         },
         "click .deny-song-button": function(e){
             var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
-            Meteor.call("removeSongFromQueue", genre, this.id);
+            Meteor.call("removeSongFromQueue", genre, this.mid);
         },
         "click .remove-song-button": function(e){
             var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
-            Meteor.call("removeSongFromPlaylist", genre, this.id);
+            Meteor.call("removeSongFromPlaylist", genre, this.mid);
         },
         "click #play": function() {
             $("#play").attr("disabled", true);
@@ -820,7 +820,7 @@ if (Meteor.isClient) {
             var data = Playlists.findOne({type: type});
             if (data !== undefined) {
                 data.songs.map(function(song) {
-                    if (song.title === Session.get("title")) {
+                    if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
                         song.current = true;
                     } else {
                         song.current = false;
@@ -1007,6 +1007,21 @@ if (Meteor.isServer) {
 
     var stations = [];
 
+    var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
+    function createUniqueSongId() {
+        var code = "";
+        for (var i = 0; i < 6; i++) {
+            code += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        if (Playlists.find({"songs.mid": code}).count() > 0) {
+            console.log("Code already exists!");
+            return createUniqueSongId();
+        } else {
+            return code;
+        }
+    }
+
     function getStation(type, cb) {
         stations.forEach(function(station) {
             if (station.type === type) {
@@ -1071,6 +1086,12 @@ if (Meteor.isServer) {
             if (currentSong === 0) {
                 this.shufflePlaylist();
             } else {
+                if (songs[currentSong].mid === undefined) {
+                    var newSong = songs[currentSong];
+                    newSong.mid = createUniqueSongId();
+                    songs[currentSong].mid = newSong.mid;
+                    Playlists.update({type: type, "songs": songs[currentSong]}, {$set: {"songs.$": newSong}});
+                }
                 currentTitle = songs[currentSong].title;
                 Playlists.update({type: type}, {$set: {lastSong: currentSong}});
                 Rooms.update({type: type}, {$set: {timePaused: 0}});
@@ -1085,6 +1106,9 @@ if (Meteor.isServer) {
             Playlists.update({type: type}, {$set: {"songs": []}});
             songs = shuffle(songs);
             songs.forEach(function(song) {
+                if (song.mid === undefined) {
+                    song.mid = createUniqueSongId();
+                }
                 Playlists.update({type: type}, {$push: {"songs": song}});
             });
             currentTitle = songs[currentSong].title;
@@ -1220,13 +1244,13 @@ if (Meteor.isServer) {
     function getSongsByType(type) {
         if (type === "edm") {
             return [
-                {id: "aE2GCa-_nyU", title: "Radioactive", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix", "Lindsey Stirling, Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "YouTube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
-                {id: "aHjpOzsQ9YI", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize", "Lindsey Stirling"), type: "YouTube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
+                {id: "aE2GCa-_nyU", mid: "fh6_Gf", title: "Radioactive", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix", "Lindsey Stirling, Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "YouTube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
+                {id: "aHjpOzsQ9YI", mid: "goG88g", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize", "Lindsey Stirling"), type: "YouTube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
             ];
         } else if (type === "nightcore") {
-            return [{id: "f7RKOP87tt4", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)", "Meg & Dia"), artist: "Meg & Dia", type: "YouTube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
+            return [{id: "f7RKOP87tt4", mid: "5pGGog", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)", "Meg & Dia"), artist: "Meg & Dia", type: "YouTube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
         } else {
-            return [{id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up", "Rick Astley"), artist: "Rick Astley", type: "YouTube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
+            return [{id: "dQw4w9WgXcQ", mid: "6_fdr4", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up", "Rick Astley"), artist: "Rick Astley", type: "YouTube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
         }
     }
 
@@ -1396,19 +1420,26 @@ if (Meteor.isServer) {
                     if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
                         songData.duration = getSongDuration(songData.title, songData.artist);
                         songData.img = getSongAlbumArt(songData.title, songData.artist);
-                        Queues.update({type: type}, {
-                            $push: {
-                                songs: {
-                                    id: songData.id,
-                                    title: songData.title,
-                                    artist: songData.artist,
-                                    duration: songData.duration,
-                                    img: songData.img,
-                                    type: songData.type
+                        var mid = createUniqueSongId();
+                        if (mid !== undefined) {
+                            songData.mid = mid;
+                            Queues.update({type: type}, {
+                                $push: {
+                                    songs: {
+                                        id: songData.id,
+                                        mid: songData.mid,
+                                        title: songData.title,
+                                        artist: songData.artist,
+                                        duration: songData.duration,
+                                        img: songData.img,
+                                        type: songData.type
+                                    }
                                 }
-                            }
-                        });
-                        return true;
+                            });
+                            return true;
+                        } else {
+                            throw new Meteor.Error(500, "Am error occured.");
+                        }
                     } else {
                         throw new Meteor.Error(403, "Invalid data.");
                     }
@@ -1421,7 +1452,7 @@ if (Meteor.isServer) {
         },
         updateQueueSong: function(genre, oldSong, newSong) {
             if (isAdmin()) {
-                newSong.id = oldSong.id;
+                newSong.mid = oldSong.mid;
                 Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
                 return true;
             } else {
@@ -1430,25 +1461,25 @@ if (Meteor.isServer) {
         },
         updatePlaylistSong: function(genre, oldSong, newSong) {
             if (isAdmin()) {
-                newSong.id = oldSong.id;
+                newSong.mid = oldSong.mid;
                 Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
                 return true;
             } else {
                 throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
-        removeSongFromQueue: function(type, songId) {
+        removeSongFromQueue: function(type, mid) {
             if (isAdmin()) {
                 type = type.toLowerCase();
-                Queues.update({type: type}, {$pull: {songs: {id: songId}}});
+                Queues.update({type: type}, {$pull: {songs: {mid: mid}}});
             } else {
                 throw new Meteor.Error(403, "Invalid permissions.");
             }
         },
-        removeSongFromPlaylist: function(type, songId) {
+        removeSongFromPlaylist: function(type, mid) {
             if (isAdmin()) {
                 type = type.toLowerCase();
-                Playlists.update({type: type}, {$pull: {songs: {id: songId}}});
+                Playlists.update({type: type}, {$pull: {songs: {mid: mid}}});
             } else {
                 throw new Meteor.Error(403, "Invalid permissions.");
             }
@@ -1460,11 +1491,12 @@ if (Meteor.isServer) {
                     if (Playlists.find({type: type}).count() === 0) {
                         Playlists.insert({type: type, songs: []});
                     }
-                    if (songData !== undefined && Object.keys(songData).length === 6 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.img !== undefined) {
+                    if (songData !== undefined && Object.keys(songData).length === 7 && songData.type !== undefined && songData.mid !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.img !== undefined) {
                         Playlists.update({type: type}, {
                             $push: {
                                 songs: {
                                     id: songData.id,
+                                    mid: songData.mid,
                                     title: songData.title,
                                     artist: songData.artist,
                                     duration: songData.duration,
@@ -1473,7 +1505,7 @@ if (Meteor.isServer) {
                                 }
                             }
                         });
-                        Queues.update({type: type}, {$pull: {songs: {id: songData.id}}});
+                        Queues.update({type: type}, {$pull: {songs: {mid: songData.mid}}});
                         return true;
                     } else {
                         throw new Meteor.Error(403, "Invalid data.");
