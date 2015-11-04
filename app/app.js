@@ -1015,7 +1015,6 @@ if (Meteor.isServer) {
         }
 
         if (Playlists.find({"songs.mid": code}).count() > 0) {
-            console.log("Code already exists!");
             return createUniqueSongId();
         } else {
             return code;
@@ -1125,6 +1124,9 @@ if (Meteor.isServer) {
         this.songTimer = function() {
             startedAt = Date.now();
 
+            if (timer !== undefined) {
+                timer.pause();
+            }
             timer = new Timer(function() {
                 _this.skipSong();
             }, songs[currentSong].duration * 1000);
