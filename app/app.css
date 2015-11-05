@@ -956,6 +956,7 @@ nav form input[type="image"]{
     width: 100px;
     background-color: transparent !important;
     border: none !important;
+    margin-top: -15px;
 }
 
 #station-main nav i {
