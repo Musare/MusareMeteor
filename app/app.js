@@ -1571,6 +1571,12 @@ if (Meteor.isServer) {
     /*this.next();
 });*/
 
+Router.onBeforeAction('loading');
+
+Router.configure({
+    loadingTemplate: 'loading'
+});
+
 Router.route("/", {
     template: "home"
 });

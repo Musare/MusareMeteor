@@ -1,6 +1,6 @@
 <template name="room">
-    <div class="landing">
-        {{#if loaded}}
+    {{#if loaded}}
+        <div class="landing">
             <div class="row">
                 <div class="col-md-9" id="station-main">
                     <nav>
@@ -335,10 +335,7 @@
 
                 </div>
             </div>
-        {{else}}
-            {{> loading}}
-        {{/if}}
-        <ul class="bg-bubbles">
+            <ul class="bg-bubbles">
             <li></li>
             <li></li>
             <li></li>
@@ -350,7 +347,10 @@
             <li></li>
             <li></li>
         </ul>
-    </div>
+        </div>
+    {{else}}
+        {{> loading}}
+    {{/if}}
     <script type="text/javascript">
       window.doorbellOptions = {
           appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM',
