@@ -870,7 +870,7 @@ if (Meteor.isClient) {
             if (currentSong !== undefined) {
                 var room = Rooms.findOne({type: type});
                 if (room !== undefined) {
-                    return Date.now() - currentSong.started + room.timePaused;
+                    return Date.now() - currentSong.started - room.timePaused;
                 }
             }
             return 0;
@@ -891,6 +891,7 @@ if (Meteor.isClient) {
         }
 
         function startSong() {
+            $("#time-elapsed").text("0:00");
             if (currentSong !== undefined) {
                 if (_sound !== undefined) _sound.stop();
                 if (yt_player !== undefined && yt_player.stopVideo !== undefined) yt_player.stopVideo();
@@ -994,9 +995,11 @@ if (Meteor.isClient) {
 
                     if (currentSong !== undefined) {
                         if (room !== undefined) {
-                            var duration = (Date.now() - currentSong.started + room.timePaused) / 1000;
+                            var duration = (Date.now() - currentSong.started - room.timePaused) / 1000;
                             var d = moment.duration(duration, 'seconds');
-                            $("#time-elapsed").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
+                            if (Session.get("state") === "playing") {
+                                $("#time-elapsed").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
+                            }
                         }
                     }
                 }, 1000);
