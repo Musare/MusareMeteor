@@ -1111,3 +1111,6 @@ footer .fa {
     margin-top: 11px;
     float: left;
 }
+#time-display {
+    color: white;
+}
