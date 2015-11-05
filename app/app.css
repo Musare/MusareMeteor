@@ -952,6 +952,13 @@ footer .fa {
     background-color: transparent;
 }
 
+nav form input[type="image"]{
+    width: 100px;
+    background-color: transparent !important;
+    border: none !important;
+    margin-top: -15px;
+}
+
 #station-main nav i {
     margin-left: 1em;
     font-size: 2em;

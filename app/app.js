@@ -749,6 +749,7 @@ if (Meteor.isClient) {
         },
         "click #save-song-button": function() {
             var newSong = {};
+            newSong.id = $("#id").val();
             newSong.title = $("#title").val();
             newSong.artist = $("#artist").val();
             newSong.img = $("#img").val();
