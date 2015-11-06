@@ -214,6 +214,12 @@ if (Meteor.isClient) {
     });
 
     Template.room.events({
+        "click #like": function(e) {
+            Meteor.call("likeSong", Session.get("currentSong").mid);
+        },
+        "click #dislike": function(e) {
+            Meteor.call("dislikeSong", Session.get("currentSong").mid);
+        },
         "click #report-prev": function(e) {
             if (Session.get("previousSong") !== undefined) {
                 Session.set("reportPrevious", true);
@@ -245,30 +251,6 @@ if (Meteor.isClient) {
                 console.log(err, res);
             });
             $("#close-modal-a").click();
-        },
-        "click #smile-modal": function(e){
-            e.preventDefault();
-            if (Session.get("smileClicked")) {
-                $("#smile-modal").removeClass("active");
-                Session.set("smileClicked", false);
-            } else {
-				$("#meh-modal").removeClass("active");
-				Session.set("mehClicked", false);
-                $("#smile-modal").addClass("active");
-                Session.set("smileClicked", true);
-            }
-        },
-        "click #meh-modal": function(e){
-            e.preventDefault();
-            if (Session.get("mehClicked")) {
-                $("#meh-modal").removeClass("active");
-                Session.set("mehClicked", false);
-            } else {
-				$("#smile-modal").removeClass("active");
-				Session.set("smileClicked", false);
-                $("#meh-modal").addClass("active");
-                Session.set("mehClicked", true);
-            }
         },
         "click #toggle-video": function(e){
             e.preventDefault();
@@ -525,6 +507,52 @@ if (Meteor.isClient) {
     });
 
     Template.room.helpers({
+        likes: function() {
+            var playlist = Playlists.findOne({type: Session.get("type")});
+            var likes = 0;
+            playlist.songs.forEach(function(song) {
+                if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
+                    likes = song.likes;
+                    return;
+                }
+            });
+            return likes;
+        },
+        dislikes: function() {
+            var playlist = Playlists.findOne({type: Session.get("type")});
+            var dislikes = 0;
+            playlist.songs.forEach(function(song) {
+                if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
+                    dislikes = song.dislikes;
+                    return;
+                }
+            });
+            return dislikes;
+        },
+        liked: function() {
+            if (Meteor.userId()) {
+                var currentSong = Session.get("currentSong");
+                if (currentSong && Meteor.user().profile.liked.indexOf(currentSong.mid) !== -1) {
+                    return "active";
+                } else {
+                    return "";
+                }
+            } else {
+                "";
+            }
+        },
+        disliked: function() {
+            if (Meteor.userId()) {
+                var currentSong = Session.get("currentSong");
+                if (currentSong && Meteor.user().profile.disliked.indexOf(currentSong.mid) !== -1) {
+                    return "active";
+                } else {
+                    return "";
+                }
+            } else {
+                "";
+            }
+        },
         type: function() {
             var parts = location.href.split('/');
             var id = parts.pop().toLowerCase();
@@ -1312,7 +1340,7 @@ if (Meteor.isServer) {
                 username = user.username;
             }
         }
-        user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default"};
+        user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: []};
         return user;
     });
 
@@ -1370,6 +1398,46 @@ if (Meteor.isServer) {
     }
 
     Meteor.methods({
+        likeSong: function(mid) {
+            if (Meteor.userId()) {
+                var user = Meteor.user();
+                if (user.profile.liked.indexOf(mid) === -1) {
+                    Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.liked": mid}});
+                    Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.likes": 1}})
+                } else {
+                    Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.liked": mid}});
+                    Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.likes": -1}})
+                }
+                
+                if (user.profile.disliked.indexOf(mid) !== -1) {
+                    Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.disliked": mid}});
+                    Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.dislikes": -1}})
+                }
+                return true;
+            } else {
+                throw new Meteor.Error(403, "Invalid permissions.");
+            }
+        },
+        dislikeSong: function(mid) {
+            if (Meteor.userId()) {
+                var user = Meteor.user();
+                if (user.profile.disliked.indexOf(mid) === -1) {
+                    Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.disliked": mid}});
+                    Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.dislikes": 1}});
+                } else {
+                    Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.disliked": mid}});
+                    Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.dislikes": -1}});
+                }
+
+                if (user.profile.liked.indexOf(mid) !== -1) {
+                    Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.liked": mid}});
+                    Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.likes": -1}});
+                }
+                return true;
+            } else {
+                throw new Meteor.Error(403, "Invalid permissions.");
+            }
+        },
         submitReport: function(report, id) {
             var obj = report;
             obj.id = id;
@@ -1521,6 +1589,9 @@ if (Meteor.isServer) {
                         Playlists.insert({type: type, songs: []});
                     }
                     if (songData !== undefined && Object.keys(songData).length === 7 && songData.type !== undefined && songData.mid !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.img !== undefined) {
+                        songData.likes = 0;
+                        songData.dislikes = 0
+
                         Playlists.update({type: type}, {
                             $push: {
                                 songs: {
@@ -1530,7 +1601,9 @@ if (Meteor.isServer) {
                                     artist: songData.artist,
                                     duration: songData.duration,
                                     img: songData.img,
-                                    type: songData.type
+                                    type: songData.type,
+                                    likes: songData.likes,
+                                    dislikes: songData.dislikes
                                 }
                             }
                         });
