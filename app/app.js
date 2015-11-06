@@ -525,11 +525,6 @@ if (Meteor.isClient) {
     });
 
     Template.room.helpers({
-        songDuration: function() {
-            var duration = Session.get("duration");
-            var d = moment.duration(duration, 'seconds');
-            return d.minutes() + ":" + ("0" + d.seconds()).slice(-2);
-        },
         type: function() {
             var parts = location.href.split('/');
             var id = parts.pop().toLowerCase();
@@ -844,6 +839,7 @@ if (Meteor.isClient) {
     Meteor.subscribe("rooms");
 
     Template.room.onCreated(function () {
+        $("#time-total").text("0:00");
         Session.set("reportSong", false);
         Session.set("reportTitle", false);
         Session.set("reportAuthor", false);
@@ -882,6 +878,8 @@ if (Meteor.isClient) {
             Session.set("id", songData.id);
             $("#song-img").attr("src", songData.img);
             Session.set("duration", songData.duration);
+            var d = moment.duration(songData.duration, 'seconds');
+            $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
         }
 
         function resizeSeekerbar() {
@@ -914,6 +912,8 @@ if (Meteor.isClient) {
                             }
                         }, 200);
                         Session.set("duration", currentSong.duration);
+                        var d = moment.duration(currentSong.duration, 'seconds');
+                        $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
                         resizeSeekerbar();
                     });
                 } else {
