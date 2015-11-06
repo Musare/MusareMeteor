@@ -58,7 +58,6 @@
                             {{else}}
                             <button title="You need to be logged to smile this song." type="button" id="smile-modal" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-smile-o"> 79</i></button>
                             <button title="You need to be logged to dislike this song." type="button" id="meh-modal" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-meh-o"> 14</i></button>
-							<button title="You need to be logged to report this song!" type="button" id="song-modal" class="btn btn-warning btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-flag"></i></button>
 							{{/if}}
                             <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
                         </div>
@@ -96,11 +95,11 @@
                                     <option name="soundcloud" id="soundcloud">SoundCloud</option>
                                 </select>
                                 <label for="id" class="song-input-label">Song ID</label>
-                                <input class="song-input" name="id" id="id" type="text" />
+                                <input class="song-input" name="id" id="id" type="text"/>
                                 <label for="id" class="song-input-label">Song Artist</label>
-                                <input class="song-input" name="artist" id="artist" type="text" />
+                                <input class="song-input" name="artist" id="artist" type="text"/>
                                 <label for="title" class="song-input-label">Song Title</label>
-                                <input class="song-input" name="title" id="title" type="text" />
+                                <input class="song-input" name="title" id="title" type="text"/>
                                 <label for="img" class="song-input-label">Song Img</label>
                                 <input class="song-input" name="img" id="img" type="text" />
                                 <button type="button" id="add-song-button" class="button">Add Song</button>

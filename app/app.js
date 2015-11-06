@@ -146,9 +146,9 @@ if (Meteor.isClient) {
               window.location.href = "/";
             })
             Accounts.onLoginFailure(function(){
-                $("input").css("background-color","indianred");
-                $("input").on("click",function(){
-                    $("input").css({
+                $("#login-form input").css("background-color","indianred");
+                $("#login-form input").on("click",function(){
+                    $("#login-form input").css({
                       "-webkit-appearance": "none",
                       "   -moz-appearance": "none",
                       "        appearance": "none",
@@ -167,11 +167,11 @@ if (Meteor.isClient) {
                       "        transition-duration": "0.25s",
                       "font-weight": "300"
                     });
-                    $("input:focus").css({
+                    $("#login-form input:focus").css({
                       "width": "354px",
                       "color": "white"
                     })
-                    $("input").on("blur", function(){
+                    $("#login-form input").on("blur", function(){
                       $(this).css("width", "304px");
                     })
                 })
@@ -618,6 +618,15 @@ if (Meteor.isClient) {
                 }
             });
             return playlists;
+        },
+        users: function(){
+            Meteor.call("getUserNum", function(err, num){
+                if(err){
+                    console.log(err);
+                }
+                Session.set("userNum", num);
+            });
+            return Session.get("userNum");
         }
     });
 
@@ -1023,6 +1032,23 @@ if (Meteor.isServer) {
             }
         }
     });
+
+    var userNum = 0;
+
+    Meteor.onConnection(function(connection){
+        updateUserNum(true)
+        connection.onClose(function(){
+           updateUserNum(false);
+        })
+    });
+
+    function updateUserNum(increment){
+        if(increment === true){
+            userNum += 1;
+        } else if(increment === false){
+            userNum -= 1;
+        }
+    }
 
     var stations = [];
 
@@ -1554,6 +1580,9 @@ if (Meteor.isServer) {
             } else {
                 throw new Meteor.Error(403, "Invalid permissions.");
             }
+        },
+        getUserNum: function(){
+            return userNum;
         }
     });
 }

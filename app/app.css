@@ -952,6 +952,10 @@ footer .fa {
     background-color: transparent;
 }
 
+nav form{
+    height: 0;
+}
+
 nav form input[type="image"]{
     width: 100px;
     background-color: transparent !important;
