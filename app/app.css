@@ -489,6 +489,11 @@ form button:hover {
         width: 300px !important;
         margin-bottom: 100px !important;
     }
+    #voting{
+        margin: 0 auto !important;
+        width: 300px !important;
+        margin-bottom: 100px !important;
+    }
     #side-panel{
         display: none;
     }
@@ -1055,6 +1060,11 @@ nav form input[type="image"]{
 }
 
 #settings {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#voting {
     margin-top: 10px;
     margin-left: 10px;
 }

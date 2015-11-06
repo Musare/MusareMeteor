@@ -1,3 +1,7 @@
+##Visit the official website!
+
+### ** http://musare.com/ **
+
 ##Get started with development!
 
 First download Meteor: https://www.meteor.com/
