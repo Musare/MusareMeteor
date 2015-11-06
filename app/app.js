@@ -215,11 +215,9 @@ if (Meteor.isClient) {
 
     Template.room.events({
         "click #like": function(e) {
-            console.log("Liked");
             Meteor.call("likeSong", Session.get("currentSong").mid);
         },
         "click #dislike": function(e) {
-            console.log("Disliked");
             Meteor.call("dislikeSong", Session.get("currentSong").mid);
         },
         "click #report-prev": function(e) {
@@ -509,6 +507,52 @@ if (Meteor.isClient) {
     });
 
     Template.room.helpers({
+        likes: function() {
+            var playlist = Playlists.findOne({type: Session.get("type")});
+            var likes = 0;
+            playlist.songs.forEach(function(song) {
+                if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
+                    likes = song.likes;
+                    return;
+                }
+            });
+            return likes;
+        },
+        dislikes: function() {
+            var playlist = Playlists.findOne({type: Session.get("type")});
+            var dislikes = 0;
+            playlist.songs.forEach(function(song) {
+                if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
+                    dislikes = song.dislikes;
+                    return;
+                }
+            });
+            return dislikes;
+        },
+        liked: function() {
+            if (Meteor.userId()) {
+                var currentSong = Session.get("currentSong");
+                if (currentSong && Meteor.user().profile.liked.indexOf(currentSong.mid) !== -1) {
+                    return "active";
+                } else {
+                    return "";
+                }
+            } else {
+                "";
+            }
+        },
+        disliked: function() {
+            if (Meteor.userId()) {
+                var currentSong = Session.get("currentSong");
+                if (currentSong && Meteor.user().profile.disliked.indexOf(currentSong.mid) !== -1) {
+                    return "active";
+                } else {
+                    return "";
+                }
+            } else {
+                "";
+            }
+        },
         type: function() {
             var parts = location.href.split('/');
             var id = parts.pop().toLowerCase();
@@ -1356,7 +1400,6 @@ if (Meteor.isServer) {
 
     Meteor.methods({
         likeSong: function(mid) {
-            console.log("Liked! ", mid);
             if (Meteor.userId()) {
                 var user = Meteor.user();
                 if (user.profile.liked.indexOf(mid) === -1) {
@@ -1377,7 +1420,6 @@ if (Meteor.isServer) {
             }
         },
         dislikeSong: function(mid) {
-            console.log("Disliked! ", mid);
             if (Meteor.userId()) {
                 var user = Meteor.user();
                 if (user.profile.disliked.indexOf(mid) === -1) {

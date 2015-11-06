@@ -53,11 +53,11 @@
                         </div>
                         <div class="col-md-3">
                         {{#if currentUser}}
-                            <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg"><i class="fa fa-smile-o"> 79</i></button>
-                            <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg"><i class="fa fa-meh-o"> 14</i></button>
+                            <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg {{liked}}"><i class="fa fa-smile-o"> {{likes}}</i></button>
+                            <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg {{disliked}}"><i class="fa fa-meh-o"> {{dislikes}}</i></button>
                         {{else}}
-                            <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg" disabled><i class="fa fa-smile-o"> 79</i></button> 
-                            <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg" disabled><i class="fa fa-meh-o"> 14</i></button>
+                            <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg" disabled><i class="fa fa-smile-o"> {{likes}}</i></button> 
+                            <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg" disabled><i class="fa fa-meh-o"> {{dislikes}}</i></button>
                         {{/if}}
                         <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
                         </div>
