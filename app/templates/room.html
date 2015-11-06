@@ -52,13 +52,6 @@
                             <button type="button" id="toggle-video" class="button">Hide video</button>
                         </div>
                         <div class="col-md-3">
-                            {{#if currentUser}}
-                            <button title="Smile to this song." type="button" id="smile-modal" class="btn btn-success btn-lg"><i class="fa fa-smile-o"> 79</i></button>
-                            <button title="I dislike this song." type="button" id="meh-modal" class="btn btn-danger btn-lg"><i class="fa fa-meh-o"> 14</i></button>
-                            {{else}}
-                            <button title="You need to be logged to smile this song." type="button" id="smile-modal" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-smile-o"> 79</i></button>
-                            <button title="You need to be logged to dislike this song." type="button" id="meh-modal" class="btn btn-danger btn-lg" data-toggle="modal" data-target="#myModal" disabled><i class="fa fa-meh-o"> 14</i></button>
-							{{/if}}
                             <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
                         </div>
                     </div>
