@@ -848,7 +848,6 @@ if (Meteor.isClient) {
     Meteor.subscribe("rooms");
 
     Template.room.onCreated(function () {
-        $("#time-total").text("0:00");
         Session.set("reportSong", false);
         Session.set("reportTitle", false);
         Session.set("reportAuthor", false);
@@ -886,8 +885,8 @@ if (Meteor.isClient) {
             Session.set("artist", songData.artist);
             Session.set("id", songData.id);
             $("#song-img").attr("src", songData.img);
-            Session.set("duration", songData.duration);
-            var d = moment.duration(songData.duration, 'seconds');
+            Session.set("duration", parseInt(songData.duration));
+            var d = moment.duration(parseInt(songData.duration), 'seconds');
             $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
         }
 
@@ -920,8 +919,8 @@ if (Meteor.isClient) {
                                 window.clearInterval(interval);
                             }
                         }, 200);
-                        Session.set("duration", currentSong.duration);
-                        var d = moment.duration(currentSong.duration, 'seconds');
+                        Session.set("duration", parseInt(currentSong.duration));
+                        var d = moment.duration(parseInt(currentSong.duration), 'seconds');
                         $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
                         resizeSeekerbar();
                     });
