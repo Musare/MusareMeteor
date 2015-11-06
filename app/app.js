@@ -625,14 +625,12 @@ if (Meteor.isClient) {
             return playlists;
         },
         users: function(){
-            Meteor.setInterval(function(){
-                Meteor.call("getUserNum", function(err, num){
-                    if(err){
-                        console.log(err);
-                    }
-                    Session.set("userNum", num);
-                });
-            }, 1000)
+            Meteor.call("getUserNum", function(err, num){
+                if(err){
+                    console.log(err);
+                }
+                Session.set("userNum", num);
+            });
             return Session.get("userNum");
         }
     });
