@@ -1033,23 +1033,6 @@ if (Meteor.isServer) {
         }
     });
 
-    var userNum = 0;
-
-    Meteor.onConnection(function(connection){
-        updateUserNum(true)
-        connection.onClose(function(){
-           updateUserNum(false);
-        })
-    });
-
-    function updateUserNum(increment){
-        if(increment === true){
-            userNum += 1;
-        } else if(increment === false){
-            userNum -= 1;
-        }
-    }
-
     var stations = [];
 
     var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
@@ -1582,7 +1565,7 @@ if (Meteor.isServer) {
             }
         },
         getUserNum: function(){
-            return userNum;
+            return Object.keys(Meteor.default_server.sessions).length;
         }
     });
 }
