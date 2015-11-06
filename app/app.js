@@ -1146,6 +1146,16 @@ if (Meteor.isServer) {
                     songs[currentSong].mid = newSong.mid;
                     Playlists.update({type: type, "songs": songs[currentSong]}, {$set: {"songs.$": newSong}});
                 }
+                if (songs[currentSong].likes === undefined) {
+                    var newSong = songs[currentSong];
+                    newSong.likes = 0;
+                    Playlists.update({type: type, "songs": newSong}, {$set: {"songs.$": newSong}});
+                }
+                if (songs[currentSong].dislikes === undefined) {
+                    var newSong = songs[currentSong];
+                    newSong.dislikes = 0;
+                    Playlists.update({type: type, "songs": newSong}, {$set: {"songs.$": newSong}});
+                }
                 currentTitle = songs[currentSong].title;
                 Playlists.update({type: type}, {$set: {lastSong: currentSong}});
                 Rooms.update({type: type}, {$set: {timePaused: 0}});
@@ -1162,6 +1172,12 @@ if (Meteor.isServer) {
             songs.forEach(function(song) {
                 if (song.mid === undefined) {
                     song.mid = createUniqueSongId();
+                }
+                if (song.likes === undefined) {
+                    song.likes = 0;
+                }
+                if (song.dislikes === undefined) {
+                    song.dislikes = 0;
                 }
                 Playlists.update({type: type}, {$push: {"songs": song}});
             });
