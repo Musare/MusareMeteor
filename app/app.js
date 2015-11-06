@@ -146,9 +146,9 @@ if (Meteor.isClient) {
               window.location.href = "/";
             })
             Accounts.onLoginFailure(function(){
-                $("input").css("background-color","indianred");
-                $("input").on("click",function(){
-                    $("input").css({
+                $("#login-form input").css("background-color","indianred");
+                $("#login-form input").on("click",function(){
+                    $("#login-form input").css({
                       "-webkit-appearance": "none",
                       "   -moz-appearance": "none",
                       "        appearance": "none",
@@ -167,11 +167,11 @@ if (Meteor.isClient) {
                       "        transition-duration": "0.25s",
                       "font-weight": "300"
                     });
-                    $("input:focus").css({
+                    $("#login-form input:focus").css({
                       "width": "354px",
                       "color": "white"
                     })
-                    $("input").on("blur", function(){
+                    $("#login-form input").on("blur", function(){
                       $(this).css("width", "304px");
                     })
                 })
