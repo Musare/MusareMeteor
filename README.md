@@ -13,19 +13,19 @@ Try these methods frist before reporting a issue:
 5. Flush browser DNS/Sockets and IP DNS
 <hr>
 **Chrome**
-chrome://net-internals/#dns and chrome://net-internals/#sockets
+```chrome://net-internals/#dns``` and ```chrome://net-internals/#sockets```
 <hr>
 **Firefox**
-about:config then change network.dnsCacheExpiration to 0 and back to 60
+```about:config``` then change ```network.dnsCacheExpiration``` to ```0``` and back to ```60```
 <hr>
 **Windows 7, 8, 10**
-ipconfig /flushdns
+```ipconfig /flushdns```
 <hr>
 **Linux (latest versions)**
-sudo /etc/init.d/nscd restart
+```sudo /etc/init.d/nscd restart```
 <hr>
 **Mac OS X Yosemite**
-sudo discoveryutil mdnsflushcache
+```sudo discoveryutil mdnsflushcache```
 <hr>
 
 This did not fix your issue? or you're still not satisfied? Just create a issue ticket at:
