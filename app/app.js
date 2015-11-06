@@ -623,6 +623,17 @@ if (Meteor.isClient) {
                 }
             });
             return playlists;
+        },
+        users: function(){
+            Meteor.setInterval(function(){
+                Meteor.call("getUserNum", function(err, num){
+                    if(err){
+                        console.log(err);
+                    }
+                    Session.set("userNum", num);
+                });
+            }, 1000)
+            return Session.get("userNum");
         }
     });
 
@@ -1023,6 +1034,23 @@ if (Meteor.isServer) {
             }
         }
     });
+
+    var userNum = 0;
+
+    Meteor.onConnection(function(connection){
+        updateUserNum(true)
+        connection.onClose(function(){
+           updateUserNum(false);
+        })
+    });
+
+    function updateUserNum(increment){
+        if(increment === true){
+            userNum += 1;
+        } else if(increment === false){
+            userNum -= 1;
+        }
+    }
 
     var stations = [];
 
@@ -1554,6 +1582,9 @@ if (Meteor.isServer) {
             } else {
                 throw new Meteor.Error(403, "Invalid permissions.");
             }
+        },
+        getUserNum: function(){
+            return userNum;
         }
     });
 }
