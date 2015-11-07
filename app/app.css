@@ -1085,6 +1085,9 @@ nav form input[type="image"]{
 .terms, .privacy, .about {
   color: white;
 }
+.about a{
+    color: white;
+}
 #play, #pause, #skip, #shuffle {
     cursor: pointer;
 }
