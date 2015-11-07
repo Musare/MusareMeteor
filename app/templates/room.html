@@ -41,27 +41,23 @@
                         </div>
                     </div>
                     <div class="row" id="settings">
-                        <div class="col-md-3">
-                            {{#if currentUser}} 
-                                <button type="button" id="song-modal" class="button" data-toggle="modal" data-target="#myModal">Add songs</button>
-                                {{else}}
-                                <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled" disabled>Add songs</button>
+                        <div class="col-md-8 col-xs-12 col-lg-8 col-md-12">
+                            {{#if currentUser}}
+                            <button type="button" id="song-modal" class="button action-button action-button-25" data-toggle="modal" data-target="#myModal">Add songs</button>
+                            {{else}}
+                            <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled action-button action-button-25" disabled>Add songs</button>
                             {{/if}}
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" id="toggle-video" class="button">Hide video</button>
-                        </div>
-                    </div>
-                    <div class="row" id="voting">
-                        <div class="col-md-3">
-                        {{#if currentUser}}
-                            <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg {{liked}}"><i class="fa fa-smile-o"> {{likes}}</i></button>
-                            <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg {{disliked}}"><i class="fa fa-meh-o"> {{dislikes}}</i></button>
-                        {{else}}
-                            <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg" disabled><i class="fa fa-smile-o"> {{likes}}</i></button> 
-                            <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg" disabled><i class="fa fa-meh-o"> {{dislikes}}</i></button>
-                        {{/if}}
-                        <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
+                            <button type="button" id="toggle-video" class="button action-button action-button-25">Hide video</button>
+                            <div class="action-button action-button-25">
+                                {{#if currentUser}}
+                                <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg {{liked}} action-button action-button-50"><i class="fa fa-smile-o"> {{likes}}</i></button>
+                                <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg {{disliked}} action-button action-button-50"><i class="fa fa-meh-o"> {{dislikes}}</i></button>
+                                {{else}}
+                                <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg action-button action-button-50" disabled><i class="fa fa-smile-o"> {{likes}}</i></button>
+                                <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg action-button action-button-50" disabled><i class="fa fa-meh-o"> {{dislikes}}</i></button>
+                                {{/if}}
+                            </div>
+                            <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button action-button action-button-25" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
                         </div>
                     </div>
                 </div>

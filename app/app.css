@@ -486,7 +486,6 @@ form button:hover {
     }
     #settings{
         margin: 0 auto !important;
-        width: 300px !important;
         margin-bottom: 100px !important;
     }
     #voting{
@@ -1062,6 +1061,7 @@ nav form input[type="image"]{
 #settings {
     margin-top: 10px;
     margin-left: 10px;
+    min-width: 465px;
 }
 
 #voting {
@@ -1137,4 +1137,13 @@ nav form input[type="image"]{
 }
 #time-display {
     color: white;
+}
+.action-button {
+    float: left;
+}
+.action-button-50 {
+    width: 50%;
+}
+.action-button-25 {
+    width: 25%;
 }
