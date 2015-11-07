@@ -1345,7 +1345,7 @@ if (Meteor.isServer) {
         }
     });
 
-    Accounts.onCreateUser(function(options, user) {
+    Accounts.validateNewUser(function(user) {
         var username;
         if (user.services) {
             if (user.services.github) {
@@ -1357,11 +1357,25 @@ if (Meteor.isServer) {
             }
         }
         if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() !== 0) {
-            return false;
+            throw new Meteor.Error(403, "An account with that username already exists.");
         } else {
-            user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: []};
-            return user;
+            return true;
         }
+    });
+
+    Accounts.onCreateUser(function(options, user) {
+        var username;
+        if (user.services) {
+            if (user.services.github) {
+                username = user.services.github.username;
+            } else if (user.services.facebook) {
+                username = user.services.facebook.first_name;
+            } else if (user.services.password) {
+                username = user.username;
+            }
+        }
+        user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: []};
+        return user;
     });
 
     ServiceConfiguration.configurations.remove({
