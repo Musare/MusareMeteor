@@ -1711,6 +1711,10 @@ Router.route("/terms", {
     template: "terms"
 });
 
+Router.route("/api", {
+    template: "api"
+});
+
 Router.route("/privacy", {
     template: "privacy"
 });
