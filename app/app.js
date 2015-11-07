@@ -959,7 +959,7 @@ if (Meteor.isClient) {
                             height: 540,
                             width: 960,
                             videoId: currentSong.id,
-                            playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+                            playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
                             events: {
                                 'onReady': function(event) {
                                     event.target.seekTo(getTimeElapsed() / 1000);
