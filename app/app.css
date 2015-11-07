@@ -489,6 +489,11 @@ form button:hover {
         width: 300px !important;
         margin-bottom: 100px !important;
     }
+    #voting{
+        margin: 0 auto !important;
+        width: 300px !important;
+        margin-bottom: 100px !important;
+    }
     #side-panel{
         display: none;
     }
@@ -1059,6 +1064,11 @@ nav form input[type="image"]{
     margin-left: 10px;
 }
 
+#voting {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
 #loginregistercontainer {
     margin-bottom: 100px;
 }
@@ -1074,6 +1084,9 @@ nav form input[type="image"]{
 }
 .terms, .privacy, .about {
   color: white;
+}
+.about a{
+    color: white;
 }
 #play, #pause, #skip, #shuffle {
     cursor: pointer;

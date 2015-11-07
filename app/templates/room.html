@@ -51,6 +51,8 @@
                         <div class="col-md-3">
                             <button type="button" id="toggle-video" class="button">Hide video</button>
                         </div>
+                    </div>
+                    <div class="row" id="voting">
                         <div class="col-md-3">
                         {{#if currentUser}}
                             <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg {{liked}}"><i class="fa fa-smile-o"> {{likes}}</i></button>
@@ -119,9 +121,6 @@
 
                     <!-- Modal content-->
                     <div class="modal-content">
-                         <div class="col-md-3">
-                             <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
-                         </div>
                         <div class="modal-body">
 
                             <button type="button" id="report-prev" class="btn btn-warning btn-lg btn-block">Report previous song ({{previousSongR.title}})</button>
