@@ -1356,8 +1356,12 @@ if (Meteor.isServer) {
                 username = user.username;
             }
         }
-        user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: []};
-        return user;
+        if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() !== 0) {
+            return false;
+        } else {
+            user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: []};
+            return user;
+        }
     });
 
     ServiceConfiguration.configurations.remove({
