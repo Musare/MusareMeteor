@@ -526,10 +526,12 @@ Template.room.onRendered(function() {
 
 Template.room.helpers({
     chat: function() {
-        var elem = document.getElementById('chat-ul');
-        if (elem !== undefined && elem !== null) {
-            elem.scrollTop = elem.scrollHeight;
-        }
+        Meteor.setTimeout(function() {
+            var elem = document.getElementById('chat');
+            if (elem !== undefined && elem !== null) {
+                elem.scrollTop = elem.scrollHeight;
+            }
+        }, 1000);
         return Chat.find({type: Session.get("type")}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
     },
     likes: function() {
