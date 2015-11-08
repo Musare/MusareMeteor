@@ -72,6 +72,9 @@ function Station(type) {
         songs = playlist.songs;
     }
     var currentSong = playlist.lastSong;
+    if (currentSong < (songs.length - 1)) {
+        currentSong++;
+    } else currentSong = 0;
     var currentTitle = songs[currentSong].title;
 
     Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
