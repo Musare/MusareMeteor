@@ -1152,6 +1152,7 @@ nav form input[type="image"]{
     overflow-y: auto;
     margin: 0;
     padding: 0 15px 0 15px;
+    padding-bottom: 20px;
 }
 .chat-message:nth-child(even) {
    color: white;
@@ -1162,12 +1163,14 @@ nav form input[type="image"]{
 #submit{
     margin-left: 10px;
     font-size: 1.5em;
+    padding-top: 10px;
     cursor: pointer;
     display: inline-block;
  }
 #chat-input-div {
     position: absolute;
     bottom: 0;
+    padding-top: 10px;
     left: 0;
     width: 100%;
     padding-left: 15px;
