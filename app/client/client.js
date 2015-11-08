@@ -233,7 +233,7 @@ Template.room.events({
     "click #add-song-button": function(e){
         e.preventDefault();
         parts = location.href.split('/');
-        id = parts.pop();
+        var roomType = parts.pop();
         var genre = id.toLowerCase();
         var type = $("#type").val();
         id = $("#id").val();
@@ -241,7 +241,7 @@ Template.room.events({
         var artist = $("#artist").val();
         var img = $("#img").val();
         var songData = {type: type, id: id, title: title, artist: artist, img: img};
-        if(Playlists.find({type: songData.type, "songs.title": songData.title}, {songs: {$elemMatch: {title: songData.title}}}).count() !== 0) {
+        if(Playlists.find({type: roomType, "songs.title": songData.title}, {songs: {$elemMatch: {title: songData.title}}}).count() !== 0) {
             $(".landing").prepend("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song is already is in the playlist.</div>");
         } else{
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
