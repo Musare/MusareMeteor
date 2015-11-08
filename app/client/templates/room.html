@@ -102,7 +102,7 @@
                             <h2 class="chat-title">Chat</h2>
                             <ul id="chat-ul">
                                 {{#each chat}}
-                                <li class="chat-message"><b class="bold">{{this.username}}:</b> {{this.message}}</li>
+                                <li class="chat-message"><small class="chat-rank">[{{this.rank}}]</small> <b class="bold">{{this.username}}:</b> {{this.message}}</li>
                                 <hr>
                                 {{/each}}
                             </ul>

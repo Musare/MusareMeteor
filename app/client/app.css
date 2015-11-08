@@ -1176,6 +1176,10 @@ nav form input[type="image"]{
     padding-left: 15px;
     padding-right: 15px;
 }
+.chat-rank {
+    color: white;
+    font-size: 10px;
+}
 .row {
     margin: 0;
 }
