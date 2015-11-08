@@ -23,6 +23,7 @@
                 </ul>
                 {{#if currentUser}}
                   <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/u/{{currentUser.profile.username}}" class="navbar-right">{{currentUser.profile.username}}</a></li>
                     <li><a href="#" class="logout navbar-right">Logout</a></li>
                       <li>
                           <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
