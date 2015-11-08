@@ -478,7 +478,7 @@ form button:hover {
         display: none;
     }
     #song-media{
-        margin-left: 0;
+        margin-left: 0 !important;
     }
     #song-info{
         margin: 15px auto;
