@@ -526,7 +526,7 @@ Template.room.onRendered(function() {
 
 Template.room.helpers({
     chat: function() {
-        var elem = document.getElementById('chat-ul');
+        var elem = document.getElementById('chat');
         if (elem !== undefined && elem !== null) {
             elem.scrollTop = elem.scrollHeight;
         }
