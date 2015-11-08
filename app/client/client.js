@@ -266,9 +266,9 @@ Template.room.events({
         } else{
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
+                $("#close-modal-a").click();
             });
         }
-        $("#close-modal-a").click();
     },
     "click #toggle-video": function(e){
         e.preventDefault();
