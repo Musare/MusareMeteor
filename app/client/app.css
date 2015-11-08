@@ -1061,7 +1061,6 @@ nav form input[type="image"]{
 #settings {
     margin-top: 10px;
     margin-left: 10px;
-    min-width: 465px;
 }
 
 #voting {
@@ -1140,10 +1139,5 @@ nav form input[type="image"]{
 }
 .action-button {
     float: left;
-}
-.action-button-50 {
-    width: 50%;
-}
-.action-button-25 {
-    width: 25%;
+    width: 100%;
 }

@@ -40,26 +40,54 @@
                           <h2 class="room-artist">{{{artist}}}</h2>
                         </div>
                     </div>
+                    <!--<div class="row" id="settings">-->
+                        <!--<div class="col-md-4">-->
+                            <!--{{#if currentUser}}-->
+                            <!--<button type="button" id="song-modal" class="button action-button action-button-25" data-toggle="modal" data-target="#myModal">Add songs</button>-->
+                            <!--{{else}}-->
+                            <!--<button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled action-button action-button-25" disabled>Add songs</button>-->
+                            <!--{{/if}}-->
+                        <!--</div>-->
+                        <!--<div class="col-md-4">-->
+                            <!--<button type="button" id="toggle-video" class="button action-button action-button-25">Hide video</button>-->
+                            <!--<div class="action-button action-button-25">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!---->
                     <div class="row" id="settings">
-                        <div class="col-md-8 col-xs-12 col-lg-8 col-md-12">
+                        <div class="col-md-4">
                             {{#if currentUser}}
-                            <button type="button" id="song-modal" class="button action-button action-button-25" data-toggle="modal" data-target="#myModal">Add songs</button>
+                                <button type="button" id="song-modal" class="button action-button" data-toggle="modal" data-target="#myModal">Add songs</button>
                             {{else}}
-                            <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled action-button action-button-25" disabled>Add songs</button>
+                                <button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled action-button" disabled>Add songs</button>
                             {{/if}}
-                            <button type="button" id="toggle-video" class="button action-button action-button-25">Hide video</button>
-                            <div class="action-button action-button-25">
-                                {{#if currentUser}}
-                                <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg {{liked}} action-button action-button-50"><i class="fa fa-smile-o"> {{likes}}</i></button>
-                                <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg {{disliked}} action-button action-button-50"><i class="fa fa-meh-o"> {{dislikes}}</i></button>
-                                {{else}}
-                                <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg action-button action-button-50" disabled><i class="fa fa-smile-o"> {{likes}}</i></button>
-                                <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg action-button action-button-50" disabled><i class="fa fa-meh-o"> {{dislikes}}</i></button>
-                                {{/if}}
-                            </div>
-                            <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button action-button action-button-25" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" id="toggle-video" class="button action-button">Hide video</button>
+                            <div class="action-button "></div>
                         </div>
                     </div>
+                    <div class="row" id="settings">
+                        {{#if currentUser}}
+                            <div class="col-md-2">
+                                <button title="Smile to this song." type="button" id="like" class="btn btn-success btn-lg {{liked}} action-button"><i class="fa fa-smile-o"> {{likes}}</i></button>
+                            </div>
+                            <div class="col-md-2">
+                                <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg {{disliked}} action-button"><i class="fa fa-meh-o"> {{dislikes}}</i></button>
+                            </div>
+                        {{else}}
+                            <div class="col-md-2">
+                                <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg action-button" disabled><i class="fa fa-smile-o"> {{likes}}</i></button>
+                            </div>
+                            <div class="col-md-2">
+                                <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg action-button" disabled><i class="fa fa-meh-o"> {{dislikes}}</i></button>
+                            </div>
+                        {{/if}}
+                        <div class="col-md-2">
+                            <button title="Report this song!" type="button" id="report-modal" class="btn btn-warning btn-lg report-button action-button" data-toggle="modal" data-target="#reportModal"><i class="fa fa-flag"></i></button>
+                        </div>
+                    </div>
+                    <!---->
                 </div>
                 <div class="col-md-3" id="side-panel">
                   {{> playlist}}
