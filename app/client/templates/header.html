@@ -23,7 +23,15 @@
                 </ul>
                 {{#if currentUser}}
                   <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/u/{{currentUser.profile.username}}" class="navbar-right">{{currentUser.profile.username}}</a></li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser.profile.username}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Profile</a></li>
+                            <li><a href="#">Settings</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a class="logout" href="#">Logout</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#" class="logout navbar-right">Logout</a></li>
                       <li>
                           <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
