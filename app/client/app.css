@@ -871,7 +871,7 @@ footer .fa {
     border-radius: 100%;
 }
 
-.playlist-title {
+.playlist-title, .chat-title {
     text-align: center;
     color: white;
     font-weight: 600;
@@ -882,7 +882,7 @@ footer .fa {
     padding: 0 15px 0 15px;
     color: white;
     font-size: 21px;
-    max-height: 90%;
+    max-height: 100%;
     overflow: auto;
 }
 
@@ -1175,4 +1175,7 @@ nav form input[type="image"]{
 }
 .row {
     margin: 0;
+}
+.sidebar-content {
+    height: calc(100% - 42px);
 }
