@@ -38,6 +38,9 @@ First download Meteor: https://www.meteor.com/
 
 Then download Git (CLI): https://git-scm.com/
 
-Once that is done, get the repository on your local machine and open your command line.
+Once that is done:
+ 1. Star the repository!
+ 2. Fork the repository
+ 3. Clone your forked repo to your local machine
 
 Navigate to "../app" and run "meteor". Go to localhost:3000 and you're set!
