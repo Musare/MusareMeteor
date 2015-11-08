@@ -5,6 +5,7 @@ Meteor.startup(function() {
 });
 
 Meteor.subscribe("queues");
+Meteor.subscribe("chat");
 Meteor.subscribe("playlists");
 
 var minterval;
@@ -208,6 +209,25 @@ Template.dashboard.onCreated(function() {
 });
 
 Template.room.events({
+    "click #submit": function() {
+        Meteor.call("sendMessage", Session.get("type"), $("#chat-input").val(), function(err, res) {
+            console.log(err, res);
+            if (res) {
+                $("#chat-input").val("");
+            }
+        });
+    },
+    "keyup #chat-input": function(e) {
+        if (e.type == "keyup" && e.which == 13) {
+            e.preventDefault();
+            Meteor.call("sendMessage", Session.get("type"), $("#chat-input").val(), function(err, res) {
+                console.log(err, res);
+                if (res) {
+                    $("#chat-input").val("");
+                }
+            });
+        }
+    },
     "click #like": function(e) {
         Meteor.call("likeSong", Session.get("currentSong").mid);
     },
@@ -505,6 +525,13 @@ Template.room.onRendered(function() {
 });
 
 Template.room.helpers({
+    chat: function() {
+        var elem = document.getElementById('chat-ul');
+        if (elem !== undefined && elem !== null) {
+            elem.scrollTop = elem.scrollHeight;
+        }
+        return Chat.find({type: Session.get("type")}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
+    },
     likes: function() {
         var playlist = Playlists.findOne({type: Session.get("type")});
         var likes = 0;

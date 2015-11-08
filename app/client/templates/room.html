@@ -90,7 +90,27 @@
                     <!---->
                 </div>
                 <div class="col-md-3" id="side-panel">
-                  {{> playlist}}
+                    <ul class="nav nav-tabs nav-justified" data-tabs="tabs">
+                        <li role="presentation" class="active"><a data-toggle="tab" href="#playlist">Playlist</a></li>
+                        <li role="presentation"><a data-toggle="tab" href="#chat">Chat</a></li>
+                    </ul>
+                    <div id='content' class="tab-content sidebar-content">
+                        <div class="tab-pane active" id="playlist">
+                            {{> playlist}}
+                        </div>
+                        <div class="tab-pane" id="chat">
+                            <ul id="chat-ul">
+                                {{#each chat}}
+                                    <li class="chat-message"><b class="bold">{{this.username}}:</b> {{this.message}}</li>
+                                {{/each}}
+                            </ul>
+                            <div id="chat-input-div">
+                                <input id="chat-input" placeholder="Type a message...">
+                                <div id="submit"><i id="submit-message" class="fa fa-paper-plane-o"></i>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Modal -->

@@ -879,9 +879,9 @@ footer .fa {
 
 #playlist {
     margin: 0;
-    padding: 0;
+    padding: 0 15px 0 15px;
     color: white;
-    font-size: 1.5em;
+    font-size: 21px;
     max-height: 90%;
     overflow: auto;
 }
@@ -981,6 +981,8 @@ nav form input[type="image"]{
 
 #side-panel {
     height: 100vh;
+    padding-left: 0;
+    padding-right: 0;
     background-color: rgba(255, 255, 255, 0.4);
 }
 
@@ -1140,4 +1142,37 @@ nav form input[type="image"]{
 .action-button {
     float: left;
     width: 100%;
+}
+.chat-message {
+    font-size: 20px;
+    color: white;
+}
+#chat-ul {
+    height: 90vh;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0 15px 0 15px;
+}
+.chat-message:nth-child(even) {
+   color: white;
+}
+.chat-message:nth-child(odd) {
+    color: darkblue;
+}
+#submit{
+    margin-left: 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+    display: inline-block;
+ }
+#chat-input-div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.row {
+    margin: 0;
 }

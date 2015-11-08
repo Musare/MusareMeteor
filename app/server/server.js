@@ -382,6 +382,23 @@ function isAdmin() {
 }
 
 Meteor.methods({
+    sendMessage: function(type, message) {
+        if (Meteor.userId()) {
+            var user = Meteor.user();
+            var time = new Date();
+            var username = user.profile.username;
+            if (message.length === 0) {
+                throw new Meteor.Error(406, "Message length cannot be 0.");
+            }
+            if (message.length > 300) {
+                throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
+            }
+            Chat.insert({type: type, message: message, time: time, username: username});
+            return true;
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     likeSong: function(mid) {
         if (Meteor.userId()) {
             var user = Meteor.user();
