@@ -531,7 +531,7 @@ Template.room.helpers({
             if (elem !== undefined && elem !== null) {
                 elem.scrollTop = elem.scrollHeight;
             }
-        }, 1000);
+        }, 100);
         return Chat.find({type: Session.get("type")}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
     },
     likes: function() {
