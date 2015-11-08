@@ -107,7 +107,11 @@
                                 {{/each}}
                             </ul>
                             <div id="chat-input-div">
+                                {{#if currentUser}}
                                 <input id="chat-input" placeholder="Type a message...">
+                            {{else}}
+                                <input id="chat-input" placeholder="Please register and login to chat." disabled>
+                            {{/if}}
                                 <div id="submit"><i id="submit-message" class="fa fa-paper-plane-o"></i>
                             </div>
                         </div>
