@@ -1185,6 +1185,10 @@ nav form input[type="image"]{
     overflow: auto;
 }
 .navbar-default .navbar-nav .open .dropdown-menu>li>a,.navbar-default .navbar-nav .open .dropdown-menu {
-    background-color: rgba(102, 205, 170, 0.7);
+    background-color: transparent;
+    color:#ffffff;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    background-color: transparent;
     color:#ffffff;
 }
