@@ -650,18 +650,49 @@ Template.room.helpers({
 });
 
 Template.admin.helpers({
-    queues: function() {
-        var queues = Queues.find({}).fetch();
-        queues.map(function(queue) {
-            if (Rooms.find({type: queue.type}).count() !== 1) {
-                return;
-            } else {
-                queue.display = Rooms.findOne({type: queue.type}).display;
-                return queue;
-            }
-        });
-        return queues;
-    },
+  queues: function() {
+      var queues = Queues.find({}).fetch();
+      queues.map(function(queue) {
+          if (Rooms.find({type: queue.type}).count() !== 1) {
+              return;
+          } else {
+              queue.display = Rooms.findOne({type: queue.type}).display;
+              return queue;
+          }
+      });
+      return queues;
+  },
+  users: function(){
+      Meteor.call("getUserNum", function(err, num){
+          if(err){
+              console.log(err);
+          }
+          Session.set("userNum", num);
+      });
+      return Session.get("userNum");
+  },
+  playlists: function() {
+      var playlists = Playlists.find({}).fetch();
+      playlists.map(function(playlist) {
+          if (Rooms.find({type: playlist.type}).count() !== 1) {
+              return;
+          } else {
+              playlist.display = Rooms.findOne({type: playlist.type}).display;
+              return playlist;
+          }
+      });
+      return playlists;
+  },
+  playlistCount: function() {
+    var playlists = Playlists.find({}).fetch();
+    playlists.map(function(playlist){
+      playlist.songs = Rooms.findOne({type: playlist.type}).songs.length;
+      return playlist;
+    });
+  }
+});
+
+Template.stations.helpers({
     playlists: function() {
         var playlists = Playlists.find({}).fetch();
         playlists.map(function(playlist) {
@@ -673,22 +704,13 @@ Template.admin.helpers({
             }
         });
         return playlists;
-    },
-    users: function(){
-        Meteor.call("getUserNum", function(err, num){
-            if(err){
-                console.log(err);
-            }
-            Session.set("userNum", num);
-        });
-        return Session.get("userNum");
     }
 });
 
 var yt_player = undefined;
 var _sound = undefined;
 
-Template.admin.events({
+Template.stations.events({
     "click .preview-button": function(e){
         Session.set("song", this);
     },
@@ -830,14 +852,14 @@ Template.admin.events({
     }
 });
 
-Template.admin.onCreated(function() {
+Template.stations.onCreated(function() {
     var tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 });
 
-Template.admin.onRendered(function() {
+Template.stations.onRendered(function() {
     $("#previewModal").on("hidden.bs.modal", function() {
         if (yt_player !== undefined) {
             $("#play").attr("disabled", false);

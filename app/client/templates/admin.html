@@ -1,174 +1,48 @@
 <template name="admin">
     <div class="landing">
         {{> header}}
-        <div class="row">
-            <h1 class="col-md-8 col-md-offset-2" style="color: white">Total Users: {{{users}}}</h1>
-            <h1 class="col-md-8 col-md-offset-2 admin-header">Queues:</h1>
-            {{#each queues}}
-                <div class="col-md-8 col-md-offset-2 admin-queue-panel">
-                    <div class="panel panel-danger">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{display}} review queue</h3>
-                        </div>
-                        <div class="panel-body admin-panel-body">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Artist(s)</th>
-                                        <th>Type</th>
-                                        <th>Id</th>
-                                        <th>Img</th>
-                                        <th>Preview</th>
-                                        <th>Edit</th>
-                                        <th>Add</th>
-                                        <th colspan="10">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {{#each songs}}
-                                        <tr>
-                                            <th scope="row">{{title}}</th>
-                                            <td>{{artist}}</td>
-                                            <td>{{type}}</td>
-                                            <td>{{id}}</td>
-                                            <td class="column-small"><a href="{{img}}" target="_blank"><button class="btn btn-primary preview-button">Preview Image</button></a></td>
-                                            <td class="column-small"><button class="btn btn-primary preview-button" data-toggle="modal" data-target="#previewModal">Preview</button></td>
-                                            <td class="column-small"><button class="btn btn-primary edit-queue-button" data-genre="{{../type}}" data-toggle="modal" data-target="#editModal">Edit</button></td>
-                                            <td class="column-small"><button class="btn btn-success add-song-button" data-genre="{{../type}}"><i class="fa fa-check-circle"></i></button></td>
-                                            <td class="column-small"><button class="btn btn-danger deny-song-button" data-genre="{{../type}}"><i class="fa fa-ban"></i></button></td>
-                                        </tr>
-                                    {{/each}}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            {{/each}}
-            <h1 class="col-md-8 col-md-offset-2 admin-header">Playlists:</h1>
-            {{#each playlists}}
-                <div class="col-md-8 col-md-offset-2 admin-playlist-panel">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h3 class="panel-title"><span>{{display}}</span> playlist</h3> <i class="fa fa-times delete-room" name="Delete room"></i>
-                        </div>
-                        <div class="panel-body admin-panel-body">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Artist(s)</th>
-                                    <th>Type</th>
-                                    <th>Id</th>
-                                    <th>Img</th>
-                                    <th>Preview</th>
-                                    <th>Edit</th>
-                                    <th colspan="10">Remove</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {{#each songs}}
-                                <tr>
-                                    <th scope="row">{{title}}</th>
-                                    <td>{{artist}}</td>
-                                    <td>{{type}}</td>
-                                    <td>{{id}}</td>
-                                    <td class="column-small"><a href="{{img}}" target="_blank"><button class="btn btn-primary preview-button">Preview Image</button></a></td>
-                                    <td class="column-small"><button class="btn btn-primary preview-button" data-toggle="modal" data-target="#previewModal">Preview</button></td>
-                                    <td class="column-small"><button class="btn btn-primary edit-playlist-button" data-genre="{{../type}}" data-toggle="modal" data-target="#editModal">Edit</button></td>
-                                    <td class="column-small"><button class="btn btn-danger remove-song-button" data-genre="{{../type}}"><i class="fa fa-ban"></i></button></td>
-                                </tr>
-                                {{/each}}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            {{/each}}
-
-            <div class="col-md-4 col-md-offset-4">
-                <div id="croom_container">
-                    <label for="croom_display" class="croom_label">Room Display Name (eg 'Edm'):</label>
-                    <div class="input-group">
-                        <input type="text" class="croom" id="croom_display" name="croom" required />
-                    </div>
-                    <label for="croom_tag" class="croom_label">Room Tag Name (eg 'edm'):</label>
-                    <div class="input-group">
-                        <input type="text" class="croom" id="croom_tag" name="croom" required />
-                    </div>
-                    <button class="btn btn-warning btn-block" id="croom_create">Create</button>
-                </div>
+          <div class="row" style="margin-top: 20px;">
+            <div class="col-md-5 col-md-offset-1 admin-container">
+              <a href="/stations"><h1>Playlists</h1></a>
+              {{#each playlists}}
+                <p>{{display}} playlist</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Song Count</th>
+                        <th>Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">{{songs}}</th>
+                        <td>{{artist}}</td>
+                        <td>{{type}}</td>
+                        <td>{{id}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+              {{/each}}
             </div>
-
-            <div id="previewModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Preview</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div width="960" height="540" id="previewPlayer"></div>
-                            <button id="play" class="btn btn-success"><i class="fa fa-play"></i></button>
-                            <button id="stop" class="btn btn-danger" disabled><i class="fa fa-stop"></i></button>
-                            <div id="volume-container-admin">
-                                <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-3 col-md-offset-2 admin-container">
+              <h1>Site statistics</h1>
+              <p>Total Users: {{{users}}}</p>
+              <p></p>
+              <p>Queues:</p>
             </div>
+          </div>
 
-            <div id="editModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit</h4>
-                        </div>
-                        <div class="modal-body">
-                            <label for="type" class="song-input-label">Song Type</label>
-                            <select name="type" id="type" class="song-input-select">
-                                <option name="youtube" id="youtube">YouTube</option>
-                                <option name="soundcloud" id="soundcloud">SoundCloud</option>
-                            </select>
-                            <label for="id" class="song-input-label">Song ID</label>
-                            <input class="song-input" name="id" id="id" type="text" />
-                            <label for="id" class="song-input-label">Song Artist</label>
-                            <input class="song-input" name="artist" id="artist" type="text" />
-                            <label for="title" class="song-input-label">Song Title</label>
-                            <input class="song-input" name="title" id="title" type="text" />
-                            <label for="title" class="song-input-label">Song Duration</label>
-                            <input class="song-input" name="duration" id="duration" type="number" />
-                            <label for="img" class="song-input-label">Song Image</label>
-                            <input class="song-input" name="img" id="img" type="text" />
-                            <button type="button" id="get-spotify-info" class="button">Get Spotify Data</button>
-                            <button type="button" id="save-song-button" class="button">Save Changes</button>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <ul class="bg-bubbles">
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-                <li></li>
-            </ul>
-        </div>
+          <ul class="bg-bubbles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
     </div>
 </template>

@@ -46,6 +46,17 @@ Router.route("/admin", {
     }
 });
 
+Router.route("/stations", {
+  action: function() {
+    var user = Meteor.users.findOne({});
+    if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
+        this.render("stations");
+    } else {
+        this.redirect("/");
+    }
+  }
+})
+
 Router.route("/vis", {
     template: "visualizer"
 });

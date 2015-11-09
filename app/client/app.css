@@ -253,6 +253,20 @@ ul {
     overflow-y: auto;
 }
 
+.admin-container {
+  background-color: black;
+  color: white;
+}
+
+.admin-container h1 {
+  text-align: center;
+  margin: 0;
+}
+
+.admin-container a {
+  color: white;
+}
+
 .container {
     max-width: 600px;
     margin: 0 auto;
