@@ -7,13 +7,13 @@
                         <div id="room-icons">
                             <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
                             {{#if isAdmin}}
-                            {{#if paused}}
-                            <i class="fa fa-play fa-1" id="play"></i>
-                            {{else}}
-                            <i class="fa fa-pause fa-1" id="pause"></i>
-                            {{/if}}
-                            <i class="fa fa-step-forward fa-1" id="skip"></i>
-                            <i class="fa fa-random fa-1" id="shuffle"></i>
+                                {{#if paused}}
+                                    <i class="fa fa-play fa-1" id="play"></i>
+                                {{else}}
+                                    <i class="fa fa-pause fa-1" id="pause"></i>
+                                {{/if}}
+                                <i class="fa fa-step-forward fa-1" id="skip"></i>
+                                <i class="fa fa-random fa-1" id="shuffle"></i>
                             {{/if}}
                         </div>
 
@@ -35,23 +35,23 @@
                             </div>
                         </div>
                         <div id="song-info" class="col-md-4" style="margin-top:15px">
-                          <img class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
-                          <h2 class="room-title">{{{title}}} <small id="time-display">(<span id="time-elapsed"></span> / <span id="time-total"></span>)</small></h2>
-                          <h2 class="room-artist">{{{artist}}}</h2>
+                            <img class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
+                            <h2 class="room-title">{{{title}}} <small id="time-display">(<span id="time-elapsed"></span> / <span id="time-total"></span>)</small></h2>
+                            <h2 class="room-artist">{{{artist}}}</h2>
                         </div>
                     </div>
                     <!--<div class="row" id="settings">-->
-                        <!--<div class="col-md-4">-->
-                            <!--{{#if currentUser}}-->
-                            <!--<button type="button" id="song-modal" class="button action-button action-button-25" data-toggle="modal" data-target="#myModal">Add songs</button>-->
-                            <!--{{else}}-->
-                            <!--<button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled action-button action-button-25" disabled>Add songs</button>-->
-                            <!--{{/if}}-->
-                        <!--</div>-->
-                        <!--<div class="col-md-4">-->
-                            <!--<button type="button" id="toggle-video" class="button action-button action-button-25">Hide video</button>-->
-                            <!--<div class="action-button action-button-25">-->
-                        <!--</div>-->
+                    <!--<div class="col-md-4">-->
+                        <!--{{#if currentUser}}-->
+                    <!--<button type="button" id="song-modal" class="button action-button action-button-25" data-toggle="modal" data-target="#myModal">Add songs</button>-->
+                        <!--{{else}}-->
+                    <!--<button title="You need to be logged in to add songs." type="button" class="button btn btn-disabled action-button action-button-25" disabled>Add songs</button>-->
+                        <!--{{/if}}-->
+                    <!--</div>-->
+                    <!--<div class="col-md-4">-->
+                    <!--<button type="button" id="toggle-video" class="button action-button action-button-25">Hide video</button>-->
+                    <!--<div class="action-button action-button-25">-->
+                    <!--</div>-->
                     <!--</div>-->
                     <!---->
                     <div class="row" id="settings">
@@ -99,22 +99,21 @@
                             {{> playlist}}
                         </div>
                         <div class="tab-pane" id="chat">
-                            <h2 class="chat-title">Chat</h2>
                             <ul id="chat-ul">
                                 {{#each chat}}
-                                <li class="chat-message"><small class="chat-rank">[{{this.rank}}]</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a>: {{this.message}}</li>
-                                <hr>
+                                    <li class="chat-message"><small class="chat-rank">[{{this.rank}}]</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a>: {{this.message}}</li>
+                                    <hr>
                                 {{/each}}
                             </ul>
                             <div id="chat-input-div">
                                 {{#if currentUser}}
-                                <input id="chat-input" placeholder="Type a message...">
-                            {{else}}
-                                <input id="chat-input" placeholder="Please register and login to chat." disabled>
-                            {{/if}}
+                                    <input id="chat-input" placeholder="Type a message...">
+                                {{else}}
+                                    <input id="chat-input" placeholder="Please register and login to chat." disabled>
+                                {{/if}}
                                 <div id="submit"><i id="submit-message" class="fa fa-paper-plane-o"></i>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -126,8 +125,8 @@
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                          <h4 class="modal-title">Search for a song</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Search for a song</h4>
                         </div>
                         <div class="modal-body">
                             <div id="search-info">
@@ -185,8 +184,8 @@
                                         Song
                                     </label>
                                 </div>
-                                    <!-- Layer2 -->
-                                    {{#if reportSong}}
+                                <!-- Layer2 -->
+                                {{#if reportSong}}
                                     <div class="report-layer-2" id="report-song-list">
                                         <div class="checkbox">
                                             <input type="checkbox" id="report-song-not-playing">
@@ -208,14 +207,14 @@
                                             </label>
                                         </div>
                                     </div>
-                                    {{/if}}
+                                {{/if}}
                                 <div class="checkbox">
                                     <input class="checkbox-box" type="checkbox" id="report-title">
                                     <label for="report-title">
                                         Title
                                     </label>
                                 </div>
-                                    <!-- Layer2 -->
+                                <!-- Layer2 -->
                                 {{#if reportTitle}}
                                     <div class="report-layer-2" id="report-title-list">
                                         <div class="checkbox">
@@ -245,7 +244,7 @@
                                         Author
                                     </label>
                                 </div>
-                                    <!-- Layer2 -->
+                                <!-- Layer2 -->
                                 {{#if reportAuthor}}
                                     <div class="report-layer-2" id="report-author-list">
                                         <div class="checkbox">
@@ -275,7 +274,7 @@
                                         Duration
                                     </label>
                                 </div>
-                                    <!-- Layer2 -->
+                                <!-- Layer2 -->
                                 {{#if reportDuration}}
                                     <div class="report-layer-2" id="report-duration-list">
                                         <div class="checkbox">
@@ -305,7 +304,7 @@
                                         Audio
                                     </label>
                                 </div>
-                                    <!-- Layer2 -->
+                                <!-- Layer2 -->
                                 {{#if reportAudio}}
                                     <div class="report-layer-2" id="report-audio-list">
                                         <div class="checkbox">
@@ -335,7 +334,7 @@
                                         Albumart
                                     </label>
                                 </div>
-                                    <!-- Layer2 -->
+                                <!-- Layer2 -->
                                 {{#if reportAlbumart}}
                                     <div class="report-layer-2" id="report-albumart-list">
                                         <div class="checkbox">
@@ -383,28 +382,28 @@
                 </div>
             </div>
             <ul class="bg-bubbles">
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
         </div>
     {{else}}
         {{> loading}}
     {{/if}}
     <script type="text/javascript">
-      window.doorbellOptions = {
-          appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM',
-          hideEmail: true
-      };
-      (function(d, t) {
-          var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/2408?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g);
-      }(document, 'script'));
+        window.doorbellOptions = {
+            appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM',
+            hideEmail: true
+        };
+        (function(d, t) {
+            var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/2408?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g);
+        }(document, 'script'));
     </script>
 </template>

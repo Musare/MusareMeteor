@@ -871,15 +871,13 @@ footer .fa {
     border-radius: 100%;
 }
 
-.playlist-title, .chat-title {
-    text-align: center;
-    color: white;
-    font-weight: 600;
+ul#playlist{
+    margin-top: 10px;
 }
 
 #playlist {
     margin: 0;
-    padding: 0 0 0 15px;
+    padding: 0 0 0 5px;
     color: white;
     font-size: 21px;
     max-height: 100%;
