@@ -1184,3 +1184,7 @@ nav form input[type="image"]{
     height:100%;
     overflow: auto;
 }
+.navbar-default .navbar-nav .open .dropdown-menu>li>a,.navbar-default .navbar-nav .open .dropdown-menu {
+    background-color: rgba(102, 205, 170, 0.7);
+    color:#ffffff;
+}
