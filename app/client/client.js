@@ -56,7 +56,7 @@ Template.profile.helpers({
 });
 
 Template.profile.onCreated(function() {
-    var parts = location.href.split('/');
+    var parts = Router.current().url.split('/');
     var username = parts.pop();
     Session.set("loaded", false);
     Meteor.subscribe("userProfiles", function() {
