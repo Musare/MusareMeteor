@@ -1,11 +1,12 @@
 <template name="playlist">
-  <h2 class="playlist-title">Playlist</h2>
-  <ul id="playlist">
+    <ul id="playlist">
       {{#each playlist_songs}}
         <li>
             {{#if current}}<i class="fa fa-arrow-right"></i>{{/if}}
-            <strong>{{title}}</strong> - {{artist}}
+            <p style="float:right;padding-right:10px;font-weight:900">{{formatTime duration}}</p>
+            <strong>{{title}}</strong>
+            <p>{{artist}}</p>
         </li>
       {{/each}}
-  </ul>
+    </ul>
 </template>

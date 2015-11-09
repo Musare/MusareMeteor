@@ -18,6 +18,11 @@ var id = parts.pop();
 var type = id.toLowerCase();
 var resizeSeekerbarInterval;
 
+UI.registerHelper("formatTime", function(seconds) {
+    var d = moment.duration(parseInt(seconds), 'seconds');
+    return d.minutes() + ":" + ("0" + d.seconds()).slice(-2);
+});
+
 function getSpotifyInfo(title, cb, artist) {
     var q = "";
     q = title;
@@ -51,7 +56,7 @@ Template.profile.helpers({
 });
 
 Template.profile.onCreated(function() {
-    var parts = location.href.split('/');
+    var parts = Router.current().url.split('/');
     var username = parts.pop();
     Session.set("loaded", false);
     Meteor.subscribe("userProfiles", function() {
@@ -374,9 +379,6 @@ Template.room.events({
                 })
             });
         }
-    },
-    "click #add-songs": function(){
-        $("#add-songs-modal").show();
     },
     "click #close-modal-a": function(){
         $("#search-info").show();
@@ -922,6 +924,7 @@ Template.playlist.helpers({
     }
 });
 
+
 Meteor.subscribe("rooms");
 
 Template.room.onCreated(function () {
@@ -965,6 +968,7 @@ Template.room.onCreated(function () {
         Session.set("duration", parseInt(songData.duration));
         var d = moment.duration(parseInt(songData.duration), 'seconds');
         $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
+        Session.set("timeFormat", d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
     }
 
     function resizeSeekerbar() {

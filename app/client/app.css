@@ -885,15 +885,13 @@ footer .fa {
     border-radius: 100%;
 }
 
-.playlist-title, .chat-title {
-    text-align: center;
-    color: white;
-    font-weight: 600;
+ul#playlist{
+    margin-top: 10px;
 }
 
 #playlist {
     margin: 0;
-    padding: 0 0 0 15px;
+    padding: 0 0 0 5px;
     color: white;
     font-size: 21px;
     max-height: 100%;
@@ -1199,4 +1197,12 @@ nav form input[type="image"]{
 #chat {
     height:100%;
     overflow: auto;
+}
+.navbar-default .navbar-nav .open .dropdown-menu>li>a,.navbar-default .navbar-nav .open .dropdown-menu {
+    background-color: transparent;
+    color:#ffffff;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    background-color: transparent;
+    color:#ffffff;
 }
