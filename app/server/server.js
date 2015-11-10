@@ -34,6 +34,7 @@ function checkUsersPR() {
         // named subscriptions
         var subs = connection._meteorSession._namedSubs;
         //var ip = connection.remoteAddress;
+        var used_subs = [];
         for(var sub in subs){
             var mySubName = subs[sub]._name;
 
@@ -41,10 +42,13 @@ function checkUsersPR() {
                 mySubName += subs[sub]._params[0];  // assume one id parameter for now
             }
 
-            if(!output[mySubName]){
-                output[mySubName] = 1;
-            }else{
-                output[mySubName] += 1;
+            if (used_subs.indexOf(mySubName) === -1) {
+                used_subs.push(mySubName);
+                if(!output[mySubName]){
+                    output[mySubName] = 1;
+                }else{
+                    output[mySubName] += 1;
+                }
             }
         }
         // there are also these 'universal subscriptions'
