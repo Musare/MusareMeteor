@@ -587,6 +587,11 @@ Template.room.helpers({
         var id = parts.pop().toLowerCase();
         return Rooms.findOne({type: id}).display;
     },
+    users: function() {
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        return Rooms.findOne({type: id}).users;
+    },
     title: function(){
         return Session.get("title");
     },
@@ -1057,6 +1062,7 @@ Template.room.onCreated(function () {
         if (Rooms.find({type: type}).count() !== 1) {
             window.location = "/";
         } else {
+            Meteor.subscribe(type);
             Session.set("loaded", true);
             minterval = Meteor.setInterval(function () {
                 var room = Rooms.findOne({type: type});

@@ -26,6 +26,39 @@ function createUniqueSongId() {
     }
 }
 
+function checkUsersPR() {
+    var output = {};
+
+    var connections = Meteor.server.stream_server.open_sockets;
+    _.each(connections,function(connection){
+        // named subscriptions
+        var subs = connection._meteorSession._namedSubs;
+        //var ip = connection.remoteAddress;
+        for(var sub in subs){
+            var mySubName = subs[sub]._name;
+
+            if(subs[sub]._params.length>0){
+                mySubName += subs[sub]._params[0];  // assume one id parameter for now
+            }
+
+            if(!output[mySubName]){
+                output[mySubName] = 1;
+            }else{
+                output[mySubName] += 1;
+            }
+        }
+        // there are also these 'universal subscriptions'
+        //not sure what these are, i count none in my tests
+        //var usubs = connection._meteorSession._universalSubs;
+    });
+    for (var key in output) {
+        getStation(key, function() {
+            Rooms.update({type: key}, {$set: {users: output[key]}});
+        });
+    }
+    return output;
+}
+
 function getStation(type, cb) {
     stations.forEach(function(station) {
         if (station.type === type) {
@@ -38,7 +71,7 @@ function getStation(type, cb) {
 function createRoom(display, tag) {
     var type = tag;
     if (Rooms.find({type: type}).count() === 0) {
-        Rooms.insert({display: display, type: type}, function(err) {
+        Rooms.insert({display: display, type: type, users: 0}, function(err) {
             if (err) {
                 throw err;
             } else {
@@ -61,6 +94,9 @@ function createRoom(display, tag) {
 }
 
 function Station(type) {
+    Meteor.publish(type, function() {
+        return undefined;
+    });
     var _this = this;
     var startedAt = Date.now();
     var playlist = Playlists.findOne({type: type});
@@ -77,7 +113,7 @@ function Station(type) {
     } else currentSong = 0;
     var currentTitle = songs[currentSong].title;
 
-    Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
+    Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}, users: 0}});
 
     this.skipSong = function() {
         songs = Playlists.findOne({type: type}).songs;
@@ -645,3 +681,7 @@ Meteor.methods({
         return Object.keys(Meteor.default_server.sessions).length;
     }
 });
+
+Meteor.setInterval(function() {
+    checkUsersPR();
+}, 10000);
