@@ -254,8 +254,9 @@ ul {
 }
 
 .admin-container {
-  background-color: black;
+  background-color: rgb(102, 205, 170);
   color: white;
+  overflow-y: scroll;
 }
 
 .admin-container h1 {
@@ -263,8 +264,13 @@ ul {
   margin: 0;
 }
 
+.admin-container p {
+  font-size: 22px;
+}
+
 .admin-container a {
   color: white;
+  font-size: 16px;
 }
 
 .container {

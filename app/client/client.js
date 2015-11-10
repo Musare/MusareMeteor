@@ -652,17 +652,15 @@ Template.room.helpers({
 });
 
 Template.admin.helpers({
-  queues: function() {
+  queueCount: function(i) {
       var queues = Queues.find({}).fetch();
-      queues.map(function(queue) {
-          if (Rooms.find({type: queue.type}).count() !== 1) {
-              return;
-          } else {
-              queue.display = Rooms.findOne({type: queue.type}).display;
-              return queue;
-          }
-      });
-      return queues;
+      
+      if (!queues[i]) {
+        return 0;
+      }
+      else {
+        return queues[i].songs.length;
+      }
   },
   users: function(){
       Meteor.call("getUserNum", function(err, num){
@@ -684,13 +682,6 @@ Template.admin.helpers({
           }
       });
       return playlists;
-  },
-  playlistCount: function() {
-    var playlists = Playlists.find({}).fetch();
-    playlists.map(function(playlist){
-      playlist.songs = Rooms.findOne({type: playlist.type}).songs.length;
-      return playlist;
-    });
   }
 });
 

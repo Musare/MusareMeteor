@@ -2,33 +2,32 @@
     <div class="landing">
         {{> header}}
           <div class="row" style="margin-top: 20px;">
-            <div class="col-md-5 col-md-offset-1 admin-container">
-              <a href="/stations"><h1>Playlists</h1></a>
+            <div class="col-md-5 col-md-offset-1 admin-container" style="height: 400px">
+              <h1>Playlists</h1>
               {{#each playlists}}
                 <p>{{display}} playlist</p>
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Song Count</th>
-                        <th>Edit</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">{{songs}}</th>
-                        <td>{{artist}}</td>
-                        <td>{{type}}</td>
-                        <td>{{id}}</td>
-                    </tr>
-                    </tbody>
+                <table class="table" style="border-bottom: 1px solid white;">
+                  <tr>
+                    <th>Songs</th>
+                    <th>Users</th>
+                    <th>Admins</th>
+                    <th>Reports</th>
+                    <th>Queue</th>
+                  </tr>
+                  <tr>
+                    <td>{{songs.length}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{queueCount @index}}</td>
+                    <td><a href="/stations">Edit</a></td>
+                  </tr>
                 </table>
               {{/each}}
             </div>
             <div class="col-md-3 col-md-offset-2 admin-container">
               <h1>Site statistics</h1>
               <p>Total Users: {{{users}}}</p>
-              <p></p>
-              <p>Queues:</p>
             </div>
           </div>
 
