@@ -439,14 +439,14 @@ Meteor.methods({
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
             if (user.profile.rank = "admin") {
-                Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username, rank: rank});
+                Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
                 return true;
             } else if (user.profile.rank = "mod") {
-                Chat.insert({type: type, rank: "[M]", message: message, time: time, username: username, rank: rank});
+                Chat.insert({type: type, rank: "[M]", message: message, time: time, username: username});
                 return true;
             }
             else {
-                Chat.insert({type: type, rank: "", message: message, time: time, username: username, rank: rank});
+                Chat.insert({type: type, rawrank: rawrank, message: message, time: time, username: username});
                 return true;
             }
         } else {

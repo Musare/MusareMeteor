@@ -1199,6 +1199,9 @@ nav form input[type="image"]{
     font-size: 20px;
     font-weight: bold;
 }
+.rank-default {
+    font-size: 0px;
+}
 .row {
     margin: 0;
 }
