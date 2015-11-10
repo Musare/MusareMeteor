@@ -1192,3 +1192,7 @@ nav form input[type="image"]{
     background-color: transparent;
     color:#ffffff;
 }
+#doorbell-button{
+    margin-right: 30em;
+}
+
