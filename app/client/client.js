@@ -17,6 +17,7 @@ var parts = location.href.split('/');
 var id = parts.pop();
 var type = id.toLowerCase();
 var resizeSeekerbarInterval;
+var station_c = undefined;
 
 UI.registerHelper("formatTime", function(seconds) {
     var d = moment.duration(parseInt(seconds), 'seconds');
@@ -209,6 +210,9 @@ Template.dashboard.onCreated(function() {
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
+    }
+    if (station_c !== undefined) {
+        station_c.stop();
     }
     Session.set("type", undefined);
 });
@@ -1062,7 +1066,7 @@ Template.room.onCreated(function () {
         if (Rooms.find({type: type}).count() !== 1) {
             window.location = "/";
         } else {
-            Meteor.subscribe(type);
+            station_c = Meteor.subscribe(type);
             Session.set("loaded", true);
             minterval = Meteor.setInterval(function () {
                 var room = Rooms.findOne({type: type});
