@@ -429,16 +429,34 @@ Meteor.methods({
         if (Meteor.userId()) {
             var user = Meteor.user();
             var time = new Date();
+            var rawrank = user.profile.rank;
             var username = user.profile.username;
             var rank = user.profile.rank;
+            if (user.profile.rank = "admin") {
+            if (message.length === 0) {
+                throw new Meteor.Error(406, "Message length cannot be 0.");
+            }
+                Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                return true;
+            }
+            if (user.profile.rank = "mod") {
+            if (message.length === 0) {
+                throw new Meteor.Error(406, "Message length cannot be 0.");
+            }
+                Chat.insert({type: type, rank: "[M]", message: message, time: time, username: username});
+                return true;
+            }
             if (message.length === 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
             if (message.length > 300) {
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
-            Chat.insert({type: type, rank: rank, message: message, time: time, username: username});
+            else {
+            Chat.insert({type: type, rank: "", message: message, time: time, username: username});
             return true;
+            }
+           
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

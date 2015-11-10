@@ -1189,9 +1189,15 @@ nav form input[type="image"]{
     padding-left: 15px;
     padding-right: 15px;
 }
-.chat-rank {
-    color: white;
-    font-size: 10px;
+.rank-admin {
+    color: crimson;
+    font-size: 20px;
+    font-weight: bold;
+}
+.rank-mod {
+    color: darkgoldenrod;
+    font-size: 20px;
+    font-weight: bold;
 }
 .row {
     margin: 0;
