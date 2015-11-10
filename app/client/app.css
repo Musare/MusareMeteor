@@ -892,12 +892,12 @@ footer .fa {
 }
 
 ul#playlist{
-    margin-top: 10px;
+    margin-top: 50px;
+    padding-left: 5px;
 }
 
 #playlist {
     margin: 0;
-    padding: 0 0 0 5px;
     color: white;
     font-size: 21px;
     max-height: 100%;
@@ -1211,6 +1211,23 @@ nav form input[type="image"]{
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     background-color: transparent;
     color:#ffffff;
+}
+#doorbell-button{
+    margin-right: 30em;
+}
+#search-playlist{
+    position: absolute;
+    outline: 0;
+    border: none;
+    border-bottom: 3px solid rgba(255, 255, 255, 0.4);
+    background-color: #50a3a2;
+    width: 100%;
+    padding: 10px 15px;
+    margin: 0 auto 10px auto;
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: white;
 }
 
 /* https://css-tricks.com/custom-scrollbars-in-webkit/ */

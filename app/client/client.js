@@ -915,6 +915,22 @@ Template.playlist.helpers({
     }
 });
 
+Template.playlist.events({
+    "keyup #search-playlist": function(){
+        console.log($("#search-playlist").val());
+        if($("#search-playlist").val().length === 0){
+            $(".pl-item").show();
+        } else {
+            $(".pl-item").hide();
+            var input = $("#search-playlist").val().toLowerCase();
+            $(".pl-item strong").each(function(i, el){
+                if($(el).text().toLowerCase().indexOf(input) !== -1){
+                    $(el).parent(".pl-item").show();
+                }
+            })
+        }
+    }
+})
 
 Meteor.subscribe("rooms");
 
