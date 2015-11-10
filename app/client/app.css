@@ -892,6 +892,7 @@ footer .fa {
 }
 
 ul#playlist{
+    margin-top: 50px;
     padding-left: 5px;
 }
 
@@ -1224,6 +1225,7 @@ nav form input[type="image"]{
     margin-right: 30em;
 }
 #search-playlist{
+    position: absolute;
     outline: 0;
     border: none;
     border-bottom: 3px solid rgba(255, 255, 255, 0.4);
