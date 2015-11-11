@@ -695,6 +695,18 @@ Template.admin.helpers({
 });
 
 Template.stations.helpers({
+    queues: function() {
+        var queues = Queues.find({}).fetch();
+        queues.map(function(queue) {
+            if (Rooms.find({type: queue.type}).count() !== 1) {
+                return;
+            } else {
+                queue.display = Rooms.findOne({type: queue.type}).display;
+                return queue;
+            }
+        });
+        return queues;
+    },
     playlists: function() {
         var playlists = Playlists.find({}).fetch();
         playlists.map(function(playlist) {
@@ -838,6 +850,10 @@ Template.stations.events({
         newSong.img = $("#img").val();
         newSong.type = $("#type").val();
         newSong.duration = $("#duration").val();
+        newSong.skipDuration = $("#skip-duration").val();
+        if(newSong.skipDuration === undefined){
+            newSong.skipDuration = 0;
+        };
         if (Session.get("type") === "playlist") {
             Meteor.call("updatePlaylistSong", Session.get("genre"), Session.get("song"), newSong, function() {
                 $('#editModal').modal('hide');
@@ -1031,18 +1047,21 @@ Template.room.onCreated(function () {
                         playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
                         events: {
                             'onReady': function(event) {
-                                event.target.seekTo(getTimeElapsed() / 1000);
+                                if(currentSong.skipDuration === undefined){
+                                    currentSong.skipDuration = 0;
+                                }
+                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                                 event.target.playVideo();
                                 event.target.setVolume(volume);
                                 resizeSeekerbar();
                             },
                             'onStateChange': function(event){
                                 if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                    event.target.seekTo(getTimeElapsed() / 1000);
+                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                                     event.target.playVideo();
                                 }
                                 if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                    event.target.seekTo(getTimeElapsed() / 1000);
+                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                                     event.target.pauseVideo();
                                 }
                             }
@@ -1095,7 +1114,6 @@ Template.room.onCreated(function () {
                     currentSong = room.currentSong.song;
                     currentSong.started = room.currentSong.started;
                     Session.set("currentSong", currentSong);
-
                     startSong();
                 }
 

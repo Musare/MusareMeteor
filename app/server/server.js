@@ -572,6 +572,7 @@ Meteor.methods({
                 if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
                     songData.duration = getSongDuration(songData.title, songData.artist);
                     songData.img = getSongAlbumArt(songData.title, songData.artist);
+                    songData.skipDuration = 0;
                     var mid = createUniqueSongId();
                     if (mid !== undefined) {
                         songData.mid = mid;
@@ -583,6 +584,7 @@ Meteor.methods({
                                     title: songData.title,
                                     artist: songData.artist,
                                     duration: songData.duration,
+                                    skipDuration: songData.skipDuration,
                                     img: songData.img,
                                     type: songData.type
                                 }
@@ -643,7 +645,8 @@ Meteor.methods({
                 if (Playlists.find({type: type}).count() === 0) {
                     Playlists.insert({type: type, songs: []});
                 }
-                if (songData !== undefined && Object.keys(songData).length === 7 && songData.type !== undefined && songData.mid !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.img !== undefined) {
+                console.log(songData);
+                if (songData !== undefined && Object.keys(songData).length === 8 && songData.type !== undefined && songData.mid !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.skipDuration !== undefined && songData.img !== undefined) {
                     songData.likes = 0;
                     songData.dislikes = 0
 
@@ -655,6 +658,7 @@ Meteor.methods({
                                 title: songData.title,
                                 artist: songData.artist,
                                 duration: songData.duration,
+                                skipDuration: songData.skipDuration,
                                 img: songData.img,
                                 type: songData.type,
                                 likes: songData.likes,
