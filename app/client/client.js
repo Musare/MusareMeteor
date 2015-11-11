@@ -218,6 +218,12 @@ Template.dashboard.onCreated(function() {
 });
 
 Template.room.events({
+    "click #side-panel": function(e) { 
+        Meteor.setTimeout(function() {
+        var elem = document.getElementById('chat');
+        elem.scrollTop = elem.scrollHeight;;
+        }, 1);
+    },
     "click #submit": function() {
         Meteor.call("sendMessage", Session.get("type"), $("#chat-input").val(), function(err, res) {
             console.log(err, res);
