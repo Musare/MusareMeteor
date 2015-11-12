@@ -10,6 +10,8 @@ Meteor.startup(function() {
     }
 });
 
+Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
+
 var stations = [];
 
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
@@ -391,6 +393,14 @@ ServiceConfiguration.configurations.insert({
     secret: "375939d001ef1a0ca67c11dbf8fb9aeaa551e01b"
 });
 
+Meteor.publish("alerts", function() {
+    return Alerts.find({active: true})
+});
+
+Meteor.publish("allAlerts", function() {
+    return Alerts.find({active: false})
+});
+
 Meteor.publish("playlists", function() {
     return Playlists.find({})
 });
@@ -425,6 +435,29 @@ function isAdmin() {
 }
 
 Meteor.methods({
+    removeAlerts: function() {
+        if (isAdmin()) {
+            Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
+        } else {
+            throw Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    addAlert: function(description, priority) {
+        if (isAdmin()) {
+            if (description.length > 0 && description.length < 400) {
+                var username = Meteor.user().profile.username;
+                if (["danger", "warning", "success", "primary"].indexOf(priority) === -1) {
+                    priority = "warning";
+                }
+                Alerts.insert({description: description, priority: priority, active: true, createdBy: username});
+                return true;
+            } else {
+                throw Meteor.Error(403, "Invalid description length.");
+            }
+        } else {
+            throw Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     sendMessage: function(type, message) {
         if (Meteor.userId()) {
             var user = Meteor.user();

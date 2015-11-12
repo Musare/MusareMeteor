@@ -47,18 +47,31 @@ Router.route("/admin", {
 });
 
 Router.route("/stations", {
-  action: function() {
-    var user = Meteor.users.findOne({});
-    if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
-        this.render("stations");
-    } else {
-        this.redirect("/");
+    waitOn: function() {
+        return Meteor.subscribe("isAdmin", Meteor.userId());
+    },
+    action: function() {
+      var user = Meteor.users.findOne({});
+      if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
+          this.render("stations");
+      } else {
+          this.redirect("/");
+      }
     }
-  }
-})
+});
 
-Router.route("/vis", {
-    template: "visualizer"
+Router.route("/admin/alerts", {
+    waitOn: function() {
+        return Meteor.subscribe("isAdmin", Meteor.userId());
+    },
+    action: function() {
+        var user = Meteor.users.findOne({});
+        if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
+            this.render("alertsDashboard");
+        } else {
+            this.redirect("/");
+        }
+    }
 });
 
 Router.route("/:type", {

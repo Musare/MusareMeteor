@@ -1,0 +1,7 @@
+<template name="alerts">
+    {{#each alerts}}
+        <div class="alert alert-{{priority}}" style="margin: 0" role="alert">
+            <a href="#" class="alert-link">{{description}}</a>
+        </div>
+    {{/each}}
+</template>

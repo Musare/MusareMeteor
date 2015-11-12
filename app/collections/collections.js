@@ -3,3 +3,4 @@ Rooms = new Mongo.Collection("rooms");
 Queues = new Mongo.Collection("queues");
 Reports = new Mongo.Collection("reports");
 Chat = new Mongo.Collection("chat");
+Alerts = new Mongo.Collection("alerts");
