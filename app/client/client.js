@@ -5,6 +5,7 @@ Meteor.startup(function() {
 });
 
 Meteor.subscribe("queues");
+Meteor.subscribe("reports");
 Meteor.subscribe("chat");
 Meteor.subscribe("playlists");
 Meteor.subscribe("alerts");
@@ -735,6 +736,10 @@ Template.admin.helpers({
           }
       });
       return playlists;
+  },
+  reports: function() {
+      var reports = Reports.find({}).fetch();
+      console.log(reports);
   }
 });
 
@@ -782,6 +787,7 @@ Template.stations.events({
         $("#img").val(this.img);
         $("#id").val(this.id);
         $("#duration").val(this.duration);
+        $("#skip-duration").val(this.skipDuration);
     },
     "click .edit-playlist-button": function(e){
         Session.set("song", this);
@@ -793,6 +799,7 @@ Template.stations.events({
         $("#img").val(this.img);
         $("#id").val(this.id);
         $("#duration").val(this.duration);
+        $("#skip-duration").val(this.skipDuration);
     },
     "click .add-song-button": function(e){
         var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");

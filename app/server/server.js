@@ -413,6 +413,10 @@ Meteor.publish("queues", function() {
     return Queues.find({});
 });
 
+Meteor.publish("reports", function() {
+    return Reports.find({});
+});
+
 Meteor.publish("chat", function() {
     return Chat.find({});
 });
