@@ -257,6 +257,7 @@ ul {
   background-color: rgb(102, 205, 170);
   color: white;
   overflow-y: scroll;
+  margin-top: 20px;
 }
 
 .admin-container h1 {

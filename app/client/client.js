@@ -4,9 +4,10 @@ Meteor.startup(function() {
     });
 });
 
-Meteor.subscribe("queues");
-Meteor.subscribe("chat");
 Meteor.subscribe("playlists");
+Meteor.subscribe("queues");
+Meteor.subscribe("reports");
+Meteor.subscribe("chat");
 
 var minterval;
 var hpSound = undefined;
@@ -697,6 +698,10 @@ Template.admin.helpers({
           }
       });
       return playlists;
+  },
+  reports: function() {
+      var reports = Reports.find({}).fetch();
+      console.log(reports);
   }
 });
 
