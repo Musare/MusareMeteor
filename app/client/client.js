@@ -5,8 +5,10 @@ Meteor.startup(function() {
 });
 
 Meteor.subscribe("queues");
+Meteor.subscribe("reports");
 Meteor.subscribe("chat");
 Meteor.subscribe("playlists");
+Meteor.subscribe("alerts");
 
 var minterval;
 var hpSound = undefined;
@@ -78,7 +80,6 @@ curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.sl
 Handlebars.registerHelper('active', function(path) {
     return curPath() == path ? 'active' : '';
 });
-
 
 Template.header.helpers({
     currentUser: function() {
@@ -536,6 +537,12 @@ Template.room.onRendered(function() {
     });
 });
 
+Template.alerts.helpers({
+    alerts: function() {
+        return Alerts.find({active: true});
+    }
+});
+
 Template.room.helpers({
     chat: function() {
         Meteor.setTimeout(function() {
@@ -666,6 +673,38 @@ Template.room.helpers({
     }
 });
 
+var allAlertSub = undefined;
+
+Template.alertsDashboard.onCreated(function() {
+    if (allAlertSub === undefined) {
+        allAlertSub = Meteor.subscribe("allAlerts");
+    }
+});
+
+Template.alertsDashboard.helpers({
+    "activeAlerts": function() {
+        return Alerts.find({active: true});
+    },
+    "inactiveAlerts": function() {
+        return Alerts.find({active: false});
+    }
+});
+
+Template.alertsDashboard.events({
+    "click #calart-create": function() {
+        Meteor.call("addAlert", $("#calert-description").val(), $("#calert-priority").val().toLowerCase(), function (err, res) {
+            if (err) {
+                alert("Error " + err.error + ": " + err.reason);
+            } else {
+                $("#calert-description").val("");
+            }
+        });
+    },
+    "click #ralert-button": function() {
+        Meteor.call("removeAlerts");
+    }
+});
+
 Template.admin.helpers({
   queueCount: function(i) {
       var queues = Queues.find({}).fetch();
@@ -697,6 +736,10 @@ Template.admin.helpers({
           }
       });
       return playlists;
+  },
+  reports: function() {
+      var reports = Reports.find({}).fetch();
+      console.log(reports);
   }
 });
 

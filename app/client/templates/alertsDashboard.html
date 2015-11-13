@@ -1,0 +1,27 @@
+<template name="alertsDashboard">
+    {{> alerts}}
+    <div class="landing">
+        {{> header}}
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <button class="btn btn-block btn-danger" id="ralert-button">Remove all alerts.</button>
+                <div id="calert_container">
+                    <label for="calert-description" class="calert_label">Alert Description:</label>
+                    <div class="input-group">
+                        <input type="text" class="calert" id="calert-description" name="calert" required />
+                    </div>
+                    <label for="calert-priority" class="croom_label">Alert Priority:</label>
+                    <div class="input-group">
+                        <select class="calert" id="calert-priority" name="calert" required>
+                            <option selected>Danger</option>
+                            <option>Warning</option>
+                            <option>Primary</option>
+                            <option>Success</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-warning btn-block" id="calart-create">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
