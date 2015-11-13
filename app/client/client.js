@@ -1004,6 +1004,11 @@ Template.playlist.events({
                     $(el).parent(".pl-item").show();
                 }
             })
+            $(".pl-item #artist").each(function(i, el){
+                if($(el).text().toLowerCase().indexOf(input) !== -1){
+                    $(el).parent(".pl-item").show();
+                }
+            })
         }
     }
 })
