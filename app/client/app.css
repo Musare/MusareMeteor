@@ -494,6 +494,9 @@ form button:hover {
 
 /* Tablet view fix */
 @media (max-width: 768px){
+    body{
+        height: auto !important;
+    }
     .bg-bubbles li:nth-child(10) {
         display: none;
     }
