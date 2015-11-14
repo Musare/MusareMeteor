@@ -783,10 +783,13 @@ Template.stations.events({
         Session.set("genre", $(e.toElement).data("genre"));
         Session.set("type", "queue");
         $("#type").val(this.type);
+        $("#mid").val(this.mid);
         $("#artist").val(this.artist);
         $("#title").val(this.title);
         $("#img").val(this.img);
         $("#id").val(this.id);
+        $("#likes").val(this.likes);
+        $("#dislikes").val(this.dislikes);
         $("#duration").val(this.duration);
         $("#skip-duration").val(this.skipDuration);
     },
@@ -795,12 +798,18 @@ Template.stations.events({
         Session.set("genre", $(e.toElement).data("genre"));
         Session.set("type", "playlist");
         $("#type").val(this.type);
+        $("#mid").val(this.mid);
         $("#artist").val(this.artist);
         $("#title").val(this.title);
         $("#img").val(this.img);
         $("#id").val(this.id);
+        $("#likes").val(this.likes);
+        $("#dislikes").val(this.dislikes);
         $("#duration").val(this.duration);
         $("#skip-duration").val(this.skipDuration);
+    },
+    "click #rreset_confirm": function(e){
+        Meteor.call("resetRating");
     },
     "click .add-song-button": function(e){
         var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
@@ -897,6 +906,8 @@ Template.stations.events({
     "click #save-song-button": function() {
         var newSong = {};
         newSong.id = $("#id").val();
+        newSong.likes = $("#likes").val();
+        newSong.dislikes = $("#dislikes").val();
         newSong.title = $("#title").val();
         newSong.artist = $("#artist").val();
         newSong.img = $("#img").val();

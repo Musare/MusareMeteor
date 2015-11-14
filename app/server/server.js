@@ -141,16 +141,6 @@ function Station(type) {
                 songs[currentSong].mid = newSong.mid;
                 Playlists.update({type: type, "songs": songs[currentSong]}, {$set: {"songs.$": newSong}});
             }
-            if (songs[currentSong].likes === undefined) {
-                var newSong = songs[currentSong];
-                newSong.likes = 0;
-                Playlists.update({type: type, "songs": newSong}, {$set: {"songs.$": newSong}});
-            }
-            if (songs[currentSong].dislikes === undefined) {
-                var newSong = songs[currentSong];
-                newSong.dislikes = 0;
-                Playlists.update({type: type, "songs": newSong}, {$set: {"songs.$": newSong}});
-            }
             currentTitle = songs[currentSong].title;
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
             Rooms.update({type: type}, {$set: {timePaused: 0}});
@@ -167,12 +157,6 @@ function Station(type) {
         songs.forEach(function(song) {
             if (song.mid === undefined) {
                 song.mid = createUniqueSongId();
-            }
-            if (song.likes === undefined) {
-                song.likes = 0;
-            }
-            if (song.dislikes === undefined) {
-                song.dislikes = 0;
             }
             Playlists.update({type: type}, {$push: {"songs": song}});
         });
@@ -439,6 +423,23 @@ function isAdmin() {
 }
 
 Meteor.methods({
+    resetRating: function() {
+        if (isAdmin()) {
+            stations.forEach(function (station) {
+                var type = station.type;
+                var temp_songs = Playlists.findOne({type: type}).songs;
+                Playlists.update({type: type}, {$set: {"songs": []}});
+                temp_songs.forEach(function (song) {
+                    song.likes = 0;
+                    song.dislikes = 0;
+                    Playlists.update({type: type}, {$push: {"songs": song}});
+                });
+            });
+            Meteor.users.update({}, {$set: {"profile.liked": [], "profile.disliked": []}}, {multi: true});
+        } else {
+            throw Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     removeAlerts: function() {
         if (isAdmin()) {
             Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
