@@ -188,6 +188,7 @@ Template.login.events({
     }
 });
 
+
 Template.dashboard.helpers({
     rooms: function() {
         return Rooms.find({});
