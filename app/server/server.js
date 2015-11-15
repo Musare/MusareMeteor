@@ -540,25 +540,20 @@ Meteor.methods({
         }
     },
     voteSkip: function(type){
-      if(Meteor.userId()){
-          var user = Meteor.user();
-          getStation(type, function(station){
-              if(station.voted.indexOf(profile.username) !== -1){
-                  station.voted.push(user.profile.username);
-                  voteNum++;
-                  Rooms.update({type: type}, {$set: {votes: voteNum}});
-                  console.log(voteNum);
-                  if(voteNum === 3){
-                      station.skipSong();
-                  }
-              } else{
-                  console.log("Else");
-              }
-          })
-      }
-    },
-    getVoteNum: function(type){
-        return Rooms.findOne({type: type}).votes;
+        if(Meteor.userId()){
+            var user = Meteor.user();
+            getStation(type, function(station){
+                if(station.voted.indexOf(user.profile.username) === -1){
+                    station.voted.push(user.profile.username);
+                    Rooms.update({type: type}, {$set: {votes: station.voted.length}});
+                    if(station.voted.length === 3){
+                        station.skipSong();
+                    }
+                } else{
+                    throw new Meteor.Error(401, "Already voted.");
+                }
+            })
+        }
     },
     submitReport: function(report, id) {
         var obj = report;

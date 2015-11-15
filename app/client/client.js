@@ -269,8 +269,9 @@ Template.room.events({
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
     },
     "click #vote-skip": function(){
-        Meteor.call("voteSkip", type);
-        $("#vote-skip").attr("disabled", true);
+        Meteor.call("voteSkip", type, function(err, res) {
+            $("#vote-skip").attr("disabled", true);
+        });
         songMID = Session.get("currentSong").mid;
     },
     "click #report-prev": function(e) {
@@ -526,13 +527,6 @@ Template.room.events({
     }
 });
 
-Meteor.setInterval(function(){
-    console.log(Session.get("currentSong").mid);
-    if(songMID !== Session.get("currentSong").mid){
-        $("#vote-skip").attr("disabled", false);
-    }
-}, 1000);
-
 Template.room.onRendered(function() {
     $(document).ready(function() {
         function makeSlider(){
@@ -702,15 +696,7 @@ Template.room.helpers({
         }
     },
     votes: function(){
-        Meteor.setInterval(function(){
-            Meteor.call("getVoteNum", Rooms.findOne({type: id}).type, function(err, num){
-                if(err){
-                    console.log(err);
-                }
-                Session.set("voteNum", num);
-            });
-        }, 1000);
-        return Session.get("voteNum");
+        return Rooms.findOne({type: Session.get("type")}).votes;
     }
 });
 
@@ -1119,6 +1105,7 @@ Template.room.onCreated(function () {
 
     function startSong() {
         $("#time-elapsed").text("0:00");
+        $("#vote-skip").attr("disabled", false);
         if (currentSong !== undefined) {
             if (_sound !== undefined) _sound.stop();
             if (yt_player !== undefined && yt_player.stopVideo !== undefined) yt_player.stopVideo();
