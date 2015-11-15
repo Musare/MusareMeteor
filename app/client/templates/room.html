@@ -76,12 +76,18 @@
                             <div class="col-md-2">
                                 <button title="I dislike this song." type="button" id="dislike" class="btn btn-danger btn-lg {{disliked}} action-button"><i class="fa fa-meh-o"> {{dislikes}}</i></button>
                             </div>
+                            <div class="col-md-2">
+                                <button type="button" id="vote-skip" class="btn btn-primary btn-lg action-button"><i class="fa fa-step-forward"></i> <span>{{votes}}</span></button>
+                            </div>
                         {{else}}
                             <div class="col-md-2">
                                 <button title="You need to be logged to smile this song." type="button" class="btn btn-success btn-lg action-button" disabled><i class="fa fa-smile-o"> {{likes}}</i></button>
                             </div>
                             <div class="col-md-2">
                                 <button title="You need to be logged to dislike this song." type="button" class="btn btn-danger btn-lg action-button" disabled><i class="fa fa-meh-o"> {{dislikes}}</i></button>
+                            </div>
+                            <div class="col-md-2">
+                                <button title="You need to be logged to vote to skip this song." type="button" class="btn btn-primary btn-lg action-button" disabled><i class="fa fa-step-forward"></i> <span>{{votes}}</span></button>
                             </div>
                         {{/if}}
                         <div class="col-md-2">

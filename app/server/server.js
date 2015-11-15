@@ -13,6 +13,7 @@ Meteor.startup(function() {
 Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
 
 var stations = [];
+var voteNum = 0;
 
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
 function createUniqueSongId() {
@@ -122,6 +123,9 @@ function Station(type) {
     Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}, users: 0}});
 
     this.skipSong = function() {
+        _this.voted = [];
+        voteNum = 0;
+        Rooms.update({type: type}, {$set: {votes: 0}});
         songs = Playlists.findOne({type: type}).songs;
         songs.forEach(function(song, index) {
             if (song.title === currentTitle) {
@@ -150,6 +154,9 @@ function Station(type) {
     };
 
     this.shufflePlaylist = function() {
+        voteNum = 0;
+        Rooms.update({type: type}, {$set: {votes: 0}});
+        _this.voted = [];
         songs = Playlists.findOne({type: type}).songs;
         currentSong = 0;
         Playlists.update({type: type}, {$set: {"songs": []}});
@@ -207,6 +214,7 @@ function Station(type) {
     this.type = type;
 
     this.songTimer();
+    this.voted = [];
 }
 
 function shuffle(array) {
@@ -530,6 +538,27 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
+    },
+    voteSkip: function(type){
+      if(Meteor.userId()){
+          var user = Meteor.user();
+          getStation(type, function(station){
+              if(station.voted.indexOf(profile.username) !== -1){
+                  station.voted.push(user.profile.username);
+                  voteNum++;
+                  Rooms.update({type: type}, {$set: {votes: voteNum}});
+                  console.log(voteNum);
+                  if(voteNum === 3){
+                      station.skipSong();
+                  }
+              } else{
+                  console.log("Else");
+              }
+          })
+      }
+    },
+    getVoteNum: function(type){
+        return Rooms.findOne({type: type}).votes;
     },
     submitReport: function(report, id) {
         var obj = report;

@@ -20,6 +20,7 @@ var id = parts.pop();
 var type = id.toLowerCase();
 var resizeSeekerbarInterval;
 var station_c = undefined;
+var songMID;
 
 UI.registerHelper("formatTime", function(seconds) {
     var d = moment.duration(parseInt(seconds), 'seconds');
@@ -250,6 +251,11 @@ Template.room.events({
     },
     "click #dislike": function(e) {
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
+    },
+    "click #vote-skip": function(){
+        Meteor.call("voteSkip", type);
+        $("#vote-skip").attr("disabled", true);
+        songMID = Session.get("currentSong").mid;
     },
     "click #report-prev": function(e) {
         if (Session.get("previousSong") !== undefined) {
@@ -504,6 +510,13 @@ Template.room.events({
     }
 });
 
+Meteor.setInterval(function(){
+    console.log(Session.get("currentSong").mid);
+    if(songMID !== Session.get("currentSong").mid){
+        $("#vote-skip").attr("disabled", false);
+    }
+}, 1000);
+
 Template.room.onRendered(function() {
     $(document).ready(function() {
         function makeSlider(){
@@ -671,6 +684,17 @@ Template.room.helpers({
         } else {
             return Session.get("currentSongR");
         }
+    },
+    votes: function(){
+        Meteor.setInterval(function(){
+            Meteor.call("getVoteNum", Rooms.findOne({type: id}).type, function(err, num){
+                if(err){
+                    console.log(err);
+                }
+                Session.set("voteNum", num);
+            });
+        }, 1000);
+        return Session.get("voteNum");
     }
 });
 
