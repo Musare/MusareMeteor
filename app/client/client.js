@@ -221,6 +221,22 @@ Template.dashboard.onCreated(function() {
 });
 
 Template.room.events({
+    "click #sync": function() {
+        if (Session.get("currentSong") !== undefined) {
+            var room = Rooms.findOne({type: Session.get("type")});
+            if (room !== undefined) {
+                var timeIn = Date.now() - Session.get("currentSong").started - room.timePaused;
+                console.log(timeIn);
+                var skipDuration = Number(Session.get("currentSong").skipDuration) | 0;
+                if (yt_player !== undefined) {
+                    yt_player.seekTo(skipDuration + timeIn / 1000);
+                }
+                else if (_sound !== undefined) {
+                    _sound.seekTo(skipDuration * 1000 + timeIn);
+                }
+            }
+        }
+    },
     "click #side-panel": function(e) { 
         Meteor.setTimeout(function() {
         var elem = document.getElementById('chat');

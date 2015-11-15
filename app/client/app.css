@@ -1115,7 +1115,7 @@ nav form input[type="image"]{
 .about a{
     color: white;
 }
-#play, #pause, #skip, #shuffle {
+#play, #pause, #skip, #shuffle, #sync {
     cursor: pointer;
 }
 .delete-room {
