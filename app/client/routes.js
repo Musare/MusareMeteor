@@ -9,11 +9,25 @@ Router.route("/", {
 });
 
 Router.route("/login", {
-    template: "login"
+    action: function() {
+        var user = Meteor.user();
+        if (user === undefined || user === null) {
+            this.render("login");
+        } else {
+            this.redirect("/");
+        }
+    }
 });
 
 Router.route("/signup", {
-    template: "register"
+    action: function() {
+        var user = Meteor.user();
+        if (user === undefined || user === null) {
+            this.render("register");
+        } else {
+            this.redirect("/");
+        }
+    }
 });
 
 Router.route("/terms", {

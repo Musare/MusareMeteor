@@ -137,10 +137,7 @@ Template.register.events({
     },
 
     "click #github-login": function(){
-        Meteor.loginWithGithub()
-        Accounts.onLogin(function(){
-            window.location.href = "/"
-        });
+        Meteor.loginWithGithub({loginStyle: "redirect"});
     }
 });
 
@@ -187,10 +184,7 @@ Template.login.events({
     },
 
     "click #github-login": function(){
-        Meteor.loginWithGithub()
-        Accounts.onLogin(function(){
-            window.location.href = "/"
-        });
+        Meteor.loginWithGithub({loginStyle: "redirect"});
     }
 });
 
