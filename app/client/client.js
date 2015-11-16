@@ -311,9 +311,9 @@ Template.room.events({
         } else{
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
-                $("#close-modal-a").click();
             });
         }
+        $("#close-modal-a").click();
     },
     "click #toggle-video": function(e){
         e.preventDefault();
@@ -365,11 +365,9 @@ Template.room.events({
                                         $("#title").val(data.tracks.items[0].name);
                                         var artists = [];
                                         $("#img").val(data.tracks.items[0].album.images[1].url);
-
                                         data.tracks.items[0].artists.forEach(function(artist) {
                                             artists.push(artist.name);
                                         });
-
                                         $("#artist").val(artists.join(", "));
                                     }
                                 });

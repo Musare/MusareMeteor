@@ -633,7 +633,7 @@ Meteor.methods({
                 if (Queues.find({type: type}).count() === 0) {
                     Queues.insert({type: type, songs: []});
                 }
-                if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
+                if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
                     songData.duration = getSongDuration(songData.title, songData.artist);
                     songData.img = getSongAlbumArt(songData.title, songData.artist);
                     songData.skipDuration = 0;
