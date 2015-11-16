@@ -637,6 +637,8 @@ Meteor.methods({
                     songData.duration = getSongDuration(songData.title, songData.artist);
                     songData.img = getSongAlbumArt(songData.title, songData.artist);
                     songData.skipDuration = 0;
+                    songData.likes = 0;
+                    songData.dislikes = 0;
                     var mid = createUniqueSongId();
                     if (mid !== undefined) {
                         songData.mid = mid;
@@ -709,11 +711,13 @@ Meteor.methods({
                 if (Playlists.find({type: type}).count() === 0) {
                     Playlists.insert({type: type, songs: []});
                 }
-                console.log(songData);
-                if (songData !== undefined && Object.keys(songData).length === 8 && songData.type !== undefined && songData.mid !== undefined && songData.title !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.duration !== undefined && songData.skipDuration !== undefined && songData.img !== undefined) {
-                    songData.likes = 0;
-                    songData.dislikes = 0
-
+                var requiredProperties = ["type", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes"];
+                if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
+                    for (var property in requiredProperties) {
+                        if (songData[requiredProperties[property]] === undefined) {
+                            throw new Meteor.Error(403, "Invalid data.");
+                        }
+                    }
                     Playlists.update({type: type}, {
                         $push: {
                             songs: {
