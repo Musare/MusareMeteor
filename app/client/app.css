@@ -1178,7 +1178,8 @@ nav form input[type="image"]{
     margin: 0;
     padding: 0 15px 0 15px;
     padding-bottom: 20px;
-    word-break: break-all;
+    word-break: normal;
+    word-wrap: break-word;
 }
 .chat-message:nth-child(even) {
    color: white;

@@ -27,6 +27,11 @@ UI.registerHelper("formatTime", function(seconds) {
     return d.minutes() + ":" + ("0" + d.seconds()).slice(-2);
 });
 
+/*UI.registerHelper("formatTimeFromNow", function(time) {
+    var d = moment(time);
+    return d.fromNow();
+});*/
+
 function getSpotifyInfo(title, cb, artist) {
     var q = "";
     q = title;
