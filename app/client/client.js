@@ -807,6 +807,9 @@ Template.stations.events({
     "click .preview-button": function(e){
         Session.set("song", this);
     },
+    "click #previewImageButton": function() {
+        $("#preview-image").attr("src", Session.get("song").img);
+    },
     "click .edit-queue-button": function(e){
         Session.set("song", this);
         Session.set("genre", $(e.toElement).data("genre"));
