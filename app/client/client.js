@@ -61,6 +61,22 @@ Template.profile.helpers({
     },
     loaded: function() {
         return Session.get("loaded");
+    },
+    likedSongs: function(){
+        var user = Meteor.user();
+        var likedArr = [];
+        user.profile.liked.forEach(function(id){
+            Rooms.find().forEach(function(room){
+                Playlists.find({type: room.type}).forEach(function(pl){
+                    for(var i in pl.songs){
+                        if(pl.songs[i].mid === id){
+                            likedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist});
+                        }
+                    }
+                });
+            })
+        })
+        return likedArr;
     }
 });
 
@@ -1042,7 +1058,7 @@ Template.playlist.events({
                     $(el).parent(".pl-item").show();
                 }
             })
-            $(".pl-item #artist").each(function(i, el){
+            $(".pl-item #pl-artist").each(function(i, el){
                 if($(el).text().toLowerCase().indexOf(input) !== -1){
                     $(el).parent(".pl-item").show();
                 }
