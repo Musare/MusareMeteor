@@ -1131,7 +1131,7 @@ Template.room.onCreated(function () {
             $("#media-container").empty();
             yt_player = undefined;
             if (currentSong.type === "SoundCloud") {
-                $("#media-container").append('<img src="/soundcloud-image.png" class="embed-responsive-item" />');
+                $("#media-container").append('<img alt="Not loading" src="/soundcloud-image.png" class="embed-responsive-item" />');
                 getSongInfo(currentSong);
                 SC.stream("/tracks/" + currentSong.id, function(sound){
                     _sound = sound;
