@@ -30,6 +30,16 @@ Router.route("/signup", {
     }
 });
 
+Router.route("/settings", {
+    action: function() {
+        if (!Meteor.userId()) {
+            this.redirect("/");
+        } else {
+            this.render("settings");
+        }
+    }
+});
+
 Router.route("/terms", {
     template: "terms"
 });

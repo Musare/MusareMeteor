@@ -97,6 +97,13 @@ Template.profile.onCreated(function() {
     });
 });
 
+Template.settings.helpers({
+    username: function() {
+        return Meteor.user().profile.username;
+    }
+});
+
+
 curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
 
 Handlebars.registerHelper('active', function(path) {
