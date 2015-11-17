@@ -63,19 +63,18 @@ Template.profile.helpers({
         return Session.get("loaded");
     },
     likedSongs: function(){
-        var user = Meteor.user();
         var likedArr = [];
-        user.profile.liked.forEach(function(id){
+        Session.get("liked").forEach(function(mid){
             Rooms.find().forEach(function(room){
                 Playlists.find({type: room.type}).forEach(function(pl){
                     for(var i in pl.songs){
-                        if(pl.songs[i].mid === id){
-                            likedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist});
+                        if(pl.songs[i].mid === mid){
+                            likedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
                         }
                     }
                 });
             })
-        })
+        });
         return likedArr;
     }
 });
@@ -92,6 +91,7 @@ Template.profile.onCreated(function() {
             Session.set("username", data.profile.username);
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);
+            Session.set("liked", data.profile.liked);
             Session.set("loaded", true);
         }
     });
