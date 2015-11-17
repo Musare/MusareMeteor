@@ -1,3 +1,14 @@
 RewriteEngine On
-RewriteCond %{HTTP_HOST} ^www\.example\.com$
-RewriteRule ^/?$ "http\:\/\/example\.com\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.musare\.com$
+RewriteRule ^/?$ "http\:\/\/musare\.com\/" [R=301,L]
+RewriteCond %{HTTP_HOST} ^107\.170\.230\.56
+RewriteRule (.*) http://www.musare.com/$1 [R=301,L]
+RewriteCond %{HTTP_USER_AGENT} libwww-perl.* 
+RewriteRule .* ? [F,L]
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType image/jpg "access plus 1 month"    
+    ExpiresByType image/jpeg "access plus 1 month"    
+    ExpiresByType image/gif "access plus 1 month"    
+    ExpiresByType image/png "access plus 1 month"
+</IfModule>
