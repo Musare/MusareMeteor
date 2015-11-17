@@ -1247,6 +1247,9 @@ nav form input[type="image"]{
     font-size: 18px;
     color: white;
 }
+.nav-tabs li a{
+    color: white;
+}
 
 /* https://css-tricks.com/custom-scrollbars-in-webkit/ */
 
