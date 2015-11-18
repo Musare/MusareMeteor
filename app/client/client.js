@@ -1,5 +1,5 @@
 Meteor.startup(function() {
-    reCAPTCHA.config({
+    retemporarilyfig({
         publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
     });
 });
@@ -1135,12 +1135,17 @@ Template.room.onCreated(function () {
 
             var volume = localStorage.getItem("volume") || 20;
 
-            $("#media-container").empty();
-            yt_player = undefined;
             if (currentSong.type === "SoundCloud") {
-                $("#media-container").append('<img alt="Not loading" src="/soundcloud-image.png" class="embed-responsive-item" />');
-                getSongInfo(currentSong);
-                SC.stream("/tracks/" + currentSong.id, function(sound){
+                if ($("#soundcloud-image").length !== 1) {
+                    //$("#media-container").append('<img alt="Not loading" src="/soundcloud-image.png" class="embed-responsive-item" id="soundcloud-image" />');
+                    $("#media-container").append('<h1 id="soundcloud-image">We have temporarily disabled the playing of SoundCloud songs. We are sorry for this inconvenience.</h1>');
+                }
+                if ($("#player").length === 1) {
+                    $("#player").hide();
+                }
+                $("#soundcloud-image").show();
+                //getSongInfo(currentSong);
+                /*SC.stream("/tracks/" + currentSong.id, function(sound){
                     _sound = sound;
                     sound.setVolume(volume / 100);
                     sound.play();
@@ -1154,9 +1159,16 @@ Template.room.onCreated(function () {
                     var d = moment.duration(parseInt(currentSong.duration), 'seconds');
                     $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
                     resizeSeekerbar();
-                });
+                });*/
             } else {
-                $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
+                Session.set("allowYouTubeStop", false);
+                if ($("#player").length !== 1) {
+                    $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
+                }
+                if ($("#soundcloud-image").length === 1) {
+                    $("#soundcloud-image").hide();
+                }
+                $("#player").show();
                 if (yt_player === undefined) {
                     yt_player = new YT.Player("player", {
                         height: 540,
