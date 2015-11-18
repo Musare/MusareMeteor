@@ -1,5 +1,5 @@
 Meteor.startup(function() {
-    retemporarilyfig({
+    reCAPTCHA.config({
         publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
     });
 });
@@ -881,34 +881,30 @@ Template.stations.events({
         var volume = localStorage.getItem("volume") || 20;
 
         if (type === "YouTube") {
-            if (yt_player === undefined) {
-                yt_player = new YT.Player("previewPlayer", {
-                    height: 540,
-                    width: 568,
-                    videoId: id,
-                    playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
-                    events: {
-                        'onReady': function(event) {
+            yt_player = new YT.Player("previewPlayer", {
+                height: 540,
+                width: 568,
+                videoId: id,
+                playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
+                events: {
+                    'onReady': function(event) {
+                        event.target.playVideo();
+                        event.target.setVolume(volume);
+                    },
+                    'onStateChange': function(event){
+                        if (event.data == YT.PlayerState.PAUSED) {
                             event.target.playVideo();
-                            event.target.setVolume(volume);
-                        },
-                        'onStateChange': function(event){
-                            if (event.data == YT.PlayerState.PAUSED) {
-                                event.target.playVideo();
-                            }
-                            if (event.data == YT.PlayerState.PLAYING) {
-                                $("#play").attr("disabled", true);
-                                $("#stop").attr("disabled", false);
-                            } else {
-                                $("#play").attr("disabled", false);
-                                $("#stop").attr("disabled", true);
-                            }
+                        }
+                        if (event.data == YT.PlayerState.PLAYING) {
+                            $("#play").attr("disabled", true);
+                            $("#stop").attr("disabled", false);
+                        } else {
+                            $("#play").attr("disabled", false);
+                            $("#stop").attr("disabled", true);
                         }
                     }
-                });
-            } else {
-                yt_player.loadVideoById(id);
-            }
+                }
+            });
             $("#previewPlayer").show();
         } else if (type === "SoundCloud") {
             SC.stream("/tracks/" + song.id, function(sound) {
@@ -1161,7 +1157,6 @@ Template.room.onCreated(function () {
                     resizeSeekerbar();
                 });*/
             } else {
-                Session.set("allowYouTubeStop", false);
                 if ($("#player").length !== 1) {
                     $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
                 }
