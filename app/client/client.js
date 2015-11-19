@@ -819,6 +819,7 @@ Template.stations.helpers({
 
 var yt_player = undefined;
 var _sound = undefined;
+var previewEndSongTimeout = undefined;
 
 Template.stations.events({
     "click .preview-button": function(e){
@@ -881,30 +882,36 @@ Template.stations.events({
         var volume = localStorage.getItem("volume") || 20;
 
         if (type === "YouTube") {
-            yt_player = new YT.Player("previewPlayer", {
-                height: 540,
-                width: 568,
-                videoId: id,
-                playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
-                events: {
-                    'onReady': function(event) {
-                        event.target.playVideo();
-                        event.target.setVolume(volume);
-                    },
-                    'onStateChange': function(event){
-                        if (event.data == YT.PlayerState.PAUSED) {
+            if (yt_player === undefined) {
+                yt_player = new YT.Player("previewPlayer", {
+                    height: 540,
+                    width: 568,
+                    videoId: id,
+                    playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
+                    events: {
+                        'onReady': function(event) {
+                            event.target.seekTo(Number(song.skipDuration));
                             event.target.playVideo();
-                        }
-                        if (event.data == YT.PlayerState.PLAYING) {
-                            $("#play").attr("disabled", true);
-                            $("#stop").attr("disabled", false);
-                        } else {
-                            $("#play").attr("disabled", false);
-                            $("#stop").attr("disabled", true);
+                            event.target.setVolume(volume);
+                        },
+                        'onStateChange': function(event){
+                            if (event.data == YT.PlayerState.PAUSED) {
+                                event.target.playVideo();
+                            }
+                            if (event.data == YT.PlayerState.PLAYING) {
+                                $("#play").attr("disabled", true);
+                                $("#stop").attr("disabled", false);
+                            } else {
+                                $("#play").attr("disabled", false);
+                                $("#stop").attr("disabled", true);
+                            }
                         }
                     }
-                }
-            });
+                });
+            } else {
+                yt_player.loadVideoById(id);
+                yt_player.seekTo(Number(song.skipDuration));
+            }
             $("#previewPlayer").show();
         } else if (type === "SoundCloud") {
             SC.stream("/tracks/" + song.id, function(sound) {
@@ -913,10 +920,28 @@ Template.stations.events({
                 sound.play();
             });
         }
+
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        Meteor.setTimeout(function() {
+            if (yt_player !== undefined) {
+                yt_player.stopVideo();
+            }
+            if (_sound !== undefined) {
+                _sound.stop();
+            }
+            $("#play").attr("disabled", false);
+            $("#stop").attr("disabled", true);
+            $("#previewPlayer").hide();
+        }, song.duration * 1000);
     },
     "click #stop": function() {
         $("#play").attr("disabled", false);
         $("#stop").attr("disabled", true);
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
         if (yt_player !== undefined) {
             yt_player.stopVideo();
         }
@@ -987,18 +1012,18 @@ Template.stations.onCreated(function() {
 
 Template.stations.onRendered(function() {
     $("#previewModal").on("hidden.bs.modal", function() {
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        $("#play").attr("disabled", false);
+        $("#stop").attr("disabled", true);
         if (yt_player !== undefined) {
-            $("#play").attr("disabled", false);
-            $("#stop").attr("disabled", true);
             $("#previewPlayer").hide();
-            yt_player.loadVideoById("", 0);
             yt_player.seekTo(0);
             yt_player.stopVideo();
         }
         if (_sound !== undefined) {
             _sound.stop();
-            $("#play").attr("disabled", false);
-            $("#stop").attr("disabled", true);
         }
     });
     $(document).ready(function() {
