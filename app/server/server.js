@@ -651,6 +651,8 @@ Meteor.methods({
                                     artist: songData.artist,
                                     duration: songData.duration,
                                     skipDuration: songData.skipDuration,
+                                    likes: songData.likes,
+                                    dislikes: songData.dislikes,
                                     img: songData.img,
                                     type: songData.type
                                 }
@@ -729,8 +731,8 @@ Meteor.methods({
                                 skipDuration: songData.skipDuration,
                                 img: songData.img,
                                 type: songData.type,
-                                likes: songData.likes,
-                                dislikes: songData.dislikes
+                                likes: Number(songData.likes),
+                                dislikes: Number(songData.dislikes)
                             }
                         }
                     });

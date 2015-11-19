@@ -998,13 +998,13 @@ Template.stations.events({
     "click #save-song-button": function() {
         var newSong = {};
         newSong.id = $("#id").val();
-        newSong.likes = $("#likes").val();
-        newSong.dislikes = $("#dislikes").val();
+        newSong.likes = Number($("#likes").val());
+        newSong.dislikes = Number($("#dislikes").val());
         newSong.title = $("#title").val();
         newSong.artist = $("#artist").val();
         newSong.img = $("#img").val();
         newSong.type = $("#type").val();
-        newSong.duration = $("#duration").val();
+        newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         if(newSong.skipDuration === undefined){
             newSong.skipDuration = 0;
