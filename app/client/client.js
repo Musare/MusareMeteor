@@ -285,9 +285,11 @@ Template.room.events({
         }
     },
     "click #like": function(e) {
+        $("#like").blur();
         Meteor.call("likeSong", Session.get("currentSong").mid);
     },
     "click #dislike": function(e) {
+        $("#dislike").blur();
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
     },
     "click #vote-skip": function(){
