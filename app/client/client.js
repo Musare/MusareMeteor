@@ -325,11 +325,18 @@ Template.room.events({
         var artist = $("#artist").val();
         var img = $("#img").val();
         var songData = {type: type, id: id, title: title, artist: artist, img: img};
-        if(Playlists.find({type: genre, "songs.title": songData.title}, {songs: {$elemMatch: {title: songData.title}}}).count() !== 0) {
-            $(".landing").prepend("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song is already is in the playlist.</div>");
+        if(Playlists.find({type: genre, "songs.id": songData.id}, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
+            $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song is already in the playlist.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+        } else if(Queues.find({type: genre, "songs.id": songData.id}, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
+           $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song has already been requested.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
         } else{
             Meteor.call("addSongToQueue", genre, songData, function(err, res) {
                 console.log(err, res);
+                if (err) {
+                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> Something went wrong.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                } else {
+                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song added.</strong> Your song has been added to the queue.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                }
             });
         }
         $("#close-modal-a").click();
