@@ -270,9 +270,8 @@ Meteor.users.deny({remove: function () { return true; }});
 function getSongDuration(query, artistName){
     var duration;
     var search = query;
-    query = query.toLowerCase().split(" ").join("%20");
 
-    var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
+    var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + encodeURIComponent(query) + '&type=track');
 
     for(var i in res.data){
         for(var j in res.data[i].items){
@@ -287,9 +286,8 @@ function getSongDuration(query, artistName){
 function getSongAlbumArt(query, artistName){
     var albumart;
     var search = query;
-    query = query.toLowerCase().split(" ").join("%20");
 
-    var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + query + '&type=track');
+    var res = Meteor.http.get('https://api.spotify.com/v1/search?q=' + encodeURIComponent(query) + '&type=track');
     for(var i in res.data){
         for(var j in res.data[i].items){
             if(search.indexOf(res.data[i].items[j].name) !== -1 && artistName.indexOf(res.data[i].items[j].artists[0].name) !== -1){
@@ -634,8 +632,8 @@ Meteor.methods({
                     Queues.insert({type: type, songs: []});
                 }
                 if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
-                    songData.duration = getSongDuration(songData.title, songData.artist);
-                    songData.img = getSongAlbumArt(songData.title, songData.artist);
+                    songData.duration = getSongDuration(songData.title, songData.artist) || 0;
+                    songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
                     songData.skipDuration = 0;
                     songData.likes = 0;
                     songData.dislikes = 0;
