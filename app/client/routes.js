@@ -44,6 +44,10 @@ Router.route("/terms", {
     template: "terms"
 });
 
+Router.route("/contact", {
+    template: "contact"
+});
+
 Router.route("/api", {
     template: "api"
 });
