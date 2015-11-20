@@ -1228,7 +1228,6 @@ Template.room.onCreated(function () {
                         playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
                         events: {
                             'onReady': function(event) {
-                                console.log(currentSong);
                                 if(currentSong.skipDuration === undefined){
                                     currentSong.skipDuration = 0;
                                 }
