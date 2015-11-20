@@ -959,26 +959,36 @@ Template.stations.events({
         }
     },
     "click #forward": function() {
+        console.log(yt_player);
+        console.log(Session.get("song"));
+        var error = false;
         if (yt_player !== undefined) {
-            yt_player.seekTo(Session.get("song").duration - 10);
+            if (yt_player.getDuration() < Session.get("song").duration) {
+                alert("The duration of the YouTube video is smaller than the duration.");
+                error = true;
+            } else {
+                yt_player.seekTo(Session.get("song").duration - 10);
+            }
         }
         if (_sound !== undefined) {
             _sound.seekTo((Session.get("song").duration - 10) * 1000);
         }
-        if (previewEndSongTimeout !== undefined) {
-            Meteor.clearTimeout(previewEndSongTimeout);
+        if (!error) {
+            if (previewEndSongTimeout !== undefined) {
+                Meteor.clearTimeout(previewEndSongTimeout);
+            }
+            Meteor.setTimeout(function() {
+                if (yt_player !== undefined) {
+                    yt_player.stopVideo();
+                }
+                if (_sound !== undefined) {
+                    _sound.stop();
+                }
+                $("#play").attr("disabled", false);
+                $("#stop").attr("disabled", true);
+                $("#previewPlayer").hide();
+            }, 10000);
         }
-        Meteor.setTimeout(function() {
-            if (yt_player !== undefined) {
-                yt_player.stopVideo();
-            }
-            if (_sound !== undefined) {
-                _sound.stop();
-            }
-            $("#play").attr("disabled", false);
-            $("#stop").attr("disabled", true);
-            $("#previewPlayer").hide();
-        }, 10000);
     },
     "click #croom_create": function() {
         Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
