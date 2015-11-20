@@ -1,6 +1,6 @@
 <template name="playlist">
     <input type="text" id="search-playlist" placeholder="Search playlist..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search playlist...'" />
-    <ul id="playlist">
+    <ul id="playlist-ul">
       {{#each playlist_songs}}
         <li class="pl-item">
             {{#if current}}<i class="fa fa-arrow-right"></i>{{/if}}

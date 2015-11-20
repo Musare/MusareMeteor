@@ -909,8 +909,20 @@ ul#playlist{
     color: white;
     font-size: 21px;
     max-height: 100%;
-    overflow: auto;
+    height: 100%;
+    /*overflow: auto;*/
 }
+
+#playlist-ul {
+    margin: 0;
+    color: white;
+    font-size: 21px;
+    max-height: calc(100% - 48px);
+    height: calc(100% - 48px);
+    overflow: auto;
+    padding-left: 5px;
+}
+
 
 #s2 {
     opacity: 0.66666666666666;
@@ -1234,14 +1246,13 @@ nav form input[type="image"]{
     margin-right: 30em;
 }
 #search-playlist{
-    position: absolute;
     outline: 0;
     border: none;
     border-bottom: 3px solid rgba(255, 255, 255, 0.4);
     background-color: #50a3a2;
     width: 100%;
     padding: 10px 15px;
-    margin: 0 auto 10px auto;
+    margin: 0 auto 0 auto;
     display: block;
     text-align: center;
     font-size: 18px;
