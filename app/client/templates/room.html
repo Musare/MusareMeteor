@@ -20,7 +20,7 @@
                         </div>
 
                         <h3 id="room-header">
-                            {{{type}}} <span title="People in this station">({{{users}}})</span>
+                            {{{type}}}
                         </h3>
                         <div id="volume-container">
                             <i class="fa fa-volume-down" id="volume-icon"></i>
@@ -40,6 +40,10 @@
                             <img alt="Not loading" class="song-img" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
                             <h2 class="room-title">{{{title}}} <small id="time-display">(<span id="time-elapsed"></span> / <span id="time-total"></span>)</small></h2>
                             <h2 class="room-artist">{{{artist}}}</h2>
+                            <hr />
+                            <h2 class="room-title">Room statistics:</h2>
+                            <h2 class="room-artist">There is {{{users}}} user(s) online in this room</h2>
+
                         </div>
                     </div>
                     <!--<div class="row" id="settings">-->

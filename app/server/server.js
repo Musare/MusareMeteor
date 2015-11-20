@@ -474,24 +474,28 @@ Meteor.methods({
     sendMessage: function(type, message) {
         if (Meteor.userId()) {
             var user = Meteor.user();
+            console.log(user);
             var time = new Date();
             var rawrank = user.profile.rank;
             var username = user.profile.username;
-            var rank = user.profile.rank;
             if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
             if (message.length > 300) {
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
-            if (user.profile.rank = "admin") {
+            else if (user.profile.rank === "admin") {
+                console.log("Log admin");
                 Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
                 return true;
-            } else if (user.profile.rank = "mod") {
-                Chat.insert({type: type, rank: "[M]", message: message, time: time, username: username});
+            } 
+            else if (user.profile.rank === "mod") {
+                console.log("Log mod");
+                Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                 return true;
             }
             else {
+                console.log("Log " + rawrank);
                 Chat.insert({type: type, rawrank: rawrank, message: message, time: time, username: username});
                 return true;
             }
