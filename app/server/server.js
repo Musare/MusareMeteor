@@ -478,7 +478,7 @@ Meteor.methods({
             var rawrank = user.profile.rank;
             var username = user.profile.username;
             var rank = user.profile.rank;
-            if (message.length === 0) {
+            if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
             if (message.length > 300) {
