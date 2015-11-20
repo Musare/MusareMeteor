@@ -242,6 +242,62 @@ Template.dashboard.onCreated(function() {
     Session.set("type", undefined);
 });
 
+function executeCommand(command, params){
+    if (command === "help" || command === "commands") {
+        $('#helpModal').modal('show');
+        return true;
+    } else if (command === "volume") {
+        if (params.length === 1) {
+            var volume = Number(params[0]);
+            if (volume >= 0 || volume <= 100) {
+                if (volume === 0) {
+                    $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
+                } else {
+                    $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
+                }
+
+                $("#volume-slider").slider("setValue", volume);
+
+                if (yt_player !== undefined) {
+                    yt_player.setVolume(volume);
+                    localStorage.setItem("volume", volume);
+                } else if (_sound !== undefined) {
+                    //_sound
+                    var volume = volume / 100;
+                    _sound.setVolume(volume);
+                    localStorage.setItem("volume", volume * 100);
+                }
+                return true;
+            }
+        }
+    }
+}
+
+function sendMessage() {
+    var message = $("#chat-input").val();
+    if (message.length > 0 && message[0] !== " ") {
+        if (message[0] === "/") {
+            message = message.split("");
+            message.shift();
+            message = message.join("");
+            var params = message.split(" ");
+            var command = params.shift();
+            if (executeCommand(command, params)) {
+                $("#chat-input").val("");
+            } else {
+                $("#chat-input").val("");
+            }
+        } else {
+            Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
+                console.log(err, res);
+                if (res) {
+                    $("#chat-input").val("");
+                }
+            });
+        }
+    }
+}
+
 Template.room.events({
     "click #sync": function() {
         if (Session.get("currentSong") !== undefined) {
@@ -266,22 +322,12 @@ Template.room.events({
         }, 1);
     },
     "click #submit": function() {
-        Meteor.call("sendMessage", Session.get("type"), $("#chat-input").val(), function(err, res) {
-            console.log(err, res);
-            if (res) {
-                $("#chat-input").val("");
-            }
-        });
+        sendMessage();
     },
     "keyup #chat-input": function(e) {
         if (e.type == "keyup" && e.which == 13) {
             e.preventDefault();
-            Meteor.call("sendMessage", Session.get("type"), $("#chat-input").val(), function(err, res) {
-                console.log(err, res);
-                if (res) {
-                    $("#chat-input").val("");
-                }
-            });
+            sendMessage();
         }
     },
     "click #like": function(e) {
@@ -560,13 +606,18 @@ Template.room.onRendered(function() {
     $(document).ready(function() {
         function makeSlider(){
             var slider = $("#volume-slider").slider();
-            var volume = localStorage.getItem("volume") || 20;
+            var volume = Number(localStorage.getItem("volume"));
             $("#volume-slider").slider("setValue", volume);
             if (slider.length === 0) {
                 Meteor.setTimeout(function() {
                     makeSlider();
                 }, 500);
             } else {
+                if (volume === 0) {
+                    $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
+                } else {
+                    $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
+                }
                 slider.on("slide", function(val) {
                     if (val.value === 0) {
                         $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
