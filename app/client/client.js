@@ -1214,6 +1214,7 @@ Template.room.onCreated(function () {
                 }
                 $("#player").show();
                 if (yt_player === undefined) {
+                    console.log("Hello!");
                     yt_player = new YT.Player("player", {
                         height: 540,
                         width: 960,
@@ -1222,9 +1223,11 @@ Template.room.onCreated(function () {
                         events: {
                             'onReady': function(event) {
                                 if(currentSong.skipDuration === undefined){
+                                    console.log("no skipDuration")
                                     currentSong.skipDuration = 0;
                                 }
                                 event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                console.log(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                                 event.target.playVideo();
                                 event.target.setVolume(volume);
                                 resizeSeekerbar();
@@ -1242,7 +1245,8 @@ Template.room.onCreated(function () {
                         }
                     });
                 } else {
-                    yt_player.loadVideoById(currentSong.id);
+                    console.log("I'm in loadVid thing....")
+                    yt_player.loadVideoById(currentSong.id, Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                 }
 
                 getSongInfo(currentSong);
