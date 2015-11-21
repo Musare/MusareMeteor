@@ -8,6 +8,7 @@ Meteor.startup(function() {
             createRoom(stations[i].display, stations[i].tag);
         }
     }
+    emojione.ascii = true;
 });
 
 Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
@@ -361,7 +362,7 @@ Accounts.onCreateUser(function(options, user) {
             username = user.username;
         }
     }
-    user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: []};
+    user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: [], settings: {showRating: false}};
     return user;
 });
 
@@ -413,8 +414,15 @@ Meteor.publish("chat", function() {
     return Chat.find({});
 });
 
-Meteor.publish("userProfiles", function() {
-    return Meteor.users.find({}, {fields: {profile: 1, createdAt: 1}});
+Meteor.publish("userProfiles", function(username) {
+    var settings = Meteor.users.findOne({"profile.usernameL": username}, {fields: {"profile.settings": 1}});
+    if (settings !== undefined && settings.profile.settings) {
+        settings = settings.profile.settings;
+        if (settings.showRating === true) {
+            return Meteor.users.find({"profile.usernameL": username}, {fields: {"profile.username": 1, "profile.usernameL": 1, "profile.rank": 1, createdAt: 1, "profile.liked": 1, "profile.disliked": 1, "profile.settings": 1}});
+        }
+    }
+    return Meteor.users.find({"profile.usernameL": username}, {fields: {"profile.username": 1, "profile.usernameL": 1, "profile.rank": 1, createdAt: 1, "profile.settings": 1}});
 });
 
 Meteor.publish("isAdmin", function() {
@@ -431,6 +439,21 @@ function isAdmin() {
 }
 
 Meteor.methods({
+    updateSettings: function(showRating) {
+        if (Meteor.userId()) {
+            var user = Meteor.user();
+            if (showRating !== true && showRating !== false) {
+                showRating = false;
+            }
+            if (user.profile.settings) {
+                Meteor.users.update({"profile.username": user.profile.username}, {$set: {"profile.settings.showRating": showRating}});
+            } else {
+                Meteor.users.update({"profile.username": user.profile.username}, {$set: {"profile.settings": {showRating: showRating}}});
+            }
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     resetRating: function() {
         if (isAdmin()) {
             stations.forEach(function (station) {

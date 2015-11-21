@@ -113,7 +113,9 @@
                         <div class="tab-pane" id="chat">
                             <ul id="chat-ul">
                                 {{#each chat}}
-                                    <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span data-livestamp="{{time}}" title="{{time}}" style="float: right;"></span> <br/>{{this.message}}</li>
+                                    {{#emojione}}
+                                        <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span data-livestamp="{{time}}" title="{{time}}" style="float: right;"></span> <br/>{{this.message}}</li>
+                                    {{/emojione}}
                                     <hr>
                                 {{/each}}
                             </ul>
