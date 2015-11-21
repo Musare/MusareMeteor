@@ -315,7 +315,7 @@ Template.room.events({
             }
         }
     },
-    "click #side-panel": function(e) { 
+    "click #side-panel": function(e) {
         Meteor.setTimeout(function() {
         var elem = document.getElementById('chat');
         elem.scrollTop = elem.scrollHeight;;
@@ -813,15 +813,17 @@ Template.alertsDashboard.events({
 });
 
 Template.admin.helpers({
-  queueCount: function(i) {
-      var queues = Queues.find({}).fetch();
-      
-      if (!queues[i]) {
-        return 0;
-      }
-      else {
-        return queues[i].songs.length;
-      }
+  queueCount: function(display) {
+    display = display.toLowerCase();
+    var queues = Queues.findOne({type:display});
+    return queues && "songs" in queues ? queues.songs.length : 0;
+  },
+  queues: function() {
+    var queues = Queues.find({}).fetch();
+    queues.map(function(queue) {
+      return queue;
+    });
+    return queues;
   },
   users: function(){
       Meteor.call("getUserNum", function(err, num){
@@ -843,11 +845,17 @@ Template.admin.helpers({
           }
       });
       return playlists;
-  },
+  }/*,
   reports: function() {
       var reports = Reports.find({}).fetch();
-      console.log(reports);
-  }
+      reports.findOne(
+        {
+          $eq: [
+
+          ]
+        }
+      )
+  }*/
 });
 
 Template.stations.helpers({
