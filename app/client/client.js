@@ -353,7 +353,7 @@ Template.room.events({
     "click #side-panel": function(e) { 
         Meteor.setTimeout(function() {
         var elem = document.getElementById('chat');
-        elem.scrollTop = elem.scrollHeight;;
+        elem.scrollTop = elem.scrollHeight;
         }, 1);
     },
     "click #submit": function() {
