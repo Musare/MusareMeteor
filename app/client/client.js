@@ -49,6 +49,12 @@ function getSpotifyInfo(title, cb, artist) {
     });
 }
 
+Template.settings.events({
+    "click #save-settings": function() {
+        Meteor.call("updateSettings", $("#showRating").is(":checked"));
+    }
+});
+
 Template.profile.helpers({
     "username": function() {
         return Session.get("username");
@@ -83,7 +89,7 @@ Template.profile.onCreated(function() {
     var parts = Router.current().url.split('/');
     var username = parts.pop();
     Session.set("loaded", false);
-    Meteor.subscribe("userProfiles", function() {
+    Meteor.subscribe("userProfiles", username.toLowerCase(), function() {
         if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() === 0) {
             window.location = "/";
         } else {
@@ -99,10 +105,39 @@ Template.profile.onCreated(function() {
 
 Template.settings.helpers({
     username: function() {
-        return Meteor.user().profile.username;
+        if (Meteor.user() !== undefined) {
+            return Meteor.user().profile.username;
+        } else {
+            return "";
+        }
     }
 });
 
+Template.settings.onCreated(function() {
+    $(document).ready(function() {
+        var user = Meteor.user();
+        function initSettings() {
+            if (user !== undefined) {
+                if (user.profile.settings && user.profile.settings.showRating === true) {
+                    function setChecked() {
+                        $("#showRating").prop("checked", true);
+                        if (!$("#showRating").prop("checked")) {
+                            Meteor.setTimeout(function() {
+                                setChecked();
+                            }, 100);
+                        }
+                    }
+                    setChecked();
+                }
+            } else {
+                Meteor.setTimeout(function() {
+                    initSettings();
+                }, 500);
+            }
+        }
+        initSettings();
+    });
+});
 
 curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
 
