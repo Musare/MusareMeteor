@@ -441,11 +441,9 @@ Meteor.methods({
     updateSettings: function(showRating) {
         if (Meteor.userId()) {
             var user = Meteor.user();
-            console.log(showRating);
             if (showRating !== true && showRating !== false) {
                 showRating = false;
             }
-            console.log(showRating);
             if (user.profile.settings) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$set: {"profile.settings.showRating": showRating}});
             } else {
