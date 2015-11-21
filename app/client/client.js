@@ -327,7 +327,7 @@ Template.room.events({
     "keyup #chat-input": function(e) {
         if (e.type == "keyup" && e.which == 13) {
             e.preventDefault();
-            sendMessage();
+            sendMessage()
         }
     },
     "click #like": function(e) {

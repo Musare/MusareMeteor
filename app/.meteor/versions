@@ -30,6 +30,7 @@ ecmascript@0.1.6
 ecmascript-runtime@0.2.6
 ejson@1.0.7
 email@1.0.8
+emojione:emojione@1.5.2
 es5-shim@4.1.14
 facebook@1.2.2
 fastclick@1.0.7

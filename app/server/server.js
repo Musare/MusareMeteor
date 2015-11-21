@@ -8,6 +8,7 @@ Meteor.startup(function() {
             createRoom(stations[i].display, stations[i].tag);
         }
     }
+    emojione.ascii = true;
 });
 
 Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
