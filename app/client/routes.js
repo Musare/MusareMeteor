@@ -48,8 +48,8 @@ Router.route("/contact", {
     template: "contact"
 });
 
-Router.route("/api", {
-    template: "api"
+Router.route("/faq", {
+    template: "faq"
 });
 
 Router.route("/privacy", {

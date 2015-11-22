@@ -1323,3 +1323,14 @@ nav form input[type="image"]{
     color: #50a3a2;
     line-height: 18px;
 }
+.faq-small {
+    color: white;
+}
+.questions {
+    color: white;
+    font-size: 100;
+}
+.answers {
+    color: white;
+    font-size: 50
+}
