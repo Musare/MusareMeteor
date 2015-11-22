@@ -5,6 +5,7 @@
           <div class="row" style="margin-top: 20px; height: 100%;">
             <div class="col-md-5 col-md-offset-1 admin-container" style="height: 50%;">
               <h1>Playlists</h1>
+              <div>
               {{#each playlists}}
                 <p>{{display}} playlist</p>
                 <table class="table" style="border-bottom: 1px solid white;">
@@ -19,23 +20,47 @@
                     <td>{{songs.length}}</td>
                     <td></td>
                     <td></td>
-                    <td>{{reports}}</td>
-                    <td>{{queueCount @index}}</td>
+                    <td></td>
+                    <td>{{queueCount display}}</td>
                     <td><a href="/stations">Edit</a></td>
                   </tr>
                 </table>
               {{/each}}
+              </div>
             </div>
             <div class="col-md-4 col-md-offset-1 admin-container" style="height: 30%;">
               <h1>Site statistics</h1>
-              <p>Total Users: {{{users}}}</p>
+              <p>Total Users Online: {{users}}</p>
             </div>
             <div style="clear: both;"></div>
                 <div class="col-md-5 col-md-offset-1 admin-container" style="height: 50%;">
-                    <h1>Reports</h1>
+                    <h1>Queue</h1>
+                    {{#each queues}}
+                    <p>{{type}} playlist</p>
+                    <table class="table" style="border-bottom: 1px solid white;">
+                      <tr>
+                        <th>Title</th>
+                        <th>Artist</th>
+                        <th>Duration</th>
+                        <th>Type</th>
+                      </tr>
+                      {{#each songs}}
+                      <tr>
+                        <td>{{this.title}}</td>
+                        <td>{{this.artist}}</td>
+                        <td>{{this.duration}}</td>
+                        <td>{{this.type}}</td>
+                        <!--<td><a href="/stations">Edit</a></td>-->
+                      </tr>
+                      {{/each}}
+                    </table>
+                    {{/each}}
                 </div>
                 <div class="col-md-4 col-md-offset-1 admin-container" style="height: 50%">
                     <h1>Reports</h1>
+                    {{#each reports}}
+                      <p>{{reports}}</p>
+                    {{/each}}
                 </div>
           </div>
 

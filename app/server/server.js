@@ -497,7 +497,6 @@ Meteor.methods({
     sendMessage: function(type, message) {
         if (Meteor.userId()) {
             var user = Meteor.user();
-            console.log(user);
             var time = new Date();
             var rawrank = user.profile.rank;
             var username = user.profile.username;
@@ -508,17 +507,14 @@ Meteor.methods({
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
             else if (user.profile.rank === "admin") {
-                console.log("Log admin");
                 Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
                 return true;
             } 
             else if (user.profile.rank === "mod") {
-                console.log("Log mod");
                 Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                 return true;
             }
             else {
-                console.log("Log " + rawrank);
                 Chat.insert({type: type, rawrank: rawrank, message: message, time: time, username: username});
                 return true;
             }
@@ -639,10 +635,8 @@ Meteor.methods({
     createUserMethod: function(formData, captchaData) {
         var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
         if (!verifyCaptchaResponse.success) {
-            console.log('reCAPTCHA check failed!', verifyCaptchaResponse);
             throw new Meteor.Error(422, 'reCAPTCHA Failed: ' + verifyCaptchaResponse.error);
         } else {
-            console.log('reCAPTCHA verification passed!');
             Accounts.createUser({
                 username: formData.username,
                 email: formData.email,
