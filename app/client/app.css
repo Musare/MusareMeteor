@@ -347,7 +347,8 @@ form input:focus {
     display: block;
     text-align: center;
     font-size: 18px;
-    color: white;
+    color: #1C39B2;
+    background-color: white;
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s;
     font-weight: 300;
@@ -371,16 +372,16 @@ form button {
 }
 
 ::-webkit-input-placeholder {
-    color: white;
+    color: #1C39B2;
 }
 
 ::-moz-placeholder {
     /* Firefox 19+ */
-    color: white;
+    color: #1C39B2;
 }
 
 :-ms-input-placeholder {
-    color: white;
+    color: #1C39B2;
 }
 
 form button:hover {
