@@ -1061,11 +1061,11 @@ Template.stations.events({
                 alert("The duration of the YouTube video is smaller than the duration.");
                 error = true;
             } else {
-                yt_player.seekTo(Session.get("song").duration - 10);
+                yt_player.seekTo(Session.get("song").skipDuration + Session.get("song").duration - 10);
             }
         }
         if (_sound !== undefined) {
-            _sound.seekTo((Session.get("song").duration - 10) * 1000);
+            _sound.seekTo((Session.get("song").skipDuration + Session.get("song").duration - 10) * 1000);
         }
         if (!error) {
             if (previewEndSongTimeout !== undefined) {
