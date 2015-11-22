@@ -724,7 +724,7 @@ footer .fa {
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s;
     font-weight: 300;
-    bottom: 0;
+    resize: vertical;
 }
 
 .song-input-select {
