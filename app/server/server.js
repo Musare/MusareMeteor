@@ -372,8 +372,8 @@ ServiceConfiguration.configurations.remove({
 
 ServiceConfiguration.configurations.insert({
     service: "github",
-    clientId: "dcecd720f47c0e4001f7",
-    secret: "375939d001ef1a0ca67c11dbf8fb9aeaa551e01b"
+    clientId: Meteor.settings.github_clientID,
+    secret: Meteor.settings.github_secret
 });
 
 Meteor.publish("alerts", function() {
