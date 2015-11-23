@@ -1205,7 +1205,6 @@ nav form input[type="image"]{
 }
 #submit button{
     width: 100%;
-    height: 40px;
     font-size: 1.5em;
 }
 #submit i{
@@ -1286,12 +1285,6 @@ nav form input[type="image"]{
     background-color: white;
 }
 
-::-webkit-scrollbar-track-piece {
-    background: #50a3a2;
-    background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
-}
-
 .contact-name {
     margin-left: 30px;
     margin-top: 35px;
@@ -1337,5 +1330,26 @@ nav form input[type="image"]{
 }
 .answers {
     color: white;
-    font-size: 50
+    font-size: 50;
+}
+
+#header-dropdown {
+    padding: 5px 0;
+    margin: 2px 0 0;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    overflow: inherit;
+    font-size: 14px;
+    letter-spacing: inherit;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+#header-dropdown li:hover {
+    background-color: white;
+}
+
+#header-dropdown li:hover > a {
+    color: #1C39B2 !important;
 }
