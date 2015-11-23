@@ -367,16 +367,6 @@ Accounts.onCreateUser(function(options, user) {
 });
 
 ServiceConfiguration.configurations.remove({
-    service: "facebook"
-});
-
-ServiceConfiguration.configurations.insert({
-    service: "facebook",
-    appId: "1496014310695890",
-    secret: "9a039f254a08a1488c08bb0737dbd2a6"
-});
-
-ServiceConfiguration.configurations.remove({
     service: "github"
 });
 

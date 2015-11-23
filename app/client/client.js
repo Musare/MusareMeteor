@@ -359,12 +359,12 @@ Template.room.events({
     "click #submit": function() {
         sendMessage();
     },
-    "keyup #chat-input": function(e) {
-        if (e.type == "keyup" && e.which == 13) {
-            e.preventDefault();
-            sendMessage()
-        }
-    },
+    //"keyup #chat-input": function(e) {
+    //    if (e.type === "keyup" && e.which === 13) {
+    //        e.preventDefault();
+    //        sendMessage()
+    //    }
+    //},
     "click #like": function(e) {
         $("#like").blur();
         Meteor.call("likeSong", Session.get("currentSong").mid);
