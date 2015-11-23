@@ -720,11 +720,11 @@ footer .fa {
     margin: 1em auto 10px auto;
     text-align: left;
     font-size: 18px;
-    color: white;
+    color: #1C39B2;
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s;
     font-weight: 300;
-    bottom: 0;
+    resize: vertical;
 }
 
 .song-input-select {
@@ -1322,4 +1322,15 @@ nav form input[type="image"]{
 .settings-label {
     color: #50a3a2;
     line-height: 18px;
+}
+.faq-small {
+    color: white;
+}
+.questions {
+    color: white;
+    font-size: 100;
+}
+.answers {
+    color: white;
+    font-size: 50
 }
