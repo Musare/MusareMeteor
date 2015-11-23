@@ -28,5 +28,4 @@ altapp:recaptcha
 http
 zimme:iron-router-active
 momentjs:moment
-copleykj:livestamp
 emojione:emojione

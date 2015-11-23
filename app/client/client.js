@@ -637,7 +637,22 @@ Template.room.events({
     }
 });
 
+Template.registerHelper("rtime", function(date) {
+    Session.get("time");
+    if (date) {
+        return moment(date).fromNow();
+    }
+});
+
+var chatTimeInterval = undefined;
+
 Template.room.onRendered(function() {
+    if (chatTimeInterval !== undefined) {
+        Meteor.clearInterval(chatTimeInterval)
+    }
+    chatTimeInterval = Meteor.setInterval(function() {
+        Session.set("time", new Date().getTime());
+    }, 10000);
     $(document).ready(function() {
         function makeSlider(){
             var slider = $("#volume-slider").slider();

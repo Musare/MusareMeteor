@@ -113,7 +113,7 @@
                             <ul id="chat-ul">
                                 {{#each chat}}
                                     {{#emojione}}
-                                        <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span data-livestamp="{{time}}" title="{{time}}" style="float: right;"></span> <br/>{{this.message}}</li>
+                                        <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span title="{{time}}" style="float: right;">{{rtime time}}</span> <br/>{{this.message}}</li>
                                     {{/emojione}}
                                     <hr>
                                 {{/each}}
