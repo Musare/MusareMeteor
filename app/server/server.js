@@ -394,6 +394,10 @@ Meteor.publish("chat", function() {
     return Chat.find({});
 });
 
+Meteor.publish("ownBan", function(userId) {
+    return Meteor.users.find(userId, {"punishments.ban": 1, "profile": 1});
+});
+
 Meteor.publish("userProfiles", function(username) {
     var settings = Meteor.users.findOne({"profile.usernameL": username}, {fields: {"profile.settings": 1}});
     if (settings !== undefined && settings.profile.settings) {
@@ -419,6 +423,40 @@ function isAdmin() {
 }
 
 Meteor.methods({
+    banUser: function(username, period, reason) {
+        if (isAdmin()) {
+            var user = Meteor.user();
+            var bannedUser = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
+            var bannedUntil = (new Date).getTime() + (period * 1000);
+            if (bannedUntil > 8640000000000000) {
+                bannedUntil = 8640000000000000;
+            }
+            bannedUntil = new Date(bannedUntil);
+            var banObject = {bannedBy: user.profile.usernameL, bannedAt: new Date(Date.now()), bannedReason: reason, bannedUntil: bannedUntil};
+            Meteor.users.update({"profile.usernameL": bannedUser.profile.usernameL}, {$set: {"punishments.ban": banObject}});
+            Meteor.users.update({"profile.usernameL": bannedUser.profile.usernameL}, {$push: {"punishments.bans": banObject}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    isBanned: function() {
+        if (Meteor.userId()) {
+            var user = Meteor.user();
+            if (user.punishments && user.punishments.ban) {
+                var ban = user.punishments.ban;
+                if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
+                    Meteor.users.update({"profile.usernameL": user.profile.usernameL}, {$unset: {"punishments.ban": ""}});
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    },
     updateSettings: function(showRating) {
         if (Meteor.userId()) {
             var user = Meteor.user();

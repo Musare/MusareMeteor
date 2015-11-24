@@ -1,7 +1,20 @@
-Router.onBeforeAction('loading');
-
 Router.configure({
     loadingTemplate: 'loading'
+});
+
+Router.onBeforeAction(function() {
+    var self = this;
+    var next = self.next;
+    if (Meteor.userId()) {
+        Meteor.call("isBanned", function(err, res) {
+            if (res) {
+                self.render('banned');
+                pause();
+            } else {
+                next();
+            }
+        });
+    }
 });
 
 Router.route("/", {

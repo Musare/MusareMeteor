@@ -1,0 +1,26 @@
+<template name="banned">
+    {{> alerts}}
+
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4" id="banned-container">
+            <i class="fa fa-gavel fa-5x" id="ban-icon"></i>
+            <hr/>
+            <h3 class="text text-center">You were banned by {{bannedBy}} <span title="{{bannedAt}}">{{rtime bannedAt}}</span>.</h3>
+            <h3 class="text text-center">You will be unbanned <span title="{{bannedAt}}">{{rtime bannedUntil}}</span>.</h3>
+            <h3 class="text text-center">Reason: {{bannedReason}}</h3>
+        </div>
+    </div>
+
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+</template>

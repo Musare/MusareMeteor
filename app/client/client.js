@@ -637,6 +637,41 @@ Template.room.events({
     }
 });
 
+Template.banned.helpers({
+    bannedAt: function() {
+        if (Session.get("ban") !== undefined) {
+            return Session.get("ban").bannedAt;
+        }
+    },
+    bannedBy: function() {
+        if (Session.get("ban") !== undefined) {
+            return Session.get("ban").bannedBy;
+        }
+    },
+    bannedUntil: function() {
+        if (Session.get("ban") !== undefined) {
+            return Session.get("ban").bannedUntil;
+        }
+    },
+    bannedReason: function() {
+        if (Session.get("ban") !== undefined) {
+            return Session.get("ban").bannedReason;
+        }
+    }
+});
+
+Template.banned.onCreated(function() {
+    if (rTimeInterval !== undefined) {
+        Meteor.clearInterval(rTimeInterval)
+    }
+    rTimeInterval = Meteor.setInterval(function() {
+        Session.set("time", new Date().getTime());
+    }, 10000);
+    Meteor.subscribe("ownBan", Meteor.userId(), function() {
+        Session.set("ban", Meteor.user().punishments.ban);
+    });
+});
+
 Template.registerHelper("rtime", function(date) {
     Session.get("time");
     if (date) {
@@ -644,13 +679,13 @@ Template.registerHelper("rtime", function(date) {
     }
 });
 
-var chatTimeInterval = undefined;
+var rTimeInterval = undefined;
 
 Template.room.onRendered(function() {
-    if (chatTimeInterval !== undefined) {
-        Meteor.clearInterval(chatTimeInterval)
+    if (rTimeInterval !== undefined) {
+        Meteor.clearInterval(rTimeInterval)
     }
-    chatTimeInterval = Meteor.setInterval(function() {
+    rTimeInterval = Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
     }, 10000);
     $(document).ready(function() {
