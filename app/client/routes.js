@@ -14,6 +14,8 @@ Router.onBeforeAction(function() {
                 next();
             }
         });
+    } else {
+        next();
     }
 });
 
