@@ -1258,6 +1258,9 @@ Template.playlist.events({
                 }
             })
         }
+    },
+    "click #pl-item": function(){
+        console.log($(this).text());
     }
 })
 
