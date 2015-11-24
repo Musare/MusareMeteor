@@ -456,22 +456,7 @@ Meteor.methods({
         }
     },
     isBanned: function() {
-        if (Meteor.userId() && !isBanned()) {
-            var user = Meteor.user();
-            if (user.punishments && user.punishments.ban) {
-                var ban = user.punishments.ban;
-                if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
-                    Meteor.users.update({"profile.usernameL": user.profile.usernameL}, {$unset: {"punishments.ban": ""}});
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return isBanned();
     },
     updateSettings: function(showRating) {
         if (Meteor.userId() && !isBanned()) {
