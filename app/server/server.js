@@ -424,7 +424,7 @@ function isAdmin() {
 
 function isBanned() {
     var userData = Meteor.users.findOne(Meteor.userId());
-    if (Meteor.userId() && userData !== undefined && userData.punishments.ban !== undefined) {
+    if (Meteor.userId() && userData !== undefined && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
         var ban = userData.punishments.ban;
         if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
             Meteor.users.update(Meteor.userId(), {$unset: {"punishments.ban": ""}});
