@@ -82,6 +82,21 @@ Template.profile.helpers({
             })
         });
         return likedArr;
+    },
+    dislikedSongs: function(){
+        var dislikedArr = [];
+        Session.get("disliked").forEach(function(mid){
+            Rooms.find().forEach(function(room){
+                Playlists.find({type: room.type}).forEach(function(pl){
+                    for(var i in pl.songs){
+                        if(pl.songs[i].mid === mid){
+                            dislikedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
+                        }
+                    }
+                });
+            })
+        });
+        return dislikedArr;
     }
 });
 
@@ -98,6 +113,7 @@ Template.profile.onCreated(function() {
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);
             Session.set("liked", data.profile.liked);
+            Session.set("disliked", data.profile.disliked);
             Session.set("loaded", true);
         }
     });
@@ -1277,6 +1293,9 @@ Template.playlist.events({
                 }
             })
         }
+    },
+    "click #pl-item": function(){
+        console.log($(this).text());
     }
 })
 
