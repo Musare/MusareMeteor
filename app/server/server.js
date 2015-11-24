@@ -366,16 +366,6 @@ Accounts.onCreateUser(function(options, user) {
     return user;
 });
 
-ServiceConfiguration.configurations.remove({
-    service: "github"
-});
-
-ServiceConfiguration.configurations.insert({
-    service: "github",
-    clientId: Meteor.settings.github_clientID,
-    secret: Meteor.settings.github_secret
-});
-
 Meteor.publish("alerts", function() {
     return Alerts.find({active: true})
 });
