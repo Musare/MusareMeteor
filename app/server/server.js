@@ -422,9 +422,25 @@ function isAdmin() {
     }
 }
 
+function isBanned() {
+    var userData = Meteor.users.findOne(Meteor.userId());
+    if (Meteor.userId() && userData !== undefined && userData.punishments.ban !== undefined) {
+        var ban = userData.punishments.ban;
+        if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
+            Meteor.users.update(Meteor.userId(), {$unset: {"punishments.ban": ""}});
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
+
 Meteor.methods({
     banUser: function(username, period, reason) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             var user = Meteor.user();
             var bannedUser = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
             var bannedUntil = (new Date).getTime() + (period * 1000);
@@ -440,7 +456,7 @@ Meteor.methods({
         }
     },
     isBanned: function() {
-        if (Meteor.userId()) {
+        if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
             if (user.punishments && user.punishments.ban) {
                 var ban = user.punishments.ban;
@@ -458,7 +474,7 @@ Meteor.methods({
         }
     },
     updateSettings: function(showRating) {
-        if (Meteor.userId()) {
+        if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
             if (showRating !== true && showRating !== false) {
                 showRating = false;
@@ -473,7 +489,7 @@ Meteor.methods({
         }
     },
     resetRating: function() {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             stations.forEach(function (station) {
                 var type = station.type;
                 var temp_songs = Playlists.findOne({type: type}).songs;
@@ -490,7 +506,7 @@ Meteor.methods({
         }
     },
     removeAlerts: function() {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
         } else {
             throw Meteor.Error(403, "Invalid permissions.");
@@ -513,7 +529,7 @@ Meteor.methods({
         }
     },
     sendMessage: function(type, message) {
-        if (Meteor.userId()) {
+        if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
             var time = new Date();
             var rawrank = user.profile.rank;
@@ -541,7 +557,7 @@ Meteor.methods({
         }
     },
     likeSong: function(mid) {
-        if (Meteor.userId()) {
+        if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
             if (user.profile.liked.indexOf(mid) === -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.liked": mid}});
@@ -561,7 +577,7 @@ Meteor.methods({
         }
     },
     dislikeSong: function(mid) {
-        if (Meteor.userId()) {
+        if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
             if (user.profile.disliked.indexOf(mid) === -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.disliked": mid}});
@@ -581,7 +597,7 @@ Meteor.methods({
         }
     },
     voteSkip: function(type){
-        if(Meteor.userId()){
+        if(Meteor.userId() && !isBanned()){
             var user = Meteor.user();
             getStation(type, function(station){
                 if(station.voted.indexOf(user.profile.username) === -1){
@@ -597,12 +613,14 @@ Meteor.methods({
         }
     },
     submitReport: function(report, id) {
-        var obj = report;
-        obj.id = id;
-        Reports.insert(obj);
+        if (!isBanned()) {
+            var obj = report;
+            obj.id = id;
+            Reports.insert(obj);
+        }
     },
     shufflePlaylist: function(type) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             getStation(type, function(station) {
                 if (station === undefined) {
                     throw new Meteor.Error(404, "Station not found.");
@@ -614,7 +632,7 @@ Meteor.methods({
         }
     },
     skipSong: function(type) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             getStation(type, function(station) {
                 if (station === undefined) {
                     throw new Meteor.Error(404, "Station not found.");
@@ -625,7 +643,7 @@ Meteor.methods({
         }
     },
     pauseRoom: function(type) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             getStation(type, function(station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
@@ -638,7 +656,7 @@ Meteor.methods({
         }
     },
     resumeRoom: function(type) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             getStation(type, function(station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
@@ -651,20 +669,22 @@ Meteor.methods({
         }
     },
     createUserMethod: function(formData, captchaData) {
-        var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
-        if (!verifyCaptchaResponse.success) {
-            throw new Meteor.Error(422, 'reCAPTCHA Failed: ' + verifyCaptchaResponse.error);
-        } else {
-            Accounts.createUser({
-                username: formData.username,
-                email: formData.email,
-                password: formData.password
-            });
+        if (!isBanned()) {
+            var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
+            if (!verifyCaptchaResponse.success) {
+                throw new Meteor.Error(422, 'reCAPTCHA Failed: ' + verifyCaptchaResponse.error);
+            } else {
+                Accounts.createUser({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password
+                });
+            }
+            return true;
         }
-        return true;
     },
     addSongToQueue: function(type, songData) {
-        if (Meteor.userId()) {
+        if (Meteor.userId() && !isBanned()) {
             type = type.toLowerCase();
             if (Rooms.find({type: type}).count() === 1) {
                 if (Queues.find({type: type}).count() === 0) {
@@ -710,7 +730,7 @@ Meteor.methods({
         }
     },
     updateQueueSong: function(genre, oldSong, newSong) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             newSong.mid = oldSong.mid;
             Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
             return true;
@@ -719,7 +739,7 @@ Meteor.methods({
         }
     },
     updatePlaylistSong: function(genre, oldSong, newSong) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             newSong.mid = oldSong.mid;
             Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
             return true;
@@ -728,7 +748,7 @@ Meteor.methods({
         }
     },
     removeSongFromQueue: function(type, mid) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             type = type.toLowerCase();
             Queues.update({type: type}, {$pull: {songs: {mid: mid}}});
         } else {
@@ -736,7 +756,7 @@ Meteor.methods({
         }
     },
     removeSongFromPlaylist: function(type, mid) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             type = type.toLowerCase();
             Playlists.update({type: type}, {$pull: {songs: {mid: mid}}});
         } else {
@@ -744,7 +764,7 @@ Meteor.methods({
         }
     },
     addSongToPlaylist: function(type, songData) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             type = type.toLowerCase();
             if (Rooms.find({type: type}).count() === 1) {
                 if (Playlists.find({type: type}).count() === 0) {
@@ -786,14 +806,14 @@ Meteor.methods({
         }
     },
     createRoom: function(display, tag) {
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             createRoom(display, tag);
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
     deleteRoom: function(type){
-        if (isAdmin()) {
+        if (isAdmin() && !isBanned()) {
             Rooms.remove({type: type});
             Playlists.remove({type: type});
             Queues.remove({type: type});
@@ -803,7 +823,9 @@ Meteor.methods({
         }
     },
     getUserNum: function(){
-        return Object.keys(Meteor.default_server.sessions).length;
+        if (!isBanned()) {
+            return Object.keys(Meteor.default_server.sessions).length;
+        }
     }
 });
 
