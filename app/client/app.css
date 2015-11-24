@@ -1332,8 +1332,9 @@ nav form input[type="image"]{
     color: white;
     font-size: 50;
 }
-
 #header-dropdown {
+    top: 100% !important;
+    height: auto;
     padding: 5px 0;
     margin: 2px 0 0;
     border: 1px solid #ccc;
@@ -1349,7 +1350,6 @@ nav form input[type="image"]{
 #header-dropdown li:hover {
     background-color: white;
 }
-
 #header-dropdown li:hover > a {
     color: #1C39B2 !important;
 }
