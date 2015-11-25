@@ -1354,14 +1354,19 @@ nav form input[type="image"]{
 #header-dropdown li:hover > a {
     color: #1C39B2 !important;
 }
-
 #ban-icon {
     font-size: 20em;
     text-align: center;
     width: 100%;
     z-index: 3;
 }
-
 #banned-container {
     color: white;
 }
+@media (max-width: 991px){
+    .contact-img{
+        float: none;
+        margin-bottom: 0;
+    }
+}
+
