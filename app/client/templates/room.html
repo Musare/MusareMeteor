@@ -184,7 +184,9 @@
                     <div class="modal-content">
                         <div class="modal-body">
 
+                            {{#if previousSongR}}
                             <button type="button" id="report-prev" class="btn btn-warning btn-lg btn-block">Report previous song ({{previousSongR.title}})</button>
+                            {{/if}}
                             <button type="button" id="report-curr" class="btn btn-warning btn-lg btn-block" disabled>Report current song ({{currentSongR.title}})</button>
 
                             <h3 class="text-primary"><b>Reporting:</b> {{reportingSong.title}} by {{reportingSong.artist}}</h3>
