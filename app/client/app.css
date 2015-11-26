@@ -1363,6 +1363,9 @@ nav form input[type="image"]{
 #banned-container {
     color: white;
 }
+.social-link{
+    margin-right: 5px;
+}
 @media (max-width: 991px){
     .contact-img{
         float: none;
