@@ -321,6 +321,15 @@ function executeCommand(command, params){
                 return true;
             }
         }
+    } else if(command === "ban"){
+        var user = params[0];
+        var time = params[1];
+        var reason = params[2];
+        Meteor.call("banUser", user, time, reason, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
     }
 }
 
