@@ -407,6 +407,12 @@
                         </div>
                         <div class="modal-body">
                             <ul>
+                                {{#if isAdmin}}
+                                    <h5 style="margin-bottom:0 !important;">Admin Commands:</h5>
+                                    <li>/ban [userName] [time] [reason]</li>
+                                {{/if}}
+                                <br>
+                                <h5 style="margin-bottom:0 !important;">User Commands:</h5>
                                 <li>/help</li>
                                 <li>/commands</li>
                                 <li>/volume</li>
