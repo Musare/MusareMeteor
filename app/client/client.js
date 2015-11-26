@@ -1093,7 +1093,7 @@ Template.stations.events({
         if (previewEndSongTimeout !== undefined) {
             Meteor.clearTimeout(previewEndSongTimeout);
         }
-        Meteor.setTimeout(function() {
+        previewEndSongTimeout = Meteor.setTimeout(function() {
             if (yt_player !== undefined) {
                 yt_player.stopVideo();
             }
@@ -1123,21 +1123,23 @@ Template.stations.events({
         console.log(Session.get("song"));
         var error = false;
         if (yt_player !== undefined) {
-            if (yt_player.getDuration() < Session.get("song").duration) {
+            var duration = Number(Session.get("song").duration) | 0;
+            var skipDuration = Number(Session.get("song").skipDuration) | 0;
+            if (yt_player.getDuration() < duration + skipDuration) {
                 alert("The duration of the YouTube video is smaller than the duration.");
                 error = true;
             } else {
-                yt_player.seekTo(Session.get("song").skipDuration + Session.get("song").duration - 10);
+                yt_player.seekTo(skipDuration + duration - 10);
             }
         }
         if (_sound !== undefined) {
-            _sound.seekTo((Session.get("song").skipDuration + Session.get("song").duration - 10) * 1000);
+            _sound.seekTo((skipDuration + duration - 10) * 1000);
         }
         if (!error) {
             if (previewEndSongTimeout !== undefined) {
                 Meteor.clearTimeout(previewEndSongTimeout);
             }
-            Meteor.setTimeout(function() {
+            previewEndSongTimeout = Meteor.setTimeout(function() {
                 if (yt_player !== undefined) {
                     yt_player.stopVideo();
                 }
