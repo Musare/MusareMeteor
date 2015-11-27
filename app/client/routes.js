@@ -77,11 +77,11 @@ Router.route("/about", {
 
 Router.route("/admin", {
     waitOn: function() {
-        return Meteor.subscribe("isAdmin", Meteor.userId());
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
     },
     action: function() {
         var user = Meteor.users.findOne({});
-        if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
+        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
             this.render("admin");
         } else {
             this.redirect("/");
@@ -91,25 +91,25 @@ Router.route("/admin", {
 
 Router.route("/stations", {
     waitOn: function() {
-        return Meteor.subscribe("isAdmin", Meteor.userId());
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
     },
     action: function() {
-      var user = Meteor.users.findOne({});
-      if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
-          this.render("stations");
-      } else {
-          this.redirect("/");
-      }
+        var user = Meteor.users.findOne({});
+        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
+            this.render("stations");
+        } else {
+            this.redirect("/");
+        }
     }
 });
 
 Router.route("/admin/alerts", {
     waitOn: function() {
-        return Meteor.subscribe("isAdmin", Meteor.userId());
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
     },
     action: function() {
         var user = Meteor.users.findOne({});
-        if (user !== undefined && user.profile !== undefined && user.profile.rank === "admin") {
+        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
             this.render("alertsDashboard");
         } else {
             this.redirect("/");

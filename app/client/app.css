@@ -1226,7 +1226,7 @@ nav form input[type="image"]{
     font-size: 20px;
     font-weight: bold;
 }
-.rank-mod {
+.rank-mod, .rank-moderator {
     color: darkgoldenrod;
     font-size: 20px;
     font-weight: bold;

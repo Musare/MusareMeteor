@@ -17,8 +17,8 @@
                 <ul class="nav navbar-nav">
                     <!--li class="active"><a href="">Link <span class="sr-only">(current)</span></a></li-->
                     <li class="{{isActivePath '/'}}"><a href="/">Home</a></li>
-                    {{#if isAdmin}}
-                        <li class="{{isActivePath '/admin'}}"><a href="/admin">Admin</a></li>
+                    {{#if isModerator}}
+                    <li class="{{isActivePath '/admin'}}"><a href="/admin">Admin</a></li>
                     {{/if}}
                 </ul>
                 {{#if currentUser}}

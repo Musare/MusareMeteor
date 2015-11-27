@@ -171,7 +171,14 @@ Template.header.helpers({
         } else {
             return false;
         }
-    }
+    },
+    isModerator: function() {
+        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
+            return true;
+        } else {
+            return false;
+        }
+    },
 });
 
 Template.header.events({
@@ -835,6 +842,13 @@ Template.room.helpers({
     isAdmin: function() {
         if (Meteor.user() && Meteor.user().profile) {
             return Meteor.user().profile.rank === "admin";
+        } else {
+            return false;
+        }
+    },
+    isModerator: function() {
+        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
+            return true;
         } else {
             return false;
         }
