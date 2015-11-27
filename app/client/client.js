@@ -930,9 +930,6 @@ Template.admin.helpers({
   },
   queues: function() {
     var queues = Queues.find({}).fetch();
-    queues.map(function(queue) {
-      return queue;
-    });
     return queues;
   },
   users: function(){
@@ -969,18 +966,6 @@ Template.admin.helpers({
 });
 
 Template.stations.helpers({
-    queues: function() {
-        var queues = Queues.find({}).fetch();
-        queues.map(function(queue) {
-            if (Rooms.find({type: queue.type}).count() !== 1) {
-                return;
-            } else {
-                queue.display = Rooms.findOne({type: queue.type}).display;
-                return queue;
-            }
-        });
-        return queues;
-    },
     playlists: function() {
         var playlists = Playlists.find({}).fetch();
         playlists.map(function(playlist) {
@@ -994,6 +979,21 @@ Template.stations.helpers({
         return playlists;
     }
 });
+
+Template.queues.helpers({
+  queues: function() {
+      var queues = Queues.find({}).fetch();
+      queues.map(function(queue) {
+          if (Rooms.find({type: queue.type}).count() !== 1) {
+              return;
+          } else {
+              queue.display = Rooms.findOne({type: queue.type}).display;
+              return queue;
+          }
+      });
+      return queues;
+  }
+})
 
 var yt_player = undefined;
 var _sound = undefined;
@@ -1045,6 +1045,7 @@ Template.stations.events({
     },
     "click .deny-song-button": function(e){
         var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        console.log(genre);
         Meteor.call("removeSongFromQueue", genre, this.mid);
     },
     "click .remove-song-button": function(e){

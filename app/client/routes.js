@@ -89,7 +89,7 @@ Router.route("/admin", {
     }
 });
 
-Router.route("/stations", {
+Router.route("/admin/stations", {
     waitOn: function() {
         return Meteor.subscribe("isAdmin", Meteor.userId());
     },
@@ -123,4 +123,8 @@ Router.route("/:type", {
 
 Router.route("/u/:user", {
     template: "profile"
+});
+
+Router.route("/admin/queues", {
+  template: "queues"
 });

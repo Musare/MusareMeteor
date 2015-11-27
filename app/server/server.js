@@ -528,7 +528,7 @@ Meteor.methods({
             else if (user.profile.rank === "admin") {
                 Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
                 return true;
-            } 
+            }
             else if (user.profile.rank === "mod") {
                 Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                 return true;
@@ -741,7 +741,12 @@ Meteor.methods({
         }
     },
     removeSongFromPlaylist: function(type, mid) {
+<<<<<<< Updated upstream
         if (isAdmin() && !isBanned()) {
+=======
+        if (isAdmin()) {
+            console.log(type);
+>>>>>>> Stashed changes
             type = type.toLowerCase();
             Playlists.update({type: type}, {$pull: {songs: {mid: mid}}});
         } else {
