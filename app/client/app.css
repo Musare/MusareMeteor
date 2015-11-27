@@ -263,9 +263,13 @@ ul {
   margin-top: 20px;
 }
 
-.admin-container h1 {
+.admin-container div {
+  padding-bottom: 10px;
   text-align: center;
+}
+.admin-container h1 {
   margin: 0;
+  display: inline-block;
 }
 
 .admin-container p {
@@ -275,6 +279,16 @@ ul {
 .admin-container a {
   color: white;
   font-size: 16px;
+}
+
+.queueTable th {
+  font-size: 22px;
+  text-align: center;
+}
+
+.queueTable td {
+  padding: 10px;
+  font-size: 18px;
 }
 
 .container {

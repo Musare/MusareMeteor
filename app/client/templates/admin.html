@@ -4,8 +4,9 @@
         {{> header}}
           <div class="row" style="margin-top: 20px; height: 100%;">
             <div class="col-md-5 col-md-offset-1 admin-container" style="height: 50%;">
-              <h1>Playlists</h1>
               <div>
+                <h1>Playlists</h1>
+              </div>
               {{#each playlists}}
                 <p>{{display}} playlist</p>
                 <table class="table" style="border-bottom: 1px solid white;">
@@ -22,42 +23,48 @@
                     <td></td>
                     <td></td>
                     <td>{{queueCount display}}</td>
-                    <td><a href="/stations">Edit</a></td>
+                    <td><a href="/admin/stations">Edit</a></td>
                   </tr>
                 </table>
               {{/each}}
-              </div>
             </div>
             <div class="col-md-4 col-md-offset-1 admin-container" style="height: 30%;">
-              <h1>Site statistics</h1>
+              <div>
+                <h1>Site statistics</h1>
+              </div>
               <p>Total Users Online: {{users}}</p>
             </div>
             <div style="clear: both;"></div>
                 <div class="col-md-5 col-md-offset-1 admin-container" style="height: 50%;">
-                    <h1>Queue</h1>
-                    {{#each queues}}
-                    <p>{{type}} playlist</p>
-                    <table class="table" style="border-bottom: 1px solid white;">
+                  <div>
+                    <h1>Song Requests</h1><a href="/admin/queues" style="margin-left:10px;">(review)</a>
+                  </div>
+                    <table class="table queueTable">
                       <tr>
+                        <th>Playlist</th>
                         <th>Title</th>
                         <th>Artist</th>
                         <th>Duration</th>
                         <th>Type</th>
                       </tr>
-                      {{#each songs}}
-                      <tr>
-                        <td>{{this.title}}</td>
-                        <td>{{this.artist}}</td>
-                        <td>{{this.duration}}</td>
-                        <td>{{this.type}}</td>
-                        <!--<td><a href="/stations">Edit</a></td>-->
-                      </tr>
+                      {{#each queues}}
+                        {{#each songs}}
+                          <tr>
+                            <td>{{../type}}</td>
+                            <td>{{title}}</td>
+                            <td>{{artist}}</td>
+                            <td>{{duration}}</td>
+                            <td>{{type}}</td>
+                            <!--<td><a href="/stations">Edit</a></td>-->
+                          </tr>
+                          {{/each}}
                       {{/each}}
-                    </table>
-                    {{/each}}
+                      </table>
                 </div>
                 <div class="col-md-4 col-md-offset-1 admin-container" style="height: 50%">
+                  <div>
                     <h1>Reports</h1>
+                  </div>
                     {{#each reports}}
                       <p>{{reports}}</p>
                     {{/each}}
