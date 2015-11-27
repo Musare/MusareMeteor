@@ -413,12 +413,25 @@ Meteor.publish("isAdmin", function() {
     return Meteor.users.find({_id: this.userId, "profile.rank": "admin"});
 });
 
+Meteor.publish("isModerator", function() {
+    return Meteor.users.find({_id: this.userId, "profile.rank": "moderator"});
+});
+
 function isAdmin() {
     var userData = Meteor.users.find(Meteor.userId());
     if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
         return true;
     } else {
         return false;
+    }
+}
+
+function isModerator() {
+    var userData = Meteor.users.find(Meteor.userId());
+    if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "moderator") {
+        return true;
+    } else {
+        return isAdmin();
     }
 }
 
@@ -529,7 +542,7 @@ Meteor.methods({
                 Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
                 return true;
             }
-            else if (user.profile.rank === "mod") {
+            else if (user.profile.rank === "moderator") {
                 Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                 return true;
             }
@@ -715,7 +728,7 @@ Meteor.methods({
         }
     },
     updateQueueSong: function(genre, oldSong, newSong) {
-        if (isAdmin() && !isBanned()) {
+        if (isModerator() && !isBanned()) {
             newSong.mid = oldSong.mid;
             Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
             return true;
@@ -724,7 +737,7 @@ Meteor.methods({
         }
     },
     updatePlaylistSong: function(genre, oldSong, newSong) {
-        if (isAdmin() && !isBanned()) {
+        if (isModerator() && !isBanned()) {
             newSong.mid = oldSong.mid;
             Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
             return true;
@@ -733,7 +746,7 @@ Meteor.methods({
         }
     },
     removeSongFromQueue: function(type, mid) {
-        if (isAdmin() && !isBanned()) {
+        if (isModerator() && !isBanned()) {
             type = type.toLowerCase();
             Queues.update({type: type}, {$pull: {songs: {mid: mid}}});
         } else {
@@ -741,7 +754,7 @@ Meteor.methods({
         }
     },
     removeSongFromPlaylist: function(type, mid) {
-        if (isAdmin() && !isBanned()) {
+        if (isModerator() && !isBanned()) {
             type = type.toLowerCase();
             Playlists.update({type: type}, {$pull: {songs: {mid: mid}}});
         } else {
@@ -749,7 +762,7 @@ Meteor.methods({
         }
     },
     addSongToPlaylist: function(type, songData) {
-        if (isAdmin() && !isBanned()) {
+        if (isModerator() && !isBanned()) {
             type = type.toLowerCase();
             if (Rooms.find({type: type}).count() === 1) {
                 if (Playlists.find({type: type}).count() === 0) {
