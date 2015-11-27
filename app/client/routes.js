@@ -103,6 +103,20 @@ Router.route("/admin/stations", {
     }
 });
 
+Router.route("/admin/queues", {
+    waitOn: function() {
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
+    },
+    action: function() {
+        var user = Meteor.users.findOne({});
+        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
+            this.render("queues");
+        } else {
+            this.redirect("/");
+        }
+    }
+});
+
 Router.route("/admin/alerts", {
     waitOn: function() {
         return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
@@ -123,8 +137,4 @@ Router.route("/:type", {
 
 Router.route("/u/:user", {
     template: "profile"
-});
-
-Router.route("/admin/queues", {
-  template: "queues"
 });
