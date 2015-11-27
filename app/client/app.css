@@ -410,6 +410,7 @@ form button:hover {
     z-index: 1;
     margin: 0px;
     pointer-events: none;
+    overflow: hidden;
 }
 
 .bg-bubbles li {

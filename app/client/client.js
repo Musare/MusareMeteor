@@ -1230,7 +1230,196 @@ Template.stations.events({
     }
 });
 
+Template.queues.events({
+    "click .preview-button": function(e){
+        Session.set("song", this);
+    },
+    "click #previewImageButton": function() {
+        $("#preview-image").attr("src", Session.get("song").img);
+    },
+    "click .edit-queue-button": function(e){
+        Session.set("song", this);
+        Session.set("genre", $(e.toElement).data("genre"));
+        Session.set("type", "queue");
+        $("#type").val(this.type);
+        $("#mid").val(this.mid);
+        $("#artist").val(this.artist);
+        $("#title").val(this.title);
+        $("#img").val(this.img);
+        $("#id").val(this.id);
+        $("#likes").val(this.likes);
+        $("#dislikes").val(this.dislikes);
+        $("#duration").val(this.duration);
+        $("#skip-duration").val(this.skipDuration);
+    },
+    "click .add-song-button": function(e){
+        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        Meteor.call("addSongToPlaylist", genre, this);
+    },
+    "click .deny-song-button": function(e){
+        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        console.log(genre);
+        Meteor.call("removeSongFromQueue", genre, this.mid);
+    },
+    "click #play": function() {
+        $("#play").attr("disabled", true);
+        $("#stop").attr("disabled", false);
+        var song = Session.get("song");
+        var id = song.id;
+        var type = song.type;
+        var volume = localStorage.getItem("volume") || 20;
+
+        if (type === "YouTube") {
+            if (yt_player === undefined) {
+                yt_player = new YT.Player("previewPlayer", {
+                    height: 540,
+                    width: 568,
+                    videoId: id,
+                    playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
+                    events: {
+                        'onReady': function(event) {
+                            event.target.seekTo(Number(song.skipDuration));
+                            event.target.playVideo();
+                            event.target.setVolume(volume);
+                        },
+                        'onStateChange': function(event){
+                            if (event.data == YT.PlayerState.PAUSED) {
+                                event.target.playVideo();
+                            }
+                            if (event.data == YT.PlayerState.PLAYING) {
+                                $("#play").attr("disabled", true);
+                                $("#stop").attr("disabled", false);
+                            } else {
+                                $("#play").attr("disabled", false);
+                                $("#stop").attr("disabled", true);
+                            }
+                        }
+                    }
+                });
+            } else {
+                yt_player.loadVideoById(id);
+                yt_player.seekTo(Number(song.skipDuration));
+            }
+            $("#previewPlayer").show();
+        } else if (type === "SoundCloud") {
+            SC.stream("/tracks/" + song.id, function(sound) {
+                _sound = sound;
+                sound.setVolume(volume / 100);
+                sound.play();
+            });
+        }
+
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        previewEndSongTimeout = Meteor.setTimeout(function() {
+            if (yt_player !== undefined) {
+                yt_player.stopVideo();
+            }
+            if (_sound !== undefined) {
+                _sound.stop();
+            }
+            $("#play").attr("disabled", false);
+            $("#stop").attr("disabled", true);
+            $("#previewPlayer").hide();
+        }, song.duration * 1000);
+    },
+    "click #stop": function() {
+        $("#play").attr("disabled", false);
+        $("#stop").attr("disabled", true);
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        if (yt_player !== undefined) {
+            yt_player.stopVideo();
+        }
+        if (_sound !== undefined) {
+            _sound.stop();
+        }
+    },
+    "click #forward": function() {
+        console.log(yt_player);
+        console.log(Session.get("song"));
+        var error = false;
+        if (yt_player !== undefined) {
+            var duration = Number(Session.get("song").duration) | 0;
+            var skipDuration = Number(Session.get("song").skipDuration) | 0;
+            if (yt_player.getDuration() < duration + skipDuration) {
+                alert("The duration of the YouTube video is smaller than the duration.");
+                error = true;
+            } else {
+                yt_player.seekTo(skipDuration + duration - 10);
+            }
+        }
+        if (_sound !== undefined) {
+            _sound.seekTo((skipDuration + duration - 10) * 1000);
+        }
+        if (!error) {
+            if (previewEndSongTimeout !== undefined) {
+                Meteor.clearTimeout(previewEndSongTimeout);
+            }
+            previewEndSongTimeout = Meteor.setTimeout(function() {
+                if (yt_player !== undefined) {
+                    yt_player.stopVideo();
+                }
+                if (_sound !== undefined) {
+                    _sound.stop();
+                }
+                $("#play").attr("disabled", false);
+                $("#stop").attr("disabled", true);
+                $("#previewPlayer").hide();
+            }, 10000);
+        }
+    },
+    "click #get-spotify-info": function() {
+        var search = $("#title").val();
+        var artistName = $("#artist").val();
+        getSpotifyInfo(search, function(data) {
+            for(var i in data){
+                for(var j in data[i].items){
+                    if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
+                        $("#img").val(data[i].items[j].album.images[1].url);
+                        $("#duration").val(data[i].items[j].duration_ms / 1000);
+                        return;
+                    }
+                }
+            }
+        }, artistName);
+    },
+    "click #save-song-button": function() {
+        var newSong = {};
+        newSong.id = $("#id").val();
+        newSong.likes = Number($("#likes").val());
+        newSong.dislikes = Number($("#dislikes").val());
+        newSong.title = $("#title").val();
+        newSong.artist = $("#artist").val();
+        newSong.img = $("#img").val();
+        newSong.type = $("#type").val();
+        newSong.duration = Number($("#duration").val());
+        newSong.skipDuration = $("#skip-duration").val();
+        if(newSong.skipDuration === undefined){
+            newSong.skipDuration = 0;
+        };
+        if (Session.get("type") === "playlist") {
+            Meteor.call("updatePlaylistSong", Session.get("genre"), Session.get("song"), newSong, function() {
+                $('#editModal').modal('hide');
+            });
+        } else {
+            Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function() {
+                $('#editModal').modal('hide');
+            });
+        }
+    }
+});
+
 Template.stations.onCreated(function() {
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+
+Template.queues.onCreated(function() {
     var tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -1277,6 +1466,48 @@ Template.stations.onRendered(function() {
         makeSlider();
     });
 });
+
+Template.queues.onRendered(function() {
+    $("#previewModal").on("hidden.bs.modal", function() {
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        $("#play").attr("disabled", false);
+        $("#stop").attr("disabled", true);
+        if (yt_player !== undefined) {
+            $("#previewPlayer").hide();
+            yt_player.seekTo(0);
+            yt_player.stopVideo();
+        }
+        if (_sound !== undefined) {
+            _sound.stop();
+        }
+    });
+    $(document).ready(function() {
+        function makeSlider(){
+            var slider = $("#volume-slider").slider();
+            var volume = localStorage.getItem("volume") || 20;
+            $("#volume-slider").slider("setValue", volume);
+            if (slider.length === 0) {
+                Meteor.setTimeout(function() {
+                    makeSlider();
+                }, 500);
+            } else {
+                slider.on("slide", function(val) {
+                    localStorage.setItem("volume", val.value);
+                    if (yt_player !== undefined) {
+                        yt_player.setVolume(val.value);
+                    } else if (_sound !== undefined) {
+                        var volume = val.value / 100;
+                        _sound.setVolume(volume);
+                    }
+                });
+            }
+        }
+        makeSlider();
+    });
+});
+
 
 Template.playlist.helpers({
     playlist_songs: function() {
