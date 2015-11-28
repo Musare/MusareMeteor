@@ -371,7 +371,6 @@ Template.room.events({
             var room = Rooms.findOne({type: Session.get("type")});
             if (room !== undefined) {
                 var timeIn = Date.now() - Session.get("currentSong").started - room.timePaused;
-                console.log(timeIn);
                 var skipDuration = Number(Session.get("currentSong").skipDuration) | 0;
                 if (yt_player !== undefined) {
                     yt_player.seekTo(skipDuration + timeIn / 1000);
@@ -1059,7 +1058,6 @@ Template.stations.events({
     },
     "click .deny-song-button": function(e){
         var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
-        console.log(genre);
         Meteor.call("removeSongFromQueue", genre, this.mid);
     },
     "click .remove-song-button": function(e){
@@ -1143,8 +1141,6 @@ Template.stations.events({
         }
     },
     "click #forward": function() {
-        console.log(yt_player);
-        console.log(Session.get("song"));
         var error = false;
         if (yt_player !== undefined) {
             var duration = Number(Session.get("song").duration) | 0;
@@ -1258,7 +1254,6 @@ Template.queues.events({
     },
     "click .deny-song-button": function(e){
         var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
-        console.log(genre);
         Meteor.call("removeSongFromQueue", genre, this.mid);
     },
     "click #play": function() {
@@ -1338,8 +1333,6 @@ Template.queues.events({
         }
     },
     "click #forward": function() {
-        console.log(yt_player);
-        console.log(Session.get("song"));
         var error = false;
         if (yt_player !== undefined) {
             var duration = Number(Session.get("song").duration) | 0;
@@ -1533,7 +1526,6 @@ Template.playlist.helpers({
 
 Template.playlist.events({
     "keyup #search-playlist": function(){
-        console.log($("#search-playlist").val());
         if($("#search-playlist").val().length === 0){
             $(".pl-item").show();
         } else {
@@ -1685,7 +1677,7 @@ Template.room.onCreated(function () {
                     }
                     yt_player.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                 }
-
+                Session.set("pauseVideo", false);
                 getSongInfo(currentSong);
             }
         }
@@ -1705,7 +1697,7 @@ Template.room.onCreated(function () {
             minterval = Meteor.setInterval(function () {
                 var room = Rooms.findOne({type: type});
                 if (room !== undefined) {
-                    if (room.state === "paused") {
+                    if (room.state === "paused" || Session.get("pauseVideo")) {
                         Session.set("state", "paused");
                         if (yt_player !== undefined && yt_player.getPlayerState !== undefined && yt_player.getPlayerState() === 1) {
                             yt_player.pauseVideo();
@@ -1735,6 +1727,13 @@ Template.room.onCreated(function () {
                 if (currentSong !== undefined) {
                     if (room !== undefined) {
                         var duration = (Date.now() - currentSong.started - room.timePaused) / 1000;
+                        var player_duration = undefined;
+                        if (yt_player !== undefined && yt_player.getDuration !== undefined) {
+                            player_duration = yt_player.getDuration();
+                            if (player_duration <= duration && yt_player.getState() === YT.PlayerState.PLAYING) {
+                                Session.set("pauseVideo", true);
+                            }
+                        }
                         var d = moment.duration(duration, 'seconds');
                         if (Session.get("state") === "playing") {
                             $("#time-elapsed").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
