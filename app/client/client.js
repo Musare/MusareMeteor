@@ -1044,7 +1044,7 @@ Template.stations.events({
     },
     "click .edit-queue-button": function(e){
         Session.set("song", this);
-        Session.set("genre", $(e.toElement).data("genre"));
+        Session.set("genre", $(e.target).data("genre"));
         Session.set("type", "queue");
         $("#type").val(this.type);
         $("#mid").val(this.mid);
@@ -1059,7 +1059,7 @@ Template.stations.events({
     },
     "click .edit-playlist-button": function(e){
         Session.set("song", this);
-        Session.set("genre", $(e.toElement).data("genre"));
+        Session.set("genre", $(e.target).data("genre"));
         Session.set("type", "playlist");
         $("#type").val(this.type);
         $("#mid").val(this.mid);
@@ -1076,15 +1076,15 @@ Template.stations.events({
         Meteor.call("resetRating");
     },
     "click .add-song-button": function(e){
-        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         Meteor.call("addSongToPlaylist", genre, this);
     },
     "click .deny-song-button": function(e){
-        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         Meteor.call("removeSongFromQueue", genre, this.mid);
     },
     "click .remove-song-button": function(e){
-        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         Meteor.call("removeSongFromPlaylist", genre, this.mid);
     },
     "click #play": function() {
@@ -1258,7 +1258,7 @@ Template.queues.events({
     },
     "click .edit-queue-button": function(e){
         Session.set("song", this);
-        Session.set("genre", $(e.toElement).data("genre"));
+        Session.set("genre", $(e.target).data("genre"));
         Session.set("type", "queue");
         $("#type").val(this.type);
         $("#mid").val(this.mid);
@@ -1272,11 +1272,11 @@ Template.queues.events({
         $("#skip-duration").val(this.skipDuration);
     },
     "click .add-song-button": function(e){
-        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         Meteor.call("addSongToPlaylist", genre, this);
     },
     "click .deny-song-button": function(e){
-        var genre = $(e.toElement).data("genre") || $(e.toElement).parent().data("genre");
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         Meteor.call("removeSongFromQueue", genre, this.mid);
     },
     "click #play": function() {
