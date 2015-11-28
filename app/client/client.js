@@ -1101,7 +1101,7 @@ Template.stations.events({
                     height: 540,
                     width: 568,
                     videoId: id,
-                    playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0},
+                    playerVars: {controls: 0, iv_load_policy: 3, showinfo: 0},
                     events: {
                         'onReady': function(event) {
                             event.target.seekTo(Number(song.skipDuration));
@@ -1754,20 +1754,17 @@ Template.room.onCreated(function () {
                 if (currentSong !== undefined) {
                     if (room !== undefined) {
                         var duration = (Date.now() - currentSong.started - room.timePaused) / 1000;
-                        var player_duration = undefined;
-                        if (yt_player !== undefined && yt_player.getDuration !== undefined) {
-                            player_duration = yt_player.getDuration();
-                            if (player_duration <= duration && yt_player.getState() === YT.PlayerState.PLAYING) {
+                        var song_duration = currentSong.duration;
+                            if (song_duration <= duration) {
                                 Session.set("pauseVideo", true);
                             }
-                        }
                         var d = moment.duration(duration, 'seconds');
                         if (Session.get("state") === "playing") {
                             $("#time-elapsed").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
                         }
                     }
                 }
-            }, 1000);
+            }, 100);
             resizeSeekerbarInterval = Meteor.setInterval(function () {
                 resizeSeekerbar();
             }, 500);
