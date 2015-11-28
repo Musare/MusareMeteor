@@ -756,7 +756,24 @@ Meteor.methods({
     removeSongFromPlaylist: function(type, mid) {
         if (isModerator() && !isBanned()) {
             type = type.toLowerCase();
+            var songs = Playlists.findOne({type: type}).songs;
+            var song = undefined;
+            songs.forEach(function(curr_song) {
+                if (mid === curr_song.mid) {
+                    song = curr_song;
+                    return;
+                }
+            });
             Playlists.update({type: type}, {$pull: {songs: {mid: mid}}});
+            if (song !== undefined) {
+                song.deletedBy = Meteor.userId();
+                song.deletedAt = new Date(Date.now());
+                if (Deleted.find({type: type}).count() === 0) {
+                    Deleted.insert({type: type, songs: [song]});
+                } else {
+                    Deleted.update({type: type}, {$push: {songs: song}});
+                }
+            }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
@@ -783,7 +800,7 @@ Meteor.methods({
                                 title: songData.title,
                                 artist: songData.artist,
                                 duration: songData.duration,
-                                skipDuration: songData.skipDuration,
+                                skipDuration: Number(songData.skipDuration),
                                 img: songData.img,
                                 type: songData.type,
                                 likes: Number(songData.likes),
