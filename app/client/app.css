@@ -1270,6 +1270,9 @@ nav form input[type="image"]{
 #doorbell-button{
     margin-right: 30em;
 }
+#doorbell-email {
+    text-align: left;
+}
 #search-playlist{
     outline: 0;
     border: none;

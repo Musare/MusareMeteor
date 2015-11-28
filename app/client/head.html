@@ -61,8 +61,10 @@
     </script>
     <script type="text/javascript">
         window.doorbellOptions = {
-            appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM',
-            hideEmail: true
+            strings: {
+                'email-input-placeholder': 'Your email address (optional)'
+            },
+            appKey: 'v2Gu14c8s9HgBsAFCXNWIm2vlk11N12Plt2Wu5k2MbQIkM1Ao6kOTCbfN95ElEVM'
         };
         (function(d, t) {
             var g = d.createElement(t);g.id = 'doorbellScript';g.type = 'text/javascript';g.async = true;g.src = 'https://embed.doorbell.io/button/2408?t='+(new Date().getTime());(d.getElementsByTagName('head')[0]||d.getElementsByTagName('body')[0]).appendChild(g);
