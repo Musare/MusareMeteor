@@ -22,6 +22,34 @@ Deps.autorun(function() {
     Meteor.subscribe("userData", Meteor.userId());
 });
 
+var ban_interval = Meteor.setInterval(function() {
+    var userId = Meteor.userId();
+    if (userId !== undefined) {
+        var userData = Meteor.user();
+        if (localStorage.getItem("banned") === "true") {
+            if (userData !== undefined && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
+                var ban = userData.punishments.ban;
+                if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
+                    Meteor.call("isBanned", function(err, res) {
+                        if (res === false) {
+                            localStorage.setItem("banned", false);
+                            Meteor._reload.reload();
+                        }
+                    });
+                }
+            } else {
+                localStorage.setItem("banned", false);
+                Meteor._reload.reload();
+            }
+        } else {
+            if (userData.punishments !== undefined && userData.punishments.ban !== undefined) {
+                localStorage.setItem("banned", true);
+                Meteor._reload.reload();
+            }
+        }
+    }
+}, 1000);
+
 var minterval;
 var hpSound = undefined;
 var songsArr = [];
@@ -721,9 +749,7 @@ Template.banned.onCreated(function() {
     rTimeInterval = Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
     }, 10000);
-    Meteor.subscribe("ownBan", Meteor.userId(), function() {
-        Session.set("ban", Meteor.user().punishments.ban);
-    });
+    Session.set("ban", Meteor.user().punishments.ban);
 });
 
 Template.registerHelper("rtime", function(date) {

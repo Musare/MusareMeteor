@@ -9,7 +9,6 @@ Router.onBeforeAction(function() {
         Meteor.call("isBanned", function(err, res) {
             if (res) {
                 self.render('banned');
-                pause();
             } else {
                 next();
             }
