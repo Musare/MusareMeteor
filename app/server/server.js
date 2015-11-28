@@ -557,7 +557,7 @@ Meteor.methods({
             else if (user.profile.rank === "admin") {
                 Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
                 return true;
-            } 
+            }
             else if (user.profile.rank === "moderator") {
                 Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                 return true;
