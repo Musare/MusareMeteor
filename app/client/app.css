@@ -1396,4 +1396,10 @@ nav form input[type="image"]{
         margin-bottom: 0;
     }
 }
-
+.header-avatar {
+    margin-top: -9px;
+    /*width: 40px;
+    height: 40px;*/
+    margin-right: 5px;
+    float: left;
+}

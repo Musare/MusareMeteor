@@ -2,13 +2,25 @@ Meteor.startup(function() {
     reCAPTCHA.config({
         publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
     });
+
+    Avatar.setOptions({
+        fallbackType: "initials",
+        defaultImageUrl: "http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg",
+        generateCSS: true,
+        imageSizes: {
+            'header': 40
+        }
+    });
 });
 
-Meteor.subscribe("queues");
-Meteor.subscribe("reports");
-Meteor.subscribe("chat");
-Meteor.subscribe("playlists");
-Meteor.subscribe("alerts");
+Deps.autorun(function() {
+    Meteor.subscribe("queues");
+    Meteor.subscribe("reports");
+    Meteor.subscribe("chat");
+    Meteor.subscribe("playlists");
+    Meteor.subscribe("alerts");
+    Meteor.subscribe("userData", Meteor.userId());
+});
 
 var minterval;
 var hpSound = undefined;
@@ -164,6 +176,17 @@ Handlebars.registerHelper('active', function(path) {
 Template.header.helpers({
     currentUser: function() {
         return Meteor.user();
+    },
+    userId: function() {
+        return Meteor.userId();
+    },
+    initials: function() {
+        var user = Meteor.user();
+        if (user !== undefined) {
+            return user.profile.username[0].toUpperCase();
+        } else {
+            return "";
+        }
     },
     isAdmin: function() {
         if (Meteor.user() && Meteor.user().profile) {
