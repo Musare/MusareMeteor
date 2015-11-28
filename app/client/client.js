@@ -1410,6 +1410,8 @@ Template.stations.onCreated(function() {
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    yt_player = undefined;
+    _sound = undefined;
 });
 
 Template.queues.onCreated(function() {
@@ -1417,6 +1419,8 @@ Template.queues.onCreated(function() {
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    yt_player = undefined;
+    _sound = undefined;
 });
 
 Template.stations.onRendered(function() {
