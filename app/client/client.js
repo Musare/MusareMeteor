@@ -27,7 +27,7 @@ var ban_interval = Meteor.setInterval(function() {
     if (userId !== undefined) {
         var userData = Meteor.user();
         if (localStorage.getItem("banned") === "true") {
-            if (userData !== undefined && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
+            if (userData !== undefined && userData !== null && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
                 var ban = userData.punishments.ban;
                 if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
                     Meteor.call("isBanned", function(err, res) {
@@ -42,7 +42,7 @@ var ban_interval = Meteor.setInterval(function() {
                 Meteor._reload.reload();
             }
         } else {
-            if (userData.punishments !== undefined && userData.punishments.ban !== undefined) {
+            if (userData !== undefined && userData !== null && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
                 localStorage.setItem("banned", true);
                 Meteor._reload.reload();
             }
