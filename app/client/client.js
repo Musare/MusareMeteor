@@ -619,6 +619,8 @@ Template.room.events({
     },
     "click #report-song-button": function() {
         var report = {};
+
+        report.reportType = $(".checkbox")
         report.reportSongB = $("#report-song").is(":checked");
         report.reportTitleB = $("#report-title").is(":checked");
         report.reportAuthorB = $("#report-author").is(":checked");
@@ -989,15 +991,8 @@ Template.admin.helpers({
       });
       return playlists;
   }/*,
-  reports: function() {
-      var reports = Reports.find({}).fetch();
-      reports.findOne(
-        {
-          $eq: [
+  reportsCount: function() {
 
-          ]
-        }
-      )
   }*/
 });
 

@@ -21,7 +21,7 @@
                     <td>{{songs.length}}</td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>{{reportsCount display}}</td>
                     <td>{{queueCount display}}</td>
                     <td><a href="/admin/stations">Edit</a></td>
                   </tr>
@@ -33,42 +33,8 @@
                 <h1>Site statistics</h1>
               </div>
               <p>Total Users Online: {{users}}</p>
+              <p>Total Registered Users: </p>
             </div>
-            <div style="clear: both;"></div>
-                <div class="col-md-5 col-md-offset-1 admin-container" style="height: 50%;">
-                  <div>
-                    <h1>Song Requests</h1><a href="/admin/queues" style="margin-left:10px;">(review)</a>
-                  </div>
-                    <table class="table queueTable">
-                      <tr>
-                        <th>Playlist</th>
-                        <th>Title</th>
-                        <th>Artist</th>
-                        <th>Duration</th>
-                        <th>Type</th>
-                      </tr>
-                      {{#each queues}}
-                        {{#each songs}}
-                          <tr>
-                            <td>{{../type}}</td>
-                            <td>{{title}}</td>
-                            <td>{{artist}}</td>
-                            <td>{{duration}}</td>
-                            <td>{{type}}</td>
-                            <!--<td><a href="/stations">Edit</a></td>-->
-                          </tr>
-                          {{/each}}
-                      {{/each}}
-                      </table>
-                </div>
-                <div class="col-md-4 col-md-offset-1 admin-container" style="height: 50%">
-                  <div>
-                    <h1>Reports</h1>
-                  </div>
-                    {{#each reports}}
-                      <p>{{reports}}</p>
-                    {{/each}}
-                </div>
           </div>
 
         {{> bubbles}}
