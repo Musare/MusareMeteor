@@ -131,7 +131,17 @@ Router.route("/admin/alerts", {
 });
 
 Router.route("/:type", {
-    template: "room"
+    waitOn: function() {
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
+    },
+    action: function() {
+        var user = Meteor.users.findOne({});
+        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
+            this.render("room");
+        } else {
+            this.redirect("/");
+        }
+    }
 });
 
 Router.route("/u/:user", {
