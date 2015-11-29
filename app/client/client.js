@@ -355,7 +355,7 @@ Template.dashboard.onRendered(function(){
     Rooms.find().fetch().forEach(function(room){
         if(room.private === true){
             $(".station h3").each(function(i, el){
-                if($(el).text() === room.display){
+                if($(el).text() === room.display && Meteor.user().profile.rank !== "admin"){
                     $(el).parent().css("display", "none");
                 }
             })
