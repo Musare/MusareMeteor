@@ -242,6 +242,33 @@ Template.header.events({
     }
 });
 
+Template.register.onCreated(function() {
+    Accounts.onLoginFailure(function() {
+        var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to register with GitHub. Maybe an account with that username already exists?</div>');
+        $(".landing").before(errAlert);
+        Meteor.setTimeout(function() {
+            errAlert.fadeOut(5000, function() {
+                errAlert.remove();
+            });
+        }, 10000);
+    });
+});
+
+Template.login.onCreated(function() {
+    Session.set("github", true);
+    Accounts.onLoginFailure(function() {
+        if (Session.get("github") === true) {
+            var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to log in with GitHub.</div>');
+            $(".landing").before(errAlert);
+            Meteor.setTimeout(function() {
+                errAlert.fadeOut(5000, function() {
+                    errAlert.remove();
+                });
+            }, 10000);
+        }
+    });
+});
+
 Template.register.events({
     "submit form": function(e){
         e.preventDefault();
@@ -254,11 +281,13 @@ Template.register.events({
 
             if (err) {
                 console.log(err);
-                var errAlert = $('<div class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
-                $("#login").after(errAlert);
-                errAlert.fadeOut(20000, function() {
-                    errAlert.remove();
-                });
+                var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
+                $(".landing").before(errAlert);
+                Meteor.setTimeout(function() {
+                    errAlert.fadeOut(5000, function() {
+                        errAlert.remove();
+                    });
+                }, 5000);
             } else {
                 Meteor.loginWithPassword(username, password);
                 Accounts.onLogin(function(){
@@ -276,47 +305,28 @@ Template.register.events({
 Template.login.events({
     "submit form": function(e){
         e.preventDefault();
+        Session.set("github", false);
         var username = e.target.loginUsername.value;
         var password = e.target.loginPassword.value;
-        Meteor.loginWithPassword(username, password);
-        Accounts.onLogin(function(){
-            window.location.href = "/";
-        })
-        Accounts.onLoginFailure(function(){
-            $("#login-form input").css("background-color","indianred");
-            $("#login-form input").on("click",function(){
-                $("#login-form input").css({
-                    "-webkit-appearance": "none",
-                    "   -moz-appearance": "none",
-                    "        appearance": "none",
-                    "outline": "0",
-                    "border": "1px solid rgba(255, 255, 255, 0.4)",
-                    "background-color": "rgba(255, 255, 255, 0.2)",
-                    "width": "304px",
-                    "border-radius": "3px",
-                    "padding": "10px 15px",
-                    "margin": "0 auto 10px auto",
-                    "display": "block",
-                    "text-align": "center",
-                    "font-size": "18px",
-                    "color": "white",
-                    "-webkit-transition-duration": "0.25s",
-                    "        transition-duration": "0.25s",
-                    "font-weight": "300"
-                });
-                $("#login-form input:focus").css({
-                    "width": "354px",
-                    "color": "white"
-                })
-                $("#login-form input").on("blur", function(){
-                    $(this).css("width", "304px");
-                })
-            })
+        Meteor.loginWithPassword(username, password, function(err) {
+            if (err) {
+                var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
+                $(".landing").before(errAlert);
+                Meteor.setTimeout(function() {
+                    errAlert.fadeOut(5000, function() {
+                        errAlert.remove();
+                    });
+                }, 5000);
+            } else {
+                window.location.href = "/";
+            }
         });
     },
 
     "click #github-login": function(){
-        Meteor.loginWithGithub({loginStyle: "redirect"});
+        Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
+            console.log(err, res);
+        });
     }
 });
 

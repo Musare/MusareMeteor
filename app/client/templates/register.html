@@ -1,20 +1,18 @@
 <template name="register">
     {{> alerts}}
-  <div class="landing">
-    {{> header}}
-    <div class="container">
-        <h1>Sign Up</h1>
-        <form class="form">
-            <input id="usernameInput" type="text" autocorrect="off" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
-            <input id="emailInput" type="email" name="registerEmail" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your email'" required>
-            <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/> {{> reCAPTCHA}}
-            <p>By registering, you agree to the Terms and Conditions and Privacy Policy.</p>
-            <button type="submit">Sign Up</button>
-        </form>
-        <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Signup with Github</button>
+    <div class="landing">
+        {{> header}}
+        <div class="container">
+            <h1>Sign Up</h1>
+            <form class="form">
+                <input id="usernameInput" type="text" autocorrect="off" name="registerUsername" placeholder="Enter a username" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a username'" required/>
+                <input id="emailInput" type="email" name="registerEmail" placeholder="Enter your email" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter your email'" required>
+                <input type="password" name="registerPassword" placeholder="Enter a password" onfocus="this.placeholder = ''" onblur="this.placeholder='Enter a password'" required/> {{> reCAPTCHA}}
+                <p>By registering, you agree to the Terms and Conditions and Privacy Policy.</p>
+                <button type="submit">Sign Up</button>
+            </form>
+            <button class="btn-social" id="github-login"><i class="fa fa-github pull-left"></i>Signup with Github</button>
+        </div>
+        {{> bubbles}}
     </div>
-
-      {{> bubbles}}
-
-  </div>
 </template>
