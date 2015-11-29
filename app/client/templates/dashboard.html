@@ -13,19 +13,19 @@
                             <a href="/{{type}}" class="station_link"></a>
                         </div>
                     </div>
-                {{else}}
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="station">
-                            <h3>{{display}}</h3>
-                            {{#with type=type}}
-                                <h5>{{currentSong.song.title}}</h5>
-                                <h6>{{currentSong.song.artist}}</h6>
-                            {{/with}}
-                            <a href="/{{type}}" class="station_link"></a>
-                        </div>
-                    </div>
                 {{/if}}
-            {{/if}}
+            {{else}}
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="station">
+                        <h3>{{display}}</h3>
+                        {{#with type=type}}
+                        <h5>{{currentSong.song.title}}</h5>
+                        <h6>{{currentSong.song.artist}}</h6>
+                        {{/with}}
+                        <a href="/{{type}}" class="station_link"></a>
+                    </div>
+                </div>
+            {{/if}}bug
         {{/each}}
     </div>
 </template>
