@@ -229,7 +229,7 @@ Template.header.helpers({
         } else {
             return false;
         }
-    },
+    }
 });
 
 Template.header.events({
@@ -343,6 +343,20 @@ Template.dashboard.helpers({
         } else {
             return {};
         }
+    },
+    isAdmin: function() {
+        if (Meteor.user() && Meteor.user().profile) {
+            return Meteor.user().profile.rank === "admin";
+        } else {
+            return false;
+        }
+    },
+    isModerator: function() {
+        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 });
 
@@ -360,18 +374,6 @@ Template.dashboard.onCreated(function() {
     }
     Session.set("type", undefined);
 });
-
-Template.dashboard.onRendered(function(){
-    Rooms.find().fetch().forEach(function(room){
-        if(room.private === true){
-            $(".station h3").each(function(i, el){
-                if($(el).text() === room.display && Meteor.user().profile.rank !== "admin"){
-                    $(el).parent().css("display", "none");
-                }
-            })
-        }
-    })
-})
 
 function executeCommand(command, params){
     if (command === "help" || command === "commands") {
