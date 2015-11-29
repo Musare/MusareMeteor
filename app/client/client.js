@@ -456,6 +456,12 @@ Template.room.events({
             }
         }
     },
+    "click #lock": function() {
+        Meteor.call("lockRoom", Session.get("type"));
+    },
+    "click #unlock": function() {
+        Meteor.call("unlockRoom", Session.get("type"));
+    },
     "click #side-panel": function(e) {
         Meteor.setTimeout(function() {
         var elem = document.getElementById('chat');
@@ -927,6 +933,9 @@ Template.room.helpers({
     },
     paused: function() {
         return Session.get("state") === "paused";
+    },
+    private: function() {
+        return Rooms.findOne({type: Session.get("type")}).private === true;
     },
     report: function() {
         return Session.get("reportObj");

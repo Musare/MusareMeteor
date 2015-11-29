@@ -6,16 +6,21 @@
                 <div class="col-md-9" id="station-main">
                     <nav>
                         <div id="room-icons">
-                            <a class="back" href="/"><i class="fa fa-chevron-left"></i></a>
-                            <i class="fa fa-refresh fa-1" id="sync"></i>
+                            <a class="back" href="/"><i class="fa fa-chevron-left" title="Go back to the dashboard."></i></a>
+                            <i class="fa fa-refresh fa-1" id="sync" title="Synchronise to the proper duration in this video."></i>
                             {{#if isAdmin}}
                                 {{#if paused}}
-                                    <i class="fa fa-play fa-1" id="play"></i>
+                                    <i class="fa fa-play fa-1" id="play" title="Un-pause this room."></i>
                                 {{else}}
-                                    <i class="fa fa-pause fa-1" id="pause"></i>
+                                    <i class="fa fa-pause fa-1" id="pause" title="Pause this room."></i>
                                 {{/if}}
-                                <i class="fa fa-step-forward fa-1" id="skip"></i>
-                                <i class="fa fa-random fa-1" id="shuffle"></i>
+                                <i class="fa fa-step-forward fa-1" id="skip" title="Skip this song."></i>
+                                <i class="fa fa-random fa-1" id="shuffle" title="Shuffle this room's playlist."></i>
+                                {{#if private}}
+                                    <i class="fa fa-lock fa-1" id="unlock" title="Unlock this room."></i>
+                                {{else}}
+                                    <i class="fa fa-unlock fa-1" id="lock" title="Lock this room."></i>
+                                {{/if}}
                             {{/if}}
                         </div>
 
