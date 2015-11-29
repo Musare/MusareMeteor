@@ -351,6 +351,18 @@ Template.dashboard.onCreated(function() {
     Session.set("type", undefined);
 });
 
+Template.dashboard.onRendered(function(){
+    Rooms.find().fetch().forEach(function(room){
+        if(room.private === true){
+            $(".station h3").each(function(i, el){
+                if($(el).text() === room.display){
+                    $(el).parent().css("display", "none");
+                }
+            })
+        }
+    })
+})
+
 function executeCommand(command, params){
     if (command === "help" || command === "commands") {
         $('#helpModal').modal('show');
