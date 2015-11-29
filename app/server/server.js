@@ -380,7 +380,7 @@ Meteor.publish("alerts", function() {
 
 Meteor.publish("userData", function(userId) {
     if (userId !== undefined) {
-        return Meteor.users.find(userId, {fields: {"services.github.username": 1}})
+        return Meteor.users.find(userId, {fields: {"services.github.username": 1, "punishments": 1}})
     } else {
         return undefined;
     }
@@ -408,10 +408,6 @@ Meteor.publish("reports", function() {
 
 Meteor.publish("chat", function() {
     return Chat.find({});
-});
-
-Meteor.publish("ownBan", function(userId) {
-    return Meteor.users.find(userId, {"punishments.ban": 1, "profile": 1});
 });
 
 Meteor.publish("userProfiles", function(username) {
