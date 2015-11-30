@@ -1728,43 +1728,52 @@ Template.room.onCreated(function () {
                     $("#soundcloud-image").hide();
                 }
                 $("#player").show();
-                if (yt_player === undefined) {
-                    yt_player = new YT.Player("player", {
-                        height: 540,
-                        width: 960,
-                        videoId: currentSong.id,
-                        playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
-                        events: {
-                            'onReady': function(event) {
-                                if(currentSong.skipDuration === undefined){
-                                    currentSong.skipDuration = 0;
+                function loadVideo() {
+                    if (YT.loaded === 0 && YT.loading === 1) {
+                        Session.set("loadVideoTimeout", Meteor.setTimeout(function() {
+                            loadVideo();
+                        }, 500));
+                    } else {
+                        if (yt_player === undefined) {
+                            yt_player = new YT.Player("player", {
+                                height: 540,
+                                width: 960,
+                                videoId: currentSong.id,
+                                playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+                                events: {
+                                    'onReady': function(event) {
+                                        if(currentSong.skipDuration === undefined){
+                                            currentSong.skipDuration = 0;
+                                        }
+                                        event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                        event.target.playVideo();
+                                        event.target.setVolume(volume);
+                                        resizeSeekerbar();
+                                    },
+                                    'onStateChange': function(event){
+                                        if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                            event.target.playVideo();
+                                        }
+                                        if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                            event.target.pauseVideo();
+                                        }
+                                    }
                                 }
-                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                event.target.playVideo();
-                                event.target.setVolume(volume);
-                                resizeSeekerbar();
-                            },
-                            'onStateChange': function(event){
-                                if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                    event.target.playVideo();
-                                }
-                                if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                    event.target.pauseVideo();
-                                }
+                            });
+                        } else {
+                            yt_player.loadVideoById(currentSong.id);
+                            if(currentSong.skipDuration === undefined){
+                                currentSong.skipDuration = 0;
                             }
+                            yt_player.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                         }
-                    });
-                } else {
-                    yt_player.loadVideoById(currentSong.id);
-                    if(currentSong.skipDuration === undefined){
-                        currentSong.skipDuration = 0;
+                        Session.set("pauseVideo", false);
+                        getSongInfo(currentSong);
                     }
-                    yt_player.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                }
-                Session.set("pauseVideo", false);
-                getSongInfo(currentSong);
+                };
+                loadVideo();
             }
         }
     }
@@ -1807,6 +1816,7 @@ Template.room.onCreated(function () {
                     currentSong = room.currentSong.song;
                     currentSong.started = room.currentSong.started;
                     Session.set("currentSong", currentSong);
+                    Meteor.clearTimeout(Session.get("loadVideoTimeout"));
                     startSong();
                 }
 
