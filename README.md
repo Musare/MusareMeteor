@@ -2,6 +2,10 @@
 
 ### http://musare.com/
 
+You can also find us on:
+* Twitter: https://twitter.com/musareapp
+* Facebook: https://www.facebook.com/MusareMusic
+
 ##Does the site not load?
 
 Try these methods first before reporting an issue:
