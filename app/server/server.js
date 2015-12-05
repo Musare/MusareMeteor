@@ -623,11 +623,50 @@ Meteor.methods({
         }
     },
     submitReport: function(report, id) {
-        if (!isBanned()) {
-            var obj = report;
-            obj.id = id;
-            Reports.insert(obj);
-        }
+      if (Meteor.userId() && !isBanned()) {
+          type = type.toLowerCase();
+          if (Rooms.find({type: type}).count() === 1) {
+              if (Queues.find({type: type}).count() === 0) {
+                  Queues.insert({type: type, songs: []});
+              }
+              if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
+                  songData.duration = getSongDuration(songData.title, songData.artist) || 0;
+                  songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
+                  songData.skipDuration = 0;
+                  songData.likes = 0;
+                  songData.dislikes = 0;
+                  var mid = createUniqueSongId();
+                  if (mid !== undefined) {
+                      songData.mid = mid;
+                      Queues.update({type: type}, {
+                          $push: {
+                              songs: {
+                                  id: songData.id,
+                                  mid: songData.mid,
+                                  title: songData.title,
+                                  artist: songData.artist,
+                                  duration: songData.duration,
+                                  skipDuration: songData.skipDuration,
+                                  likes: songData.likes,
+                                  dislikes: songData.dislikes,
+                                  img: songData.img,
+                                  type: songData.type
+                              }
+                          }
+                      });
+                      return true;
+                  } else {
+                      throw new Meteor.Error(500, "Am error occured.");
+                  }
+              } else {
+                  throw new Meteor.Error(403, "Invalid data.");
+              }
+          } else {
+              throw new Meteor.Error(403, "Invalid genre.");
+          }
+      } else {
+          throw new Meteor.Error(403, "Invalid permissions.");
+      }
     },
     shufflePlaylist: function(type) {
         if (isAdmin() && !isBanned()) {

@@ -670,76 +670,30 @@ Template.room.events({
         }
     },
     "click #report-song-button": function() {
-        var report = {};
+        var reports = {
+          room : Session.get("type"),
+          report : [{
+            song : Session.get("currentSong").mid,
+            type : [],
+            reason : [],
+          }]
+        };
+        var report = reports.report;
 
-        report.reportType = $(".checkbox")
-        report.reportSongB = $("#report-song").is(":checked");
-        report.reportTitleB = $("#report-title").is(":checked");
-        report.reportAuthorB = $("#report-author").is(":checked");
-        report.reportDurationB = $("#report-duration").is(":checked");
-        report.reportAudioB = $("#report-audio").is(":checked");
-        report.reportAlbumartB = $("#report-albumart").is(":checked");
-        report.reportOtherB = $("#report-other").is(":checked");
+        $(".report-layer-1 > .checkbox input:checked").each(function(){
+          console.log(this.id);
+          report.type.push(this.id);
+          if (this.id == "report-other") {
+            var otherText = $(".other-textarea").val();
+            report.reason.push(otherText);
+          }
+        });
 
-        if (report.reportSongB) {
-            report.reportSong = {};
-            report.reportSong.notPlayingB = $("#report-song-not-playing").is(":checked");
-            report.reportSong.doesNotExistB = $("#report-song-does-not-exist").is(":checked");
-            report.reportSong.otherB = $("#report-song-other").is(":checked");
-            if (report.reportSong.otherB) {
-                report.reportSong.other = $("#report-song-other-ta").val();
-            }
-        }
-        if (report.reportTitleB) {
-            report.reportTitle = {};
-            report.reportTitle.incorrectB = $("#report-title-incorrect").is(":checked");
-            report.reportTitle.inappropriateB = $("#report-title-inappropriate").is(":checked");
-            report.reportTitle.otherB = $("#report-title-other").is(":checked");
-            if (report.reportTitle.otherB) {
-                report.reportTitle.other = $("#report-title-other-ta").val();
-            }
-        }
-        if (report.reportAuthorB) {
-            report.reportAuthor = {};
-            report.reportAuthor.incorrectB = $("#report-author-incorrect").is(":checked");
-            report.reportAuthor.inappropriateB = $("#report-author-inappropriate").is(":checked");
-            report.reportAuthor.otherB = $("#report-author-other").is(":checked");
-            if (report.reportAuthor.otherB) {
-                report.reportAuthor.other = $("#report-author-other-ta").val();
-            }
-        }
-        if (report.reportDurationB) {
-            report.reportDuration = {};
-            report.reportDuration.longB = $("#report-duration-incorrect").is(":checked");
-            report.reportDuration.shortB = $("#report-duration-inappropriate").is(":checked");
-            report.reportDuration.otherB = $("#report-duration-other").is(":checked");
-            if (report.reportDuration.otherB) {
-                report.reportDuration.other = $("#report-duration-other-ta").val();
-            }
-        }
-        if (report.reportAudioB) {
-            report.reportAudio = {};
-            report.reportAudio.inappropriate = $("#report-audio-inappropriate").is(":checked");
-            report.reportAudio.notPlayingB = $("#report-audio-incorrect").is(":checked");
-            report.reportAudio.otherB = $("#report-audio-other").is(":checked");
-            if (report.reportAudio.otherB) {
-                report.reportAudio.other = $("#report-audio-other-ta").val();
-            }
-        }
-        if (report.reportAlbumartB) {
-            report.reportAlbumart = {};
-            report.reportAlbumart.incorrectB = $("#report-albumart-incorrect").is(":checked");
-            report.reportAlbumart.inappropriateB = $("#report-albumart-inappropriate").is(":checked");
-            report.reportAlbumart.notShowingB = $("#report-albumart-inappropriate").is(":checked");
-            report.reportAlbumart.otherB = $("#report-albumart-other").is(":checked");
-            if (report.reportAlbumart.otherB) {
-                report.reportAlbumart.other = $("#report-albumart-other-ta").val();
-            }
-        }
-        if (report.reportOtherB) {
-            report.other = $("#report-other-ta").val();
-        }
-        Meteor.call("submitReport", report, Session.get("id"), function() {
+        $(".report-layer-2 input:checked").each(function(){
+          report.reason.push(this.id);
+        });
+
+        Meteor.call("submitReport", reports, Session.get("id"), function() {
             $("#close-modal-r").click();
         });
     }
@@ -1040,10 +994,13 @@ Template.admin.helpers({
           }
       });
       return playlists;
-  }/*,
-  reportsCount: function() {
-
-  }*/
+  },
+  reportsCount: function(room) {
+    room = room.toLowerCase();
+    var reports = Reports.findOne({room:room});
+    console.log(reports);
+    return reports ? reports.length : 0;
+  }
 });
 
 Template.stations.helpers({
