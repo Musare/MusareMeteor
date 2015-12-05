@@ -115,7 +115,7 @@ function Station(type) {
     Meteor.publish(type, function() {
         return undefined;
     });
-    var _this = this;
+    var self = this;
     var startedAt = Date.now();
     var playlist = Playlists.findOne({type: type});
     var songs = playlist.songs;
@@ -134,7 +134,7 @@ function Station(type) {
     Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}, users: 0}});
 
     this.skipSong = function() {
-        _this.voted = [];
+        self.voted = [];
         voteNum = 0;
         Rooms.update({type: type}, {$set: {votes: 0}});
         songs = Playlists.findOne({type: type}).songs;
@@ -167,7 +167,7 @@ function Station(type) {
     this.shufflePlaylist = function() {
         voteNum = 0;
         Rooms.update({type: type}, {$set: {votes: 0}});
-        _this.voted = [];
+        self.voted = [];
         songs = Playlists.findOne({type: type}).songs;
         currentSong = 0;
         Playlists.update({type: type}, {$set: {"songs": []}});
@@ -196,7 +196,7 @@ function Station(type) {
             timer.pause();
         }
         timer = new Timer(function() {
-            _this.skipSong();
+            self.skipSong();
         }, songs[currentSong].duration * 1000);
     };
 
@@ -223,6 +223,29 @@ function Station(type) {
         return state;
     };
     this.type = type;
+
+    var private = Rooms.findOne({type: type}).private;
+
+    if (typeof private !== "boolean") {
+        Rooms.update({type: type}, {$set: {"private": false}});
+        private = false;
+    }
+
+    this.private = private;
+
+    this.unlock = function() {
+        if (self.private) {
+            self.private = false;
+            Rooms.update({type: type}, {$set: {"private": false}});
+        }
+    };
+
+    this.lock = function() {
+        if (!self.private) {
+            self.private = true;
+            Rooms.update({type: type}, {$set: {"private": true}});
+        }
+    };
 
     this.songTimer();
     this.voted = [];
@@ -464,6 +487,24 @@ function isBanned() {
 
 
 Meteor.methods({
+    lockRoom: function(type) {
+        if (isAdmin() && !isBanned()) {
+            getStation(type, function(station){
+                station.lock();
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    unlockRoom: function(type) {
+        if (isAdmin() && !isBanned()) {
+            getStation(type, function(station){
+                station.unlock();
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     banUser: function(username, period, reason) {
         if (isAdmin() && !isBanned()) {
             var user = Meteor.user();

@@ -456,6 +456,12 @@ Template.room.events({
             }
         }
     },
+    "click #lock": function() {
+        Meteor.call("lockRoom", Session.get("type"));
+    },
+    "click #unlock": function() {
+        Meteor.call("unlockRoom", Session.get("type"));
+    },
     "click #side-panel": function(e) {
         Meteor.setTimeout(function() {
         var elem = document.getElementById('chat');
@@ -465,12 +471,14 @@ Template.room.events({
     "click #submit": function() {
         sendMessage();
     },
-    //"keyup #chat-input": function(e) {
-    //    if (e.type === "keyup" && e.which === 13) {
-    //        e.preventDefault();
-    //        sendMessage()
-    //    }
-    //},
+    "keyup #chat-input": function(e) {
+        if (e.type === "keyup" && e.which === 13) {
+            e.preventDefault();
+            if (!$('#chat-input').data('dropdownshown')) {
+                sendMessage();
+            }
+        }
+    },
     "click #like": function(e) {
         $("#like").blur();
         Meteor.call("likeSong", Session.get("currentSong").mid);
@@ -883,6 +891,9 @@ Template.room.helpers({
     },
     paused: function() {
         return Session.get("state") === "paused";
+    },
+    private: function() {
+        return Rooms.findOne({type: Session.get("type")}).private === true;
     },
     report: function() {
         return Session.get("reportObj");
@@ -1671,43 +1682,52 @@ Template.room.onCreated(function () {
                     $("#soundcloud-image").hide();
                 }
                 $("#player").show();
-                if (yt_player === undefined) {
-                    yt_player = new YT.Player("player", {
-                        height: 540,
-                        width: 960,
-                        videoId: currentSong.id,
-                        playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
-                        events: {
-                            'onReady': function(event) {
-                                if(currentSong.skipDuration === undefined){
-                                    currentSong.skipDuration = 0;
+                function loadVideo() {
+                    if (YT.loaded === 0 && YT.loading === 1) {
+                        Session.set("loadVideoTimeout", Meteor.setTimeout(function() {
+                            loadVideo();
+                        }, 500));
+                    } else {
+                        if (yt_player === undefined) {
+                            yt_player = new YT.Player("player", {
+                                height: 540,
+                                width: 960,
+                                videoId: currentSong.id,
+                                playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+                                events: {
+                                    'onReady': function(event) {
+                                        if(currentSong.skipDuration === undefined){
+                                            currentSong.skipDuration = 0;
+                                        }
+                                        event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                        event.target.playVideo();
+                                        event.target.setVolume(volume);
+                                        resizeSeekerbar();
+                                    },
+                                    'onStateChange': function(event){
+                                        if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                            event.target.playVideo();
+                                        }
+                                        if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                            event.target.pauseVideo();
+                                        }
+                                    }
                                 }
-                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                event.target.playVideo();
-                                event.target.setVolume(volume);
-                                resizeSeekerbar();
-                            },
-                            'onStateChange': function(event){
-                                if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                    event.target.playVideo();
-                                }
-                                if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                    event.target.pauseVideo();
-                                }
+                            });
+                        } else {
+                            yt_player.loadVideoById(currentSong.id);
+                            if(currentSong.skipDuration === undefined){
+                                currentSong.skipDuration = 0;
                             }
+                            yt_player.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                         }
-                    });
-                } else {
-                    yt_player.loadVideoById(currentSong.id);
-                    if(currentSong.skipDuration === undefined){
-                        currentSong.skipDuration = 0;
+                        Session.set("pauseVideo", false);
+                        getSongInfo(currentSong);
                     }
-                    yt_player.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                }
-                Session.set("pauseVideo", false);
-                getSongInfo(currentSong);
+                };
+                loadVideo();
             }
         }
     }
@@ -1750,6 +1770,7 @@ Template.room.onCreated(function () {
                     currentSong = room.currentSong.song;
                     currentSong.started = room.currentSong.started;
                     Session.set("currentSong", currentSong);
+                    Meteor.clearTimeout(Session.get("loadVideoTimeout"));
                     startSong();
                 }
 

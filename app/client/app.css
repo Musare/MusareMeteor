@@ -1148,7 +1148,7 @@ nav form input[type="image"]{
 .about a{
     color: white;
 }
-#play, #pause, #skip, #shuffle, #sync {
+#play, #pause, #skip, #shuffle, #sync, #unlock, #lock {
     cursor: pointer;
 }
 .delete-room {
@@ -1402,4 +1402,8 @@ nav form input[type="image"]{
     height: 40px;*/
     margin-right: 5px;
     float: left;
+}
+
+#doorbell-email{
+    color: black;
 }
