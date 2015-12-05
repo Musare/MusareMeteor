@@ -1403,3 +1403,7 @@ nav form input[type="image"]{
     margin-right: 5px;
     float: left;
 }
+
+#doorbell-email{
+    color: black;
+}
