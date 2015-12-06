@@ -37,7 +37,7 @@
                               <td>{{id}}</td>
                               <td>{{likes}}</td>
                               <td>{{dislikes}}</td>
-                              <td class="column-small"><button class="btn btn-primary preview-button" id="copyMoveButton" data-toggle="modal" data-target="#copyMoveModal">Copy/Move</button></td>
+                              <td class="column-small"><button class="btn btn-primary copyMove-button" data-genre="{{../type}}" id="copyMoveButton" data-toggle="modal" data-target="#copyMoveModal">Copy/Move</button></td>
                               <td class="column-small"><button class="btn btn-primary preview-button" id="previewImageButton" data-toggle="modal" data-target="#previewImageModal">Preview Image</button></td>
                               <td class="column-small"><button class="btn btn-primary preview-button" data-toggle="modal" data-target="#previewModal">Preview</button></td>
                               <td class="column-small"><button class="btn btn-primary edit-playlist-button" data-genre="{{../type}}" data-toggle="modal" data-target="#editModal">Edit</button></td>
@@ -96,12 +96,12 @@
                     <div class="modal-body">
                         <h4><i class="fa fa-arrows"></i> Move This Song To:</h4>
                         {{#each playlists}}
-                        <button id="move" type="button" class="btn btn-warning"> <span>{{display}}</span> playlist</button>
+                        <button id="moveSong" data-genre="{{type}}" type="button" class="btn btn-warning"> <span>{{display}}</span> playlist</button>
                         {{/each}}
                       <hr />
                         <h4><i class="fa fa-files-o"></i> Copy This Song To:</h4>
                         {{#each playlists}}
-                        <button id="copy" type="button" class="btn btn-warning"> <span>{{display}}</span> playlist</button>
+                        <button id="copySong" data-genre="{{type}}" type="button" class="btn btn-warning"> <span>{{display}}</span> playlist</button>
                         {{/each}}
                     </div>
                     <div class="modal-footer">
