@@ -20,6 +20,7 @@
                               <th>Id</th>
                               <th>Likes</th>
                               <th>Dislikes</th>
+                              <th>Copy/Move</th>
                               <th>Img</th>
                               <th>Preview</th>
                               <th>Edit</th>
@@ -36,6 +37,7 @@
                               <td>{{id}}</td>
                               <td>{{likes}}</td>
                               <td>{{dislikes}}</td>
+                              <td class="column-small"><button class="btn btn-primary preview-button" id="copyMoveButton" data-toggle="modal" data-target="#copyMoveModal">Copy/Move</button></td>
                               <td class="column-small"><button class="btn btn-primary preview-button" id="previewImageButton" data-toggle="modal" data-target="#previewImageModal">Preview Image</button></td>
                               <td class="column-small"><button class="btn btn-primary preview-button" data-toggle="modal" data-target="#previewModal">Preview</button></td>
                               <td class="column-small"><button class="btn btn-primary edit-playlist-button" data-genre="{{../type}}" data-toggle="modal" data-target="#editModal">Edit</button></td>
@@ -77,12 +79,37 @@
                         <button id="rreset_confirm" class="btn btn-danger">Reset All Ratings</button>
                     </div>
                     <div class="modal-footer">
-                        <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="close-modal" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div id="copyMoveModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Move & Copy</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4><i class="fa fa-arrows"></i> Move This Song To:</h4>
+                        {{#each playlists}}
+                        <button id="move" type="button" class="btn btn-warning"> <span>{{display}}</span> playlist</button>
+                        {{/each}}
+                      <hr />
+                        <h4><i class="fa fa-files-o"></i> Copy This Song To:</h4>
+                        {{#each playlists}}
+                        <button id="copy" type="button" class="btn btn-warning"> <span>{{display}}</span> playlist</button>
+                        {{/each}}
+                    </div>
+                    <div class="modal-footer">
+                        <button id="close-modal" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
       <div id="previewModal" class="modal fade" role="dialog">
           <div class="modal-dialog">
@@ -102,7 +129,7 @@
                       </div>
                   </div>
                   <div class="modal-footer">
-                      <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button id="close-modal" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                   </div>
               </div>
           </div>
@@ -120,7 +147,7 @@
                         <img alt="Not loading" id="preview-image" height="210px" width="210px" src=""/>
                     </div>
                     <div class="modal-footer">
-                        <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="close-modal" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -162,7 +189,7 @@
                       <button type="button" id="save-song-button" class="button">Save Changes</button>
                   </div>
                   <div class="modal-footer">
-                      <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button id="close-modal" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                   </div>
               </div>
           </div>
