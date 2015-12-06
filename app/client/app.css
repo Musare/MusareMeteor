@@ -1403,7 +1403,14 @@ nav form input[type="image"]{
     margin-right: 5px;
     float: left;
 }
-
 #doorbell-email{
     color: black;
+}
+.song-panel{
+    max-height: 400px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.song-panel-room{
+    float: right;
 }

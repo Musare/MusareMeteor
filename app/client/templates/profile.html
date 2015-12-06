@@ -18,19 +18,23 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="panel panel-success">
+                <div class="panel panel-success song-panel">
                     <div class="panel-heading">Liked Songs</div>
                     <div class="panel-body">
                         <ul>
                             {{#each likedSongs}}
-                                <li>{{title}} - {{artist}} - {{room}}</li>
+                                <li>
+                                    <p class="song-panel-room">{{room}}</p>
+                                    <h4>{{title}}</h4>
+                                    <h5>{{artist}}</h5>
+                                </li>
                             {{/each}}
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="panel panel-danger">
+                <div class="panel panel-danger song-panel">
                     <div class="panel-heading">Disliked Songs</div>
                     <div class="panel-body">
                         <ul>
