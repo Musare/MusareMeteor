@@ -585,6 +585,7 @@ Meteor.methods({
             var time = new Date();
             var rawrank = user.profile.rank;
             var username = user.profile.username;
+            var profanity = false;
             if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
@@ -592,15 +593,33 @@ Meteor.methods({
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
             else if (user.profile.rank === "admin") {
-                Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function(err,res){
+                    if(res.content.indexOf("true") > -1){
+                        return true;
+                    } else{
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                    }
+                });
                 return true;
             }
             else if (user.profile.rank === "moderator") {
-                Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
+                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function(err,res){
+                    if(res.content.indexOf("true") > -1){
+                        return true;
+                    } else{
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                    }
+                });
                 return true;
             }
             else {
-                Chat.insert({type: type, rawrank: rawrank, message: message, time: time, username: username});
+                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function(err,res){
+                    if(res.content.indexOf("true") > -1){
+                        return true;
+                    } else{
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                    }
+                });
                 return true;
             }
         } else {
