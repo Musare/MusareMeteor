@@ -411,11 +411,46 @@ function executeCommand(command, params){
                 return true;
             }
         }
+    } else if(command === "mute"){
+        $("#volume-slider").slider("setValue", 0);
+        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off");
+        if (yt_player !== undefined) {
+            yt_player.setVolume(0);
+            localStorage.setItem("volume", 0);
+        } else if (_sound !== undefined) {
+            //_sound
+            _sound.setVolume(0);
+            localStorage.setItem("volume", 0);
+        }
     } else if(command === "ban"){
         var user = params[0];
         var time = params[1];
         var reason = params[2];
         Meteor.call("banUser", user, time, reason, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "pause"){
+        Meteor.call("pauseRoom", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "resume"){
+        Meteor.call("resumeRoom", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "shuffle"){
+        Meteor.call("shufflePlaylist", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "skip"){
+        Meteor.call("skipSong", Session.get("type"), function(err, res){
             if(err){
                 console.log(err);
             }
@@ -432,6 +467,7 @@ function sendMessage() {
             message = message.join("");
             var params = message.split(" ");
             var command = params.shift();
+            command = command.replace(/\r?\n|\r/g, "");
             if (executeCommand(command, params)) {
                 $("#chat-input").val("");
             } else {
