@@ -4,6 +4,7 @@
       {{> header}}
       <div class="row">
         {{#if loaded}}
+            {{> avatar userId=userId shape="circle" class="profile-img" initials=initials}}
             <h1 id="profile-name">{{username}}</h1>
 
             <div class="col-md-4">

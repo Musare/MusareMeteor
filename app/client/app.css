@@ -1403,6 +1403,14 @@ nav form input[type="image"]{
     margin-right: 5px;
     float: left;
 }
+.profile-img{
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+.profile-img .avatar-initials{
+    line-height: 100px !important;
+}
 #doorbell-email{
     color: black;
 }

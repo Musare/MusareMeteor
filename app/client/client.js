@@ -96,7 +96,7 @@ Template.settings.events({
 });
 
 Template.profile.helpers({
-    username: function() {
+    "username": function() {
         return Session.get("username")
     },
     "first_joined": function() {
@@ -137,7 +137,15 @@ Template.profile.helpers({
             })
         });
         return dislikedArr;
-    }
+    },
+    initials: function() {
+        var user = Meteor.user();
+        if (user !== undefined) {
+            return user.profile.username[0].toUpperCase();
+        } else {
+            return "";
+        }
+    },
 });
 
 Template.profile.onCreated(function() {
