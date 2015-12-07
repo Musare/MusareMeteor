@@ -96,8 +96,8 @@ Template.settings.events({
 });
 
 Template.profile.helpers({
-    "username": function() {
-        return Session.get("username");
+    username: function() {
+        return Session.get("username")
     },
     "first_joined": function() {
         return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
@@ -1276,7 +1276,7 @@ Template.stations.events({
         }
     },
     "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
+        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#two").prop("checked"), function (err, res) {
             if (err) {
                 alert("Error " + err.error + ": " + err.reason);
             } else {

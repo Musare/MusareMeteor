@@ -13,7 +13,7 @@ Meteor.startup(function() {
     var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
     for(var i in stations){
         if(Rooms.find({type: stations[i]}).count() === 0){
-            createRoom(stations[i].display, stations[i].tag);
+            createRoom(stations[i].display, stations[i].tag, false);
         }
     }
     emojione.ascii = true;
@@ -86,10 +86,28 @@ function getStation(type, cb) {
     });
 }
 
-function createRoom(display, tag) {
+function createRoom(display, tag, private) {
     var type = tag;
-    if (Rooms.find({type: type}).count() === 0) {
+    if (Rooms.find({type: type}).count() === 0 && private === false) {
         Rooms.insert({display: display, type: type, users: 0}, function(err) {
+            if (err) {
+                throw err;
+            } else {
+                if (Playlists.find({type: type}).count() === 1) {
+                    stations.push(new Station(type));
+                } else {
+                    Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
+                        if (err2) {
+                            throw err2;
+                        } else {
+                            stations.push(new Station(type));
+                        }
+                    });
+                }
+            }
+        });
+    } else if (Rooms.find({type: type}).count() === 0 && private === true) {
+        Rooms.insert({display: display, type: type, users: 0, private: true}, function(err) {
             if (err) {
                 throw err;
             } else {
@@ -892,9 +910,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    createRoom: function(display, tag) {
+    createRoom: function(display, tag, private) {
         if (isAdmin() && !isBanned()) {
-            createRoom(display, tag);
+            createRoom(display, tag, private);
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

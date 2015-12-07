@@ -1414,3 +1414,45 @@ nav form input[type="image"]{
 .song-panel-room{
     float: right;
 }
+/*Credit to: http://thecodeplayer.com/walkthrough/custom-animated-checkbox-inputs-using-css-iconfonts*/
+#two-label {
+    position: relative;
+    padding-left: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    color: white;
+    padding-top: 3px;
+}
+#two-label:before, #two-label:after {
+    font-family: FontAwesome;
+    font-size: 21px;
+    /*absolutely positioned*/
+    position: absolute; top: 0; left: 0;
+}
+#two-label:before {
+    content: '\f096'; /*unchecked*/
+}
+#two-label:after {
+    content: '\f046'; /*checked*/
+    /*checked icon will be hidden by default by using 0 max-width and overflow hidden*/
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0.5;
+    /*CSS3 transitions for animated effect*/
+    transition: all 0.35s;
+}
+
+/*hiding the original checkboxes*/
+input[type="checkbox"] {
+    display: none;
+}
+/*when the user checks the checkbox the checked icon will animate in*/
+input[type="checkbox"]:checked + #two-label:after {
+    max-width: 25px; /*an arbitratry number more than the icon's width*/
+    opacity: 1; /*for fade in effect*/
+}
+
+/*adding some colors for fun*/
+#two+label:before, #two+label:after {color: hsl(180, 45%, 40%);}
+
