@@ -23,7 +23,7 @@
                     <td></td>
                     <td>{{reportsCount display}}</td>
                     <td>{{queueCount display}}</td>
-                    <td><a href="/admin/stations">Edit</a></td>
+                    <td><a href="/admin/stations" id={{display}}>Edit</a></td>
                   </tr>
                 </table>
               {{/each}}
@@ -33,7 +33,8 @@
                 <h1>Site statistics</h1>
               </div>
               <p>Total Users Online: {{usersOnline}}</p>
-              <p>Total Registered Users: {{allUsers}}</p>
+              <p>Total Registered Users: </p>
+              <a href="/admin/queues">Edit the queues</a>
             </div>
           </div>
           <div id="addStation" class="modal fade" role="dialog">

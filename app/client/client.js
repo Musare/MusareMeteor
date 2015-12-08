@@ -1034,9 +1034,7 @@ Template.admin.helpers({
       return Session.get("userNum");
   },
   allUsers: function(){
-    var users = Users.find({}).fetch();
-    console.log(users);
-  }
+  },
   playlists: function() {
       var playlists = Playlists.find({}).fetch();
       playlists.map(function(playlist) {
@@ -1052,7 +1050,6 @@ Template.admin.helpers({
   reportsCount: function(room) {
     room = room.toLowerCase();
     var reports = Reports.findOne({room:room});
-    console.log(reports);
     return reports && "report" in reports ? reports.report.length : 0;
   }
 });
@@ -1066,21 +1063,23 @@ Template.admin.events({
               window.location = "/" + $("#croom_tag").val();
           }
       });
+  },
+  "click a": function(e){
+    var id = e.currentTarget.id;
+    console.log(id.toLowerCase());
+    Session.set("playlistToEdit", id);
   }
 });
 
 Template.stations.helpers({
-    playlists: function() {
-        var playlists = Playlists.find({}).fetch();
-        playlists.map(function(playlist) {
-            if (Rooms.find({type: playlist.type}).count() !== 1) {
-                return;
-            } else {
-                playlist.display = Rooms.findOne({type: playlist.type}).display;
-                return playlist;
-            }
-        });
-        return playlists;
+    playlist: function() {
+      var query = {type: Session.get("playlistToEdit").toLowerCase()};
+      var playlists = Playlists.find(query).fetch();
+      console.log(Session.get("playlistToEdit"), query, playlists);
+      return playlists;
+    },
+    whichStation: function(){
+      return Session.get("playlistToEdit");
     }
 });
 
