@@ -678,30 +678,25 @@ Template.room.events({
         }
     },
     "click #report-song-button": function() {
-        var reports = {
-          room : Session.get("type"),
-          report : [{
-            song : Session.get("currentSong").mid,
-            type : [],
-            reason : [],
-          }]
-        };
-        var report = reports.report;
+        var room = Session.get("type");
+        var reportData = {};
+        reportData.song = Session.get("currentSong").mid;
+        reportData.type = [];
+        reportData.reason = [];
 
         $(".report-layer-1 > .checkbox input:checked").each(function(){
-          console.log(this.id);
-          report.type.push(this.id);
+          reportData.type.push(this.id);
           if (this.id == "report-other") {
             var otherText = $(".other-textarea").val();
-            report.reason.push(otherText);
           }
         });
 
         $(".report-layer-2 input:checked").each(function(){
-          report.reason.push(this.id);
+          reportData.reason.push(this.id);
         });
 
-        Meteor.call("submitReport", reports, Session.get("id"), function() {
+        console.log(reportData);
+        Meteor.call("submitReport", room, reportData, Session.get("id"), function() {
             $("#close-modal-r").click();
         });
     }
@@ -985,7 +980,7 @@ Template.admin.helpers({
     var queues = Queues.find({}).fetch();
     return queues;
   },
-  users: function(){
+  usersOnline: function(){
       Meteor.call("getUserNum", function(err, num){
           if(err){
               console.log(err);
@@ -994,6 +989,10 @@ Template.admin.helpers({
       });
       return Session.get("userNum");
   },
+  allUsers: function(){
+    var users = Users.find({}).fetch();
+    console.log(users);
+  }
   playlists: function() {
       var playlists = Playlists.find({}).fetch();
       playlists.map(function(playlist) {
@@ -1010,7 +1009,19 @@ Template.admin.helpers({
     room = room.toLowerCase();
     var reports = Reports.findOne({room:room});
     console.log(reports);
-    return reports ? reports.length : 0;
+    return reports && "report" in reports ? reports.report.length : 0;
+  }
+});
+
+Template.admin.events({
+  "click #croom_create": function() {
+      Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
+          if (err) {
+              alert("Error " + err.error + ": " + err.reason);
+          } else {
+              window.location = "/" + $("#croom_tag").val();
+          }
+      });
   }
 });
 
@@ -1207,15 +1218,6 @@ Template.stations.events({
                 $("#previewPlayer").hide();
             }, 10000);
         }
-    },
-    "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
-            if (err) {
-                alert("Error " + err.error + ": " + err.reason);
-            } else {
-                window.location = "/" + $("#croom_tag").val();
-            }
-        });
     },
     "click #get-spotify-info": function() {
         var search = $("#title").val();

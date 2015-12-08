@@ -267,6 +267,17 @@ ul {
   padding-bottom: 10px;
   text-align: center;
 }
+
+.admin-container div a {
+  text-decoration: none;
+  font-size: 22px;
+  padding-left: 5px;
+  vertical-align: top;
+}
+
+.admin-container div a:hover {
+  text-decoration: none;
+}
 .admin-container h1 {
   margin: 0;
   display: inline-block;

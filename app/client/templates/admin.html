@@ -3,12 +3,12 @@
     <div class="landing">
         {{> header}}
           <div class="row" style="margin-top: 20px; height: 100%;">
-            <div class="col-md-5 col-md-offset-1 admin-container" style="height: 50%;">
+            <div class="col-md-6 col-md-offset-1 admin-container" style="height: 80%;">
               <div>
-                <h1>Playlists</h1>
+                <h1>Stations</h1><a href="#" data-toggle="modal" data-target="#addStation">(+)</a>
               </div>
               {{#each playlists}}
-                <p>{{display}} playlist</p>
+                <p>{{display}}</p>
                 <table class="table" style="border-bottom: 1px solid white;">
                   <tr>
                     <th>Songs</th>
@@ -28,15 +28,42 @@
                 </table>
               {{/each}}
             </div>
-            <div class="col-md-4 col-md-offset-1 admin-container" style="height: 30%;">
+            <div class="col-md-3 col-md-offset-1 admin-container" style="height: 80%;">
               <div>
                 <h1>Site statistics</h1>
               </div>
-              <p>Total Users Online: {{users}}</p>
-              <p>Total Registered Users: </p>
+              <p>Total Users Online: {{usersOnline}}</p>
+              <p>Total Registered Users: {{allUsers}}</p>
             </div>
           </div>
+          <div id="addStation" class="modal fade" role="dialog">
+              <div class="modal-dialog">
 
-        {{> bubbles}}
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">&times;</button>
+                          <h4 class="modal-title">Create new station</h4>
+                      </div>
+                      <div class="modal-body">
+                        <div id="croom_container">
+                          <label for="croom_display" class="croom_label">Room Display Name (eg 'Edm'):</label>
+                          <div class="input-group">
+                            <input type="text" class="croom" id="croom_display" name="croom" required />
+                          </div>
+                          <label for="croom_tag" class="croom_label">Room Tag Name (eg 'edm'):</label>
+                          <div class="input-group">
+                            <input type="text" class="croom" id="croom_tag" name="croom" required />
+                          </div>
+                          <button class="btn btn-warning btn-block" id="croom_create">Create</button>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button id="close-modal-a" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      </div>
+                  </div>
+
+              </div>
+          </div>
     </div>
 </template>

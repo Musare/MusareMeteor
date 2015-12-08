@@ -663,42 +663,25 @@ Meteor.methods({
             })
         }
     },
-    submitReport: function(report, id) {
+    submitReport: function(room, reportData) {
       if (Meteor.userId() && !isBanned()) {
-          type = type.toLowerCase();
-          if (Rooms.find({type: type}).count() === 1) {
-              if (Queues.find({type: type}).count() === 0) {
-                  Queues.insert({type: type, songs: []});
+          room = room.toLowerCase();
+          if (Rooms.find({type: room}).count() === 1) {
+              if (Reports.find({room: room}).count() === 0) {
+                  Reports.insert({room: room, report: []});
               }
-              if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
-                  songData.duration = getSongDuration(songData.title, songData.artist) || 0;
-                  songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
-                  songData.skipDuration = 0;
-                  songData.likes = 0;
-                  songData.dislikes = 0;
-                  var mid = createUniqueSongId();
-                  if (mid !== undefined) {
-                      songData.mid = mid;
-                      Queues.update({type: type}, {
+              if (reportData !== undefined) {
+                      Reports.update({room: room}, {
                           $push: {
-                              songs: {
-                                  id: songData.id,
-                                  mid: songData.mid,
-                                  title: songData.title,
-                                  artist: songData.artist,
-                                  duration: songData.duration,
-                                  skipDuration: songData.skipDuration,
-                                  likes: songData.likes,
-                                  dislikes: songData.dislikes,
-                                  img: songData.img,
-                                  type: songData.type
+                              report: {
+                                  song: reportData.song,
+                                  type: reportData.type,
+                                  reason: reportData.reason,
+                                  other: reportData.other
                               }
                           }
                       });
                       return true;
-                  } else {
-                      throw new Meteor.Error(500, "Am error occured.");
-                  }
               } else {
                   throw new Meteor.Error(403, "Invalid data.");
               }
