@@ -1464,3 +1464,14 @@ input[type="checkbox"]:checked + #two-label:after {
 /*adding some colors for fun*/
 #two+label:before, #two+label:after {color: hsl(180, 45%, 40%);}
 
+#chat-tab {
+    -webkit-transition: background-color 500ms linear;
+    -moz-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    -o-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+}
+
+.unread-messages {
+    background-color: orange;
+}

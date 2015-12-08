@@ -475,7 +475,6 @@ function sendMessage() {
             }
         } else {
             Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
-                console.log(err, res);
                 if (res) {
                     $("#chat-input").val("");
                 }
@@ -485,6 +484,9 @@ function sendMessage() {
 }
 
 Template.room.events({
+    "click #chat-tab": function() {
+        $("#chat-tab").removeClass("unread-messages");
+    },
     "click #sync": function() {
         if (Session.get("currentSong") !== undefined) {
             var room = Rooms.findOne({type: Session.get("type")});
@@ -1702,6 +1704,11 @@ Template.playlist.events({
 Meteor.subscribe("rooms");
 
 Template.room.onCreated(function () {
+    Chat.after.find(function() {
+        if (!$("#chat-tab").hasClass("active")) {
+            $("#chat-tab").addClass("unread-messages");
+        }
+    });
     Session.set("reportSong", false);
     Session.set("reportTitle", false);
     Session.set("reportAuthor", false);
@@ -1816,13 +1823,15 @@ Template.room.onCreated(function () {
                                         resizeSeekerbar();
                                     },
                                     'onStateChange': function(event){
-                                        if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                            event.target.playVideo();
-                                        }
-                                        if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                            event.target.pauseVideo();
+                                        if (YT !== undefined) {
+                                            if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                event.target.playVideo();
+                                            }
+                                            if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                event.target.pauseVideo();
+                                            }
                                         }
                                     }
                                 }
@@ -1859,6 +1868,7 @@ Template.room.onCreated(function () {
                 if (room !== undefined) {
                     if (room.state === "paused" || Session.get("pauseVideo")) {
                         Session.set("state", "paused");
+                        // TODO Fix issue where sometimes nothing loads with the YT is not defined error. The error points to around this.
                         if (yt_player !== undefined && yt_player.getPlayerState !== undefined && yt_player.getPlayerState() === 1) {
                             yt_player.pauseVideo();
                         } else if (_sound !== undefined && _sound.getState().indexOf("playing") !== -1) {
