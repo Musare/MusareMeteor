@@ -724,74 +724,25 @@ Template.room.events({
         }
     },
     "click #report-song-button": function() {
-        var report = {};
-        report.reportSongB = $("#report-song").is(":checked");
-        report.reportTitleB = $("#report-title").is(":checked");
-        report.reportAuthorB = $("#report-author").is(":checked");
-        report.reportDurationB = $("#report-duration").is(":checked");
-        report.reportAudioB = $("#report-audio").is(":checked");
-        report.reportAlbumartB = $("#report-albumart").is(":checked");
-        report.reportOtherB = $("#report-other").is(":checked");
+        var room = Session.get("type");
+        var reportData = {};
+        reportData.song = Session.get("currentSong").mid;
+        reportData.type = [];
+        reportData.reason = [];
 
-        if (report.reportSongB) {
-            report.reportSong = {};
-            report.reportSong.notPlayingB = $("#report-song-not-playing").is(":checked");
-            report.reportSong.doesNotExistB = $("#report-song-does-not-exist").is(":checked");
-            report.reportSong.otherB = $("#report-song-other").is(":checked");
-            if (report.reportSong.otherB) {
-                report.reportSong.other = $("#report-song-other-ta").val();
-            }
-        }
-        if (report.reportTitleB) {
-            report.reportTitle = {};
-            report.reportTitle.incorrectB = $("#report-title-incorrect").is(":checked");
-            report.reportTitle.inappropriateB = $("#report-title-inappropriate").is(":checked");
-            report.reportTitle.otherB = $("#report-title-other").is(":checked");
-            if (report.reportTitle.otherB) {
-                report.reportTitle.other = $("#report-title-other-ta").val();
-            }
-        }
-        if (report.reportAuthorB) {
-            report.reportAuthor = {};
-            report.reportAuthor.incorrectB = $("#report-author-incorrect").is(":checked");
-            report.reportAuthor.inappropriateB = $("#report-author-inappropriate").is(":checked");
-            report.reportAuthor.otherB = $("#report-author-other").is(":checked");
-            if (report.reportAuthor.otherB) {
-                report.reportAuthor.other = $("#report-author-other-ta").val();
-            }
-        }
-        if (report.reportDurationB) {
-            report.reportDuration = {};
-            report.reportDuration.longB = $("#report-duration-incorrect").is(":checked");
-            report.reportDuration.shortB = $("#report-duration-inappropriate").is(":checked");
-            report.reportDuration.otherB = $("#report-duration-other").is(":checked");
-            if (report.reportDuration.otherB) {
-                report.reportDuration.other = $("#report-duration-other-ta").val();
-            }
-        }
-        if (report.reportAudioB) {
-            report.reportAudio = {};
-            report.reportAudio.inappropriate = $("#report-audio-inappropriate").is(":checked");
-            report.reportAudio.notPlayingB = $("#report-audio-incorrect").is(":checked");
-            report.reportAudio.otherB = $("#report-audio-other").is(":checked");
-            if (report.reportAudio.otherB) {
-                report.reportAudio.other = $("#report-audio-other-ta").val();
-            }
-        }
-        if (report.reportAlbumartB) {
-            report.reportAlbumart = {};
-            report.reportAlbumart.incorrectB = $("#report-albumart-incorrect").is(":checked");
-            report.reportAlbumart.inappropriateB = $("#report-albumart-inappropriate").is(":checked");
-            report.reportAlbumart.notShowingB = $("#report-albumart-inappropriate").is(":checked");
-            report.reportAlbumart.otherB = $("#report-albumart-other").is(":checked");
-            if (report.reportAlbumart.otherB) {
-                report.reportAlbumart.other = $("#report-albumart-other-ta").val();
-            }
-        }
-        if (report.reportOtherB) {
-            report.other = $("#report-other-ta").val();
-        }
-        Meteor.call("submitReport", report, Session.get("id"), function() {
+        $(".report-layer-1 > .checkbox input:checked").each(function(){
+          reportData.type.push(this.id);
+          if (this.id == "report-other") {
+            var otherText = $(".other-textarea").val();
+          }
+        });
+
+        $(".report-layer-2 input:checked").each(function(){
+          reportData.reason.push(this.id);
+        });
+
+        console.log(reportData);
+        Meteor.call("submitReport", room, reportData, Session.get("id"), function() {
             $("#close-modal-r").click();
         });
     }
@@ -1075,7 +1026,7 @@ Template.admin.helpers({
     var queues = Queues.find({}).fetch();
     return queues;
   },
-  users: function(){
+  usersOnline: function(){
       Meteor.call("getUserNum", function(err, num){
           if(err){
               console.log(err);
@@ -1083,6 +1034,8 @@ Template.admin.helpers({
           Session.set("userNum", num);
       });
       return Session.get("userNum");
+  },
+  allUsers: function(){
   },
   playlists: function() {
       var playlists = Playlists.find({}).fetch();
@@ -1095,31 +1048,40 @@ Template.admin.helpers({
           }
       });
       return playlists;
-  }/*,
-  reports: function() {
-      var reports = Reports.find({}).fetch();
-      reports.findOne(
-        {
-          $eq: [
+  },
+  reportsCount: function(room) {
+    room = room.toLowerCase();
+    var reports = Reports.findOne({room:room});
+    return reports && "report" in reports ? reports.report.length : 0;
+  }
+});
 
-          ]
-        }
-      )
-  }*/
+Template.admin.events({
+  "click #croom_create": function() {
+      Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
+          if (err) {
+              alert("Error " + err.error + ": " + err.reason);
+          } else {
+              window.location = "/" + $("#croom_tag").val();
+          }
+      });
+  },
+  "click a": function(e){
+    var id = e.currentTarget.id;
+    console.log(id.toLowerCase());
+    Session.set("playlistToEdit", id);
+  }
 });
 
 Template.stations.helpers({
-    playlists: function() {
-        var playlists = Playlists.find({}).fetch();
-        playlists.map(function(playlist) {
-            if (Rooms.find({type: playlist.type}).count() !== 1) {
-                return;
-            } else {
-                playlist.display = Rooms.findOne({type: playlist.type}).display;
-                return playlist;
-            }
-        });
-        return playlists;
+    playlist: function() {
+      var query = {type: Session.get("playlistToEdit").toLowerCase()};
+      var playlists = Playlists.find(query).fetch();
+      console.log(Session.get("playlistToEdit"), query, playlists);
+      return playlists;
+    },
+    whichStation: function(){
+      return Session.get("playlistToEdit");
     }
 });
 

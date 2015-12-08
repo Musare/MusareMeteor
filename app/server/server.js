@@ -700,12 +700,34 @@ Meteor.methods({
             })
         }
     },
-    submitReport: function(report, id) {
-        if (!isBanned()) {
-            var obj = report;
-            obj.id = id;
-            Reports.insert(obj);
-        }
+    submitReport: function(room, reportData) {
+      if (Meteor.userId() && !isBanned()) {
+          room = room.toLowerCase();
+          if (Rooms.find({type: room}).count() === 1) {
+              if (Reports.find({room: room}).count() === 0) {
+                  Reports.insert({room: room, report: []});
+              }
+              if (reportData !== undefined) {
+                      Reports.update({room: room}, {
+                          $push: {
+                              report: {
+                                  song: reportData.song,
+                                  type: reportData.type,
+                                  reason: reportData.reason,
+                                  other: reportData.other
+                              }
+                          }
+                      });
+                      return true;
+              } else {
+                  throw new Meteor.Error(403, "Invalid data.");
+              }
+          } else {
+              throw new Meteor.Error(403, "Invalid genre.");
+          }
+      } else {
+          throw new Meteor.Error(403, "Invalid permissions.");
+      }
     },
     shufflePlaylist: function(type) {
         if (isAdmin() && !isBanned()) {
