@@ -97,7 +97,7 @@ Template.settings.events({
 
 Template.profile.helpers({
     "username": function() {
-        return Session.get("username");
+        return Session.get("username")
     },
     "first_joined": function() {
         return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
@@ -137,7 +137,15 @@ Template.profile.helpers({
             })
         });
         return dislikedArr;
-    }
+    },
+    initials: function() {
+        var user = Meteor.user();
+        if (user !== undefined) {
+            return user.profile.username[0].toUpperCase();
+        } else {
+            return "";
+        }
+    },
 });
 
 Template.profile.onCreated(function() {
@@ -403,11 +411,46 @@ function executeCommand(command, params){
                 return true;
             }
         }
+    } else if(command === "mute"){
+        $("#volume-slider").slider("setValue", 0);
+        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off");
+        if (yt_player !== undefined) {
+            yt_player.setVolume(0);
+            localStorage.setItem("volume", 0);
+        } else if (_sound !== undefined) {
+            //_sound
+            _sound.setVolume(0);
+            localStorage.setItem("volume", 0);
+        }
     } else if(command === "ban"){
         var user = params[0];
         var time = params[1];
         var reason = params[2];
         Meteor.call("banUser", user, time, reason, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "pause"){
+        Meteor.call("pauseRoom", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "resume"){
+        Meteor.call("resumeRoom", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "shuffle"){
+        Meteor.call("shufflePlaylist", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "skip"){
+        Meteor.call("skipSong", Session.get("type"), function(err, res){
             if(err){
                 console.log(err);
             }
@@ -424,6 +467,7 @@ function sendMessage() {
             message = message.join("");
             var params = message.split(" ");
             var command = params.shift();
+            command = command.replace(/\r?\n|\r/g, "");
             if (executeCommand(command, params)) {
                 $("#chat-input").val("");
             } else {
@@ -1111,6 +1155,25 @@ Template.stations.events({
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         Meteor.call("removeSongFromPlaylist", genre, this.mid);
     },
+    "click #moveSong": function(e){
+      var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
+      if (genre !== Session.get(genre)) {
+        Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+        Meteor.call("removeSongFromPlaylist", Session.get("genre"), Session.get("song").mid);
+      }else {
+        console.log("Something Went Wrong?!");
+        return false;
+      }
+
+    },
+    "click #copySong": function(e){
+      var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
+      Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+    },
+    "click .copyMove-button": function(e){
+        Session.set("song", this);
+        Session.set("genre", $(e.target).data("genre"));
+    },
     "click #play": function() {
         $("#play").attr("disabled", true);
         $("#stop").attr("disabled", false);
@@ -1218,6 +1281,15 @@ Template.stations.events({
                 $("#previewPlayer").hide();
             }, 10000);
         }
+    },
+    "click #croom_create": function() {
+        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#two").prop("checked"), function (err, res) {
+            if (err) {
+                alert("Error " + err.error + ": " + err.reason);
+            } else {
+                window.location = "/" + $("#croom_tag").val();
+            }
+        });
     },
     "click #get-spotify-info": function() {
         var search = $("#title").val();

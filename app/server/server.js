@@ -13,7 +13,7 @@ Meteor.startup(function() {
     var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
     for(var i in stations){
         if(Rooms.find({type: stations[i]}).count() === 0){
-            createRoom(stations[i].display, stations[i].tag);
+            createRoom(stations[i].display, stations[i].tag, false);
         }
     }
     emojione.ascii = true;
@@ -86,10 +86,28 @@ function getStation(type, cb) {
     });
 }
 
-function createRoom(display, tag) {
+function createRoom(display, tag, private) {
     var type = tag;
-    if (Rooms.find({type: type}).count() === 0) {
+    if (Rooms.find({type: type}).count() === 0 && private === false) {
         Rooms.insert({display: display, type: type, users: 0}, function(err) {
+            if (err) {
+                throw err;
+            } else {
+                if (Playlists.find({type: type}).count() === 1) {
+                    stations.push(new Station(type));
+                } else {
+                    Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
+                        if (err2) {
+                            throw err2;
+                        } else {
+                            stations.push(new Station(type));
+                        }
+                    });
+                }
+            }
+        });
+    } else if (Rooms.find({type: type}).count() === 0 && private === true) {
+        Rooms.insert({display: display, type: type, users: 0, private: true}, function(err) {
             if (err) {
                 throw err;
             } else {
@@ -585,6 +603,7 @@ Meteor.methods({
             var time = new Date();
             var rawrank = user.profile.rank;
             var username = user.profile.username;
+            var profanity = false;
             if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
@@ -592,15 +611,33 @@ Meteor.methods({
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
             else if (user.profile.rank === "admin") {
-                Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function(err,res){
+                    if(res.content.indexOf("true") > -1){
+                        return true;
+                    } else{
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                    }
+                });
                 return true;
             }
             else if (user.profile.rank === "moderator") {
-                Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
+                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function(err,res){
+                    if(res.content.indexOf("true") > -1){
+                        return true;
+                    } else{
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                    }
+                });
                 return true;
             }
             else {
-                Chat.insert({type: type, rawrank: rawrank, message: message, time: time, username: username});
+                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function(err,res){
+                    if(res.content.indexOf("true") > -1){
+                        return true;
+                    } else{
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                    }
+                });
                 return true;
             }
         } else {
@@ -895,9 +932,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    createRoom: function(display, tag) {
+    createRoom: function(display, tag, private) {
         if (isAdmin() && !isBanned()) {
-            createRoom(display, tag);
+            createRoom(display, tag, private);
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

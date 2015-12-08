@@ -4,6 +4,7 @@
       {{> header}}
       <div class="row">
         {{#if loaded}}
+            {{> avatar userId=userId shape="circle" class="profile-img" initials=initials}}
             <h1 id="profile-name">{{username}}</h1>
 
             <div class="col-md-4">
@@ -20,10 +21,14 @@
             <div class="col-md-4">
                 <div class="panel panel-success">
                     <div class="panel-heading">Liked Songs</div>
-                    <div class="panel-body">
+                    <div class="panel-body song-panel">
                         <ul>
                             {{#each likedSongs}}
-                                <li>{{title}} - {{artist}} - {{room}}</li>
+                                <li>
+                                    <p class="song-panel-room">{{room}}</p>
+                                    <h4>{{title}}</h4>
+                                    <h5>{{artist}}</h5>
+                                </li>
                             {{/each}}
                         </ul>
                     </div>
@@ -32,7 +37,7 @@
             <div class="col-md-4">
                 <div class="panel panel-danger">
                     <div class="panel-heading">Disliked Songs</div>
-                    <div class="panel-body">
+                    <div class="panel-body song-panel">
                         <ul>
                             {{#each dislikedSongs}}
                                 <li>{{title}} - {{artist}} - {{room}}</li>
