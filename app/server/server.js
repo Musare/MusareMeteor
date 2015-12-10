@@ -953,6 +953,9 @@ Meteor.methods({
         if (!isBanned()) {
             return Object.keys(Meteor.default_server.sessions).length;
         }
+    },
+    updateRealName: function(username, realname){
+        Meteor.users.update({"profile.username": username}, {$set: {"profile.realname": realname}});
     }
 });
 

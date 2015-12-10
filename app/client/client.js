@@ -95,7 +95,26 @@ Template.settings.events({
     }
 });
 
+Template.profile.events({
+    "click #edit-name": function(){
+        $("#name").hide();
+        $("#name-div").show();
+    },
+    "click #submit-name": function(){
+        var user = Meteor.user();
+        $("#name").show();
+        $("#name-div").hide();
+        var realname = $("#input-name").val();
+        var username = user.profile.username;
+        $("#name").text("Name: " + realname);
+        Meteor.call("updateRealName", username, realname);
+    }
+})
+
 Template.profile.helpers({
+    "realname": function(){
+        return Session.get("realname");
+    },
     "username": function() {
         return Session.get("username")
     },
@@ -157,6 +176,7 @@ Template.profile.onCreated(function() {
             window.location = "/";
         } else {
             var data = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
+            Session.set("realname", data.profile.realname);
             Session.set("username", data.profile.username);
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);

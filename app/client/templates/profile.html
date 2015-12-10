@@ -12,6 +12,11 @@
                     <div class="panel-heading">Basic Info</div>
                     <div class="panel-body">
                         <ul>
+                            <li id="name">Name: {{realname}}</li>
+                            <div id="name-div" style="display: none">
+                                <input type="text" id="input-name"><button id="submit-name" class="btn btn-primary">Submit</button>
+                            </div>
+                            <a href="#" id="edit-name">Edit</a>
                             <li class="user-stat"><b>Joined: </b>{{first_joined}}</li>
                             <li class="user-stat"><b>Rank: </b>{{rank}}</li>
                         </ul>
