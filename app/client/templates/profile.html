@@ -12,13 +12,16 @@
                     <div class="panel-heading">Basic Info</div>
                     <div class="panel-body">
                         <ul>
-                            <li id="name">Name: {{realname}}</li>
+                            {{#if currentUser}}
+                                <a href="#" id="edit-name" class="profile-action">Edit</a>
+                                <a href="#" id="cancel-edit" class="profile-action" style="display:none;">Cancel</a>
+                            {{/if}}
+                            <li class="user-stat" id="name">Name: {{realname}}</li>
                             <div id="name-div" style="display: none">
-                                <input type="text" id="input-name"><button id="submit-name" class="btn btn-primary">Submit</button>
+                                <input type="text" id="input-name"><button id="submit-name" class="btn btn-primary btn-sm">Submit</button>
                             </div>
-                            <a href="#" id="edit-name">Edit</a>
-                            <li class="user-stat"><b>Joined: </b>{{first_joined}}</li>
-                            <li class="user-stat"><b>Rank: </b>{{rank}}</li>
+                            <li class="user-stat">Joined: {{first_joined}}</li>
+                            <li class="user-stat">Rank: {{rank}}</li>
                         </ul>
                     </div>
                 </div>

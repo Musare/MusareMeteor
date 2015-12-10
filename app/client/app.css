@@ -1486,3 +1486,11 @@ input[type="checkbox"]:checked + #two-label:after {
 .unread-messages {
     background-color: orange;
 }
+
+.profile-action{
+    float: right;
+}
+
+#submit-name{
+    margin-left: 10px;
+}

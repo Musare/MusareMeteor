@@ -99,15 +99,27 @@ Template.profile.events({
     "click #edit-name": function(){
         $("#name").hide();
         $("#name-div").show();
+        $("#edit-name").hide();
+        $("#cancel-edit").show();
     },
     "click #submit-name": function(){
         var user = Meteor.user();
         $("#name").show();
         $("#name-div").hide();
+        $("#edit-name").show();
+        $("#cancel-edit").hide();
         var realname = $("#input-name").val();
         var username = user.profile.username;
         $("#name").text("Name: " + realname);
+        $("#input-name").val("")
         Meteor.call("updateRealName", username, realname);
+    },
+    "click #cancel-edit": function(){
+        $("#name").show();
+        $("#name-div").hide();
+        $("#edit-name").show();
+        $("#cancel-edit").hide();
+        $("#input-name").val("");
     }
 })
 
