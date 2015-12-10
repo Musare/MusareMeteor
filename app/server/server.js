@@ -44,7 +44,7 @@ function checkUsersPR() {
     var connections = Meteor.server.stream_server.open_sockets;
     _.each(connections,function(connection){
         // named subscriptions
-        if (connection._meteorSession !== undefined) {
+        if (connection._meteorSession !== undefined && connection._meteorSession !== null) {
             var subs = connection._meteorSession._namedSubs;
             //var ip = connection.remoteAddress;
             var used_subs = [];

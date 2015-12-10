@@ -739,7 +739,7 @@ footer .fa {
     font-weight: 300;
 }
 
-#chat-input {
+#chat-input, #global-chat-input {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -1217,7 +1217,7 @@ nav form input[type="image"]{
     font-size: 20px;
     color: white;
 }
-#chat-ul {
+#chat-ul, #global-chat-ul {
     overflow-y: hidden;
     margin: 0;
     padding: 0 15px 0 15px;
@@ -1231,18 +1231,18 @@ nav form input[type="image"]{
 .chat-message:nth-child(odd) {
     color: darkblue;
 }
-#submit {
+#submit, #global-submit {
     margin-bottom: 10px;
     cursor: pointer;
 }
-#submit button{
+#submit button, #global-submit button{
     width: 100%;
     font-size: 1.5em;
 }
-#submit i{
+#submit i, #global-submit i{
     margin-left: 10px;
 }
-#chat-input-div {
+#chat-input-div, #global-chat-input-div {
     width: 100%;
     padding-left: 15px;
     padding-right: 15px;
@@ -1266,7 +1266,7 @@ nav form input[type="image"]{
 .sidebar-content {
     height: calc(100% - 42px);
 }
-#chat {
+#chat, #global-chat {
     height:100%;
     overflow: auto;
 }
@@ -1475,7 +1475,7 @@ input[type="checkbox"]:checked + #two-label:after {
 /*adding some colors for fun*/
 #two+label:before, #two+label:after {color: hsl(180, 45%, 40%);}
 
-#chat-tab {
+#chat-tab, #global-chat-tab {
     -webkit-transition: background-color 500ms linear;
     -moz-transition: background-color 500ms linear;
     -ms-transition: background-color 500ms linear;
@@ -1485,4 +1485,10 @@ input[type="checkbox"]:checked + #two-label:after {
 
 .unread-messages {
     background-color: orange;
+}
+
+.disabled {
+    cursor: not-allowed;
+    opacity: 1;
+    background-color: rgba(235, 235, 228, 0.5) !important;
 }

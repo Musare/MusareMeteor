@@ -108,7 +108,8 @@
                 <div class="col-md-3" id="side-panel">
                     <ul class="nav nav-tabs nav-justified" data-tabs="tabs">
                         <li role="presentation" class="active"><a data-toggle="tab" href="#playlist">Playlist</a></li>
-                        <li role="presentation" id="chat-tab"><a data-toggle="tab" href="#chat">Chat</a></li>
+                        <li role="presentation" id="chat-tab"><a data-toggle="tab" href="#chat">{{type}} Chat</a></li>
+                        <li role="presentation" id="global-chat-tab"><a data-toggle="tab" href="#global-chat">Global Chat</a></li>
                     </ul>
                     <div id='content' class="tab-content sidebar-content">
                         <div class="tab-pane active" id="playlist">
@@ -130,6 +131,24 @@
                                     <input id="chat-input" placeholder="Please register and login to chat." disabled>
                                 {{/if}}
                                 <div id="submit"><button class="btn btn-primary btn-block">Submit<i id="submit-message" class="fa fa-paper-plane-o"></i></button></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="global-chat">
+                            <ul id="global-chat-ul">
+                                {{#each globalChat}}
+                                    {{#emojione}}
+                                        <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span title="{{time}}" style="float: right;">{{rtime time}}</span> <br/>{{this.message}}</li>
+                                    {{/emojione}}
+                                    <hr>
+                                {{/each}}
+                            </ul>
+                            <div id="global-chat-input-div">
+                                {{#if currentUser}}
+                                    <textarea id="global-chat-input" placeholder="Type a message..."></textarea>
+                                {{else}}
+                                    <input id="global-chat-input" placeholder="Please register and login to chat." disabled>
+                                {{/if}}
+                                <div id="global-submit"><button class="btn btn-primary btn-block">Submit<i id="global-submit-message" class="fa fa-paper-plane-o"></i></button></div>
                             </div>
                         </div>
                     </div>
