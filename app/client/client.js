@@ -1836,7 +1836,7 @@ Template.room.onCreated(function () {
                 }
                 $("#player").show();
                 function loadVideo() {
-                    if (YT.loaded === 0 && YT.loading === 1) {
+                    if (YT !== undefined && YT.loaded === 0 && YT.loading === 1) {
                         Session.set("loadVideoTimeout", Meteor.setTimeout(function() {
                             loadVideo();
                         }, 500));
