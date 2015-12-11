@@ -96,6 +96,7 @@ Template.settings.events({
 });
 
 Template.profile.events({
+    //Edit reak name
     "click #edit-name": function(){
         $("#name").hide();
         $("#name-div").show();
@@ -120,6 +121,33 @@ Template.profile.events({
         $("#edit-name").show();
         $("#cancel-edit").hide();
         $("#input-name").val("");
+    },
+    //Edit username
+    "click #edit-username": function(){
+        $("#username").hide();
+        $("#username-div").show();
+        $("#edit-username").hide();
+        $("#cancel-username").show();
+    },
+    "click #submit-username": function(){
+        var user = Meteor.user()
+        $("#username").show();
+        $("#username-div").hide();
+        $("#edit-username").show();
+        $("#cancel-username").hide();
+        var username = user.username;
+        var newUserName = $("#input-username").val();
+        $("#profile-name").text(newUserName)
+        $("#username").text("Username: " + newUserName);
+        $("#input-username").val("")
+        Meteor.call("updateUserName", username, newUserName);
+    },
+    "click #cancel-username": function(){
+        $("#username").show();
+        $("#username-div").hide();
+        $("#edit-username").show();
+        $("#cancel-username").hide();
+        $("#input-username").val("");
     }
 })
 

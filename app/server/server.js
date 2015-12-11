@@ -956,6 +956,9 @@ Meteor.methods({
     },
     updateRealName: function(username, realname){
         Meteor.users.update({"profile.username": username}, {$set: {"profile.realname": realname}});
+    },
+    updateUserName: function(username, newUserName){
+        Meteor.users.update({"username": username}, {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}})
     }
 });
 
