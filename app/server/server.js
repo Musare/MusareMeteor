@@ -959,6 +959,9 @@ Meteor.methods({
     },
     updateUserName: function(username, newUserName){
         Meteor.users.update({"username": username}, {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}})
+    },
+    deleteAccount: function(userID) {
+        Meteor.users.remove({_id: userID});
     }
 });
 

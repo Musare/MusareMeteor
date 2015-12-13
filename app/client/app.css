@@ -1494,3 +1494,12 @@ input[type="checkbox"]:checked + #two-label:after {
 #submit-name{
     margin-left: 10px;
 }
+
+#submit-username{
+    margin-left: 10px;
+}
+
+.settings-option{
+    margin: 5px 0;
+    font-size: 1.2em;
+}

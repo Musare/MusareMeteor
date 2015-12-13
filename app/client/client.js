@@ -92,6 +92,12 @@ function getSpotifyInfo(title, cb, artist) {
 Template.settings.events({
     "click #save-settings": function() {
         Meteor.call("updateSettings", $("#showRating").is(":checked"));
+    },
+    "click #delete-account": function(){
+        $("#delete-account").text("Click to confirm");
+        $("#delete-account").click(function(){
+            Meteor.call("deleteAccount", Meteor.userId());
+        })
     }
 });
 
@@ -266,7 +272,7 @@ Template.settings.onCreated(function() {
 curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
 
 Handlebars.registerHelper('active', function(path) {
-    return curPath() == path ? 'active' : '';
+        return curPath() == path ? 'active' : '';
 });
 
 Template.header.helpers({
@@ -366,7 +372,9 @@ Template.register.events({
     },
 
     "click #github-login": function(){
-        Meteor.loginWithGithub({loginStyle: "redirect"});
+        Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
+            console.log(err, res);
+        });
     }
 });
 
