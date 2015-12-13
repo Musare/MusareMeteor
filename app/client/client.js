@@ -158,8 +158,8 @@ Template.profile.events({
 })
 
 Template.profile.helpers({
-    "realname": function(){
-        return Session.get("realname");
+    "real_name": function(){
+        return Session.get("real_name");
     },
     "username": function() {
         return Session.get("username")
@@ -222,7 +222,7 @@ Template.profile.onCreated(function() {
             window.location = "/";
         } else {
             var data = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
-            Session.set("realname", data.profile.realname);
+            Session.set("real_name", data.profile.realname);
             Session.set("username", data.profile.username);
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);
