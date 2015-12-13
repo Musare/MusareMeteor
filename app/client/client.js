@@ -1104,6 +1104,7 @@ Template.admin.helpers({
       return Session.get("userNum");
   },
   allUsers: function(){
+      return Meteor.users.find().count();
   },
   playlists: function() {
       var playlists = Playlists.find({}).fetch();
