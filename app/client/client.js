@@ -98,6 +98,26 @@ Template.settings.events({
         $("#delete-account").click(function(){
             Meteor.call("deleteAccount", Meteor.userId());
         })
+    },
+    "click #change-password": function(){
+        var oldPassword = $("#old-password").val();
+        var newPassword= $("#new-password").val();
+        var confirmPassword = $("#confirm-password").val();
+        if(newPassword === confirmPassword){
+            Accounts.changePassword(oldPassword, newPassword, function(err){
+                if(err){
+                    $("#old-password").val("");
+                    $("#new-password").val("");
+                    $("#confirm-password").val("");
+                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Oh Snap! </strong>" + err.reason + "</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                } else {
+                    $("#old-password").val("");
+                    $("#new-password").val("");
+                    $("#confirm-password").val("");
+                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Hooray!</strong> You changed your password successfully.</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                }
+            });
+        }
     }
 });
 

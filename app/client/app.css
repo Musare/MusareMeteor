@@ -1503,3 +1503,7 @@ input[type="checkbox"]:checked + #two-label:after {
     margin: 5px 0;
     font-size: 1.2em;
 }
+
+.settings-input{
+    margin-bottom: 10px;
+}
