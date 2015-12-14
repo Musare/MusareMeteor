@@ -139,9 +139,8 @@ Template.profile.helpers({
         return dislikedArr;
     },
     initials: function() {
-        var user = Meteor.user();
-        if (user !== undefined) {
-            return user.profile.username[0].toUpperCase();
+        if (Session.get("username") !== undefined) {
+            return Session.get("username")[0].toUpperCase();
         } else {
             return "";
         }
