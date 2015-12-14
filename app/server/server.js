@@ -625,7 +625,7 @@ Meteor.methods({
                     if(res.content.indexOf("true") > -1){
                         return true;
                     } else{
-                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                     }
                 });
                 return true;
@@ -635,7 +635,7 @@ Meteor.methods({
                     if(res.content.indexOf("true") > -1){
                         return true;
                     } else{
-                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                        Chat.insert({type: type, rawrank: rawrank, rank: "", message: message, time: time, username: username});
                     }
                 });
                 return true;
