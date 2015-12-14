@@ -96,7 +96,10 @@ Template.settings.events({
     "click #delete-account": function(){
         $("#delete-account").text("Click to confirm");
         $("#delete-account").click(function(){
-            Meteor.call("deleteAccount", Meteor.userId());
+            var bool = confirm("Are you sure you want to delete your account?");
+            if(bool) {
+                Meteor.call("deleteAccount", Meteor.userId());
+            }
         })
     },
     "click #change-password": function(){
