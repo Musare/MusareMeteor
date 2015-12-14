@@ -1381,13 +1381,11 @@ nav form input[type="image"]{
     letter-spacing: inherit;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    background-color: #51BCA3;
 }
 
 #header-dropdown li:hover {
-    background-color: white;
-}
-#header-dropdown li:hover > a {
-    color: #1C39B2 !important;
+    background-color: #3A8876;
 }
 #ban-icon {
     font-size: 20em;
