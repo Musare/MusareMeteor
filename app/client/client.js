@@ -536,6 +536,20 @@ function executeCommand(command, params){
                 console.log(err);
             }
         });
+    } else if(command === "unban"){
+        var user = params[0];
+        Meteor.call("unbanUser", user, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "unsilence"){
+        var user = params[0];
+        Meteor.call("unsilenceUser", user, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
     } else if(command === "pause"){
         Meteor.call("pauseRoom", Session.get("type"), function(err, res){
             if(err){

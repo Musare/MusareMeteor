@@ -573,6 +573,20 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
+    unbanUser: function(username) {
+        if (isAdmin() && !isBanned()) {
+            Meteor.users.update({"profile.usernameL": username.toLowerCase()}, {$unset: "punishments.ban"});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    unsilenceUser: function(username) {
+        if (isAdmin() && !isBanned()) {
+            Meteor.users.update({"profile.usernameL": username.toLowerCase()}, {$unset: "punishments.mute"});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     isBanned: function() {
         return isBanned();
     },
