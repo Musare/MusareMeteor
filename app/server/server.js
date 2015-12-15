@@ -503,6 +503,20 @@ function isBanned() {
     }
 }
 
+function isMuted() {
+    var userData = Meteor.users.findOne(Meteor.userId());
+    if (Meteor.userId() && userData !== undefined && userData.punishments !== undefined && userData.punishments.mute !== undefined) {
+        var mute = userData.punishments.mute;
+        if (new Date(mute.bannedUntil).getTime() <= new Date().getTime()) {
+            Meteor.users.update(Meteor.userId(), {$unset: {"punishments.mute": ""}});
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
 
 Meteor.methods({
     lockRoom: function(type) {
@@ -539,8 +553,31 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
+    muteUser: function(username, period) {
+        if (isAdmin() && !isBanned()) {
+            var user = Meteor.user();
+            var mutedUser = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
+            if (period === undefined || Number(period) === 0) {
+                mutedUntil = 8640000000000000;
+            } else {
+                var mutedUntil = (new Date).getTime() + (period * 1000);
+                if (mutedUntil > 8640000000000000) {
+                    mutedUntil = 8640000000000000;
+                }
+            }
+            mutedUntil = new Date(mutedUntil);
+            var muteObject = {mutedBy: user.profile.usernameL, mutedAt: new Date(Date.now()), mutedUntil: mutedUntil};
+            Meteor.users.update({"profile.usernameL": mutedUser.profile.usernameL}, {$set: {"punishments.mute": muteObject}});
+            Meteor.users.update({"profile.usernameL": mutedUser.profile.usernameL}, {$push: {"punishments.mutes": muteObject}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     isBanned: function() {
         return isBanned();
+    },
+    isMuted: function() {
+        return isMuted();
     },
     updateSettings: function(showRating) {
         if (Meteor.userId() && !isBanned()) {
@@ -598,7 +635,7 @@ Meteor.methods({
         }
     },
     sendMessage: function(type, message) {
-        if (Meteor.userId() && !isBanned()) {
+        if (Meteor.userId() && !isBanned() && !isMuted()) {
             var user = Meteor.user();
             var time = new Date();
             var rawrank = user.profile.rank;

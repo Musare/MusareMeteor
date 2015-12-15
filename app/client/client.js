@@ -430,6 +430,14 @@ function executeCommand(command, params){
                 console.log(err);
             }
         });
+    } else if(command === "silence"){
+        var user = params[0];
+        var time = params[1];
+        Meteor.call("muteUser", user, time, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
     } else if(command === "pause"){
         Meteor.call("pauseRoom", Session.get("type"), function(err, res){
             if(err){
@@ -466,6 +474,9 @@ function sendMessage() {
                 message.shift();
                 message = message.join("");
                 var params = message.split(" ");
+                params = params.map(function(param) {
+                    return param.replace(/\r?\n|\r/g, "");
+                });
                 var command = params.shift();
                 command = command.replace(/\r?\n|\r/g, "");
                 if (executeCommand(command, params)) {
@@ -479,9 +490,9 @@ function sendMessage() {
                 Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
                     if (res) {
                         $("#chat-input").val("");
+                        $("#chat-input").removeAttr("disabled");
+                        $("#chat-input").removeClass("disabled");
                     }
-                    $("#chat-input").removeAttr("disabled");
-                    $("#chat-input").removeClass("disabled");
                 });
             }
         }
