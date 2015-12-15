@@ -581,11 +581,6 @@ Template.room.events({
         }
     },
     "keyup #global-chat-input": function(e) {
-        console.log("Tesr!");
-        console.log(e.which);
-        console.log(typeof e.which);
-        console.log(e.type);
-        console.log(typeof e.type);
         if (e.type === "keyup" && e.which === 13) {
             e.preventDefault();
             if (!$('#global-chat-input').data('dropdownshown')) {
