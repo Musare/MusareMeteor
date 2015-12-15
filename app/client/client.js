@@ -1200,7 +1200,10 @@ Template.admin.helpers({
       return Session.get("userNum");
   },
   allUsers: function(){
-      return Meteor.users.find().count();
+      Meteor.call("getTotalUsers", function(err, num){
+          Session.set("allUsers", num);
+      })
+      return Session.get("allUsers");
   },
   playlists: function() {
       var playlists = Playlists.find({}).fetch();

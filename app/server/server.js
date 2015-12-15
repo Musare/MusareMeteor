@@ -954,6 +954,10 @@ Meteor.methods({
             return Object.keys(Meteor.default_server.sessions).length;
         }
     },
+    getTotalUsers: function(){
+        console.log(Meteor.users.find().count());
+        return Meteor.users.find().count();
+    },
     updateRealName: function(username, realname){
         Meteor.users.update({"profile.username": username}, {$set: {"profile.realname": realname}});
     },
