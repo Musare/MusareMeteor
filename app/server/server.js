@@ -411,7 +411,7 @@ Accounts.onCreateUser(function(options, user) {
             username = user.username;
         }
     }
-    user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: [], settings: {showRating: false}};
+    user.profile = {username: username, usernameL: username.toLowerCase(), rank: "default", liked: [], disliked: [], settings: {showRating: false}, realname: ""};
     return user;
 });
 
@@ -456,10 +456,10 @@ Meteor.publish("userProfiles", function(username) {
     if (settings !== undefined && settings.profile.settings) {
         settings = settings.profile.settings;
         if (settings.showRating === true) {
-            return Meteor.users.find({"profile.usernameL": username}, {fields: {"profile.username": 1, "profile.usernameL": 1, "profile.rank": 1, createdAt: 1, "profile.liked": 1, "profile.disliked": 1, "profile.settings": 1}});
+            return Meteor.users.find({"profile.usernameL": username}, {fields: {"profile.username": 1, "profile.usernameL": 1, "profile.rank": 1, createdAt: 1, "profile.liked": 1, "profile.disliked": 1, "profile.settings": 1, "profile.realname": 1}});
         }
     }
-    return Meteor.users.find({"profile.usernameL": username}, {fields: {"profile.username": 1, "profile.usernameL": 1, "profile.rank": 1, createdAt: 1, "profile.settings": 1}});
+    return Meteor.users.find({"profile.usernameL": username}, {fields: {"profile.username": 1, "profile.usernameL": 1, "profile.rank": 1, createdAt: 1, "profile.settings": 1, "profile.realname": 1}});
 });
 
 Meteor.publish("isAdmin", function() {
@@ -990,6 +990,19 @@ Meteor.methods({
         if (!isBanned()) {
             return Object.keys(Meteor.default_server.sessions).length;
         }
+    },
+    getTotalUsers: function(){
+        console.log(Meteor.users.find().count());
+        return Meteor.users.find().count();
+    },
+    updateRealName: function(username, realname){
+        Meteor.users.update({"profile.username": username}, {$set: {"profile.realname": realname}});
+    },
+    updateUserName: function(username, newUserName){
+        Meteor.users.update({"username": username}, {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}})
+    },
+    deleteAccount: function(userID) {
+        Meteor.users.remove({_id: userID});
     }
 });
 

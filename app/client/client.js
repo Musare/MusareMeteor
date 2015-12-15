@@ -92,10 +92,98 @@ function getSpotifyInfo(title, cb, artist) {
 Template.settings.events({
     "click #save-settings": function() {
         Meteor.call("updateSettings", $("#showRating").is(":checked"));
+    },
+    "click #delete-account": function(){
+        $("#delete-account").text("Click to confirm");
+        $("#delete-account").click(function(){
+            var bool = confirm("Are you sure you want to delete your account?");
+            if(bool) {
+                Meteor.call("deleteAccount", Meteor.userId());
+            }
+        })
+    },
+    "click #change-password": function(){
+        var oldPassword = $("#old-password").val();
+        var newPassword= $("#new-password").val();
+        var confirmPassword = $("#confirm-password").val();
+        if(newPassword === confirmPassword){
+            Accounts.changePassword(oldPassword, newPassword, function(err){
+                if(err){
+                    $("#old-password").val("");
+                    $("#new-password").val("");
+                    $("#confirm-password").val("");
+                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Oh Snap! </strong>" + err.reason + "</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                } else {
+                    $("#old-password").val("");
+                    $("#new-password").val("");
+                    $("#confirm-password").val("");
+                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Hooray!</strong> You changed your password successfully.</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                }
+            });
+        }
     }
 });
 
+Template.profile.events({
+    //Edit reak name
+    "click #edit-name": function(){
+        $("#name").hide();
+        $("#name-div").show();
+        $("#edit-name").hide();
+        $("#cancel-edit").show();
+    },
+    "click #submit-name": function(){
+        var user = Meteor.user();
+        $("#name").show();
+        $("#name-div").hide();
+        $("#edit-name").show();
+        $("#cancel-edit").hide();
+        var realname = $("#input-name").val();
+        var username = user.profile.username;
+        $("#name").text("Name: " + realname);
+        $("#input-name").val("")
+        Meteor.call("updateRealName", username, realname);
+    },
+    "click #cancel-edit": function(){
+        $("#name").show();
+        $("#name-div").hide();
+        $("#edit-name").show();
+        $("#cancel-edit").hide();
+        $("#input-name").val("");
+    },
+    //Edit username
+    "click #edit-username": function(){
+        $("#username").hide();
+        $("#username-div").show();
+        $("#edit-username").hide();
+        $("#cancel-username").show();
+    },
+    "click #submit-username": function(){
+        var user = Meteor.user()
+        $("#username").show();
+        $("#username-div").hide();
+        $("#edit-username").show();
+        $("#cancel-username").hide();
+        var username = user.username;
+        var newUserName = $("#input-username").val();
+        $("#profile-name").text(newUserName)
+        $("#username").text("Username: " + newUserName);
+        $("#input-username").val("")
+        Meteor.call("updateUserName", username, newUserName);
+    },
+    "click #cancel-username": function(){
+        $("#username").show();
+        $("#username-div").hide();
+        $("#edit-username").show();
+        $("#cancel-username").hide();
+        $("#input-username").val("");
+    }
+})
+
 Template.profile.helpers({
+    "real_name": function(){
+        return Session.get("real_name");
+    },
     "username": function() {
         return Session.get("username")
     },
@@ -145,6 +233,13 @@ Template.profile.helpers({
             return "";
         }
     },
+    isUser: function(){
+        var parts = Router.current().url.split('/');
+        var username = parts.pop();
+        if(username === Meteor.user().profile.username){
+            return true;
+        }
+    }
 });
 
 Template.profile.onCreated(function() {
@@ -156,6 +251,7 @@ Template.profile.onCreated(function() {
             window.location = "/";
         } else {
             var data = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
+            Session.set("real_name", data.profile.realname);
             Session.set("username", data.profile.username);
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);
@@ -205,7 +301,7 @@ Template.settings.onCreated(function() {
 curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
 
 Handlebars.registerHelper('active', function(path) {
-    return curPath() == path ? 'active' : '';
+        return curPath() == path ? 'active' : '';
 });
 
 Template.header.helpers({
@@ -305,7 +401,9 @@ Template.register.events({
     },
 
     "click #github-login": function(){
-        Meteor.loginWithGithub({loginStyle: "redirect"});
+        Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
+            console.log(err, res);
+        });
     }
 });
 
@@ -1108,6 +1206,10 @@ Template.admin.helpers({
       return Session.get("userNum");
   },
   allUsers: function(){
+      Meteor.call("getTotalUsers", function(err, num){
+          Session.set("allUsers", num);
+      })
+      return Session.get("allUsers");
   },
   playlists: function() {
       var playlists = Playlists.find({}).fetch();
