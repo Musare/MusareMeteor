@@ -227,9 +227,8 @@ Template.profile.helpers({
         return dislikedArr;
     },
     initials: function() {
-        var user = Meteor.user();
-        if (user !== undefined) {
-            return user.profile.username[0].toUpperCase();
+        if (Session.get("username") !== undefined) {
+            return Session.get("username")[0].toUpperCase();
         } else {
             return "";
         }
@@ -551,25 +550,62 @@ function executeCommand(command, params){
 
 function sendMessage() {
     var message = $("#chat-input").val();
-    if (message.length > 0 && message[0] !== " ") {
-        if (message[0] === "/") {
-            message = message.split("");
-            message.shift();
-            message = message.join("");
-            var params = message.split(" ");
-            var command = params.shift();
-            command = command.replace(/\r?\n|\r/g, "");
-            if (executeCommand(command, params)) {
-                $("#chat-input").val("");
-            } else {
-                $("#chat-input").val("");
-            }
-        } else {
-            Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
-                if (res) {
+    if (!$("#chat-input").hasClass("disabled")) {
+        if (message.length > 0 && message[0] !== " ") {
+            if (message[0] === "/") {
+                message = message.split("");
+                message.shift();
+                message = message.join("");
+                var params = message.split(" ");
+                var command = params.shift();
+                command = command.replace(/\r?\n|\r/g, "");
+                if (executeCommand(command, params)) {
+                    $("#chat-input").val("");
+                } else {
                     $("#chat-input").val("");
                 }
-            });
+            } else {
+                $("#chat-input").addClass("disabled");
+                $("#chat-input").attr("disabled", "");
+                Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
+                    if (res) {
+                        $("#chat-input").val("");
+                    }
+                    $("#chat-input").removeAttr("disabled");
+                    $("#chat-input").removeClass("disabled");
+                });
+            }
+        }
+    }
+}
+
+function sendMessageGlobal() {
+    var message = $("#global-chat-input").val();
+    if (!$("#global-chat-input").hasClass("disabled")) {
+        if (message.length > 0 && message[0] !== " ") {
+            if (message[0] === "/") {
+                message = message.split("");
+                message.shift();
+                message = message.join("");
+                var params = message.split(" ");
+                var command = params.shift();
+                command = command.replace(/\r?\n|\r/g, "");
+                if (executeCommand(command, params)) {
+                    $("#global-chat-input").val("");
+                } else {
+                    $("#global-chat-input").val("");
+                }
+            } else {
+                $("#global-chat-input").addClass("disabled");
+                $("#global-chat-input").attr("disabled", "");
+                Meteor.call("sendMessage", "global", message, function (err, res) {
+                    if (res) {
+                        $("#global-chat-input").val("");
+                    }
+                    $("#global-chat-input").removeClass("disabled");
+                    $("#global-chat-input").removeAttr("disabled");
+                });
+            }
         }
     }
 }
@@ -577,6 +613,9 @@ function sendMessage() {
 Template.room.events({
     "click #chat-tab": function() {
         $("#chat-tab").removeClass("unread-messages");
+    },
+    "click #global-chat-tab": function() {
+        $("#global-chat-tab").removeClass("unread-messages");
     },
     "click #sync": function() {
         if (Session.get("currentSong") !== undefined) {
@@ -601,18 +640,36 @@ Template.room.events({
     },
     "click #side-panel": function(e) {
         Meteor.setTimeout(function() {
-        var elem = document.getElementById('chat');
-        elem.scrollTop = elem.scrollHeight;
+            var elem = document.getElementById('chat');
+            var elem1 = document.getElementById('global-chat');
+            elem.scrollTop = elem.scrollHeight;
+            elem1.scrollTop = elem1.scrollHeight;
         }, 1);
     },
     "click #submit": function() {
         sendMessage();
+    },
+    "click #global-submit": function() {
+        sendMessageGlobal();
     },
     "keyup #chat-input": function(e) {
         if (e.type === "keyup" && e.which === 13) {
             e.preventDefault();
             if (!$('#chat-input').data('dropdownshown')) {
                 sendMessage();
+            }
+        }
+    },
+    "keyup #global-chat-input": function(e) {
+        console.log("Tesr!");
+        console.log(e.which);
+        console.log(typeof e.which);
+        console.log(e.type);
+        console.log(typeof e.type);
+        if (e.type === "keyup" && e.which === 13) {
+            e.preventDefault();
+            if (!$('#global-chat-input').data('dropdownshown')) {
+                sendMessageGlobal();
             }
         }
     },
@@ -941,6 +998,15 @@ Template.room.helpers({
             }
         }, 100);
         return Chat.find({type: Session.get("type")}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
+    },
+    globalChat: function() {
+        Meteor.setTimeout(function() {
+            var elem = document.getElementById('global-chat');
+            if (elem !== undefined && elem !== null) {
+                elem.scrollTop = elem.scrollHeight;
+            }
+        }, 100);
+        return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
     },
     likes: function() {
         var playlist = Playlists.findOne({type: Session.get("type")});
@@ -1758,9 +1824,15 @@ Template.playlist.events({
 Meteor.subscribe("rooms");
 
 Template.room.onCreated(function () {
-    Chat.after.find(function() {
-        if (!$("#chat-tab").hasClass("active")) {
-            $("#chat-tab").addClass("unread-messages");
+    Chat.after.find(function(userId, selector) {
+        if (selector.type === "global") {
+            if (!$("#global-chat-tab").hasClass("active")) {
+                $("#global-chat-tab").addClass("unread-messages");
+            }
+        } else if(selector.type === Session.get("type")) {
+            if (!$("#chat-tab").hasClass("active")) {
+                $("#chat-tab").addClass("unread-messages");
+            }
         }
     });
     Session.set("reportSong", false);
@@ -1855,7 +1927,7 @@ Template.room.onCreated(function () {
                 }
                 $("#player").show();
                 function loadVideo() {
-                    if (YT.loaded === 0 && YT.loading === 1) {
+                    if (YT !== undefined && YT.loaded === 0 && YT.loading === 1) {
                         Session.set("loadVideoTimeout", Meteor.setTimeout(function() {
                             loadVideo();
                         }, 500));

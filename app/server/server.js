@@ -44,7 +44,7 @@ function checkUsersPR() {
     var connections = Meteor.server.stream_server.open_sockets;
     _.each(connections,function(connection){
         // named subscriptions
-        if (connection._meteorSession !== undefined) {
+        if (connection._meteorSession !== undefined && connection._meteorSession !== null) {
             var subs = connection._meteorSession._namedSubs;
             //var ip = connection.remoteAddress;
             var used_subs = [];
@@ -625,7 +625,7 @@ Meteor.methods({
                     if(res.content.indexOf("true") > -1){
                         return true;
                     } else{
-                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[M]", message: message, time: time, username: username});
                     }
                 });
                 return true;
@@ -635,7 +635,7 @@ Meteor.methods({
                     if(res.content.indexOf("true") > -1){
                         return true;
                     } else{
-                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                        Chat.insert({type: type, rawrank: rawrank, rank: "", message: message, time: time, username: username});
                     }
                 });
                 return true;
