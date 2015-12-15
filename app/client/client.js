@@ -233,6 +233,13 @@ Template.profile.helpers({
             return "";
         }
     },
+    isUser: function(){
+        var parts = Router.current().url.split('/');
+        var username = parts.pop();
+        if(username === Meteor.user().profile.username){
+            return true;
+        }
+    }
 });
 
 Template.profile.onCreated(function() {

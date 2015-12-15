@@ -12,7 +12,7 @@
                     <div class="panel-heading">Basic Info</div>
                     <div class="panel-body">
                         <ul>
-                            {{#if currentUser}}
+                            {{#if isUser}}
                                 <a href="#" id="edit-name" class="profile-action">Edit</a>
                                 <a href="#" id="cancel-edit" class="profile-action" style="display:none;">Cancel</a>
                             {{/if}}
@@ -20,7 +20,7 @@
                             <div id="name-div" style="display: none">
                                 <input type="text" id="input-name"><button id="submit-name" class="btn btn-primary btn-sm">Submit</button>
                             </div>
-                            {{#if currentUser}}
+                            {{#if isUser}}
                                 <a href="#" id="edit-username" class="profile-action">Edit</a>
                                 <a href="#" id="cancel-username" class="profile-action" style="display:none;">Cancel</a>
                             {{/if}}
