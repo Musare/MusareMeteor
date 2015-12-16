@@ -1268,6 +1268,10 @@ Template.admin.events({
             }
         });
     },
+    "click #rreset_confirm": function(){
+        $('#confirmModal').modal('hide');
+        Meteor.call("resetRating");
+    }
 });
 
 Template.stations.helpers({
@@ -1337,9 +1341,6 @@ Template.stations.events({
         $("#dislikes").val(this.dislikes);
         $("#duration").val(this.duration);
         $("#skip-duration").val(this.skipDuration);
-    },
-    "click #rreset_confirm": function(e){
-        Meteor.call("resetRating");
     },
     "click .add-song-button": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
