@@ -48,6 +48,34 @@
               </div>
           </div>
       {{/each}}
+      <div class="row" style="margin-top: 20px; height: 100%;">
+        <div class="col-md-6 col-md-offset-1 admin-container" style="height: 80%;">
+          <div>
+            <h1>Stations</h1><a href="#" data-toggle="modal" data-target="#addStation">(+)</a>
+          </div>
+          {{#each playlists}}
+            <p>{{display}}</p>
+            <table class="table" style="border-bottom: 1px solid white;">
+              <tr>
+                <th>Songs</th>
+                <th>Users</th>
+                <th>Admins</th>
+                <th>Reports</th>
+                <th>Queue</th>
+              </tr>
+              <tr>
+                <td>{{songs.length}}</td>
+                <td></td>
+                <td></td>
+                <td>{{reportsCount display}}</td>
+                <td>{{queueCount display}}</td>
+                <td><a href="/admin/stations" id={{display}}>Edit</a></td>
+              </tr>
+            </table>
+          {{/each}}
+          <button class="btn btn-danger col-md-6 col-md-offset-3" id="rrating" data-toggle="modal" data-target="#confirmModal">Reset All Ratings</button>
+        </div>
+      </div>
 
       <div id="previewModal" class="modal fade" role="dialog">
           <div class="modal-dialog">
