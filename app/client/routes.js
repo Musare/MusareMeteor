@@ -145,6 +145,6 @@ Router.route("/:type", {
     }
 });
 
-Router.route("/u/:user", {
-    template: "profile"
+Router.route("/u/:user", function() {
+    this.render("profile");
 });

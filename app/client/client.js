@@ -13,6 +13,32 @@ Meteor.startup(function() {
     });
 });
 
+/* Global Helpers */
+Handlebars.registerHelper("isAdmin", function(argument){
+  if (Meteor.user() && Meteor.user().profile) {
+      return Meteor.user().profile.rank === "admin";
+  } else {
+      return false;
+  }
+});
+
+Handlebars.registerHelper("isModerator", function(argument){
+  if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
+    return true;
+  } else {
+    return false;
+  }
+});
+
+Handlebars.registerHelper("initials", function(argument){
+  var user = Meteor.user();
+  if (user !== undefined) {
+      return user.profile.username[0].toUpperCase();
+  } else {
+      return "";
+  }
+});
+
 Deps.autorun(function() {
     Meteor.subscribe("queues");
     Meteor.subscribe("reports");
@@ -125,7 +151,7 @@ Template.settings.events({
 });
 
 Template.profile.events({
-    //Edit reak name
+    //Edit real name
     "click #edit-name": function(){
         $("#name").hide();
         $("#name-div").show();
@@ -170,6 +196,7 @@ Template.profile.events({
         $("#username").text("Username: " + newUserName);
         $("#input-username").val("")
         Meteor.call("updateUserName", username, newUserName);
+        window.location = "/u/" + newUserName;
     },
     "click #cancel-username": function(){
         $("#username").show();
@@ -177,6 +204,28 @@ Template.profile.events({
         $("#edit-username").show();
         $("#cancel-username").hide();
         $("#input-username").val("");
+    },
+    // Admins only Edit Rank
+    "click #edit-rank": function() {
+      $("#rank").hide();
+      $("#rank-div").show();
+      $("#edit-rank").hide();
+      $("#cancel-rank").show();
+    },
+    "click #submit-rank": function() {
+      $("#rank").show();
+      $("#rank-div").hide();
+      $("#edit-rank").show();
+      $("#cancel-rank").hide();
+      var newRank = $("#select-rank option:selected").val();
+      var username = Session.get("username");
+      console.log(username, newRank);
+    },
+    "click #cancel-rank": function() {
+      $("#rank").show();
+      $("#rank-div").hide();
+      $("#edit-rank").show();
+      $("#cancel-rank").hide();
     }
 })
 
@@ -225,13 +274,6 @@ Template.profile.helpers({
             })
         });
         return dislikedArr;
-    },
-    initials: function() {
-        if (Session.get("username") !== undefined) {
-            return Session.get("username")[0].toUpperCase();
-        } else {
-            return "";
-        }
     },
     isUser: function(){
         var parts = Router.current().url.split('/');
@@ -305,33 +347,8 @@ Handlebars.registerHelper('active', function(path) {
 });
 
 Template.header.helpers({
-    currentUser: function() {
-        return Meteor.user();
-    },
     userId: function() {
         return Meteor.userId();
-    },
-    initials: function() {
-        var user = Meteor.user();
-        if (user !== undefined) {
-            return user.profile.username[0].toUpperCase();
-        } else {
-            return "";
-        }
-    },
-    isAdmin: function() {
-        if (Meteor.user() && Meteor.user().profile) {
-            return Meteor.user().profile.rank === "admin";
-        } else {
-            return false;
-        }
-    },
-    isModerator: function() {
-        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 });
 
@@ -342,6 +359,9 @@ Template.header.events({
         if (hpSound !== undefined) {
             hpSound.stop();
         }
+    },
+    "click #profile": function(){
+        window.location = "/u/" + Meteor.user().profile.username;
     }
 });
 
@@ -447,20 +467,6 @@ Template.dashboard.helpers({
             return room.currentSong;
         } else {
             return {};
-        }
-    },
-    isAdmin: function() {
-        if (Meteor.user() && Meteor.user().profile) {
-            return Meteor.user().profile.rank === "admin";
-        } else {
-            return false;
-        }
-    },
-    isModerator: function() {
-        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-            return true;
-        } else {
-            return false;
         }
     }
 });
@@ -1111,20 +1117,6 @@ Template.room.helpers({
     loaded: function() {
         return Session.get("loaded");
     },
-    isAdmin: function() {
-        if (Meteor.user() && Meteor.user().profile) {
-            return Meteor.user().profile.rank === "admin";
-        } else {
-            return false;
-        }
-    },
-    isModerator: function() {
-        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-            return true;
-        } else {
-            return false;
-        }
-    },
     paused: function() {
         return Session.get("state") === "paused";
     },
@@ -1256,31 +1248,49 @@ Template.admin.helpers({
 });
 
 Template.admin.events({
-  "click #croom_create": function() {
-      Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
-          if (err) {
-              alert("Error " + err.error + ": " + err.reason);
-          } else {
-              window.location = "/" + $("#croom_tag").val();
-          }
-      });
-  },
-  "click a": function(e){
-    var id = e.currentTarget.id;
-    console.log(id.toLowerCase());
-    Session.set("playlistToEdit", id);
-  }
+    "click #croom_create": function() {
+        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
+            if (err) {
+            alert("Error " + err.error + ": " + err.reason);
+        } else {
+            window.location = "/" + $("#croom_tag").val();
+            }
+        });
+    },
+    "click a": function(e){
+        var id = e.currentTarget.id;
+        console.log(id.toLowerCase());
+        Session.set("playlistToEdit", id);
+    },
+    "click #croom_create": function() {
+        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#two").prop("checked"), function (err, res) {
+            if (err) {
+                alert("Error " + err.error + ": " + err.reason);
+            } else {
+                window.location = "/" + $("#croom_tag").val();
+            }
+        });
+    },
+    "click #rreset_confirm": function(){
+        $('#confirmModal').modal('hide');
+        Meteor.call("resetRating");
+    }
 });
 
 Template.stations.helpers({
     playlist: function() {
       var query = {type: Session.get("playlistToEdit").toLowerCase()};
       var playlists = Playlists.find(query).fetch();
-      console.log(Session.get("playlistToEdit"), query, playlists);
       return playlists;
     },
     whichStation: function(){
       return Session.get("playlistToEdit");
+    },
+    reports: function() {
+      var query = {room: Session.get("playlistToEdit").toLowerCase()};
+      var reports = Reports.find(query).fetch();
+      console.log(reports);
+      return reports;
     }
 });
 
@@ -1339,9 +1349,6 @@ Template.stations.events({
         $("#dislikes").val(this.dislikes);
         $("#duration").val(this.duration);
         $("#skip-duration").val(this.skipDuration);
-    },
-    "click #rreset_confirm": function(e){
-        Meteor.call("resetRating");
     },
     "click .add-song-button": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
@@ -1481,15 +1488,6 @@ Template.stations.events({
                 $("#previewPlayer").hide();
             }, 10000);
         }
-    },
-    "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#two").prop("checked"), function (err, res) {
-            if (err) {
-                alert("Error " + err.error + ": " + err.reason);
-            } else {
-                window.location = "/" + $("#croom_tag").val();
-            }
-        });
     },
     "click #get-spotify-info": function() {
         var search = $("#title").val();

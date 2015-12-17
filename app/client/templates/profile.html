@@ -13,23 +13,37 @@
                     <div class="panel-body">
                         <ul>
                             {{#if isUser}}
-                                <a href="#" id="edit-name" class="profile-action">Edit</a>
                                 <a href="#" id="cancel-edit" class="profile-action" style="display:none;">Cancel</a>
                             {{/if}}
-                            <li class="user-stat" id="name">Name: {{real_name}}</li>
+                            <li class="user-stat" id="name">Name: {{real_name}} <i class="fa fa-pencil" id="edit-name" style="font-size: 14px; cursor: pointer;"></i></li>
                             <div id="name-div" style="display: none">
                                 <input type="text" id="input-name"><button id="submit-name" class="btn btn-primary btn-sm">Submit</button>
                             </div>
                             {{#if isUser}}
-                                <a href="#" id="edit-username" class="profile-action">Edit</a>
                                 <a href="#" id="cancel-username" class="profile-action" style="display:none;">Cancel</a>
                             {{/if}}
-                            <li class="user-stat" id="username">Username: {{username}}</li>
+                            <li class="user-stat" id="username">Username: {{username}} <i class="fa fa-pencil" id="edit-username" style="font-size: 14px; cursor: pointer;"></i></li>
                             <div id="username-div" style="display: none">
                                 <input type="text" id="input-username"><button id="submit-username" class="btn btn-primary btn-sm">Submit</button>
                             </div>
                             <li class="user-stat">Joined: {{first_joined}}</li>
-                            <li class="user-stat">Rank: {{rank}}</li>
+                            {{#if isAdmin}}
+                              <a href="#" id="cancel-rank" class="profile-action" style="display:none;">Cancel</a>
+                              <li class="user-stat" id="rank">Rank: {{rank}} <i class="fa fa-pencil" id="edit-rank" style="font-size: 14px; cursor: pointer;"></i></li>
+                              <div class="user-stat" id="rank-div" style="display: none">
+                                Rank:
+                                <select id="select-rank">
+                                  <option value="default">Default</option>
+                                  <option value="moderator">Moderator</option>
+                                  <option value="admin">Admin</option>
+                                </select>
+                                <button id="submit-rank" class="btn btn-primary btn-sm">Submit</button>
+                              </div>
+                            {{else}}
+                              {{#if isUser}}
+                                <li class="user-stat">Rank: {{rank}}</li>
+                                {{/if}}
+                            {{/if}}
                         </ul>
                     </div>
                 </div>
