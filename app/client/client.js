@@ -784,10 +784,21 @@ Template.room.events({
                 contentType: "json",
                 success: function(data){
                     for(var i in data.items){
-                        $("#song-results").append("<p>" + data.items[i].snippet.title + "</p>");
+                        var item = data.items[i];
+                        $("#song-results").append(
+                            "<div>" +
+                                "<img src='" + item.snippet.thumbnails.medium.url + "' class='song-result-thumbnail'/>" +
+                                "<div>" +
+                                    "<span class='song-result-title'>" + item.snippet.title + "</span>" +
+                                    "<span class='song-result-channel'>" + item.snippet.channelTitle + "</span>" +
+                                "</div>" +
+                            "</div>"
+                        );
+                        console.log(data.items[i]);
+                        //$("#song-results").append("<p>" + data.items[i].snippet.title + "</p>");
                         ytArr.push({title: data.items[i].snippet.title, id: data.items[i].id.videoId});
                     }
-                    $("#song-results p").click(function(){
+                    $("#song-results div").click(function(){
                         $("#search-info").hide();
                         $("#add-info").show();
                         var title = $(this).text();
@@ -1957,8 +1968,8 @@ Template.room.onCreated(function () {
                 }
                 $("#player").show();
                 function loadVideo() {
-                    if (YT !== undefined && YT.loaded === 0 && YT.loading === 1) {
-                        Session.set("loadVideoTimeout", Meteor.setTimeout(function() {
+                    if (!Session.get("YTLoaded")) {
+                        Session.set("loadVideoTimeout", Meteor.setTimeout(function () {
                             loadVideo();
                         }, 500));
                     } else {
@@ -1969,8 +1980,8 @@ Template.room.onCreated(function () {
                                 videoId: currentSong.id,
                                 playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
                                 events: {
-                                    'onReady': function(event) {
-                                        if(currentSong.skipDuration === undefined){
+                                    'onReady': function (event) {
+                                        if (currentSong.skipDuration === undefined) {
                                             currentSong.skipDuration = 0;
                                         }
                                         event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
@@ -1978,8 +1989,8 @@ Template.room.onCreated(function () {
                                         event.target.setVolume(volume);
                                         resizeSeekerbar();
                                     },
-                                    'onStateChange': function(event){
-                                        if (YT !== undefined) {
+                                    'onStateChange': function (event) {
+                                        if (Session.get("YTLoaded")) {
                                             if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
                                                 event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                                                 event.target.playVideo();
@@ -1994,7 +2005,7 @@ Template.room.onCreated(function () {
                             });
                         } else {
                             yt_player.loadVideoById(currentSong.id);
-                            if(currentSong.skipDuration === undefined){
+                            if (currentSong.skipDuration === undefined) {
                                 currentSong.skipDuration = 0;
                             }
                             yt_player.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
@@ -2002,7 +2013,7 @@ Template.room.onCreated(function () {
                         Session.set("pauseVideo", false);
                         getSongInfo(currentSong);
                     }
-                };
+                }
                 loadVideo();
             }
         }

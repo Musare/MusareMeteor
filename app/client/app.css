@@ -814,14 +814,50 @@ footer .fa {
     text-align: center;
 }
 
-#song-results p {
+#song-results > div {
     margin: 0;
     padding: 5px;
+    text-align: left;
+    border-bottom: 1px solid white;
+    transition: background-color 300ms linear;
+    transition: color 300ms linear;
 }
 
-#song-results p:hover {
-    background-color: cadetblue;
+#song-results > div:last-child {
+    border-bottom: 0;
+}
+
+#song-results > div:hover {
+    color: #0e90d2;
+    background-color: rgba(255, 255, 255, 0.5);
+
     cursor: pointer;
+}
+
+.song-result-thumbnail {
+    width: 224px;
+    height: 126px;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    word-break: break-all;
+    display: block;
+}
+
+.song-result-title {
+    margin-left: 20px;
+    margin-top: 10px;
+    display: block;
+    box-sizing: border-box;
+    font-size: 1.4em;
+}
+
+.song-result-channel {
+    margin-left: 20px;
+    margin-top: 5px;
+    display: block;
+    box-sizing: border-box;
+    font-size: 0.9em;
 }
 
 #player {
