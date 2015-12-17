@@ -1270,11 +1270,16 @@ Template.stations.helpers({
     playlist: function() {
       var query = {type: Session.get("playlistToEdit").toLowerCase()};
       var playlists = Playlists.find(query).fetch();
-      console.log(Session.get("playlistToEdit"), query, playlists);
       return playlists;
     },
     whichStation: function(){
       return Session.get("playlistToEdit");
+    },
+    reports: function() {
+      var query = {room: Session.get("playlistToEdit").toLowerCase()};
+      var reports = Reports.find(query).fetch();
+      console.log(reports);
+      return reports;
     }
 });
 
