@@ -1013,7 +1013,10 @@ Meteor.methods({
         Meteor.users.update({"profile.username": username}, {$set: {"profile.realname": realname}});
     },
     updateUserName: function(username, newUserName){
-        Meteor.users.update({"username": username}, {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}})
+        Meteor.users.update({"username": username}, {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}});
+    },
+    updateUserRank: function(username, newRank){
+      Meteor.users.update({"username" : username}, {$set: {"profile.rank": newRank}});
     },
     deleteAccount: function(userID) {
         Meteor.users.remove({_id: userID});

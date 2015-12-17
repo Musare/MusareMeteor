@@ -13,6 +13,32 @@ Meteor.startup(function() {
     });
 });
 
+/* Global Helpers */
+Handlebars.registerHelper("isAdmin", function(argument){
+  if (Meteor.user() && Meteor.user().profile) {
+      return Meteor.user().profile.rank === "admin";
+  } else {
+      return false;
+  }
+});
+
+Handlebars.registerHelper("isModerator", function(argument){
+  if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
+    return true;
+  } else {
+    return false;
+  }
+});
+
+Handlebars.registerHelper("initials", function(argument){
+  var user = Meteor.user();
+  if (user !== undefined) {
+      return user.profile.username[0].toUpperCase();
+  } else {
+      return "";
+  }
+});
+
 Deps.autorun(function() {
     Meteor.subscribe("queues");
     Meteor.subscribe("reports");
@@ -178,6 +204,28 @@ Template.profile.events({
         $("#edit-username").show();
         $("#cancel-username").hide();
         $("#input-username").val("");
+    },
+    // Admins only Edit Rank
+    "click #edit-rank": function() {
+      $("#rank").hide();
+      $("#rank-div").show();
+      $("#edit-rank").hide();
+      $("#cancel-rank").show();
+    },
+    "click #submit-rank": function() {
+      $("#rank").show();
+      $("#rank-div").hide();
+      $("#edit-rank").show();
+      $("#cancel-rank").hide();
+      var newRank = $("#select-rank option:selected").val();
+      var username = Session.get("username");
+      console.log(username, newRank);
+    },
+    "click #cancel-rank": function() {
+      $("#rank").show();
+      $("#rank-div").hide();
+      $("#edit-rank").show();
+      $("#cancel-rank").hide();
     }
 })
 
@@ -226,13 +274,6 @@ Template.profile.helpers({
             })
         });
         return dislikedArr;
-    },
-    initials: function() {
-        if (Session.get("username") !== undefined) {
-            return Session.get("username")[0].toUpperCase();
-        } else {
-            return "";
-        }
     },
     isUser: function(){
         var parts = Router.current().url.split('/');
@@ -311,28 +352,6 @@ Template.header.helpers({
     },
     userId: function() {
         return Meteor.userId();
-    },
-    initials: function() {
-        var user = Meteor.user();
-        if (user !== undefined) {
-            return user.profile.username[0].toUpperCase();
-        } else {
-            return "";
-        }
-    },
-    isAdmin: function() {
-        if (Meteor.user() && Meteor.user().profile) {
-            return Meteor.user().profile.rank === "admin";
-        } else {
-            return false;
-        }
-    },
-    isModerator: function() {
-        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 });
 
@@ -448,20 +467,6 @@ Template.dashboard.helpers({
             return room.currentSong;
         } else {
             return {};
-        }
-    },
-    isAdmin: function() {
-        if (Meteor.user() && Meteor.user().profile) {
-            return Meteor.user().profile.rank === "admin";
-        } else {
-            return false;
-        }
-    },
-    isModerator: function() {
-        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-            return true;
-        } else {
-            return false;
         }
     }
 });
@@ -1100,20 +1105,6 @@ Template.room.helpers({
     },
     loaded: function() {
         return Session.get("loaded");
-    },
-    isAdmin: function() {
-        if (Meteor.user() && Meteor.user().profile) {
-            return Meteor.user().profile.rank === "admin";
-        } else {
-            return false;
-        }
-    },
-    isModerator: function() {
-        if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-            return true;
-        } else {
-            return false;
-        }
     },
     paused: function() {
         return Session.get("state") === "paused";
