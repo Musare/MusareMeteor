@@ -347,9 +347,6 @@ Handlebars.registerHelper('active', function(path) {
 });
 
 Template.header.helpers({
-    currentUser: function() {
-        return Meteor.user();
-    },
     userId: function() {
         return Meteor.userId();
     }
@@ -362,6 +359,9 @@ Template.header.events({
         if (hpSound !== undefined) {
             hpSound.stop();
         }
+    },
+    "click #profile": function(){
+        window.location = "/u/" + Meteor.user().profile.username;
     }
 });
 
