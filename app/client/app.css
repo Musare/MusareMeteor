@@ -1546,3 +1546,11 @@ input[type="checkbox"]:checked + #two-label:after {
     opacity: 1;
     background-color: rgba(235, 235, 228, 0.5) !important;
 }
+
+#youtube-playlist-button {
+    background-color: rgba(220, 25, 43, 1);
+    margin-right: auto;
+    margin-left: auto;
+    color: rgba(253, 253, 254, 1);
+    display: block;
+}

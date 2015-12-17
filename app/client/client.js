@@ -800,14 +800,12 @@ Template.room.events({
                                 "</div>" +
                             "</div>"
                         );
-                        console.log(data.items[i]);
-                        //$("#song-results").append("<p>" + data.items[i].snippet.title + "</p>");
-                        ytArr.push({title: data.items[i].snippet.title, id: data.items[i].id.videoId});
+                        ytArr.push({title: item.snippet.title, id: item.id.videoId});
                     }
-                    $("#song-results div").click(function(){
+                    $("#song-results > div").click(function(){
                         $("#search-info").hide();
                         $("#add-info").show();
-                        var title = $(this).text();
+                        var title =  $(this).find("div > .song-result-title").text();
                         for(var i in ytArr){
                             if(ytArr[i].title === title){
                                 var songObj = {
@@ -1034,6 +1032,9 @@ Template.alerts.helpers({
 });
 
 Template.room.helpers({
+    singleVideo: function() {
+        return true;
+    },
     chat: function() {
         Meteor.setTimeout(function() {
             var elem = document.getElementById('chat');
@@ -1858,7 +1859,7 @@ Template.playlist.events({
     "click #pl-item": function(){
         console.log($(this).text());
     }
-})
+});
 
 Meteor.subscribe("rooms");
 
@@ -1892,6 +1893,8 @@ Template.room.onCreated(function () {
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    Session.set("singleVideo", true);
 
     var currentSong = undefined;
     var currentSongR = undefined;
