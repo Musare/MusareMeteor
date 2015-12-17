@@ -170,6 +170,7 @@ Template.profile.events({
         $("#username").text("Username: " + newUserName);
         $("#input-username").val("")
         Meteor.call("updateUserName", username, newUserName);
+        window.location = "/u/" + newUserName;
     },
     "click #cancel-username": function(){
         $("#username").show();
