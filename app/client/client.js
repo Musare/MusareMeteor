@@ -676,12 +676,16 @@ Template.room.events({
     "click #unlock": function() {
         Meteor.call("unlockRoom", Session.get("type"));
     },
-    "click #side-panel": function(e) {
+    "click #chat-tab": function(e) {
         Meteor.setTimeout(function() {
             var elem = document.getElementById('chat');
-            var elem1 = document.getElementById('global-chat');
             elem.scrollTop = elem.scrollHeight;
-            elem1.scrollTop = elem1.scrollHeight;
+        }, 1);
+    },
+    "click #global-tab": function(e) {
+        Meteor.setTimeout(function() {
+            var elem = document.getElementById('global-chat');
+            elem.scrollTop = elem1.scrollHeight;
         }, 1);
     },
     "click #submit": function() {
