@@ -939,6 +939,15 @@ Template.room.events({
         Meteor.call("submitReport", room, reportData, Session.get("id"), function() {
             $("#close-modal-r").click();
         });
+    },
+    "change #si_or_pl": function(){
+        if($("#select_playlist").is(':selected')){
+            $("#search-info").hide();
+            $("#playlist-buttons").show();
+        } else{
+            $("#search-info").show();
+            $("#playlist-buttons").hide();
+        }
     }
 });
 
