@@ -940,10 +940,16 @@ Template.room.events({
         if($("#select_playlist").is(':selected')){
             $("#search-info").hide();
             $("#playlist-buttons").show();
-        } else{
+        }
+        if($("#select_single").is(':selected')){
             $("#search-info").show();
             $("#playlist-buttons").hide();
         }
+    },
+    "click #close-modal-a": function(){
+        $("#select_single").attr("selected", true);
+        $("#search-info").show();
+        $("#playlist-buttons").hide();
     }
 });
 
