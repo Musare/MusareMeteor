@@ -1006,7 +1006,6 @@ Meteor.methods({
         }
     },
     getTotalUsers: function(){
-        console.log(Meteor.users.find().count());
         return Meteor.users.find().count();
     },
     updateRealName: function(username, realname){
