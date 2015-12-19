@@ -69,11 +69,19 @@ function checkUsersPR() {
         //not sure what these are, i count none in my tests
         //var usubs = connection._meteorSession._universalSubs;
     });
+    var emptyStations = [];
+    stations.forEach(function(station) {
+        emptyStations.push(station);
+    });
     for (var key in output) {
-        getStation(key, function() {
+        getStation(key, function(station) {
+            emptyStations.splice(emptyStations.indexOf(station), 1);
             Rooms.update({type: key}, {$set: {users: output[key]}});
         });
     }
+    emptyStations.forEach(function(emptyStation) {
+        Rooms.update({type: emptyStation.type}, {$set: {users: 0}});
+    });
     return output;
 }
 
