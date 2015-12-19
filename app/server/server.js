@@ -655,6 +655,20 @@ Meteor.methods({
             var rawrank = user.profile.rank;
             var username = user.profile.username;
             var profanity = false;
+            var mentionUsername;
+            if(message.indexOf("@") !== -1) {
+                var messageArr = message.split(" ");
+                for (var i in messageArr) {
+                    if (messageArr[i].indexOf("@") !== -1) {
+                        var mention = messageArr[i];
+                    }
+                }
+                Meteor.users.find().forEach(function(user){
+                    if(mention.indexOf(user.profile.username) !== -1){
+                       mentionUsername = true;
+                    };
+                })
+            }
             if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
@@ -666,7 +680,8 @@ Meteor.methods({
                     if(res.content.indexOf("true") > -1){
                         return true;
                     } else{
-                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, time: time, username: username});
+                        console.log("djkfs " + mentionUsername);
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, mention: mention, isMentioned: mentionUsername, time: time, username: username});
                     }
                 });
                 return true;
