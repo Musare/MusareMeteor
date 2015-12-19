@@ -684,8 +684,9 @@ footer .fa {
 }
 
 .station > h3 {
-    line-height: 200px;
+    line-height: 0px;
     font-size: 42px;
+    margin-bottom: 90px;
 }
 
 .station > h5 {
@@ -1553,4 +1554,9 @@ input[type="checkbox"]:checked + #two-label:after {
     margin-left: auto;
     color: rgba(253, 253, 254, 1);
     display: block;
+}
+
+.user-num{
+    font-size: 2em !important;
+    line-height: 100px;
 }

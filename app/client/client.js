@@ -468,6 +468,11 @@ Template.dashboard.helpers({
         } else {
             return {};
         }
+    },
+    userNum: function(){
+        var type = this.type;
+        var userNum = Rooms.findOne({type: type}).users;
+        return userNum;
     }
 });
 
