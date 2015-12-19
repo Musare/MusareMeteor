@@ -480,6 +480,11 @@ Template.dashboard.helpers({
         } else {
             return {};
         }
+    },
+    userNum: function(){
+        var type = this.type;
+        var userNum = Rooms.findOne({type: type}).users;
+        return userNum;
     }
 });
 
@@ -1041,11 +1046,17 @@ Template.room.events({
     "change #si_or_pl": function(){
         if($("#select_playlist").is(':selected')){
             $("#search-info").hide();
-            $("#playlist-import").show();
-        } else{
-            $("#search-info").show();
-            $("#playlist-import").hide();
+            $("#playlist-buttons").show();
         }
+        if($("#select_single").is(':selected')){
+            $("#search-info").show();
+            $("#playlist-buttons").hide();
+        }
+    },
+    "click #close-modal-a": function(){
+        $("#select_single").attr("selected", true);
+        $("#search-info").show();
+        $("#playlist-buttons").hide();
     }
 });
 

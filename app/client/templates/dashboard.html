@@ -17,10 +17,13 @@
             {{else}}
                 <div class="col-md-4 col-sm-6 col-xs-12">
                     <div class="station">
+                        {{#with type=type}}
+                            <i class="fa fa-user user-num"></i> <span class="user-num">{{userNum}}</span>
+                        {{/with}}
                         <h3>{{display}}</h3>
                         {{#with type=type}}
-                        <h5>{{currentSong.song.title}}</h5>
-                        <h6>{{currentSong.song.artist}}</h6>
+                            <h5>{{currentSong.song.title}}</h5>
+                            <h6>{{currentSong.song.artist}}</h6>
                         {{/with}}
                         <a href="/{{type}}" class="station_link"></a>
                     </div>
