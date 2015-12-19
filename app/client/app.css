@@ -1578,3 +1578,7 @@ input[type="checkbox"]:checked + #two-label:after {
     color: #0e90d2;
     cursor: pointer;
 }
+
+#current-arrow {
+    color: #0e90d2;
+}

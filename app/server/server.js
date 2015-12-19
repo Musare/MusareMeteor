@@ -855,6 +855,7 @@ Meteor.methods({
     addSongToQueue: function(type, songData) {
         if (Meteor.userId() && !isBanned()) {
             type = type.toLowerCase();
+            var userId = Meteor.userId();
             if (Rooms.find({type: type}).count() === 1) {
                 if (Queues.find({type: type}).count() === 0) {
                     Queues.insert({type: type, songs: []});
@@ -880,10 +881,14 @@ Meteor.methods({
                                     likes: songData.likes,
                                     dislikes: songData.dislikes,
                                     img: songData.img,
-                                    type: songData.type
+                                    type: songData.type,
+                                    requestedBy: userId
                                 }
                             }
                         });
+                        var songsRequested = (Meteor.user().profile !== undefined && Meteor.user().profile.statistics !== undefined && Meteor.user().profile.statistics.songsRequested !== undefined) ? Meteor.user().profile.statistics.songsRequested : 0;
+                        songsRequested++;
+                        Meteor.users.update(Meteor.userId(), {$set: {"profile.statistics.songsRequested": songsRequested}}); // TODO Make mongo query use $inc correctly.
                         return true;
                     } else {
                         throw new Meteor.Error(500, "Am error occured.");
@@ -956,7 +961,7 @@ Meteor.methods({
                 if (Playlists.find({type: type}).count() === 0) {
                     Playlists.insert({type: type, songs: []});
                 }
-                var requiredProperties = ["type", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes"];
+                var requiredProperties = ["type", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy"];
                 if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
                     for (var property in requiredProperties) {
                         if (songData[requiredProperties[property]] === undefined) {
@@ -975,7 +980,9 @@ Meteor.methods({
                                 img: songData.img,
                                 type: songData.type,
                                 likes: Number(songData.likes),
-                                dislikes: Number(songData.dislikes)
+                                dislikes: Number(songData.dislikes),
+                                requesedBy: songData.requestedBy,
+                                approvedBy: Meteor.userId()
                             }
                         }
                     });
