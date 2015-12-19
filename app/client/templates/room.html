@@ -169,7 +169,7 @@
                                 <option name="single" id="select_single" title="Add a single video to the queue.">Single Video</option>
                                 <option name="playlist" id="select_playlist" title="Add all video's in a playlist to the queue.">Playlist</option>
                             </select>
-
+                            <hr>
                             <div id="search-info">
                                 <select name="type" id="search_type" class="song-input-select">
                                     <option name="youtube" id="search_youtube">YouTube</option>
@@ -197,8 +197,17 @@
                                 <button type="button" id="add-song-button" class="button">Add Song</button>
                             </div>
 
-                            <div id="playlist-buttons" style="display:none">
+                            <div id="playlist-import" style="display:none">
+                                <input type="text" id="youtube-playlist-input" class="song-input"/>
                                 <button id="youtube-playlist-button" class="button">Import YouTube Playlist</button>
+                                <div class="progress">
+                                    <div id="import-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                        0% imported
+                                    </div>
+                                </div>
+                                <div id="playlist-import-queue">
+
+                                </div>
                             </div>
 
                             <!--small id="search-alert">Searching for a song fills out the above fields automatically, but you will still have to verify them.</small-->

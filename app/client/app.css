@@ -806,12 +806,16 @@ footer .fa {
     margin: 0 auto;
 }
 
-#song-results {
+#song-results, #youtube-import-queue {
     margin: 0 auto;
     color: white;
     margin-top: 1em;
     font-size: 1.5em;
     text-align: center;
+}
+
+.youtube-import-queue-item {
+    position: relative !important;
 }
 
 #song-results > div {
@@ -1556,4 +1560,15 @@ input[type="checkbox"]:checked + #two-label:after {
     margin-left: auto;
     color: rgba(253, 253, 254, 1);
     display: block;
+}
+
+.remove-import-song {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+.remove-import-song:hover {
+    color: #0e90d2;
+    cursor: pointer;
 }

@@ -13,6 +13,18 @@ Meteor.startup(function() {
     });
 });
 
+// Way to get paramater from url.
+// Taken from http://stackoverflow.com/a/979997/4670703
+// gup('q', 'http://example.com/?q=abc') returns abc.
+function gup( name, url ) {
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( url );
+    return results == null ? null : results[1];
+}
+
 /* Global Helpers */
 Handlebars.registerHelper("isAdmin", function(argument){
   if (Meteor.user() && Meteor.user().profile) {
@@ -649,6 +661,92 @@ function sendMessageGlobal() {
 }
 
 Template.room.events({
+    "click #youtube-playlist-button": function() {
+        if (!Session.get("importingPlaylist")) {
+            var playlist_link = $("#youtube-playlist-input").val();
+            var playlist_id = gup("list", playlist_link);
+            var ytImportQueue = [];
+            var totalVideos = 0;
+            var videosInvalid = 0;
+            var videosInQueue = 0;
+            var videosInPlaylist = 0;
+            var ranOnce = false;
+
+            Session.set("importingPlaylist", true);
+            $("#youtube-playlist-button").attr("disabled", "");
+            $("#youtube-playlist-button").addClass("disabled");
+            $("#youtube-playlist-input").attr("disabled", "");
+            $("#youtube-playlist-input").addClass("disabled");
+            $("#playlist-import-queue").empty();
+            $("#playlist-import-queue").hide();
+
+
+            function makeAPICall(playlist_id, nextPageToken){
+                if (nextPageToken !== undefined) {
+                    nextPageToken = "&pageToken=" + nextPageToken;
+                } else {
+                    nextPageToken = "";
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=10&playlistId=" + playlist_id + nextPageToken + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
+                    applicationType: "application/json",
+                    contentType: "json",
+                    success: function(data){
+                        if (!ranOnce) {
+                            ranOnce = true;
+                            console.log(data);
+                            totalVideos = data.pageInfo.totalResults;
+                        }
+                        var nextToken = data.nextPageToken;
+                        for(var i in data.items){
+                            var item = data.items[i];
+                            console.log(item);
+                            if (item.snippet.thumbnails !== undefined) {
+                                $("#playlist-import-queue").append(
+                                    "<div class='youtube-import-queue-item'>" +
+                                    "<img src='" + item.snippet.thumbnails.medium.url + "' class='song-result-thumbnail'/>" +
+                                    "<div>" +
+                                    "<span class='song-result-title'>" + item.snippet.title + "</span>" +
+                                    "<span class='song-result-channel'>" + item.snippet.channelTitle + "</span>" +
+                                    "</div>" +
+                                    "<i class='fa fa-times remove-import-song'></i>" +
+                                    "</div>"
+                                );
+                                ytImportQueue.push({title: item.snippet.title, id: item.id.videoId});
+                            } else {
+                                videosInvalid++;
+                            }
+                        }
+                        if (nextToken !== undefined) {
+                            makeAPICall(playlist_id, nextToken);
+                        } else {
+                            $("#playlist-import-queue > div > i").click(function(){
+                                console.log("I clicked!");
+                                var title =  $(this).parent().find("div > .song-result-title").text();
+                                console.log(title);
+                                console.log($(this));
+                                console.log($(this).parent());
+                                for(var i in ytImportQueue){
+                                    if(ytImportQueue[i].title === title){
+                                        ytImportQueue.splice(i, 1);
+                                    }
+                                }
+                                $(this).parent().remove();
+                            });
+                            Session.set("importingPlaylist", false);
+                            $("#youtube-playlist-button").removeAttr("disabled");
+                            $("#youtube-playlist-button").removeClass("disabled");
+                            $("#youtube-playlist-input").removeAttr("disabled");
+                            $("#youtube-playlist-input").removeClass("disabled");
+                            $("#playlist-import-queue").show();
+                        }
+                    }
+                })
+            }
+            makeAPICall(playlist_id);
+        }
+    },
     "click #chat-tab": function() {
         $("#chat-tab").removeClass("unread-messages");
     },
@@ -943,10 +1041,10 @@ Template.room.events({
     "change #si_or_pl": function(){
         if($("#select_playlist").is(':selected')){
             $("#search-info").hide();
-            $("#playlist-buttons").show();
+            $("#playlist-import").show();
         } else{
             $("#search-info").show();
-            $("#playlist-buttons").hide();
+            $("#playlist-import").hide();
         }
     }
 });
