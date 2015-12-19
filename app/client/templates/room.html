@@ -198,11 +198,12 @@
                             </div>
 
                             <div id="playlist-import" style="display:none">
-                                <input type="text" id="youtube-playlist-input" class="song-input"/>
+                                <input type="text" id="youtube-playlist-input" class="song-input" placeholder="Playlist URL"/>
                                 <button id="youtube-playlist-button" class="button">Import YouTube Playlist</button>
-                                <div class="progress">
-                                    <div id="import-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                        0% imported
+                                <button id="add-youtube-playlist" class="button hidden-2">Add Songs To Queue</button>
+                                <div class="progress" id="import-progress-container">
+                                    <div id="import-progress" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; min-width: 2em;">
+                                        0%
                                     </div>
                                 </div>
                                 <div id="playlist-import-queue">

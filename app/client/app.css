@@ -872,7 +872,13 @@ footer .fa {
 .hidden {
     visibility: hidden;
 }
-
+.hidden-2 {
+    visibility: hidden;
+    height: 0px;
+    width: 0px;
+    margin: 0;
+    padding: 0;
+}
 .footerButtons {
     background: none !important;
     border: none;
@@ -1581,4 +1587,20 @@ input[type="checkbox"]:checked + #two-label:after {
 
 #current-arrow {
     color: #0e90d2;
+}
+#import-progress-container {
+    width: 304px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 10px;
+    color: #50a3a2;
+}
+
+#add-youtube-playlist {
+    background-color: green;
+    color: white;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
