@@ -1039,17 +1039,37 @@ Meteor.methods({
     getTotalUsers: function(){
         return Meteor.users.find().count();
     },
-    updateRealName: function(username, realname){
-        Meteor.users.update({"profile.username": username}, {$set: {"profile.realname": realname}});
+    updateRealName: function(realname){
+        if (Meteor.userId()) {
+            var oldName = Meteor.users.findOne(Meteor.userId()).profile.realname;
+            Meteor.users.update(Meteor.userId(), {$set: {"profile.realname": realname}, $push: {"profile.realnames": oldName}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     },
-    updateUserName: function(username, newUserName){
-        Meteor.users.update({"username": username}, {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}});
+    updateUserName: function(newUserName){
+        if (Meteor.userId()) {
+            var oldUsername = Meteor.users.findOne(Meteor.userId()).profile.username;
+            Meteor.users.update(Meteor.userId(), {$set: {"username": newUserName, "profile.username": newUserName, "profile.usernameL": newUserName.toLowerCase()}, $push: {"profile.usernames": oldUsername}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     },
-    updateUserRank: function(username, newRank){
-      Meteor.users.update({"username" : username}, {$set: {"profile.rank": newRank}});
+    updateUserRank: function(newRank){
+        if (Meteor.userId()) {
+            Meteor.users.update(Meteor.userId(), {$set: {"profile.rank": newRank}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     },
-    deleteAccount: function(userID) {
-        Meteor.users.remove({_id: userID});
+    deleteAccount: function() {
+        if (Meteor.userId()) {
+            var user = Meteor.users.findOne(Meteor.userId());
+            Deleted.insert({type: "account", user: user, deletedAt: Date.now()});
+            Meteor.users.remove({_id: Meteor.userId()});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     }
 });
 
