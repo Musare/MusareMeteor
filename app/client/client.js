@@ -1217,10 +1217,6 @@ Template.room.events({
             });
         }
     },
-    "click #close-modal-a": function(){
-        $("#search-info").show();
-        $("#add-info").hide();
-    },
     "click #volume-icon": function(){
         var volume = 0;
         var slider = $("#volume-slider").slider();
@@ -1291,7 +1287,7 @@ Template.room.events({
     "click #close-modal-a": function(){
         $("#select_single").attr("selected", true);
         $("#search-info").show();
-        $("#playlist-buttons").hide();
+        $("#playlist-import").hide();
     }
 });
 Template.room.onRendered(function() {
