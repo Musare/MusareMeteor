@@ -1268,12 +1268,13 @@ nav form input[type="image"]{
     margin-top: 30px;
 }
 #chat-ul, #global-chat-ul {
-    overflow-y: hidden;
     margin: 0;
     padding: 0 15px 0 15px;
     padding-bottom: 20px;
     word-break: normal;
     word-wrap: break-word;
+    height: 82%;
+    overflow-y: scroll;
 }
 .chat-message:nth-child(even) {
    color: white;
@@ -1318,7 +1319,6 @@ nav form input[type="image"]{
 }
 #chat, #global-chat {
     height:100%;
-    overflow: auto;
 }
 .navbar-default .navbar-nav .open .dropdown-menu>li>a,.navbar-default .navbar-nav .open .dropdown-menu {
     background-color: transparent;
