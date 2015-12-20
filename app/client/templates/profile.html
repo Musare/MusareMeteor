@@ -70,7 +70,11 @@
                     <div class="panel-body song-panel">
                         <ul>
                             {{#each dislikedSongs}}
-                                <li>{{title}} - {{artist}} - {{room}}</li>
+                                <li>
+                                    <p class="song-panel-room">{{room}}</p>
+                                    <h4>{{title}}</h4>
+                                    <h5>{{artist}}</h5>
+                                </li>
                             {{/each}}
                         </ul>
                     </div>
