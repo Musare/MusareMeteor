@@ -146,6 +146,11 @@ Template.admin.helpers({
       });
       return Session.get("userNum");
   },
+    roomUserNum: function(){
+        var type = this.type;
+        var userNum = Rooms.findOne({type: type}).users;
+        return userNum;
+    },
   allUsers: function(){
       Meteor.call("getTotalUsers", function(err, num){
           Session.set("allUsers", num);
