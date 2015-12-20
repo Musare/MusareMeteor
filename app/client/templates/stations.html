@@ -54,13 +54,15 @@
                         <h1>Reports</h1>
                     </div>
                         <p>{{display}}</p>
-                        <table class="table" style="border-bottom: 1px solid white;">
-                        <tr>
+                        <table class="table table-striped">
+                        <thead>
+                            <tr>
                             <th>Song mid</th>
                             <th>Report Type</th>
                             <th>Report Reason</th>
                             <th>Comments</th>
-                        </tr>
+                            </tr>
+                        </thead>
                         {{#each reports}}
                             {{#each report}}
                                 <tr>
