@@ -962,7 +962,7 @@ Template.room.events({
         var processed = 0;
         var total = YTImportQueue.length;
         YTImportQueue.forEach(function(song) {
-            var songData = {type: type, id: song.id, title: song.title, artist: "", img: ""};
+            var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: ""};
             Meteor.call("addSongToQueue", Session.get("type"), songData, function(err, res) {
                 if (err) {
                     failed++;
