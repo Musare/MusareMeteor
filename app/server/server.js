@@ -664,6 +664,7 @@ Meteor.methods({
             var username = user.profile.username;
             var profanity = false;
             var mentionUsername;
+            var isCurUserMentioned;
             if(message.indexOf("@") !== -1) {
                 var messageArr = message.split(" ");
                 for (var i in messageArr) {
@@ -673,7 +674,8 @@ Meteor.methods({
                 }
                 Meteor.users.find().forEach(function(user){
                     if(mention.indexOf(user.profile.username) !== -1){
-                       mentionUsername = true;
+                        mentionUsername = true;
+                        isCurUserMentioned = Meteor.user().profile.username === user.profile.username;
                     };
                 })
             }
@@ -688,8 +690,7 @@ Meteor.methods({
                     if(res.content.indexOf("true") > -1){
                         return true;
                     } else{
-                        console.log("djkfs " + mentionUsername);
-                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, mention: mention, isMentioned: mentionUsername, time: time, username: username});
+                        Chat.insert({type: type, rawrank: rawrank, rank: "[A]", message: message, curUserMention: isCurUserMentioned, isMentioned: mentionUsername, time: time, username: username});
                     }
                 });
                 return true;

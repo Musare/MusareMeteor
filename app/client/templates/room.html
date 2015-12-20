@@ -139,8 +139,11 @@
                                     {{#emojione}}
                                         <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span title="{{time}}" style="float: right;">{{rtime time}}</span> <br/>
                                             {{#if this.isMentioned}}
-                                                <!--Do stuff here-->
-                                                <span style="background-color: lightblue">{{this.message}}</span>
+                                                {{#if this.curUserMention}}
+                                                    <span style="background-color: lightblue">{{this.message}}</span>
+                                                {{else}}
+                                                    {{this.message}}
+                                                {{/if}}
                                             {{else}}
                                                 {{this.message}}
                                             {{/if}}
