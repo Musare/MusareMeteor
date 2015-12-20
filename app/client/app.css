@@ -807,12 +807,16 @@ footer .fa {
     margin: 0 auto;
 }
 
-#song-results {
+#song-results, #youtube-import-queue {
     margin: 0 auto;
     color: white;
     margin-top: 1em;
     font-size: 1.5em;
     text-align: center;
+}
+
+.youtube-import-queue-item {
+    position: relative !important;
 }
 
 #song-results > div {
@@ -868,7 +872,13 @@ footer .fa {
 .hidden {
     visibility: hidden;
 }
-
+.hidden-2 {
+    visibility: hidden;
+    height: 0px;
+    width: 0px;
+    margin: 0;
+    padding: 0;
+}
 .footerButtons {
     background: none !important;
     border: none;
@@ -1254,6 +1264,9 @@ nav form input[type="image"]{
     font-size: 20px;
     color: white;
 }
+.chat-message:first-child {
+    margin-top: 30px;
+}
 #chat-ul, #global-chat-ul {
     overflow-y: hidden;
     margin: 0;
@@ -1559,4 +1572,35 @@ input[type="checkbox"]:checked + #two-label:after {
 .user-num{
     font-size: 2em !important;
     line-height: 100px;
+}
+
+.remove-import-song {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+.remove-import-song:hover {
+    color: #0e90d2;
+    cursor: pointer;
+}
+
+#current-arrow {
+    color: #0e90d2;
+}
+#import-progress-container {
+    width: 304px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 10px;
+    color: #50a3a2;
+}
+
+#add-youtube-playlist {
+    background-color: green;
+    color: white;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
