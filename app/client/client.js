@@ -427,7 +427,7 @@ Template.profile.events({
         var username = user.profile.username;
         $("#name").text("Name: " + realname);
         $("#input-name").val("")
-        Meteor.call("updateRealName", username, realname);
+        Meteor.call("updateRealName", realname);
     },
     "click #cancel-edit": function(){
         $("#name").show();
@@ -454,7 +454,7 @@ Template.profile.events({
         $("#profile-name").text(newUserName)
         $("#username").text("Username: " + newUserName);
         $("#input-username").val("")
-        Meteor.call("updateUserName", username, newUserName);
+        Meteor.call("updateUserName", newUserName);
         window.location = "/u/" + newUserName;
     },
     "click #cancel-username": function(){
@@ -1705,7 +1705,7 @@ Template.settings.events({
         $("#delete-account").click(function(){
             var bool = confirm("Are you sure you want to delete your account?");
             if(bool) {
-                Meteor.call("deleteAccount", Meteor.userId());
+                Meteor.call("deleteAccount");
             }
         })
     },

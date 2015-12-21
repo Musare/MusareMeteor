@@ -1055,13 +1055,13 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    updateUserRank: function(newRank){
+    /*updateUserRank: function(newRank){
         if (Meteor.userId()) {
             Meteor.users.update(Meteor.userId(), {$set: {"profile.rank": newRank}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
-    },
+    },*/
     deleteAccount: function() {
         if (Meteor.userId()) {
             var user = Meteor.users.findOne(Meteor.userId());
