@@ -934,6 +934,7 @@ Template.room.events({
                                     }
                                 }
                                 $(this).parent().remove();
+                                Session.set("YTImportQueue", ytImportQueue);
                             });
                             Session.set("importingPlaylist", false);
                             $("#import-progress").attr("aria-valuenow", 100);
