@@ -971,6 +971,7 @@ Template.room.events({
             var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: ""};
             Meteor.call("addSongToQueue", Session.get("type"), songData, function(err, res) {
                 if (err) {
+                    console.log(err);
                     failed++;
                 } else {
                     success++;
