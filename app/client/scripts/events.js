@@ -135,6 +135,11 @@ function sendMessage() {
                 $("#chat-input").addClass("disabled");
                 $("#chat-input").attr("disabled", "");
                 Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
+                    if(err){
+                        $("#chat-input").val("");
+                        $("#chat-input").removeAttr("disabled");
+                        $("#chat-input").removeClass("disabled");
+                    }
                     if (res) {
                         $("#chat-input").val("");
                         $("#chat-input").removeAttr("disabled");
