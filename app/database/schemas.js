@@ -1,5 +1,109 @@
 var Schemas = {};
 
+Schemas.FullSong = new SimpleSchema({
+    "id": {
+        type: String,
+        label: "Song YouTube id"
+    },
+    "mid": {
+        type: String,
+        label: "Song mid"
+    },
+    "likes": {
+        type: Number,
+        label: "Song likes",
+        defaultValue: 0
+    },
+    "dislikes": {
+        type: Number,
+        label: "Song dislikes",
+        defaultValue: 0
+    },
+    "title": {
+        type: String,
+        label: "Song title"
+    },
+    "artist": {
+        type: String,
+        label: "Song artist"
+    },
+    "img": {
+        type: String,
+        label: "Song img"
+    },
+    "type": {
+        type: String,
+        label: "Song type",
+        defaultValue: "YouTube"
+    },
+    "duration": {
+        type: Number,
+        label: "Song duration",
+        min: 0,
+        decimal: true
+    },
+    "skipDuration": {
+        type: Number,
+        label: "Song skipDuration",
+        min: 0,
+        decimal: true
+    }
+});
+
+Schemas.QueueSong = new SimpleSchema({
+    "id": {
+        type: String,
+        label: "Song YouTube id"
+    },
+    "mid": {
+        type: String,
+        label: "Song mid"
+    },
+    "likes": {
+        type: Number,
+        label: "Song likes",
+        defaultValue: 0
+    },
+    "dislikes": {
+        type: Number,
+        label: "Song dislikes",
+        defaultValue: 0
+    },
+    "title": {
+        type: String,
+        label: "Song title"
+    },
+    "artist": {
+        type: String,
+        label: "Song artist"
+    },
+    "img": {
+        type: String,
+        label: "Song img"
+    },
+    "type": {
+        type: String,
+        label: "Song type",
+        defaultValue: "YouTube"
+    },
+    "duration": {
+        type: Number,
+        label: "Song duration",
+        min: 0,
+        decimal: true
+    },
+    "skipDuration": {
+        type: Number,
+        label: "Song skipDuration",
+        min: 0,
+        decimal: true
+    },
+    "songs.$.requestedBy": {
+        type: String,
+        label: "User ID of the person who requested the song"
+    }
+});
+
 Schemas.Chat = new SimpleSchema({
     type: {
         type: String,
@@ -12,7 +116,8 @@ Schemas.Chat = new SimpleSchema({
     },
     rank: {
         type: String,
-        label: "Display tag of the rank of the user who sent a message"
+        label: "Display tag of the rank of the user who sent a message",
+        optional: true
     },
     message: {
         type: String,
@@ -65,6 +170,14 @@ Schemas.Room = new SimpleSchema({
         defaultValue: {},
         label: "Current Song"
     },
+    "currentSong.song": {
+        type: Schemas.FullSong,
+        label: "Current Song Object"
+    },
+    "currentSong.started": {
+        type: Number,
+        label: "Current Song Start Date"
+    },
     timePaused: {
         type: Number,
         defaultValue: 0,
@@ -106,61 +219,8 @@ Schemas.Playlist = new SimpleSchema({
         label: "All songs in that playlist"
     },
     "songs.$": {
-        type: Object,
+        type: Schemas.FullSong,
         label: "Song object"
-    },
-    "songs.$.id": {
-        type: String,
-        label: "Song YouTube id"
-    },
-    "songs.$.mid": {
-        type: String,
-        label: "Song mid"
-    },
-    "songs.$.likes": {
-        type: Number,
-        label: "Song likes",
-        defaultValue: 0
-    },
-    "songs.$.dislikes": {
-        type: Number,
-        label: "Song dislikes",
-        defaultValue: 0
-    },
-    "songs.$.title": {
-        type: String,
-        label: "Song title"
-    },
-    "songs.$.artist": {
-        type: String,
-        label: "Song artist"
-    },
-    "songs.$.img": {
-        type: String,
-        label: "Song img"
-    },
-    "songs.$.type": {
-        type: String,
-        label: "Song type",
-        defaultValue: "YouTube"
-    },
-    "songs.$.duration": {
-        type: Number,
-        label: "Song duration",
-        min: 0
-    },
-    "songs.$.skipDuration": {
-        type: Number,
-        label: "Song skipDuration",
-        min: 0
-    },
-    "songs.$.requestedBy": {
-        type: String,
-        label: "User ID of the person who requested the song"
-    },
-    "songs.$.approvedBy": {
-        type: String,
-        label: "User ID of the person who approved the song"
     },
     lastSong: {
         type: Number,
@@ -180,69 +240,28 @@ Schemas.Queue = new SimpleSchema({
         label: "All songs in that playlist"
     },
     "songs.$": {
-        type: Object,
+        type: Schemas.QueueSong,
         label: "Song object"
-    },
-    "songs.$.id": {
-        type: String,
-        label: "Song YouTube id"
-    },
-    "songs.$.mid": {
-        type: String,
-        label: "Song mid"
-    },
-    "songs.$.likes": {
-        type: Number,
-        label: "Song likes",
-        defaultValue: 0
-    },
-    "songs.$.dislikes": {
-        type: Number,
-        label: "Song dislikes",
-        defaultValue: 0
-    },
-    "songs.$.title": {
-        type: String,
-        label: "Song title"
-    },
-    "songs.$.artist": {
-        type: String,
-        label: "Song artist"
-    },
-    "songs.$.img": {
-        type: String,
-        label: "Song img"
-    },
-    "songs.$.type": {
-        type: String,
-        label: "Song type",
-        defaultValue: "YouTube"
-    },
-    "songs.$.duration": {
-        type: Number,
-        label: "Song duration",
-        min: 0
-    },
-    "songs.$.skipDuration": {
-        type: Number,
-        label: "Song skipDuration",
-        min: 0
-    },
-    "songs.$.requestedBy": {
-        type: String,
-        label: "User ID of the person who requested the song"
     }
 });
 
 Schemas.UserProfile = new SimpleSchema({
     username: {
         type: String,
-        label: "User's Username"
+        label: "User's Username",
+        regEx: /^[a-zA-Z0-9_]+$/,
+        min: 6,
+        max: 26
     },
     usernameL: {
         type: String,
         label: "User's Username in lowercase",
-        regEx: /^[a-z0-9_]$/
+        regEx: /^[a-z0-9_]+$/
+    },
+    realname: {
+        type: String,
+        label: "User's Real Name",
+        regEx: /^[A-Za-z0-9 .'-]+$/
     },
     rank: {
         type: String,
@@ -288,7 +307,8 @@ Schemas.UserProfile = new SimpleSchema({
 Schemas.UserPunishments = new SimpleSchema({
     mute: {
         type: Object,
-        label: "User's Current Mute Info"
+        label: "User's Current Mute Info",
+        optional: true
     },
     "mute.mutedBy": {
         type: String,
@@ -304,7 +324,8 @@ Schemas.UserPunishments = new SimpleSchema({
     },
     mutes: {
         type: Array,
-        label: "All of the mutes of a user"
+        label: "All of the mutes of a user",
+        optional: true
     },
     "mutes.$": {
         type: Object,
@@ -324,7 +345,8 @@ Schemas.UserPunishments = new SimpleSchema({
     },
     ban: {
         type: Object,
-        label: "User's Current Ban Info"
+        label: "User's Current Ban Info",
+        optional: true
     },
     "ban.bannedBy": {
         type: String,
@@ -340,7 +362,8 @@ Schemas.UserPunishments = new SimpleSchema({
     },
     bans: {
         type: Array,
-        label: "All of the bans of a user"
+        label: "All of the bans of a user",
+        optional: true
     },
     "bans.$": {
         type: Object,
@@ -366,7 +389,10 @@ Schemas.User = new SimpleSchema({
         // For accounts-password, either emails or username is required, but not both. It is OK to make this
         // optional here because the accounts-password package does its own validation.
         // Third-party login packages may not require either. Adjust this schema as necessary for your usage.
-        optional: true
+        optional: true,
+        regEx: /^[a-zA-Z0-9_]+$/,
+        min: 6,
+        max: 26
     },
     emails: {
         type: Array,
@@ -392,7 +418,8 @@ Schemas.User = new SimpleSchema({
         type: Schemas.UserProfile
     },
     punishments: {
-        type: Schemas.UserPunishments
+        type: Schemas.UserPunishments,
+        defaultValue: {mutes: [], bans: []}
     },
     // Make sure this services field is in your schema if you're using any of the accounts packages
     services: {
@@ -457,5 +484,3 @@ Playlists.attachSchema(Schemas.Playlist);
 Queues.attachSchema(Schemas.Queue);
 Meteor.users.attachSchema(Schemas.User);
 Reports.attachSchema(Schemas.Report);
-
-//Rooms.insert({display: "Test Room", type: "testest"});

@@ -1669,7 +1669,7 @@ Template.room.onCreated(function () {
                     }
                 }
 
-                if (currentSongR === undefined || room.currentSong.started !== currentSongR.started) {
+                if (room.currentSong.song !== undefined && (currentSongR === undefined || room.currentSong.started !== currentSongR.started)) {
                     Session.set("previousSong", currentSong);
                     currentSongR = room.currentSong;
 
@@ -1840,7 +1840,7 @@ Template.stations.events({
     "click #moveSong": function(e){
       var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
       if (genre !== Session.get(genre)) {
-        Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+        Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes, requestedBy: Session.get("song").requestedBy});
         Meteor.call("removeSongFromPlaylist", Session.get("genre"), Session.get("song").mid);
       }else {
         console.log("Something Went Wrong?!");
@@ -1850,7 +1850,7 @@ Template.stations.events({
     },
     "click #copySong": function(e){
       var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-      Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+      Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes, requestedBy: Session.get("song").requestedBy});
     },
     "click .copyMove-button": function(e){
         Session.set("song", this);
