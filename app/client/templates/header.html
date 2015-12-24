@@ -1,69 +1,69 @@
 <template name="header">
-    <nav class="navbar navbar-default" id="header">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">Musare</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <!--li class="active"><a href="">Link <span class="sr-only">(current)</span></a></li-->
-                    <li class="{{isActivePath '/'}}"><a href="/">Home</a></li>
-                    {{#if isModerator}}
-                    <li class="{{isActivePath '/admin'}}"><a href="/admin">Admin</a></li>
-                    {{/if}}
-                </ul>
-                {{#if currentUser}}
-                  <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{> avatar userId=userId shape="circle" size="header" class="header-avatar" initials=initials}} {{currentUser.profile.username}} <span class="caret"></span></a>
-                        <ul class="dropdown-menu" id="header-dropdown">
-                            <li><a id="profile">Profile</a></li>
-                            <li><a href="/settings">Settings</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a class="logout" href="#">Logout</a></li>
-                        </ul>
-                    </li>
-                      <li>
-                          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                              <input type="hidden" name="cmd" value="_s-xclick">
-                              <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-                        ">
-                              <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal ? The safer, easier way to pay online.">
-                              <img alt="Not loading" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
-                          </form>
-                      </li>
-                  </ul>
-                  {{else}}
-                    <ul class="nav navbar-nav navbar-right">
-                      <li><a href="/login" class="navbar-right">Login</a></li>
-                      <li><a href="/signup" class="navbar-right">Sign Up</a></li>
-                      <li>
-                          <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                          <input type="hidden" name="cmd" value="_s-xclick">
-                          <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
-                        ">
-                          <input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal ? The safer, easier way to pay online.">
-                          <img alt="Not loading" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1">
-                        </form>
-                      </li>
-                    </ul>
-                {{/if}}
-                <!--form class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search">
-                    </div>
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form-->
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+  <!-- Dropdown Structure -->
+  <ul id="contributeDrop" class="dropdown-content">
+    <li><a href="https://www.github.com/Musare/Musare">Github</a></li>
+    <li><a href="donate.html">Donate</a></li>
+  </ul>
+  <ul id="aboutDrop" class="dropdown-content">
+    <li><a href="/project">The Project</a></li>
+    <li><a href="/team">The Team</a></li>
+    <li><a href="/contact">Contact Us</a></li>
+  </ul>
+  <ul id="accountDrop" class="dropdown-content">
+    {{#if currentUser}}
+      <li><a href="#!">Profile</a></li>
+      <li><a href="#!">Settings</a></li>
+      <li class="divider"></li>
+      <li><a href="#!">Logout</a></li>
+    {{else}}
+      <li><a href="/login">Login</a></li>
+      <li><a href="/register">Register</a></li>
+    {{/if}}
+  </ul>
+  <nav>
+    <div class="nav-wrapper teal accent-4">
+      <a href="#!" class="brand-logo">Musare</a>
+      <a href="#" data-activates="mobile-navi" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="feedback.html">Feedback</a></li>
+        <li><a class="dropdown-button" href="#!" data-activates="contributeDrop">Contribute<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li><a class="dropdown-button" href="#!" data-activates="aboutDrop">About<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li><a class="dropdown-button" href="#!" data-activates="accountDrop">Account<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-navi" style="width: 240px;">
+        <li><a href="#">Feedback</a></li>
+        <ul class="collapsible" data-collapsible="accordion">
+          <li>
+            <div class="collapsible-header black-text"><i class="material-icons">filter_drama</i>First</div>
+            <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header black-text"><i class="material-icons">place</i>Second</div>
+            <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+          <li>
+            <div class="collapsible-header black-text"><i class="material-icons">whatshot</i>Third</div>
+            <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
+          </li>
+        </ul>
+        <!--<li><a class="mobile-dropdown" href="#!" data-activates="contributeDrop">Contribute<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li><a class="mobile-dropdown" href="#!" data-activates="aboutDrop">About<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li><a class="mobile-dropdown" href="#!" data-activates="accountDrop">Account<i class="material-icons right">arrow_drop_down</i></a></li>
+      --></ul>
+    </div>
+  </nav>
+  <script>
+    $(function() {
+      $(".dropdown-button").dropdown({
+        inDuration: 300,
+        outDuration: 225,
+        hover: true,
+        belowOrigin: true
+      });
+      $(".button-collapse").sideNav();
+      $('.collapsible').collapsible({
+        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+      });
+    });
+  </script>
 </template>

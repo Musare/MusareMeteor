@@ -33,7 +33,7 @@ Router.route("/login", {
     }
 });
 
-Router.route("/signup", {
+Router.route("/register", {
     action: function() {
         var user = Meteor.user();
         if (user === undefined || user === null) {
