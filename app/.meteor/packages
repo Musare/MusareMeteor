@@ -18,7 +18,6 @@ ecmascript              # Enable ECMAScript2015+ syntax in app code
 accounts-password
 accounts-github
 service-configuration
-twbs:bootstrap
 jquery
 iron:router
 ejson
@@ -32,3 +31,4 @@ emojione:emojione
 utilities:avatar
 matb33:collection-hooks
 aldeed:collection2
+materialize:materialize

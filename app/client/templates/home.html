@@ -1,19 +1,33 @@
 <template name="home">
-    {{> alerts}}
-    <div class="homepage">
-        <!--<div class="alert alert-success alert-dismissible" role="alert" style="margin-bottom: 0">-->
-            <!--<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>-->
-            <!--<strong>Hey there!</strong> Welcome to Musare - a modern, open-source, collaborative music app.-->
-        <!--</div>-->
-        {{> header}}
-        {{#if currentUser}}
-            {{> dashboard}}
-        {{else}}
-            {{> dashboard}}
-        {{/if}}
-        <div class="push"></div>
-    </div>
-    {{> footer}}
+    {{> header}}
+    <main>
+    <div class="col s12 m10 l8">
+        <div class="row">
+            {{#each rooms}}
+                <div class="col s12 m5 l2">
+                    <div class="card">
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <img src={{currentSong.song.img}}>
+                            <figcaption>
+                                <h5>{{currentSong.song.title}}</h5>
+                                <h5>{{currentSong.song.artist}}</h5>
+                                <a href=/{{type}} class="waves-effect waves-light btn">Join Room</a>
+                            </figcaption>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">{{display}}<i
+                                    class="material-icons right">more_vert</i></span>
 
-    {{> bubbles}}
+                            <p><span class="user-num">{{userNum}}</span> <i class="material-icons">perm_identity</i></p>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">{{display}}<i class="material-icons right">close</i></span>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    </main>
+    {{> footer}}
 </template>

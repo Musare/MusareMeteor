@@ -1,114 +1,3 @@
-Meteor.startup(function() {
-    reCAPTCHA.config({
-        publickey: '6LcVxg0TAAAAAE18vBiH00UAyaJggsmLm890SjZl'
-    });
-
-    Avatar.setOptions({
-        fallbackType: "initials",
-        defaultImageUrl: "http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg",
-        generateCSS: true,
-        imageSizes: {
-            'header': 40
-        }
-    });
-});
-
-// Way to get paramater from url.
-// Taken from http://stackoverflow.com/a/979997/4670703
-// gup('q', 'http://example.com/?q=abc') returns abc.
-function gup( name, url ) {
-    if (!url) url = location.href;
-    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-    var regexS = "[\\?&]"+name+"=([^&#]*)";
-    var regex = new RegExp( regexS );
-    var results = regex.exec( url );
-    return results == null ? null : results[1];
-}
-
-/* Global Helpers */
-Handlebars.registerHelper("isAdmin", function(argument){
-  if (Meteor.user() && Meteor.user().profile) {
-      return Meteor.user().profile.rank === "admin";
-  } else {
-      return false;
-  }
-});
-
-Handlebars.registerHelper("isModerator", function(argument){
-  if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
-    return true;
-  } else {
-    return false;
-  }
-});
-
-Handlebars.registerHelper("initials", function(argument){
-  var user = Meteor.user();
-  if (user !== undefined) {
-      return user.profile.username[0].toUpperCase();
-  } else {
-      return "";
-  }
-});
-
-Deps.autorun(function() {
-    Meteor.subscribe("queues");
-    Meteor.subscribe("reports");
-    Meteor.subscribe("chat");
-    Meteor.subscribe("playlists");
-    Meteor.subscribe("alerts");
-    Meteor.subscribe("rooms");
-    Meteor.subscribe("userData", Meteor.userId());
-});
-
-var ban_interval = Meteor.setInterval(function() {
-    var userId = Meteor.userId();
-    if (userId !== undefined) {
-        var userData = Meteor.user();
-        if (localStorage.getItem("banned") === "true") {
-            if (userData !== undefined && userData !== null && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
-                var ban = userData.punishments.ban;
-                if (new Date(ban.bannedUntil).getTime() <= new Date().getTime()) {
-                    Meteor.call("isBanned", function(err, res) {
-                        if (res === false) {
-                            localStorage.setItem("banned", false);
-                            Meteor._reload.reload();
-                        }
-                    });
-                }
-            } else {
-                localStorage.setItem("banned", false);
-                Meteor._reload.reload();
-            }
-        } else {
-            if (userData !== undefined && userData !== null && userData.punishments !== undefined && userData.punishments.ban !== undefined) {
-                localStorage.setItem("banned", true);
-                Meteor._reload.reload();
-            }
-        }
-    }
-}, 1000);
-
-var minterval;
-var hpSound = undefined;
-var songsArr = [];
-var SCPlayer = undefined;
-var parts = location.href.split('/');
-var id = parts.pop();
-var type = id.toLowerCase();
-var resizeSeekerbarInterval;
-var StationSubscription = undefined;
-
-UI.registerHelper("formatTime", function(seconds) {
-    var d = moment.duration(parseInt(seconds), 'seconds');
-    return d.minutes() + ":" + ("0" + d.seconds()).slice(-2);
-});
-
-/*UI.registerHelper("formatTimeFromNow", function(time) {
-    var d = moment(time);
-    return d.fromNow();
-});*/
-
 function getSpotifyInfo(title, cb, artist) {
     var q = "";
     q = title;
@@ -126,62 +15,180 @@ function getSpotifyInfo(title, cb, artist) {
     });
 }
 
-// Admin Template
-Template.admin.helpers({
-  queueCount: function(display) {
-    display = display.toLowerCase();
-    return queues && "songs" in queues ? queues.songs.length : 0;
-    var queues = Queues.findOne({type:display});
-  },
-  queues: function() {
-    var queues = Queues.find({}).fetch();
-    return queues;
-  },
-  usersOnline: function(){
-      Meteor.call("getUserNum", function(err, num){
-          if(err){
-              console.log(err);
-          }
-          Session.set("userNum", num);
-      });
-      return Session.get("userNum");
-  },
-    roomUserNum: function(){
-        var type = this.type;
-        var userNum = Rooms.findOne({type: type}).users;
-        return userNum;
-    },
-  allUsers: function(){
-      Meteor.call("getTotalUsers", function(err, num){
-          Session.set("allUsers", num);
-      })
-      return Session.get("allUsers");
-  },
-  playlists: function() {
-      var playlists = Playlists.find({}).fetch();
-      playlists.map(function(playlist) {
-          if (Rooms.find({type: playlist.type}).count() !== 1) {
-              return;
-          } else {
-              playlist.display = Rooms.findOne({type: playlist.type}).display;
-              return playlist;
-          }
-      });
-      return playlists;
-  },
-  reportsCount: function(room) {
-    room = room.toLowerCase();
-    var reports = Reports.findOne({room:room});
-    return reports && "report" in reports ? reports.report.length : 0;
-  }
-});
+function executeCommand(command, params){
+    if (command === "help" || command === "commands") {
+        $('#helpModal').modal('show');
+        return true;
+    } else if (command === "volume") {
+        if (params.length === 1) {
+            var volume = Number(params[0]);
+            if (volume >= 0 || volume <= 100) {
+                if (volume === 0) {
+                    $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
+                } else {
+                    $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
+                }
+
+                $("#volume-slider").slider("setValue", volume);
+
+                if (YTPlayer !== undefined) {
+                    YTPlayer.setVolume(volume);
+                    localStorage.setItem("volume", volume);
+                } else if (SCPlayer !== undefined) {
+                    //SCPlayer
+                    var volume = volume / 100;
+                    SCPlayer.setVolume(volume);
+                    localStorage.setItem("volume", volume * 100);
+                }
+                return true;
+            }
+        }
+    } else if(command === "mute"){
+        $("#volume-slider").slider("setValue", 0);
+        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off");
+        if (YTPlayer !== undefined) {
+            YTPlayer.setVolume(0);
+            localStorage.setItem("volume", 0);
+        } else if (SCPlayer !== undefined) {
+            //SCPlayer
+            SCPlayer.setVolume(0);
+            localStorage.setItem("volume", 0);
+        }
+    } else if(command === "ban"){
+        var user = params[0];
+        var time = params[1];
+        var reason = params[2];
+        Meteor.call("banUser", user, time, reason, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "silence"){
+        var user = params[0];
+        var time = params[1];
+        Meteor.call("muteUser", user, time, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "unban"){
+        var user = params[0];
+        Meteor.call("unbanUser", user, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "unsilence"){
+        var user = params[0];
+        Meteor.call("unsilenceUser", user, function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "pause"){
+        Meteor.call("pauseRoom", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "resume"){
+        Meteor.call("resumeRoom", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "shuffle"){
+        Meteor.call("shufflePlaylist", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    } else if(command === "skip"){
+        Meteor.call("skipSong", Session.get("type"), function(err, res){
+            if(err){
+                console.log(err);
+            }
+        });
+    }
+}
+
+function sendMessage() {
+    var message = $("#chat-input").val();
+    if (!$("#chat-input").hasClass("disabled")) {
+        if (message.length > 0 && message[0] !== " ") {
+            if (message[0] === "/") {
+                message = message.split("");
+                message.shift();
+                message = message.join("");
+                var params = message.split(" ");
+                params = params.map(function(param) {
+                    return param.replace(/\r?\n|\r/g, "");
+                });
+                var command = params.shift();
+                command = command.replace(/\r?\n|\r/g, "");
+                if (executeCommand(command, params)) {
+                    $("#chat-input").val("");
+                } else {
+                    $("#chat-input").val("");
+                }
+            } else {
+                $("#chat-input").addClass("disabled");
+                $("#chat-input").attr("disabled", "");
+                Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
+                    if(err){
+                        $("#chat-input").val("");
+                        $("#chat-input").removeAttr("disabled");
+                        $("#chat-input").removeClass("disabled");
+                    }
+                    if (res) {
+                        $("#chat-input").val("");
+                        $("#chat-input").removeAttr("disabled");
+                        $("#chat-input").removeClass("disabled");
+                    }
+                });
+            }
+        }
+    }
+}
+
+function sendMessageGlobal() {
+    var message = $("#global-chat-input").val();
+    if (!$("#global-chat-input").hasClass("disabled")) {
+        if (message.length > 0 && message[0] !== " ") {
+            if (message[0] === "/") {
+                message = message.split("");
+                message.shift();
+                message = message.join("");
+                var params = message.split(" ");
+                var command = params.shift();
+                command = command.replace(/\r?\n|\r/g, "");
+                if (executeCommand(command, params)) {
+                    $("#global-chat-input").val("");
+                } else {
+                    $("#global-chat-input").val("");
+                }
+            } else {
+                $("#global-chat-input").addClass("disabled");
+                $("#global-chat-input").attr("disabled", "");
+                Meteor.call("sendMessage", "global", message, function (err, res) {
+                    if (res) {
+                        $("#global-chat-input").val("");
+                    }
+                    $("#global-chat-input").removeClass("disabled");
+                    $("#global-chat-input").removeAttr("disabled");
+                });
+            }
+        }
+    }
+}
+
 Template.admin.events({
     "click #croom_create": function() {
         Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
             if (err) {
-            alert("Error " + err.error + ": " + err.reason);
-        } else {
-            window.location = "/" + $("#croom_tag").val();
+                alert("Error " + err.error + ": " + err.reason);
+            } else {
+                window.location = "/" + $("#croom_tag").val();
             }
         });
     },
@@ -204,27 +211,6 @@ Template.admin.events({
         Meteor.call("resetRating");
     }
 });
-// Alerts Template
-Template.alerts.helpers({
-    alerts: function() {
-        return Alerts.find({active: true});
-    }
-});
-// AlertsDashboard Template
-Template.alertsDashboard.onCreated(function() {
-    if (allAlertSub === undefined) {
-        allAlertSub = Meteor.subscribe("allAlerts");
-    }
-});
-
-Template.alertsDashboard.helpers({
-    "activeAlerts": function() {
-        return Alerts.find({active: true});
-    },
-    "inactiveAlerts": function() {
-        return Alerts.find({active: false});
-    }
-});
 
 Template.alertsDashboard.events({
     "click #calart-create": function() {
@@ -240,79 +226,7 @@ Template.alertsDashboard.events({
         Meteor.call("removeAlerts");
     }
 });
-// Banned Template
-Template.banned.helpers({
-    bannedAt: function() {
-        if (Session.get("ban") !== undefined) {
-            return Session.get("ban").bannedAt;
-        }
-    },
-    bannedBy: function() {
-        if (Session.get("ban") !== undefined) {
-            return Session.get("ban").bannedBy;
-        }
-    },
-    bannedUntil: function() {
-        if (Session.get("ban") !== undefined) {
-            return Session.get("ban").bannedUntil;
-        }
-    },
-    bannedReason: function() {
-        if (Session.get("ban") !== undefined) {
-            return Session.get("ban").bannedReason;
-        }
-    }
-});
 
-Template.banned.onCreated(function() {
-    if (rTimeInterval !== undefined) {
-        Meteor.clearInterval(rTimeInterval)
-    }
-    rTimeInterval = Meteor.setInterval(function() {
-        Session.set("time", new Date().getTime());
-    }, 10000);
-    Session.set("ban", Meteor.user().punishments.ban);
-});
-// Dashboard Template
-Template.dashboard.helpers({
-    rooms: function() {
-        return Rooms.find({});
-    },
-    currentSong: function() {
-        var type = this.type;
-        var room = Rooms.findOne({type: type});
-        if (room !== undefined) {
-            return room.currentSong;
-        } else {
-            return {};
-        }
-    },
-    userNum: function(){
-        var type = this.type;
-        var userNum = Rooms.findOne({type: type}).users;
-        return userNum;
-    }
-});
-Template.dashboard.onCreated(function() {
-    if (SCPlayer !== undefined) SCPlayer.stop();
-    if (minterval !== undefined) {
-        Meteor.clearInterval(minterval);
-    }
-    if (resizeSeekerbarInterval !== undefined) {
-        Meteor.clearInterval(resizeSeekerbarInterval);
-        resizeSeekerbarInterval = undefined;
-    }
-    if (StationSubscription !== undefined) {
-        StationSubscription.stop();
-    }
-    Session.set("type", undefined);
-});
-// Header Template
-Template.header.helpers({
-    userId: function() {
-        return Meteor.userId();
-    }
-});
 Template.header.events({
     "click .logout": function(e){
         e.preventDefault();
@@ -324,21 +238,6 @@ Template.header.events({
     "click #profile": function(){
         window.location = "/u/" + Meteor.user().profile.username;
     }
-});
-// Login Template
-Template.login.onCreated(function() {
-    Session.set("github", true);
-    Accounts.onLoginFailure(function() {
-        if (Session.get("github") === true) {
-            var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to log in with GitHub.</div>');
-            $(".landing").before(errAlert);
-            Meteor.setTimeout(function() {
-                errAlert.fadeOut(5000, function() {
-                    errAlert.remove();
-                });
-            }, 10000);
-        }
-    });
 });
 
 Template.login.events({
@@ -368,28 +267,7 @@ Template.login.events({
         });
     }
 });
-// Plalist Template
-Template.playlist.helpers({
-    playlist_songs: function() {
-        parts = location.href.split('/');
-        id = parts.pop();
-        type = id.toLowerCase();
-        var data = Playlists.findOne({type: type});
-        if (data !== undefined) {
-            data.songs.map(function(song) {
-                if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
-                    song.current = true;
-                } else {
-                    song.current = false;
-                }
-                return song;
-            });
-            return data.songs;
-        } else {
-            return [];
-        }
-    }
-});
+
 Template.playlist.events({
     "keyup #search-playlist": function(){
         if($("#search-playlist").val().length === 0){
@@ -413,7 +291,7 @@ Template.playlist.events({
         console.log($(this).text());
     }
 });
-// Profile Template
+
 Template.profile.events({
     //Edit real name
     "click #edit-name": function(){
@@ -471,115 +349,28 @@ Template.profile.events({
     },
     // Admins only Edit Rank
     "click #edit-rank": function() {
-      $("#rank").hide();
-      $("#rank-div").show();
-      $("#edit-rank").hide();
-      $("#cancel-rank").show();
+        $("#rank").hide();
+        $("#rank-div").show();
+        $("#edit-rank").hide();
+        $("#cancel-rank").show();
     },
     "click #submit-rank": function() {
-      $("#rank").show();
-      $("#rank-div").hide();
-      $("#edit-rank").show();
-      $("#cancel-rank").hide();
-      var newRank = $("#select-rank option:selected").val();
-      var username = Session.get("username");
-      console.log(username, newRank);
+        $("#rank").show();
+        $("#rank-div").hide();
+        $("#edit-rank").show();
+        $("#cancel-rank").hide();
+        var newRank = $("#select-rank option:selected").val();
+        var username = Session.get("username");
+        console.log(username, newRank);
     },
     "click #cancel-rank": function() {
-      $("#rank").show();
-      $("#rank-div").hide();
-      $("#edit-rank").show();
-      $("#cancel-rank").hide();
+        $("#rank").show();
+        $("#rank-div").hide();
+        $("#edit-rank").show();
+        $("#cancel-rank").hide();
     }
 });
-Template.profile.helpers({
-    "real_name": function(){
-        return Session.get("real_name");
-    },
-    "username": function() {
-        return Session.get("username")
-    },
-    "first_joined": function() {
-        return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
-    },
-    "rank": function() {
-        return Session.get("rank");
-    },
-    loaded: function() {
-        return Session.get("loaded");
-    },
-    likedSongs: function(){
-        var likedArr = [];
-        Session.get("liked").forEach(function(mid){
-            Rooms.find().forEach(function(room){
-                Playlists.find({type: room.type}).forEach(function(pl){
-                    for(var i in pl.songs){
-                        if(pl.songs[i].mid === mid){
-                            likedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
-                        }
-                    }
-                });
-            })
-        });
-        return likedArr;
-    },
-    dislikedSongs: function(){
-        var dislikedArr = [];
-        Session.get("disliked").forEach(function(mid){
-            Rooms.find().forEach(function(room){
-                Playlists.find({type: room.type}).forEach(function(pl){
-                    for(var i in pl.songs){
-                        if(pl.songs[i].mid === mid){
-                            dislikedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
-                        }
-                    }
-                });
-            })
-        });
-        return dislikedArr;
-    },
-    isUser: function(){
-        var parts = Router.current().url.split('/');
-        var username = parts.pop();
-        if(username === Meteor.user().profile.username){
-            return true;
-        }
-    }
-});
-Template.profile.onCreated(function() {
-    var parts = Router.current().url.split('/');
-    var username = parts.pop();
-    Session.set("loaded", false);
-    Meteor.subscribe("userProfiles", username.toLowerCase(), function() {
-        if (Meteor.users.find({"profile.usernameL": username.toLowerCase()}).count() === 0) {
-            window.location = "/";
-        } else {
-            var data = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
-            Session.set("real_name", data.profile.realname);
-            Session.set("username", data.profile.username);
-            Session.set("first_joined", data.createdAt);
-            Session.set("rank", data.profile.rank);
-            Session.set("liked", data.profile.liked);
-            Session.set("disliked", data.profile.disliked);
-            Session.set("loaded", true);
-        }
-    });
-});
-// Queues Template
-Template.queues.helpers({
-  queues: function() {
-      var queues = Queues.find({}).fetch();
-      queues.map(function(queue) {
-          if (Rooms.find({type: queue.type}).count() !== 1) {
-              return;
-          } else {
-              queue.display = Rooms.findOne({type: queue.type}).display;
-              return queue;
-          }
-      });
-      return queues;
-  }
-});
+
 Template.queues.events({
     "click .preview-button": function(e){
         Session.set("song", this);
@@ -725,7 +516,7 @@ Template.queues.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[1].url);
+                        $("#img").val(data[i].items[j].album.images[2].url);
                         $("#duration").val(data[i].items[j].duration_ms / 1000);
                         return;
                     }
@@ -758,66 +549,7 @@ Template.queues.events({
         }
     }
 });
-Template.queues.onCreated(function() {
-    var tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    YTPlayer = undefined;
-    SCPlayer = undefined;
-});
-Template.queues.onRendered(function() {
-    $("#previewModal").on("hidden.bs.modal", function() {
-        if (previewEndSongTimeout !== undefined) {
-            Meteor.clearTimeout(previewEndSongTimeout);
-        }
-        $("#play").attr("disabled", false);
-        $("#stop").attr("disabled", true);
-        if (YTPlayer !== undefined) {
-            $("#previewPlayer").hide();
-            YTPlayer.seekTo(0);
-            YTPlayer.stopVideo();
-        }
-        if (SCPlayer !== undefined) {
-            SCPlayer.stop();
-        }
-    });
-    $(document).ready(function() {
-        function makeSlider(){
-            var slider = $("#volume-slider").slider();
-            var volume = localStorage.getItem("volume") || 20;
-            $("#volume-slider").slider("setValue", volume);
-            if (slider.length === 0) {
-                Meteor.setTimeout(function() {
-                    makeSlider();
-                }, 500);
-            } else {
-                slider.on("slide", function(val) {
-                    localStorage.setItem("volume", val.value);
-                    if (YTPlayer !== undefined) {
-                        YTPlayer.setVolume(val.value);
-                    } else if (SCPlayer !== undefined) {
-                        var volume = val.value / 100;
-                        SCPlayer.setVolume(volume);
-                    }
-                });
-            }
-        }
-        makeSlider();
-    });
-});
-// Register Template
-Template.register.onCreated(function() {
-    Accounts.onLoginFailure(function() {
-        var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to register with GitHub. Maybe an account with that username already exists?</div>');
-        $(".landing").before(errAlert);
-        Meteor.setTimeout(function() {
-            errAlert.fadeOut(5000, function() {
-                errAlert.remove();
-            });
-        }, 10000);
-    });
-});
+
 Template.register.events({
     "submit form": function(e){
         e.preventDefault();
@@ -852,9 +584,9 @@ Template.register.events({
         });
     }
 });
-// Room Template
+
 Template.room.events({
-    "click #youtube-playlist-button": function() {
+    "click #youtube-playlist-button": function () {
         if (!Session.get("importingPlaylist")) {
             var playlist_link = $("#youtube-playlist-input").val();
             var playlist_id = gup("list", playlist_link);
@@ -877,7 +609,7 @@ Template.room.events({
             $("#import-progress").css({width: "0%"});
             $("#import-progress").text("0%");
 
-            function makeAPICall(playlist_id, nextPageToken){
+            function makeAPICall(playlist_id, nextPageToken) {
                 if (nextPageToken !== undefined) {
                     nextPageToken = "&pageToken=" + nextPageToken;
                 } else {
@@ -888,19 +620,25 @@ Template.room.events({
                     url: "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=" + playlist_id + nextPageToken + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
                     applicationType: "application/json",
                     contentType: "json",
-                    success: function(data){
+                    success: function (data) {
                         if (!ranOnce) {
                             ranOnce = true;
                             totalVideos = data.pageInfo.totalResults;
                         }
                         var nextToken = data.nextPageToken;
-                        for(var i in data.items){
+                        for (var i in data.items) {
                             var item = data.items[i];
                             if (item.snippet.thumbnails !== undefined) {
                                 var genre = Session.get("type");
-                                if (Playlists.find({type: genre, "songs.id": item.snippet.resourceId.videoId}, {songs: {$elemMatch: {id: item.snippet.resourceId.videoId}}}).count() !== 0) {
+                                if (Playlists.find({
+                                        type: genre,
+                                        "songs.id": item.snippet.resourceId.videoId
+                                    }, {songs: {$elemMatch: {id: item.snippet.resourceId.videoId}}}).count() !== 0) {
                                     videosInPlaylist++;
-                                } else if (Queues.find({type: genre, "songs.id": item.snippet.resourceId.videoId}, {songs: {$elemMatch: {id: item.snippet.resourceId.videoId}}}).count() !== 0) {
+                                } else if (Queues.find({
+                                        type: genre,
+                                        "songs.id": item.snippet.resourceId.videoId
+                                    }, {songs: {$elemMatch: {id: item.snippet.resourceId.videoId}}}).count() !== 0) {
                                     videosInQueue++;
                                 } else {
                                     $("#playlist-import-queue").append(
@@ -917,7 +655,10 @@ Template.room.events({
                                     $("#import-progress").attr("aria-valuenow", percentage.toFixed(2));
                                     $("#import-progress").css({width: percentage + "%"});
                                     $("#import-progress").text(percentage.toFixed(1) + "%");
-                                    ytImportQueue.push({title: item.snippet.title, id: item.snippet.resourceId.videoId});
+                                    ytImportQueue.push({
+                                        title: item.snippet.title,
+                                        id: item.snippet.resourceId.videoId
+                                    });
                                 }
                             } else {
                                 videosInvalid++;
@@ -926,14 +667,15 @@ Template.room.events({
                         if (nextToken !== undefined) {
                             makeAPICall(playlist_id, nextToken);
                         } else {
-                            $("#playlist-import-queue > div > i").click(function(){
-                                var title =  $(this).parent().find("div > .song-result-title").text();
-                                for(var i in ytImportQueue){
-                                    if(ytImportQueue[i].title === title){
+                            $("#playlist-import-queue > div > i").click(function () {
+                                var title = $(this).parent().find("div > .song-result-title").text();
+                                for (var i in ytImportQueue) {
+                                    if (ytImportQueue[i].title === title) {
                                         ytImportQueue.splice(i, 1);
                                     }
                                 }
                                 $(this).parent().remove();
+                                Session.set("YTImportQueue", ytImportQueue);
                             });
                             Session.set("importingPlaylist", false);
                             $("#import-progress").attr("aria-valuenow", 100);
@@ -950,10 +692,11 @@ Template.room.events({
                     }
                 })
             }
+
             makeAPICall(playlist_id);
         }
     },
-    "click #add-youtube-playlist": function() {
+    "click #add-youtube-playlist": function () {
         var YTImportQueue = Session.get("YTImportQueue");
         $("#youtube-playlist-button").attr("disabled", "");
         $("#youtube-playlist-button").addClass("disabled");
@@ -966,10 +709,11 @@ Template.room.events({
         var success = 0;
         var processed = 0;
         var total = YTImportQueue.length;
-        YTImportQueue.forEach(function(song) {
+        YTImportQueue.forEach(function (song) {
             var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: ""};
-            Meteor.call("addSongToQueue", Session.get("type"), songData, function(err, res) {
+            Meteor.call("addSongToQueue", Session.get("type"), songData, function (err, res) {
                 if (err) {
+                    console.log(err);
                     failed++;
                 } else {
                     success++;
@@ -982,13 +726,13 @@ Template.room.events({
             });
         });
     },
-    "click #chat-tab": function() {
+    "click #chat-tab": function () {
         $("#chat-tab").removeClass("unread-messages");
     },
-    "click #global-chat-tab": function() {
+    "click #global-chat-tab": function () {
         $("#global-chat-tab").removeClass("unread-messages");
     },
-    "click #sync": function() {
+    "click #sync": function () {
         if (Session.get("currentSong") !== undefined) {
             var room = Rooms.findOne({type: Session.get("type")});
             if (room !== undefined) {
@@ -1003,86 +747,86 @@ Template.room.events({
             }
         }
     },
-    "click #lock": function() {
+    "click #lock": function () {
         Meteor.call("lockRoom", Session.get("type"));
     },
-    "click #unlock": function() {
+    "click #unlock": function () {
         Meteor.call("unlockRoom", Session.get("type"));
     },
-    "click #chat-tab": function(e) {
-        Meteor.setTimeout(function() {
+    "click #chat-tab": function (e) {
+        Meteor.setTimeout(function () {
             $("#chat-ul").scrollTop(100000);
         }, 1);
     },
-    "click #global-chat-tab": function(e) {
-        Meteor.setTimeout(function() {
+    "click #global-chat-tab": function (e) {
+        Meteor.setTimeout(function () {
             $("#global-chat-ul").scrollTop(100000);
         }, 1);
     },
-    "click #submit": function() {
+    "click #submit": function () {
         sendMessage();
-        Meteor.setTimeout(function(){
+        Meteor.setTimeout(function () {
             $("#chat-ul").scrollTop(100000);
         }, 1000)
     },
-    "click #global-submit": function() {
+    "click #global-submit": function () {
         sendMessageGlobal();
-        Meteor.setTimeout(function(){
+        Meteor.setTimeout(function () {
             $("#global-chat-ul").scrollTop(100000);
         }, 1000)
     },
-    "keyup #chat-input": function(e) {
+    "keyup #chat-input": function (e) {
         if (e.type === "keyup" && e.which === 13) {
             e.preventDefault();
             if (!$('#chat-input').data('dropdownshown')) {
                 sendMessage();
-                Meteor.setTimeout(function(){
+                Meteor.setTimeout(function () {
                     $("#chat-ul").scrollTop(100000);
                 }, 1000)
             }
         }
     },
-    "keyup #global-chat-input": function(e) {
+    "keyup #global-chat-input": function (e) {
         if (e.type === "keyup" && e.which === 13) {
             e.preventDefault();
             if (!$('#global-chat-input').data('dropdownshown')) {
                 sendMessageGlobal();
-                Meteor.setTimeout(function(){
+                Meteor.setTimeout(function () {
                     $("#global-chat-ul").scrollTop(100000);
                 }, 1000)
             }
         }
     },
-    "click #like": function(e) {
+    "click #like": function (e) {
         $("#like").blur();
         Meteor.call("likeSong", Session.get("currentSong").mid);
     },
-    "click #dislike": function(e) {
+    "click #dislike": function (e) {
         $("#dislike").blur();
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
     },
-    "click #vote-skip": function(){
-        Meteor.call("voteSkip", type, function(err, res) {
+    "click #vote-skip": function () {
+        Meteor.call("voteSkip", type, function (err, res) {
             $("#vote-skip").attr("disabled", true);
         });
     },
-    "click #report-prev": function(e) {
+    "click #report-prev": function (e) {
         if (Session.get("previousSong") !== undefined) {
             Session.set("reportPrevious", true);
             $("#report-prev").prop("disabled", true);
             $("#report-curr").prop("disabled", false);
         }
     },
-    "click #report-curr": function(e) {
+    "click #report-curr": function (e) {
         Session.set("reportPrevious", false);
         $("#report-prev").prop("disabled", false);
         $("#report-curr").prop("disabled", true);
     },
-    "click #report-modal": function() {
+    "click #report-modal": function () {
         Session.set("currentSongR", Session.get("currentSong"));
         Session.set("previousSongR", Session.get("previousSong"));
     },
-    "click #add-song-button": function(e){
+    "click #add-song-button": function (e) {
         e.preventDefault();
         parts = location.href.split('/');
         var roomType = parts.pop();
@@ -1093,23 +837,37 @@ Template.room.events({
         var artist = $("#artist").val();
         var img = $("#img").val();
         var songData = {type: type, id: id, title: title, artist: artist, img: img};
-        if(Playlists.find({type: genre, "songs.id": songData.id}, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
-            $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song is already in the playlist.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
-        } else if(Queues.find({type: genre, "songs.id": songData.id}, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
-           $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song has already been requested.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
-        } else{
-            Meteor.call("addSongToQueue", genre, songData, function(err, res) {
+        if (Playlists.find({
+                type: genre,
+                "songs.id": songData.id
+            }, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
+            $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song is already in the playlist.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
+                $(this).remove();
+            });
+        } else if (Queues.find({
+                type: genre,
+                "songs.id": songData.id
+            }, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
+            $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song has already been requested.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
+                $(this).remove();
+            });
+        } else {
+            Meteor.call("addSongToQueue", genre, songData, function (err, res) {
                 console.log(err, res);
                 if (err) {
-                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> Something went wrong.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> Something went wrong.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
+                        $(this).remove();
+                    });
                 } else {
-                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song added.</strong> Your song has been added to the queue.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song added.</strong> Your song has been added to the queue.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
+                        $(this).remove();
+                    });
                 }
             });
         }
         $("#close-modal-a").click();
     },
-    "click #toggle-video": function(e){
+    "click #toggle-video": function (e) {
         e.preventDefault();
         if (Session.get("mediaHidden")) {
             $("#media-container").removeClass("hidden");
@@ -1121,40 +879,40 @@ Template.room.events({
             Session.set("mediaHidden", true);
         }
     },
-    "click #return": function(e){
+    "click #return": function (e) {
         $("#add-info").hide();
         $("#search-info").show();
     },
-    "click #search-song": function(){
+    "click #search-song": function () {
         var songs = [];
         $("#song-results").empty();
         var search_type = $("#search_type").val();
         if (search_type === "YouTube") {
             $.ajax({
                 type: "GET",
-                url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" +  $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
+                url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
                 applicationType: "application/json",
                 contentType: "json",
-                success: function(data){
-                    for(var i in data.items){
+                success: function (data) {
+                    for (var i in data.items) {
                         var item = data.items[i];
                         $("#song-results").append(
                             "<div>" +
-                                "<img src='" + item.snippet.thumbnails.medium.url + "' class='song-result-thumbnail'/>" +
-                                "<div>" +
-                                    "<span class='song-result-title'>" + item.snippet.title + "</span>" +
-                                    "<span class='song-result-channel'>" + item.snippet.channelTitle + "</span>" +
-                                "</div>" +
+                            "<img src='" + item.snippet.thumbnails.medium.url + "' class='song-result-thumbnail'/>" +
+                            "<div>" +
+                            "<span class='song-result-title'>" + item.snippet.title + "</span>" +
+                            "<span class='song-result-channel'>" + item.snippet.channelTitle + "</span>" +
+                            "</div>" +
                             "</div>"
                         );
                         songs.push({title: item.snippet.title, id: item.id.videoId});
                     }
-                    $("#song-results > div").click(function(){
+                    $("#song-results > div").click(function () {
                         $("#search-info").hide();
                         $("#add-info").show();
-                        var title =  $(this).find("div > .song-result-title").text();
-                        for(var i in songs){
-                            if(songs[i].title === title){
+                        var title = $(this).find("div > .song-result-title").text();
+                        for (var i in songs) {
+                            if (songs[i].title === title) {
                                 var songObj = {
                                     id: songs[i].id,
                                     title: songs[i].title,
@@ -1164,12 +922,12 @@ Template.room.events({
                                 $("#artist").val("");
                                 $("#id").val(songObj.id);
                                 $("#type").val("YouTube");
-                                getSpotifyInfo(songObj.title.replace(/\[.*\]/g, ""), function(data) {
+                                getSpotifyInfo(songObj.title.replace(/\[.*\]/g, ""), function (data) {
                                     if (data.tracks.items.length > 0) {
                                         $("#title").val(data.tracks.items[0].name);
                                         var artists = [];
-                                        $("#img").val(data.tracks.items[0].album.images[1].url);
-                                        data.tracks.items[0].artists.forEach(function(artist) {
+                                        $("#img").val(data.tracks.items[0].album.images[2].url);
+                                        data.tracks.items[0].artists.forEach(function (artist) {
                                             artists.push(artist.name);
                                         });
                                         $("#artist").val(artists.join(", "));
@@ -1181,17 +939,17 @@ Template.room.events({
                 }
             })
         } else if (search_type === "SoundCloud") {
-            SC.get('/tracks', { q: $("#song-input").val()}, function(tracks) {
-                for(var i in tracks){
+            SC.get('/tracks', {q: $("#song-input").val()}, function (tracks) {
+                for (var i in tracks) {
                     $("#song-results").append("<p>" + tracks[i].title + "</p>")
                     songsArr.push({title: tracks[i].title, id: tracks[i].id, duration: tracks[i].duration / 1000});
                 }
-                $("#song-results p").click(function(){
+                $("#song-results p").click(function () {
                     $("#search-info").hide();
                     $("#add-info").show();
                     var title = $(this).text();
-                    for(var i in songsArr){
-                        if(songsArr[i].title === title){
+                    for (var i in songsArr) {
+                        if (songsArr[i].title === title) {
                             var id = songsArr[i].id;
                             var duration = songsArr[i].duration;
                             var songObj = {
@@ -1204,11 +962,11 @@ Template.room.events({
                             // Set ID field
                             $("#id").val(songObj.id);
                             $("#type").val("SoundCloud");
-                            getSpotifyInfo(songObj.title.replace(/\[.*\]/g, ""), function(data) {
+                            getSpotifyInfo(songObj.title.replace(/\[.*\]/g, ""), function (data) {
                                 if (data.tracks.items.length > 0) {
                                     $("#title").val(data.tracks.items[0].name);
                                     var artists = [];
-                                    data.tracks.items[0].artists.forEach(function(artist) {
+                                    data.tracks.items[0].artists.forEach(function (artist) {
                                         artists.push(artist.name);
                                     });
                                     $("#artist").val(artists.join(", "));
@@ -1222,7 +980,7 @@ Template.room.events({
             });
         }
     },
-    "click #volume-icon": function(){
+    "click #volume-icon": function () {
         var volume = 0;
         var slider = $("#volume-slider").slider();
         $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
@@ -1236,19 +994,19 @@ Template.room.events({
             $("#volume-slider").slider("setValue", volume);
         }
     },
-    "click #play": function() {
+    "click #play": function () {
         Meteor.call("resumeRoom", type);
     },
-    "click #pause": function() {
+    "click #pause": function () {
         Meteor.call("pauseRoom", type);
     },
-    "click #skip": function() {
+    "click #skip": function () {
         Meteor.call("skipSong", type);
     },
-    "click #shuffle": function() {
+    "click #shuffle": function () {
         Meteor.call("shufflePlaylist", type);
     },
-    "change input": function(e) {
+    "change input": function (e) {
         if (e.target && e.target.id) {
             var partsOfId = e.target.id.split("-");
             partsOfId[1] = partsOfId[1].charAt(0).toUpperCase() + partsOfId[1].slice(1);
@@ -1256,73 +1014,45 @@ Template.room.events({
             Session.set(camelCase, e.target.checked);
         }
     },
-    "click #report-song-button": function() {
+    "click #report-song-button": function () {
         var room = Session.get("type");
         var reportData = {};
         reportData.song = Session.get("currentSong").mid;
         reportData.type = [];
         reportData.reason = [];
 
-        $(".report-layer-1 > .checkbox input:checked").each(function(){
-          reportData.type.push(this.id);
-          if (this.id == "report-other") {
-            var otherText = $(".other-textarea").val();
-          }
+        $(".report-layer-1 > .checkbox input:checked").each(function () {
+            reportData.type.push(this.id);
+            if (this.id == "report-other") {
+                var otherText = $(".other-textarea").val();
+            }
         });
 
-        $(".report-layer-2 input:checked").each(function(){
-          reportData.reason.push(this.id);
+        $(".report-layer-2 input:checked").each(function () {
+            reportData.reason.push(this.id);
         });
 
         console.log(reportData);
-        Meteor.call("submitReport", room, reportData, Session.get("id"), function() {
+        Meteor.call("submitReport", room, reportData, Session.get("id"), function () {
             $("#close-modal-r").click();
         });
     },
-    "change #si_or_pl": function(){
-        if($("#select_playlist").is(':selected')){
+    "change #si_or_pl": function () {
+        if ($("#select_playlist").is(':selected')) {
             $("#search-info").hide();
             $("#playlist-import").show();
         }
-        if($("#select_single").is(':selected')){
+        if ($("#select_single").is(':selected')) {
             $("#search-info").show();
             $("#playlist-import").hide();
         }
     },
-    "click #close-modal-a": function(){
+    "click #close-modal-a": function () {
         $("#select_single").attr("selected", true);
         $("#search-info").show();
         $("#playlist-import").hide();
     }
 });
-Template.room.onRendered(function() {
-    if (rTimeInterval !== undefined) {
-        Meteor.clearInterval(rTimeInterval)
-    }
-    rTimeInterval = Meteor.setInterval(function() {
-        Session.set("time", new Date().getTime());
-    }, 10000);
-    $(document).ready(function() {
-        function makeSlider(){
-            var slider = $("#volume-slider").slider();
-            var volume = Number(localStorage.getItem("volume"));
-            $("#volume-slider").slider("setValue", volume);
-            if (slider.length === 0) {
-                Meteor.setTimeout(function() {
-                    makeSlider();
-                }, 500);
-            } else {
-                if (volume === 0) {
-                    $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
-                } else {
-                    $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
-                }
-                slider.on("slide", function(val) {
-                    if (val.value === 0) {
-                        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
-                    } else {
-                        $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
-                    }
 
                     if (YTPlayer !== undefined) {
                         YTPlayer.setVolume(val.value);
@@ -1736,58 +1466,6 @@ Template.settings.events({
     }
 });
 
-Template.settings.helpers({
-    username: function() {
-        if (Meteor.user() !== undefined) {
-            return Meteor.user().profile.username;
-        } else {
-            return "";
-        }
-    }
-});
-
-Template.settings.onCreated(function() {
-    $(document).ready(function() {
-        var user = Meteor.user();
-        function initSettings() {
-            if (user !== undefined) {
-                if (user.profile.settings && user.profile.settings.showRating === true) {
-                    function setChecked() {
-                        $("#showRating").prop("checked", true);
-                        if (!$("#showRating").prop("checked")) {
-                            Meteor.setTimeout(function() {
-                                setChecked();
-                            }, 100);
-                        }
-                    }
-                    setChecked();
-                }
-            } else {
-                Meteor.setTimeout(function() {
-                    initSettings();
-                }, 500);
-            }
-        }
-        initSettings();
-    });
-});
-// Stations Template
-Template.stations.helpers({
-    playlist: function() {
-      var query = {type: Session.get("playlistToEdit").toLowerCase()};
-      var playlists = Playlists.find(query).fetch();
-      return playlists;
-    },
-    whichStation: function(){
-      return Session.get("playlistToEdit");
-    },
-    reports: function() {
-      var query = {room: Session.get("playlistToEdit").toLowerCase()};
-      var reports = Reports.find(query).fetch();
-      console.log(reports);
-      return reports;
-    }
-});
 Template.stations.events({
     "click .preview-button": function(e){
         Session.set("song", this);
@@ -1838,19 +1516,19 @@ Template.stations.events({
         Meteor.call("removeSongFromPlaylist", genre, this.mid);
     },
     "click #moveSong": function(e){
-      var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-      if (genre !== Session.get(genre)) {
-        Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes, requestedBy: Session.get("song").requestedBy});
-        Meteor.call("removeSongFromPlaylist", Session.get("genre"), Session.get("song").mid);
-      }else {
-        console.log("Something Went Wrong?!");
-        return false;
-      }
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
+        if (genre !== Session.get(genre)) {
+            Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+            Meteor.call("removeSongFromPlaylist", Session.get("genre"), Session.get("song").mid);
+        }else {
+            console.log("Something Went Wrong?!");
+            return false;
+        }
 
     },
     "click #copySong": function(e){
-      var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-      Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes, requestedBy: Session.get("song").requestedBy});
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
+        Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
     },
     "click .copyMove-button": function(e){
         Session.set("song", this);
@@ -1971,7 +1649,7 @@ Template.stations.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[1].url);
+                        $("#img").val(data[i].items[j].album.images[2].url);
                         $("#duration").val(data[i].items[j].duration_ms / 1000);
                         return;
                     }
@@ -2008,236 +1686,3 @@ Template.stations.events({
         Meteor.call("deleteRoom", typeDel);
     }
 });
-
-Template.stations.onCreated(function() {
-    var tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    YTPlayer = undefined;
-    SCPlayer = undefined;
-});
-
-Template.stations.onRendered(function() {
-    $("#previewModal").on("hidden.bs.modal", function() {
-        if (previewEndSongTimeout !== undefined) {
-            Meteor.clearTimeout(previewEndSongTimeout);
-        }
-        $("#play").attr("disabled", false);
-        $("#stop").attr("disabled", true);
-        if (YTPlayer !== undefined) {
-            $("#previewPlayer").hide();
-            YTPlayer.seekTo(0);
-            YTPlayer.stopVideo();
-        }
-        if (SCPlayer !== undefined) {
-            SCPlayer.stop();
-        }
-    });
-    $(document).ready(function() {
-        function makeSlider(){
-            var slider = $("#volume-slider").slider();
-            var volume = localStorage.getItem("volume") || 20;
-            $("#volume-slider").slider("setValue", volume);
-            if (slider.length === 0) {
-                Meteor.setTimeout(function() {
-                    makeSlider();
-                }, 500);
-            } else {
-                slider.on("slide", function(val) {
-                    localStorage.setItem("volume", val.value);
-                    if (YTPlayer !== undefined) {
-                        YTPlayer.setVolume(val.value);
-                    } else if (SCPlayer !== undefined) {
-                        var volume = val.value / 100;
-                        SCPlayer.setVolume(volume);
-                    }
-                });
-            }
-        }
-        makeSlider();
-    });
-});
-
-curPath=function(){var c=window.location.pathname;var b=c.slice(0,-1);var a=c.slice(-1);if(b==""){return"/"}else{if(a=="/"){return b}else{return c}}};
-
-Handlebars.registerHelper('active', function(path) {
-        return curPath() == path ? 'active' : '';
-});
-
-function executeCommand(command, params){
-    if (command === "help" || command === "commands") {
-        $('#helpModal').modal('show');
-        return true;
-    } else if (command === "volume") {
-        if (params.length === 1) {
-            var volume = Number(params[0]);
-            if (volume >= 0 || volume <= 100) {
-                if (volume === 0) {
-                    $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
-                } else {
-                    $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
-                }
-
-                $("#volume-slider").slider("setValue", volume);
-
-                if (YTPlayer !== undefined) {
-                    YTPlayer.setVolume(volume);
-                    localStorage.setItem("volume", volume);
-                } else if (SCPlayer !== undefined) {
-                    //SCPlayer
-                    var volume = volume / 100;
-                    SCPlayer.setVolume(volume);
-                    localStorage.setItem("volume", volume * 100);
-                }
-                return true;
-            }
-        }
-    } else if(command === "mute"){
-        $("#volume-slider").slider("setValue", 0);
-        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off");
-        if (YTPlayer !== undefined) {
-            YTPlayer.setVolume(0);
-            localStorage.setItem("volume", 0);
-        } else if (SCPlayer !== undefined) {
-            //SCPlayer
-            SCPlayer.setVolume(0);
-            localStorage.setItem("volume", 0);
-        }
-    } else if(command === "ban"){
-        var user = params[0];
-        var time = params[1];
-        var reason = params[2];
-        Meteor.call("banUser", user, time, reason, function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "silence"){
-        var user = params[0];
-        var time = params[1];
-        Meteor.call("muteUser", user, time, function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "unban"){
-        var user = params[0];
-        Meteor.call("unbanUser", user, function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "unsilence"){
-        var user = params[0];
-        Meteor.call("unsilenceUser", user, function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "pause"){
-        Meteor.call("pauseRoom", Session.get("type"), function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "resume"){
-        Meteor.call("resumeRoom", Session.get("type"), function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "shuffle"){
-        Meteor.call("shufflePlaylist", Session.get("type"), function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    } else if(command === "skip"){
-        Meteor.call("skipSong", Session.get("type"), function(err, res){
-            if(err){
-                console.log(err);
-            }
-        });
-    }
-}
-
-function sendMessage() {
-    var message = $("#chat-input").val();
-    if (!$("#chat-input").hasClass("disabled")) {
-        if (message.length > 0 && message[0] !== " ") {
-            if (message[0] === "/") {
-                message = message.split("");
-                message.shift();
-                message = message.join("");
-                var params = message.split(" ");
-                params = params.map(function(param) {
-                    return param.replace(/\r?\n|\r/g, "");
-                });
-                var command = params.shift();
-                command = command.replace(/\r?\n|\r/g, "");
-                if (executeCommand(command, params)) {
-                    $("#chat-input").val("");
-                } else {
-                    $("#chat-input").val("");
-                }
-            } else {
-                $("#chat-input").addClass("disabled");
-                $("#chat-input").attr("disabled", "");
-                Meteor.call("sendMessage", Session.get("type"), message, function (err, res) {
-                    if (res) {
-                        $("#chat-input").val("");
-                        $("#chat-input").removeAttr("disabled");
-                        $("#chat-input").removeClass("disabled");
-                    }
-                });
-            }
-        }
-    }
-}
-
-function sendMessageGlobal() {
-    var message = $("#global-chat-input").val();
-    if (!$("#global-chat-input").hasClass("disabled")) {
-        if (message.length > 0 && message[0] !== " ") {
-            if (message[0] === "/") {
-                message = message.split("");
-                message.shift();
-                message = message.join("");
-                var params = message.split(" ");
-                var command = params.shift();
-                command = command.replace(/\r?\n|\r/g, "");
-                if (executeCommand(command, params)) {
-                    $("#global-chat-input").val("");
-                } else {
-                    $("#global-chat-input").val("");
-                }
-            } else {
-                $("#global-chat-input").addClass("disabled");
-                $("#global-chat-input").attr("disabled", "");
-                Meteor.call("sendMessage", "global", message, function (err, res) {
-                    if (res) {
-                        $("#global-chat-input").val("");
-                    }
-                    $("#global-chat-input").removeClass("disabled");
-                    $("#global-chat-input").removeAttr("disabled");
-                });
-            }
-        }
-    }
-}
-
-Template.registerHelper("rtime", function(date) {
-    Session.get("time");
-    if (date) {
-        return moment(date).fromNow();
-    }
-});
-
-var rTimeInterval = undefined;
-
-var allAlertSub = undefined;
-
-var YTPlayer = undefined;
-var SCPlayer = undefined;
-var previewEndSongTimeout = undefined;
