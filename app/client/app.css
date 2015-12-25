@@ -1,40 +1,18 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-weight: 300;
-}
-
-html, body {
-    height: 100%;
-    background: #50a3a2;
-    background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
-}
-
 body {
-    font-family: 'Source Sans Pro', sans-serif;
-    font-weight: 300;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background-color: rgb(245, 245, 245);
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 .brand-logo {
   margin-left: 10px;
-}
-
-.landing {
-    background: #50a3a2;
-    background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
-    position: absolute;
-    /*top: 20%;*/
-    left: 0;
-    width: 100%;
-    height: 100%; /*400px*/
-    /*margin-top: -200px;*/
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 .admin-container {
@@ -83,30 +61,6 @@ body {
   font-size: 18px;
 }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 80px 0;
-    height: 400px;
-    text-align: center;
-}
-
-.container h1 {
-    font-size: 40px;
-    color: white;
-    -webkit-transition-duration: 1s;
-    transition-duration: 1s;
-    font-weight: 200;
-}
-
-.container p {
-    font-size: 10px;
-    color: white;
-    -webkit-transition-duration: 1s;
-    transition-duration: 1s;
-    font-weight: 200;
-}
-
 .g-recaptcha {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -121,222 +75,6 @@ body {
     -webkit-transition-duration: 0.25s;
     transition-duration: 0.25s;
     font-weight: 300;
-}
-
-.bg-bubbles {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1;
-    margin: 0px;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.bg-bubbles li {
-    position: absolute;
-    list-style: none;
-    display: block;
-    width: 40px;
-    height: 40px;
-    border-radius: 100px;
-    /*background-color: rgba(255, 255, 255, 0.15);*/
-    bottom: 0px;
-    -webkit-animation: square 25s infinite;
-    animation: square 25s infinite;
-    -webkit-transition-timing-function: linear;
-    transition-timing-function: linear;
-    opacity: 0.5;
-}
-
-.bg-bubbles li:nth-child(1) {
-    left: 10%;
-}
-
-.bg-bubbles li:nth-child(2) {
-    left: 20%;
-    width: 80px;
-    height: 80px;
-    -webkit-animation-delay: 2s;
-    animation-delay: 2s;
-    -webkit-animation-duration: 17s;
-    animation-duration: 17s;
-}
-
-.bg-bubbles li:nth-child(3) {
-    left: 25%;
-    -webkit-animation-delay: 4s;
-    animation-delay: 4s;
-}
-
-.bg-bubbles li:nth-child(4) {
-    left: 40%;
-    width: 60px;
-    height: 60px;
-    -webkit-animation-duration: 22s;
-    animation-duration: 22s;
-    /*background-color: rgba(255, 255, 255, 0.25);*/
-}
-
-.bg-bubbles li:nth-child(5) {
-    left: 70%;
-}
-
-.bg-bubbles li:nth-child(6) {
-    left: 80%;
-    width: 120px;
-    height: 120px;
-    -webkit-animation-delay: 3s;
-    animation-delay: 3s;
-    /*background-color: rgba(255, 255, 255, 0.2);*/
-}
-
-.bg-bubbles li:nth-child(7) {
-    left: 32%;
-    width: 160px;
-    height: 160px;
-    -webkit-animation-delay: 7s;
-    animation-delay: 7s;
-}
-
-.bg-bubbles li:nth-child(8) {
-    left: 55%;
-    width: 20px;
-    height: 20px;
-    -webkit-animation-delay: 15s;
-    animation-delay: 15s;
-    -webkit-animation-duration: 40s;
-    animation-duration: 40s;
-}
-
-.bg-bubbles li:nth-child(9) {
-    left: 25%;
-    width: 10px;
-    height: 10px;
-    -webkit-animation-delay: 2s;
-    animation-delay: 2s;
-    -webkit-animation-duration: 40s;
-    animation-duration: 40s;
-    /*background-color: rgba(255, 255, 255, 0.3);*/
-}
-
-.bg-bubbles li:nth-child(10) {
-    left: 80%;
-    width: 160px;
-    height: 160px;
-    -webkit-animation-delay: 11s;
-    animation-delay: 11s;
-}
-
-.bg-bubbles img {
-    width: 100%;
-    height: 100%;
-}
-
-/* Tablet view fix */
-@media (max-width: 768px){
-    body{
-        height: auto !important;
-    }
-    .bg-bubbles li:nth-child(10) {
-        display: none;
-    }
-    #song-media{
-        margin-left: 0 !important;
-    }
-    #song-info{
-        margin: 15px auto;
-        width: 200px;
-    }
-    #settings{
-        margin: 0 auto !important;
-        margin-bottom: 10px !important;
-    }
-    #voting{
-        margin: 0 auto !important;
-        width: 300px !important;
-        margin-bottom: 100px !important;
-    }
-    #side-panel{
-        display: none;
-    }
-}
-/**/
-
-@-webkit-keyframes square {
-    0% {
-        -webkit-transform: translateY(-700px) rotate(600deg);
-        transform: translateY(-700px) rotate(600deg);
-    }
-    100% {
-        -webkit-transform: translateY(0);
-        transform: translateY(0);
-    }
-}
-
-@keyframes square {
-    0% {
-        -webkit-transform: translateY(-700px) rotate(600deg);
-        transform: translateY(-700px) rotate(600deg);
-    }
-    100% {
-        -webkit-transform: translateY(0);
-        transform: translateY(0);
-    }
-}
-
-.fa-github {
-    margin-top: 3px;
-}
-
-#github-login {
-    background-color: #999;
-    margin-bottom: 100px;
-}
-
-.btn-social {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    outline: 0;
-    border: 0;
-    padding: 10px 15px;
-    border-radius: 3px;
-    width: 304px;
-    cursor: pointer;
-    font-size: 18px;
-    color: #fff;
-}
-
-footer {
-    text-align: center;
-    width: 100%;
-    height: 75px;
-    margin-top: 75px;
-    color: white;
-    padding-top: 5px;
-}
-
-.push {
-    height: 75px; /* .push must be the same height as .footer */
-}
-
-footer a {
-    color: white;
-}
-
-footer a:hover {
-    color: white;
-}
-
-footer p {
-    margin: 0 !important;
-}
-
-footer .fa {
-    font-size: 2em;
 }
 
 .button-nowidth {
@@ -1022,9 +760,7 @@ nav form input[type="image"]{
 .rank-default {
     font-size: 0px;
 }
-.row {
-    margin: 0;
-}
+
 .sidebar-content {
     height: calc(100% - 42px);
 }
