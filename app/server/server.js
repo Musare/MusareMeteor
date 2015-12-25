@@ -19,6 +19,8 @@ Meteor.startup(function() {
     emojione.ascii = true;
 });
 
+var default_song = {id: "xKVcVSYmesU", mid: "ABCDEF", likes: 0, dislikes: 0, title: "Immortals", artist: "Fall Out Boy", img: "http://c.directlyrics.com/img/upload/fall-out-boy-sixth-album-cover.jpg", type: "YouTube", duration: 181, skipDuration: 0, requestedBy: "NONE", approvedBy: "NONE"};
+
 Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
 
 var stations = [];
@@ -96,16 +98,8 @@ function getStation(type, cb) {
 
 function createRoom(display, tag, private) {
     var type = tag;
-    if (Rooms.find({type: type}).count() === 0 && private === false) {
-        Rooms.insert({display: display, type: type, users: 0}, function(err) {
-            if (err) {
-                throw err;
-            } else {
-                stations.push(new Station(type));
-            }
-        });
-    } else if (Rooms.find({type: type}).count() === 0 && private === true) {
-        Rooms.insert({display: display, type: type, users: 0, private: true}, function(err) {
+    if (Rooms.find({type: type}).count() === 0) {
+        Rooms.insert({display: display, type: type, users: 0, private: private, currentSong: {song: default_song, started: 0}}, function(err) {
             if (err) {
                 throw err;
             } else {
@@ -118,6 +112,11 @@ function createRoom(display, tag, private) {
 }
 
 function Station(type) {
+    if (Playlists.find({type: type}).count() === 0) {
+        Playlists.insert({type: type, songs: [default_song], lastSong: 0});
+    } else if (Playlists.findOne({type: type}).songs.length === 0) {
+        Playlists.update({type: type}, {$push: {songs: default_song}});
+    }
     Meteor.publish(type, function() {
         return undefined;
     });
@@ -126,11 +125,6 @@ function Station(type) {
     var playlist = Playlists.findOne({type: type});
     var songs = playlist.songs;
 
-    if (playlist.lastSong === undefined) {
-        Playlists.update({type: type}, {$set: {lastSong: 0}});
-        playlist = Playlists.findOne({type: type});
-        songs = playlist.songs;
-    }
     var currentSong = playlist.lastSong;
     if (currentSong < (songs.length - 1)) {
         currentSong++;

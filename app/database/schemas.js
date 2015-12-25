@@ -47,6 +47,14 @@ Schemas.FullSong = new SimpleSchema({
         label: "Song skipDuration",
         min: 0,
         decimal: true
+    },
+    "requestedBy": {
+        type: String,
+        label: "User ID of the person who requested the song"
+    },
+    "approvedBy": {
+        type: String,
+        label: "User ID of the person who approved the song"
     }
 });
 
@@ -98,7 +106,7 @@ Schemas.QueueSong = new SimpleSchema({
         min: 0,
         decimal: true
     },
-    "songs.$.requestedBy": {
+    "requestedBy": {
         type: String,
         label: "User ID of the person who requested the song"
     }
@@ -248,24 +256,25 @@ Schemas.Queue = new SimpleSchema({
 Schemas.UserProfile = new SimpleSchema({
     username: {
         type: String,
-        label: "User's Username",
+        label: "Username",
         regEx: /^[a-zA-Z0-9_]+$/,
         min: 6,
         max: 26
     },
     usernameL: {
         type: String,
-        label: "User's Username in lowercase",
+        label: "Username in lowercase",
         regEx: /^[a-z0-9_]+$/
     },
     realname: {
         type: String,
-        label: "User's Real Name",
-        regEx: /^[A-Za-z0-9 .'-]+$/
+        label: "Real Name",
+        regEx: /^[A-Za-z0-9 .'-]+$/,
+        optional: true
     },
     rank: {
         type: String,
-        label: "User's Rank",
+        label: "Rank",
         allowedValues: ["default", "moderator", "admin"]
     },
     liked: {
