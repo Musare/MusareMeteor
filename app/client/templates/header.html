@@ -1,69 +1,71 @@
 <template name="header">
-  <!-- Dropdown Structure -->
-  <ul id="contributeDrop" class="dropdown-content">
-    <li><a href="https://www.github.com/Musare/Musare">Github</a></li>
-    <li><a href="donate.html">Donate</a></li>
-  </ul>
-  <ul id="aboutDrop" class="dropdown-content">
-    <li><a href="/project">The Project</a></li>
-    <li><a href="/team">The Team</a></li>
-    <li><a href="/contact">Contact Us</a></li>
-  </ul>
-  <ul id="accountDrop" class="dropdown-content">
-    {{#if currentUser}}
-      <li><a href="#!">Profile</a></li>
-      <li><a href="#!">Settings</a></li>
-      <li class="divider"></li>
-      <li><a href="#!">Logout</a></li>
-    {{else}}
-      <li><a href="/login">Login</a></li>
-      <li><a href="/register">Register</a></li>
-    {{/if}}
-  </ul>
-  <nav>
-    <div class="nav-wrapper teal accent-4">
-      <a href="#!" class="brand-logo">Musare</a>
-      <a href="#" data-activates="mobile-navi" class="button-collapse"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="feedback.html">Feedback</a></li>
-        <li><a class="dropdown-button" href="#!" data-activates="contributeDrop">Contribute<i class="material-icons right">arrow_drop_down</i></a></li>
-        <li><a class="dropdown-button" href="#!" data-activates="aboutDrop">About<i class="material-icons right">arrow_drop_down</i></a></li>
-        <li><a class="dropdown-button" href="#!" data-activates="accountDrop">Account<i class="material-icons right">arrow_drop_down</i></a></li>
+  <header>
+    <!-- Dropdown Structure -->
+    <ul id="contributeDrop" class="dropdown-content">
+      <li><a href="https://www.github.com/Musare/Musare" target="_blank">Github</a></li>
+      <li><a href="donate.html">Donate</a></li>
+    </ul>
+    <ul id="aboutDrop" class="dropdown-content">
+      <li><a href="/project">The Project</a></li>
+      <li><a href="/team">The Team</a></li>
+      <li><a href="/contact">Contact Us</a></li>
+    </ul>
+    <ul id="accountDrop" class="dropdown-content">
+      {{#if currentUser}}
+        <li><a href="#!">Profile</a></li>
+        <li><a href="#!">Settings</a></li>
+        <li class="divider"></li>
+        <li><a href="#!">Logout</a></li>
+        {{else}}
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+        {{/if}}
       </ul>
-      <ul class="side-nav" id="mobile-navi" style="width: 240px;">
-        <li><a href="#">Feedback</a></li>
-        <ul class="collapsible" data-collapsible="accordion">
-          <li>
-            <div class="collapsible-header black-text"><i class="material-icons">filter_drama</i>First</div>
-            <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header black-text"><i class="material-icons">place</i>Second</div>
-            <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-          <li>
-            <div class="collapsible-header black-text"><i class="material-icons">whatshot</i>Third</div>
-            <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
-          </li>
-        </ul>
-        <!--<li><a class="mobile-dropdown" href="#!" data-activates="contributeDrop">Contribute<i class="material-icons right">arrow_drop_down</i></a></li>
-        <li><a class="mobile-dropdown" href="#!" data-activates="aboutDrop">About<i class="material-icons right">arrow_drop_down</i></a></li>
-        <li><a class="mobile-dropdown" href="#!" data-activates="accountDrop">Account<i class="material-icons right">arrow_drop_down</i></a></li>
-      --></ul>
-    </div>
-  </nav>
-  <script>
-    $(function() {
-      $(".dropdown-button").dropdown({
-        inDuration: 300,
-        outDuration: 225,
-        hover: true,
-        belowOrigin: true
+      <nav>
+        <div class="nav-wrapper teal accent-4">
+          <a href="/" class="brand-logo">Musare</a>
+          <a href="#" data-activates="mobile-navi" class="button-collapse"><i class="material-icons">menu</i></a>
+          <ul class="right hide-on-med-and-down">
+            <li><a href="feedback.html">Feedback</a></li>
+            <li><a class="dropdown-button" href="#!" data-activates="contributeDrop">Contribute<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="dropdown-button" href="#!" data-activates="aboutDrop">About<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="dropdown-button" href="#!" data-activates="accountDrop">Account<i class="material-icons right">arrow_drop_down</i></a></li>
+          </ul>
+          <ul class="side-nav" id="mobile-navi" style="width: 240px;">
+            <li><a href="#">Feedback</a></li>
+            <ul class="collapsible" data-collapsible="accordion">
+              <li>
+                <div class="collapsible-header black-text"><i class="material-icons">filter_drama</i>First</div>
+                <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
+              </li>
+              <li>
+                <div class="collapsible-header black-text"><i class="material-icons">place</i>Second</div>
+                <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
+              </li>
+              <li>
+                <div class="collapsible-header black-text"><i class="material-icons">whatshot</i>Third</div>
+                <div class="collapsible-body black-text"><p>Lorem ipsum dolor sit amet.</p></div>
+              </li>
+            </ul>
+            <!--<li><a class="mobile-dropdown" href="#!" data-activates="contributeDrop">Contribute<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="mobile-dropdown" href="#!" data-activates="aboutDrop">About<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="mobile-dropdown" href="#!" data-activates="accountDrop">Account<i class="material-icons right">arrow_drop_down</i></a></li>
+          --></ul>
+        </div>
+      </nav>
+      <script>
+      $(function() {
+        $(".dropdown-button").dropdown({
+          inDuration: 300,
+          outDuration: 225,
+          hover: true,
+          belowOrigin: true
+        });
+        $(".button-collapse").sideNav();
+        $('.collapsible').collapsible({
+          accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
       });
-      $(".button-collapse").sideNav();
-      $('.collapsible').collapsible({
-        accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-      });
-    });
-  </script>
+      </script>
+  </header>
 </template>
