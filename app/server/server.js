@@ -19,6 +19,8 @@ Meteor.startup(function() {
     emojione.ascii = true;
 });
 
+var default_song = {id: "xKVcVSYmesU", mid: "ABCDEF", likes: 0, dislikes: 0, title: "Immortals", artist: "Fall Out Boy", img: "http://c.directlyrics.com/img/upload/fall-out-boy-sixth-album-cover.jpg", type: "YouTube", duration: 181, skipDuration: 0, requestedBy: "NONE", approvedBy: "NONE"};
+
 Alerts.update({active: true}, {$set: {active: false}}, { multi: true });
 
 var stations = [];
@@ -96,40 +98,12 @@ function getStation(type, cb) {
 
 function createRoom(display, tag, private) {
     var type = tag;
-    if (Rooms.find({type: type}).count() === 0 && private === false) {
-        Rooms.insert({display: display, type: type, users: 0}, function(err) {
+    if (Rooms.find({type: type}).count() === 0) {
+        Rooms.insert({display: display, type: type, users: 0, private: private, currentSong: {song: default_song, started: 0}}, function(err) {
             if (err) {
                 throw err;
             } else {
-                if (Playlists.find({type: type}).count() === 1) {
-                    stations.push(new Station(type));
-                } else {
-                    Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
-                        if (err2) {
-                            throw err2;
-                        } else {
-                            stations.push(new Station(type));
-                        }
-                    });
-                }
-            }
-        });
-    } else if (Rooms.find({type: type}).count() === 0 && private === true) {
-        Rooms.insert({display: display, type: type, users: 0, private: true}, function(err) {
-            if (err) {
-                throw err;
-            } else {
-                if (Playlists.find({type: type}).count() === 1) {
-                    stations.push(new Station(type));
-                } else {
-                    Playlists.insert({type: type, songs: getSongsByType(type)}, function (err2) {
-                        if (err2) {
-                            throw err2;
-                        } else {
-                            stations.push(new Station(type));
-                        }
-                    });
-                }
+                stations.push(new Station(type));
             }
         });
     } else {
@@ -138,6 +112,11 @@ function createRoom(display, tag, private) {
 }
 
 function Station(type) {
+    if (Playlists.find({type: type}).count() === 0) {
+        Playlists.insert({type: type, songs: [default_song], lastSong: 0});
+    } else if (Playlists.findOne({type: type}).songs.length === 0) {
+        Playlists.update({type: type}, {$push: {songs: default_song}});
+    }
     Meteor.publish(type, function() {
         return undefined;
     });
@@ -146,18 +125,14 @@ function Station(type) {
     var playlist = Playlists.findOne({type: type});
     var songs = playlist.songs;
 
-    if (playlist.lastSong === undefined) {
-        Playlists.update({type: type}, {$set: {lastSong: 0}});
-        playlist = Playlists.findOne({type: type});
-        songs = playlist.songs;
-    }
     var currentSong = playlist.lastSong;
     if (currentSong < (songs.length - 1)) {
         currentSong++;
     } else currentSong = 0;
     var currentTitle = songs[currentSong].title;
 
-    Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}, users: 0}});
+    var res = Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}, users: 0}});
+    console.log(res);
 
     this.skipSong = function() {
         self.voted = [];
@@ -339,6 +314,7 @@ function getSongDuration(query, artistName){
             }
         }
     }
+    return 0;
 }
 
 function getSongAlbumArt(query, artistName){
@@ -359,29 +335,10 @@ function getSongAlbumArt(query, artistName){
 //var room_types = ["edm", "nightcore"];
 var songsArr = [];
 
-function getSongsByType(type) {
-    if (type === "edm") {
-        return [
-            {id: "aE2GCa-_nyU", mid: "fh6_Gf", title: "Radioactive", duration: getSongDuration("Radioactive - Lindsey Stirling and Pentatonix", "Lindsey Stirling, Pentatonix"), artist: "Lindsey Stirling, Pentatonix", type: "YouTube", img: "https://i.scdn.co/image/62167a9007cef2e8ef13ab1d93019312b9b03655"},
-            {id: "aHjpOzsQ9YI", mid: "goG88g", title: "Crystallize", artist: "Lindsey Stirling", duration: getSongDuration("Crystallize", "Lindsey Stirling"), type: "YouTube", img: "https://i.scdn.co/image/b0c1ccdd0cd7bcda741ccc1c3e036f4ed2e52312"}
-        ];
-    } else if (type === "nightcore") {
-        return [{id: "f7RKOP87tt4", mid: "5pGGog", title: "Monster (DotEXE Remix)", duration: getSongDuration("Monster (DotEXE Remix)", "Meg & Dia"), artist: "Meg & Dia", type: "YouTube", img: "https://i.scdn.co/image/35ecdfba9c31a6c54ee4c73dcf1ad474c560cd00"}];
-    } else {
-        return [{id: "dQw4w9WgXcQ", mid: "6_fdr4", title: "Never Gonna Give You Up", duration: getSongDuration("Never Gonna Give You Up", "Rick Astley"), artist: "Rick Astley", type: "YouTube", img: "https://i.scdn.co/image/5246898e19195715e65e261899baba890a2c1ded"}];
-    }
-}
-
 Rooms.find({}).fetch().forEach(function(room) {
     var type = room.type;
     if (Playlists.find({type: type}).count() === 0) {
-        if (type === "edm") {
-            Playlists.insert({type: type, songs: getSongsByType(type)});
-        } else if (type === "nightcore") {
-            Playlists.insert({type: type, songs: getSongsByType(type)});
-        } else {
-            Playlists.insert({type: type, songs: getSongsByType(type)});
-        }
+        Playlists.insert({type: type, songs: []});
     }
     if (Playlists.findOne({type: type}).songs.length === 0) {
         // Add a global video to Playlist so it can proceed
@@ -877,7 +834,7 @@ Meteor.methods({
                     Queues.insert({type: type, songs: []});
                 }
                 if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
-                    songData.duration = getSongDuration(songData.title, songData.artist) || 0;
+                    songData.duration = Number(getSongDuration(songData.title, songData.artist));
                     songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
                     songData.skipDuration = 0;
                     songData.likes = 0;
@@ -997,12 +954,17 @@ Meteor.methods({
                                 type: songData.type,
                                 likes: Number(songData.likes),
                                 dislikes: Number(songData.dislikes),
-                                requesedBy: songData.requestedBy,
+                                requestedBy: songData.requestedBy,
                                 approvedBy: Meteor.userId()
                             }
                         }
                     });
                     Queues.update({type: type}, {$pull: {songs: {mid: songData.mid}}});
+                    getStation(type, function(station) {
+                        if (station === undefined) {
+                            stations.push(new Station(type));
+                        }
+                    });
                     return true;
                 } else {
                     throw new Meteor.Error(403, "Invalid data.");
