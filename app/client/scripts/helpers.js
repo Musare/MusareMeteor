@@ -85,17 +85,20 @@ Template.banned.helpers({
     }
 });
 
-Template.dashboard.helpers({
-    rooms: function() {
-        return Rooms.find({});
-    },
-    currentSong: function() {
+Template.header.helpers({
+    userId: function() {
+        return Meteor.userId();
+    }
+});
+
+Template.home.helpers({
+    currentSong: function(){
         var type = this.type;
         var room = Rooms.findOne({type: type});
-        if (room !== undefined) {
+        if(room !== undefined){
             return room.currentSong;
         } else {
-            return {};
+            return false;
         }
     },
     userNum: function(){
@@ -103,13 +106,7 @@ Template.dashboard.helpers({
         var userNum = Rooms.findOne({type: type}).users;
         return userNum;
     }
-});
-
-Template.header.helpers({
-    userId: function() {
-        return Meteor.userId();
-    }
-});
+})
 
 Template.playlist.helpers({
     playlist_songs: function() {

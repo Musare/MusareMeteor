@@ -516,7 +516,7 @@ Template.queues.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[1].url);
+                        $("#img").val(data[i].items[j].album.images[2].url);
                         $("#duration").val(data[i].items[j].duration_ms / 1000);
                         return;
                     }
@@ -926,7 +926,7 @@ Template.room.events({
                                     if (data.tracks.items.length > 0) {
                                         $("#title").val(data.tracks.items[0].name);
                                         var artists = [];
-                                        $("#img").val(data.tracks.items[0].album.images[1].url);
+                                        $("#img").val(data.tracks.items[0].album.images[2].url);
                                         data.tracks.items[0].artists.forEach(function (artist) {
                                             artists.push(artist.name);
                                         });
@@ -1272,7 +1272,7 @@ Template.stations.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[1].url);
+                        $("#img").val(data[i].items[j].album.images[2].url);
                         $("#duration").val(data[i].items[j].duration_ms / 1000);
                         return;
                     }

@@ -1280,11 +1280,6 @@ input[type="checkbox"]:checked + #two-label:after {
     display: block;
 }
 
-.user-num{
-    font-size: 2em !important;
-    line-height: 100px;
-}
-
 .remove-import-song {
     position: absolute;
     right: 0px;
@@ -1314,4 +1309,22 @@ input[type="checkbox"]:checked + #two-label:after {
     margin-left: auto;
     margin-right: auto;
     display: block;
+}
+
+.card-content i{
+    line-height: inherit;
+    float: left;
+}
+
+.card-image img{
+    opacity: 1;
+    transition: 0.3s;
+}
+
+.card-image img:hover{
+    opacity: 0.5;
+}
+
+.user-num{
+    font-size: 1.5em;
 }
