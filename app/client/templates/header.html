@@ -12,10 +12,10 @@
         </ul>
         <ul id="accountDrop" class="dropdown-content">
             {{#if currentUser}}
-                <li><a href="#!">Profile</a></li>
-                <li><a href="#!">Settings</a></li>
+                <li><a href="/u/{{currentUser.username}}">Profile</a></li>
+                <li><a href="/settings">Settings</a></li>
                 <li class="divider"></li>
-                <li><a href="#!">Logout</a></li>
+                <li class="logout"><a>Logout</a></li>
             {{else}}
                 <li><a href="/login">Login</a></li>
                 <li><a href="/register">Register</a></li>
