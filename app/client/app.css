@@ -1078,3 +1078,7 @@ input[type="checkbox"]:checked + #two-label:after {
     overflow-y: scroll;
 }
 
+.text-center{
+    text-align: center;
+}
+
