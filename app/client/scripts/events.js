@@ -1054,22 +1054,6 @@ Template.room.events({
     }
 });
 
-                    if (YTPlayer !== undefined) {
-                        YTPlayer.setVolume(val.value);
-                        localStorage.setItem("volume", val.value);
-                    } else if (SCPlayer !== undefined) {
-                        //SCPlayer
-                        var volume = val.value / 100;
-                        SCPlayer.setVolume(volume);
-                        localStorage.setItem("volume", val.value);
-                    }
-                });
-            }
-        }
-        makeSlider();
-    });
-});
-
 Template.room.helpers({
     singleVideo: function() {
         return true;

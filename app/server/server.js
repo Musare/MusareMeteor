@@ -17,6 +17,10 @@ Meteor.startup(function() {
         }
     }
     emojione.ascii = true;
+
+    Accounts.config({
+        sendVerificationEmail: true
+    });
 });
 
 var default_song = {id: "xKVcVSYmesU", mid: "ABCDEF", likes: 0, dislikes: 0, title: "Immortals", artist: "Fall Out Boy", img: "http://c.directlyrics.com/img/upload/fall-out-boy-sixth-album-cover.jpg", type: "YouTube", duration: 181, skipDuration: 0, requestedBy: "NONE", approvedBy: "NONE"};
@@ -1038,3 +1042,7 @@ Meteor.methods({
 Meteor.setInterval(function() {
     checkUsersPR();
 }, 10000);
+
+Meteor.users.after.insert(function (err, user) {
+    Accounts.sendVerificationEmail(user._id);
+});
