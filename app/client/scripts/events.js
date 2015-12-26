@@ -244,8 +244,8 @@ Template.login.events({
     "submit form": function(e){
         e.preventDefault();
         Session.set("github", false);
-        var username = e.target.loginUsername.value;
-        var password = e.target.loginPassword.value;
+        var username = $("#username").val()
+        var password = $("#password").val();
         Meteor.loginWithPassword(username, password, function(err) {
             if (err) {
                 var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');

@@ -1,30 +1,28 @@
 <template name="settings">
-    <div id="head"></div>
     {{> header}}
     <div class="row">
-        <h1 id="profile-name">{{username}}</h1>
-        <div class="col-md-4 col-md-offset-4">
-            <div class="panel panel-primary">
-                <div class="panel-heading">General Settings</div>
-                <div class="panel-body">
-                    <!--h3 class="text text-warning text-center">Unfortunately, there is currently nothing for you to edit.</h3-->
-                    <p class="settings-option">Liked & disliked songs</p>
-                    <div class="checkbox">
-                        <input class="checkbox-box" type="checkbox" id="showRating">
-                        <label for="showRating" class="settings-label">
-                            Show your likes/dislikes on your public profile
-                        </label>
-                    </div>
-                    <button class="btn btn-success btn-block" id="save-settings">Save</button>
-                    <p class="settings-option">Change Password</p>
-                    <input type="password" id="old-password" class="form-control settings-input" placeholder="Old password">
-                    <input type="password" id="new-password" class="form-control settings-input" placeholder="New password">
-                    <input type="password" id="confirm-password" class="form-control settings-input" placeholder="Re-enter new password">
-                    <button class="btn btn-warning btn-block" id="change-password">Change Password</button>
-                    <p class="settings-option">Delete Account</p>
-                    <button class="btn btn-danger btn-block" id="delete-account">Delete</button>
-                </div>
-            </div>
+        <h1 id="profile-name" class="black-text thin">Settings</h1>
+        <h4 class="thin">Liked & disliked songs</h4>
+        <p>
+            <input type="checkbox" id="showRating"/>
+            <label for="showRating">Show liked and disliked song on profile?</label>
+        </p>
+        <button class="btn" id="save-settings">Save</button>
+        <h4 class="thin">Change Password</h4>
+        <div class="input-field">
+            <input type="password" id="old-password" class="validate">
+            <label for="old-password">Old Password</label>
         </div>
+        <div class="input-field">
+            <input type="password" id="new-password" class="validate">
+            <label for="new-password">New Password</label>
+        </div>
+        <div class="input-field">
+            <input type="password" id="confirm-password" class="validate">
+            <label for="confirm-password">Re-enter New Password</label>
+        </div>
+        <button class="btn" id="change-password">Change Password</button>
+        <h4 class="thin">Delete Account</h4>
+        <button class="btn red darken-4" id="delete-account">Delete</button>
     </div>
 </template>
