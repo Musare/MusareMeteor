@@ -1068,3 +1068,13 @@ input[type="checkbox"]:checked + #two-label:after {
 .scroll-fix{
     margin-right: 20px;
 }
+
+.profile-card{
+    min-width: 300px;
+    max-height: 500px;
+}
+
+.profile-card-song{
+    overflow-y: scroll;
+}
+
