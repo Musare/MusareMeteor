@@ -74,6 +74,15 @@ Router.route("/about", {
     template: "about"
 });
 
+Router.route("/feedback", {
+    template: "feedback"
+})
+
+Router.route("/team", {
+    template: "team"
+})
+
+
 Router.route("/admin", {
     waitOn: function() {
         return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];

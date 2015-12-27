@@ -817,39 +817,14 @@ nav form input[type="image"]{
     background-color: white;
 }
 
-.contact-name {
+.contact-details{
+    margin-bottom: 5px;
+}
+
+.contact-details .material-icons{
     float: left;
 }
 
-.contact-img {
-    float: left;
-    margin-bottom: 20px;
-    margin-right: 20px;
-}
-
-.contact-ul {
-    clear: left;
-}
-
-.contact-option {
-    font-size: 22px;
-}
-
-#contact-container {
-    margin-top: 30px;
-    margin-bottom: 200px;
-}
-
-.contact-icon {
-    margin-right: 10px;
-    width: 28px;
-    height: 28px;
-    font-size: 28px !important;
-}
-.contact-pos {
-    padding-top: -10px;
-    margin-top: 70px;
-}
 .settings-label {
     color: #50a3a2;
     line-height: 18px;
@@ -1080,5 +1055,10 @@ input[type="checkbox"]:checked + #two-label:after {
 
 .text-center{
     text-align: center;
+}
+
+.avatar{
+    width: auto;
+    height: auto;
 }
 
