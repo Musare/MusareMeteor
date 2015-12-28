@@ -82,6 +82,9 @@ Router.route("/team", {
     template: "team"
 })
 
+Router.route("/project", {
+    template: "project"
+})
 
 Router.route("/admin", {
     waitOn: function() {
