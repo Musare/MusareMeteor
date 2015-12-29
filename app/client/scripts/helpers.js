@@ -85,6 +85,12 @@ Template.banned.helpers({
     }
 });
 
+Template.feedback.helpers({
+    feedback: function(){
+        return Feedback.find({});
+    }
+})
+
 Template.header.helpers({
     userId: function() {
         return Meteor.userId();
@@ -106,7 +112,7 @@ Template.home.helpers({
         var userNum = Rooms.findOne({type: type}).users;
         return userNum;
     }
-})
+});
 
 Template.playlist.helpers({
     playlist_songs: function() {

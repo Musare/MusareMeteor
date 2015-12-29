@@ -142,6 +142,10 @@ Router.route("/admin/alerts", {
     }
 });
 
+Router.route("/u/:user", function() {
+    this.render("profile");
+});
+
 Router.route("/:type", {
     waitOn: function() {
         return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("rooms")];
@@ -155,8 +159,4 @@ Router.route("/:type", {
             this.redirect("/");
         }
     }
-});
-
-Router.route("/u/:user", function() {
-    this.render("profile");
 });

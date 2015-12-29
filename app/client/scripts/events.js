@@ -227,6 +227,14 @@ Template.alertsDashboard.events({
     }
 });
 
+Template.feedback.events({
+    "click #feedback_submit": function(){
+        if($("#feedback_message").val().length !== 0){
+            Meteor.call("sendFeedback", Meteor.user().profile.username, $("#feedback_message").val());
+        }
+    }
+});
+
 Template.header.events({
     "click .logout": function(e){
         e.preventDefault();

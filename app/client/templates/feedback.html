@@ -1,3 +1,29 @@
 <template name="feedback">
-
+    {{> header}}
+    <main>
+        <h3 class="black-text thin text-center">Feedback</h3>
+        <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Send New Feedback</a>
+        {{#each feedback}}
+            <p>
+                {{user}}
+                {{message}}
+            </p>
+        {{/each}}
+    </main>
+    <div id="modal1" class="modal">
+        <div class="modal-content teal darken-4">
+            <div class="input-field">
+                <textarea id="feedback_message" class="materialize-textarea" length="100"></textarea>
+                <label for="feedback_message">Give us your feedback and suggestions!</label>
+            </div>
+            <a id="feedback_submit" class="waves-effect waves-light btn">Submit</a>
+        </div>
+    </div>
+    {{> footer}}
+    <script>
+        $(document).ready(function () {
+            $('#feedback_message').characterCounter();
+            $('.modal-trigger').leanModal();
+        });
+    </script>
 </template>

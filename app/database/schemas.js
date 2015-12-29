@@ -162,6 +162,25 @@ Schemas.Alert = new SimpleSchema({
     }
 });
 
+Schemas.Feedback = new SimpleSchema({
+    messages: {
+        type: Array,
+        label: "Array of feedback messages"
+    },
+    "messages.$": {
+        type: Object,
+        label: "Object for each feedback"
+    },
+    "messages.$.user": {
+        type: String,
+        label: "Username of user who submitted feedback"
+    },
+    "messages.$.message": {
+        type: String,
+        label: "Feedback message"
+    }
+})
+
 Schemas.Room = new SimpleSchema({
     display: {
         type: String,
@@ -493,3 +512,4 @@ Playlists.attachSchema(Schemas.Playlist);
 Queues.attachSchema(Schemas.Queue);
 Meteor.users.attachSchema(Schemas.User);
 Reports.attachSchema(Schemas.Report);
+Feedback.attachSchema(Schemas.Feedback);
