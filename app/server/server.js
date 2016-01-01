@@ -503,6 +503,10 @@ Meteor.publish("isModerator", function () {
     return Meteor.users.find({_id: this.userId, "profile.rank": "moderator"});
 });
 
+Meteor.publish("feedback", function(){
+    return Feedback.find();
+})
+
 function isAdmin() {
     var userData = Meteor.users.find(Meteor.userId());
     if (Meteor.userId() && userData.count !== 0 && userData.fetch()[0].profile.rank === "admin") {
@@ -1139,8 +1143,16 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    sendFeedback: function(user, message){
-
+    sendFeedback: function(message){
+        if(Meteor.userId() && !isBanned()) {
+            HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
+                if (res.content.indexOf("true") > -1) {
+                    return true;
+                } else {
+                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message}}});
+                }
+            });
+        }
     }
 });
 

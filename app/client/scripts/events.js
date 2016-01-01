@@ -230,7 +230,7 @@ Template.alertsDashboard.events({
 Template.feedback.events({
     "click #feedback_submit": function(){
         if($("#feedback_message").val().length !== 0){
-            Meteor.call("sendFeedback", Meteor.user().profile.username, $("#feedback_message").val());
+            Meteor.call("sendFeedback", $("#feedback_message").val());
         }
     }
 });

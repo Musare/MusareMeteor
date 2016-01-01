@@ -49,6 +49,10 @@ Template.login.onCreated(function() {
     });
 });
 
+Template.feedback.onCreated(function(){
+    Meteor.subscribe("feedback");
+})
+
 Template.profile.onCreated(function() {
     var parts = Router.current().url.split('/');
     var username = parts.pop();

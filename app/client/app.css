@@ -1062,3 +1062,10 @@ input[type="checkbox"]:checked + #two-label:after {
     height: auto;
 }
 
+.lowercase{
+    text-transform: none !important;
+}
+
+.modal-trigger{
+    margin-left: 10px;
+}
