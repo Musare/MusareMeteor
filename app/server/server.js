@@ -1137,7 +1137,6 @@ Meteor.methods({
     deleteAccount: function () {
         if (Meteor.userId()) {
             var user = Meteor.users.findOne(Meteor.userId());
-            Deleted.insert({type: "account", user: user, deletedAt: Date.now()});
             Meteor.users.remove({_id: Meteor.userId()});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
