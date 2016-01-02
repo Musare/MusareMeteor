@@ -171,7 +171,7 @@ Schemas.Feedback = new SimpleSchema({
         type: Object,
         label: "Object for each feedback"
     },
-    "messages.$.user": {
+    "messages.$.username": {
         type: String,
         label: "Username of user who submitted feedback"
     },

@@ -1012,3 +1012,10 @@ nav form input[type="image"]{
     height: auto;
 }
 
+.lowercase{
+    text-transform: none !important;
+}
+
+.modal-trigger{
+    margin-left: 10px;
+}

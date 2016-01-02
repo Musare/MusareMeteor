@@ -87,7 +87,12 @@ Template.banned.helpers({
 
 Template.feedback.helpers({
     feedback: function(){
-        return Feedback.find({});
+        var data = Feedback.findOne();
+        if(data !== undefined) {
+            return data.messages.reverse();
+        } else{
+            return [];
+        }
     }
 })
 
