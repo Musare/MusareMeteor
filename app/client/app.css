@@ -377,21 +377,6 @@ main {
     margin-top: 10%;
 }
 
-#croom_container, #calert_container {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    width: 304px !important;
-}
-
-.croom_label, .calert_label {
-    color: white;
-}
-
-.croom, .calert {
-    width: 304px !important;
-}
-
 #calert-priority > option {
     color: black;
 }
@@ -408,9 +393,14 @@ main {
     margin-top: 10%;
 }
 
-.modal-content {
-    background-color: rgb(107, 197, 164);
-    color: white;
+.modal-content, .modal-footer {
+    background-color: rgb(107, 197, 164) !important;
+    color: white !important;
+}
+
+.modal-close {
+    background-color: #fff;
+    color: #53e3a6;
 }
 
 .song-input-label {
@@ -903,46 +893,6 @@ nav form input[type="image"]{
 .song-panel-room{
     float: right;
 }
-/*Credit to: http://thecodeplayer.com/walkthrough/custom-animated-checkbox-inputs-using-css-iconfonts*/
-#two-label {
-    position: relative;
-    padding-left: 30px;
-    font-size: 14px;
-    cursor: pointer;
-    margin-bottom: 15px;
-    color: white;
-    padding-top: 3px;
-}
-#two-label:before, #two-label:after {
-    font-family: FontAwesome;
-    font-size: 21px;
-    /*absolutely positioned*/
-    position: absolute; top: 0; left: 0;
-}
-#two-label:before {
-    content: '\f096'; /*unchecked*/
-}
-#two-label:after {
-    content: '\f046'; /*checked*/
-    /*checked icon will be hidden by default by using 0 max-width and overflow hidden*/
-    max-width: 0;
-    overflow: hidden;
-    opacity: 0.5;
-    /*CSS3 transitions for animated effect*/
-    transition: all 0.35s;
-}
-
-/*hiding the original checkboxes*/
-input[type="checkbox"] {
-    display: none;
-}
-/*when the user checks the checkbox the checked icon will animate in*/
-input[type="checkbox"]:checked + #two-label:after {
-    max-width: 25px; /*an arbitratry number more than the icon's width*/
-    opacity: 1; /*for fade in effect*/
-}
-#two+label:before, #two+label:after {color: hsl(180, 45%, 40%);}
-/*End of checkbox awesomeness!*/
 
 #chat-tab, #global-chat-tab {
     -webkit-transition: background-color 500ms linear;
