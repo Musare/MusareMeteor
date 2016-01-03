@@ -1019,3 +1019,8 @@ nav form input[type="image"]{
 .modal-trigger{
     margin-left: 10px;
 }
+
+.content-box{
+    margin-left: 30px;
+    margin-right: 30px;
+}
