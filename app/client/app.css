@@ -1008,8 +1008,12 @@ nav form input[type="image"]{
 }
 
 .avatar{
-    width: auto;
-    height: auto;
+  width: auto;
+  height: auto;
+}
+.news-box{
+  width: auto;
+  height: auto;
 }
 
 .lowercase{

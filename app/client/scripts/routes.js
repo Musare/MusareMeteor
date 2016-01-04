@@ -82,6 +82,10 @@ Router.route("/team", {
     template: "team"
 })
 
+Router.route("/news", {
+    template: "news"
+})
+
 Router.route("/project", {
     template: "project"
 })
