@@ -1028,3 +1028,17 @@ nav form input[type="image"]{
     margin-left: 30px;
     margin-right: 30px;
 }
+
+.news-title{
+    font-size: 30px;
+}
+
+.news-creator{
+    font-style: italic;
+    font-size: 12px;
+}
+
+.news-postTime{
+    font-style: italic;
+    font-size: 12px;
+}
