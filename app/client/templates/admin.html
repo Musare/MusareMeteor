@@ -2,74 +2,92 @@
     {{> alerts}}
     <div class="landing">
         {{> header}}
-          <div class="row" style="margin-top: 20px; height: 100%;">
-            <div class="col-md-6 col-md-offset-1 admin-container" style="height: 80%;">
-              <div>
-                <h1>Stations</h1><a href="#" data-toggle="modal" data-target="#addStation">(+)</a>
-              </div>
-              {{#each playlists}}
-                <p>{{display}}</p>
-                <table class="table" style="border-bottom: 1px solid white;">
-                  <tr>
-                    <th>Songs</th>
-                    <th>Users</th>
-                    <th>Admins</th>
-                    <th>Reports</th>
-                    <th>Queue</th>
-                  </tr>
-                  <tr>
-                    <td>{{songs.length}}</td>
-                    <td>{{roomUserNum}}</td>
-                    <td></td>
-                    <td>{{reportsCount display}}</td>
-                    <td>{{queueCount display}}</td>
-                    <td><a href="/admin/stations" id={{display}}>Edit</a></td>
-                  </tr>
-                </table>
-              {{/each}}
-              <button class="btn btn-danger col-md-6 col-md-offset-3" id="rrating" data-toggle="modal" data-target="#confirmModal">Reset All Ratings</button>
+        <div class="row" style="margin-top: 20px; height: 100%;">
+            <div class="col s12 l6 m10 offset-l1 offset-m1 card-panel teal accent-3 white-text" style="height: 80%;">
+                <div>
+                    <h2 class="center-align">Stations</h2>
+                </div>
+                    <p>{{display}}</p>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Songs</th>
+                            <th>Users</th>
+                            <th>Admins</th>
+                            <th>Reports</th>
+                            <th>Queue</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {{#each playlists}}
+                                <tr>
+                                    <td>{{display}}</td>
+                                    <td>{{songs.length}}</td>
+                                    <td>{{roomUserNum}}</td>
+                                    <td></td>
+                                    <td>{{reportsCount display}}</td>
+                                    <td>{{queueCount display}}</td>
+                                    <td><a href="/{{type}}/manage" class="btn right" id="manage-{{display}}">Manage</a></td> <!-- TODO Make this redirect to playlist -->
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                <div class="row">
+                    <button class="btn col m6 s6 l6 waves-effect waves-light" id="rrating" data-toggle="modal"
+                            data-target="#confirmModal">Reset All Ratings
+                    </button>
+                    <a class="waves-effect waves-light btn col m6 s6 l6 modal-trigger" id="new_room" href="#addStation"> <!-- TODO Make this actually open the new room modal  -->
+                        Add Room
+                    </a>
+                </div>
             </div>
-            <div class="col-md-3 col-md-offset-1 admin-container" style="height: 80%;">
-              <div>
-                <h1>Site statistics</h1>
-              </div>
-              <p>Total Users Online: {{usersOnline}}</p>
-              <p>Total Registered Users: {{allUsers}}</p>
-              <a href="/admin/queues">Edit the queues</a>
+            <div class="col s12 m8 l3 offset-l1 offset-m2 card-panel teal accent-3 white-text" style="height: 80%;">
+                <div>
+                    <h2 class="center-align">Site statistics</h2>
+                </div>
+                <div class="section">
+                    <p class="flow-text">Total Users Online: {{usersOnline}}</p>
+                    <p class="flow-text">Total Registered Users: {{allUsers}}</p>
+                </div>
+                <div class="row">
+                    <a class="btn col l12 s12 m12 waves-effect waves-light" href="/admin/queues">Manage Queues</a> <!-- TODO Make this redirect to the queues -->
+                    <a class="btn col l12 s12 m12 waves-effect waves-light" href="/admin/news">Manage News</a>
+                </div>
             </div>
-          </div>
-          <div id="addStation" class="modal fade" role="dialog">
-              <div class="modal-dialog">
-
-                  <!-- Modal content-->
-                  <div class="modal-content">
-                      <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal">&times;</button>
-                          <h4 class="modal-title">Create new station</h4>
-                      </div>
-                      <div class="modal-body">
-                        <div id="croom_container">
-                          <label for="croom_display" class="croom_label">Room Display Name (eg 'Edm'):</label>
-                          <div class="input-group">
-                            <input type="text" class="croom" id="croom_display" name="croom" required />
-                          </div>
-                          <label for="croom_tag" class="croom_label">Room Tag Name (eg 'edm'):</label>
-                          <div class="input-group">
-                            <input type="text" class="croom" id="croom_tag" name="croom" required />
-                          </div>
-                          <input type="checkbox" name="two" id="two"/>
-                          <label id="two-label" for="two">Make Room Private?</label>
-                          <button class="btn btn-warning btn-block" id="croom_create">Create</button>
-                        </div>
-                      </div>
-                      <div class="modal-footer">
-                          <button id="close-modal-a" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                      </div>
-                  </div>
-
-              </div>
-          </div>
+        </div>
+        <div id="addStation" class="modal">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4>Add Room</h4>
+                    <div class="input-field">
+                        <input type="text" class="croom" id="croom_display" name="croom" required/>
+                        <label for="croom_display" class="white-text">Room Display Name</label>
+                    </div>
+                    <div class="input-field">
+                        <input type="text" class="croom" id="croom_tag" name="croom" required/>
+                        <label for="croom_tag" class="white-text">Room Tag</label>
+                    </div>
+                    <input type="checkbox" name="croom_private" id="croom_private"/>
+                    <label for="croom_private" class="white-text">Make Room Private?</label>
+                    <div class="section">
+                        <button class="btn btn-warning btn-block waves-effect waves-light" id="croom_create">Create</button>
+                    </div>
+                    <div class="divider"></div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat">Close</a>
+                </div>
+            </div>
+        </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('#new_room').leanModal();
+        });
+    </script>
 
     <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -81,10 +99,10 @@
                 </div>
                 <div class="modal-body">
                     <h3 style="margin-top: 0">Are you sure you want to reset all likes and dislikes?</h3>
-                    <button id="rreset_confirm" class="btn btn-danger">Reset All Ratings</button>
+                    <button id="rreset_confirm" class="btn btn-danger waves-effect waves-light">Reset All Ratings</button>
                 </div>
                 <div class="modal-footer">
-                    <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="close-modal" type="button" class="btn btn-default waves-effect waves-light" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
