@@ -3,133 +3,129 @@
     <div class="landing">
         {{> header}}
         <div class="row">
-          {{#each queues}}
-              <div class="col-md-8 col-md-offset-2 admin-queue-panel">
-                  <div class="panel panel-danger">
-                      <div class="panel-heading">
-                          <h3 class="panel-title">{{display}} review queue</h3>
-                      </div>
-                      <div class="panel-body admin-panel-body">
-                          <table class="table table-striped">
-                              <thead>
-                                  <tr>
-                                      <th>Title</th>
-                                      <th>Artist(s)</th>
-                                      <th>Type</th>
-                                      <th>Id</th>
-                                      <th>Likes</th>
-                                      <th>Dislikes</th>
-                                      <th>Img</th>
-                                      <th>Preview</th>
-                                      <th>Edit</th>
-                                      <th>Add</th>
-                                      <th colspan="10">Remove</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  {{#each songs}}
-                                      <tr>
-                                          <th scope="row">{{title}}</th>
-                                          <td>{{artist}}</td>
-                                          <td>{{type}}</td>
-                                          <td>{{id}}</td>
-                                          <td>{{likes}}</td>
-                                          <td>{{dislikes}}</td>
-                                          <td class="column-small"><button class="btn btn-primary preview-button" id="previewImageButton" data-toggle="modal" data-target="#previewImageModal">Preview Image</button></td>
-                                          <td class="column-small"><button class="btn btn-primary preview-button" data-toggle="modal" data-target="#previewModal">Preview</button></td>
-                                          <td class="column-small"><button class="btn btn-primary edit-queue-button" data-genre="{{../type}}" data-toggle="modal" data-target="#editModal">Edit</button></td>
-                                          <td class="column-small"><button class="btn btn-success add-song-button" data-genre="{{../type}}"><i class="fa fa-check-circle"></i></button></td>
-                                          <td class="column-small"><button class="btn btn-danger deny-song-button" data-genre="{{../type}}"><i class="fa fa-ban"></i></button></td>
-                                      </tr>
-                                  {{/each}}
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-          {{/each}}
+            {{#each queues}}
+                <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-queue-panel card-panel teal accent-3">
+                    <div class="card-content white-text">
+                        <h3 class="text-center">{{display}} review queue</h3>
+                        <table class="bordered">
+                            <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Artist(s)</th>
+                                <th>Type</th>
+                                <th>Id</th>
+                                <th>Likes</th>
+                                <th>Dislikes</th>
+                                <th>Img</th>
+                                <th>Preview</th>
+                                <th>Edit</th>
+                                <th>Add</th>
+                                <th colspan="10">Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each songs}}
+                                <tr>
+                                    <th scope="row">{{title}}</th>
+                                    <td>{{artist}}</td>
+                                    <td>{{type}}</td>
+                                    <td>{{id}}</td>
+                                    <td>{{likes}}</td>
+                                    <td>{{dislikes}}</td>
+                                    <td>
+                                        <a class="waves-effect waves-light btn modal-trigger preview-modal-button"
+                                           href="#previewModal">Preview Modal</a>
+                                    </td>
+                                    <td>
+                                        <button class="btn preview-button preview-modal-button" data-toggle="modal"
+                                                data-target="#previewModal">Preview
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn edit-queue-button" data-genre="{{../type}}"
+                                                data-toggle="modal" data-target="#editModal">Edit
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn green add-song-button" data-genre="{{../type}}"><i
+                                                class="material-icons">thumb_up</i></button>
+                                    </td>
+                                    <td>
+                                        <button class="btn red deny-song-button" data-genre="{{../type}}"><i
+                                                class="material-icons">thumb_down</i></button>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {{/each}}
         </div>
 
-        <div id="previewModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Preview</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div width="960" height="540" id="previewPlayer"></div>
-                        <button id="play" title="Play video" class="btn btn-success"><i class="fa fa-play"></i></button>
-                        <button id="stop" title="Stop video" class="btn btn-danger" disabled><i class="fa fa-stop"></i></button>
-                        <button id="forward" title="Go to the last 10 seconds of the video" class="btn btn-primary"><i class="fa fa-fast-forward"></i></button>
-                        <div id="volume-container-admin">
-                            <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="50" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-tooltip="hide">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
+        <div id="previewModal" class="modal">
+            <div class="modal-content">
+                <h4>Preview</h4>
+                <div width="960" height="540" id="previewPlayer"></div>
+                <button id="play" title="Play video" class="btn btn-success"><i class="fa fa-play"></i></button>
+                <button id="stop" title="Stop video" class="btn btn-danger" disabled><i class="fa fa-stop"></i>
+                </button>
+                <button id="forward" title="Go to the last 10 seconds of the video" class="btn btn-primary"><i
+                        class="fa fa-fast-forward"></i></button>
+                <div id="volume-container-admin">
+                    <input type="text" id="volume-slider" class="span2" value="" data-slider-min="0"
+                           data-slider-max="100" data-slider-step="1" data-slider-value="50"
+                           data-slider-orientation="horizontal" data-slider-selection="after"
+                           data-slider-tooltip="hide">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat">Close</a>
+            </div>
+        </div>
+    </div>
+    <!--div id="previewImageModal" class="modal modal-fixed-footer" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Preview Image</h4>
+                </div>
+                <div class="modal-body">
+                    <img alt="Not loading" id="preview-image" height="210px" width="210px" src=""/>
+                </div>
+                <div class="modal-footer">
+                    <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close
+                    </button>
                 </div>
             </div>
         </div>
-        <div id="previewImageModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Preview Image</h4>
-                    </div>
-                    <div class="modal-body">
-                        <img alt="Not loading" id="preview-image" height="210px" width="210px" src=""/>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+    </div-->
+    <div id="editModal" class="modal modal-fixed-footer">
+        <div class="modal-content">
+            <label for="mid" class="song-input-label">Song MID</label>
+            <input class="song-input" name="mid" id="mid" type="text"/>
+            <label for="id" class="song-input-label">Song ID</label>
+            <input class="song-input" name="id" id="id" type="text"/>
+            <label for="id" class="song-input-label">Song Artist</label>
+            <input class="song-input" name="artist" id="artist" type="text"/>
+            <label for="title" class="song-input-label">Song Title</label>
+            <input class="song-input" name="title" id="title" type="text"/>
+            <label for="title" class="song-input-label">Song Duration</label>
+            <input class="song-input" name="duration" id="duration" type="number"/>
+            <label for="skip-duration" class="song-input-label">Skip Duration</label>
+            <input class="song-input" id="skip-duration" type="number"/>
+            <label for="likes" class="song-input-label">Likes</label>
+            <input class="song-input" id="likes" type="number"/>
+            <label for="dislikes" class="song-input-label">Dislikes</label>
+            <input class="song-input" id="dislikes" type="number"/>
+            <label for="img" class="song-input-label">Song Image</label>
+            <input class="song-input" name="img" id="img" type="text"/>
+            <button type="button" id="get-spotify-info" class="button">Get Spotify Data</button>
+            <button type="button" id="save-song-button" class="button">Save Changes</button>
         </div>
-        <div id="editModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Edit</h4>
-                    </div>
-                    <div class="modal-body">
-                        <label for="type" class="song-input-label">Song Type</label>
-                        <select name="type" id="type" class="song-input-select">
-                            <option name="youtube" id="youtube">YouTube</option>
-                            <option name="soundcloud" id="soundcloud">SoundCloud</option>
-                        </select>
-                        <label for="mid" class="song-input-label">Song MID</label>
-                        <input class="song-input" name="mid" id="mid" type="text" />
-                        <label for="id" class="song-input-label">Song ID</label>
-                        <input class="song-input" name="id" id="id" type="text" />
-                        <label for="id" class="song-input-label">Song Artist</label>
-                        <input class="song-input" name="artist" id="artist" type="text" />
-                        <label for="title" class="song-input-label">Song Title</label>
-                        <input class="song-input" name="title" id="title" type="text" />
-                        <label for="title" class="song-input-label">Song Duration</label>
-                        <input class="song-input" name="duration" id="duration" type="number" />
-                        <label for="skip-duration" class="song-input-label">Skip Duration</label>
-                        <input class="song-input" id="skip-duration" type="number" />
-                        <label for="likes" class="song-input-label">Likes</label>
-                        <input class="song-input" id="likes" type="number"/>
-                        <label for="dislikes" class="song-input-label">Dislikes</label>
-                        <input class="song-input" id="dislikes" type="number"/>
-                        <label for="img" class="song-input-label">Song Image</label>
-                        <input class="song-input" name="img" id="img" type="text" />
-                        <button type="button" id="get-spotify-info" class="button">Get Spotify Data</button>
-                        <button type="button" id="save-song-button" class="button">Save Changes</button>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="close-modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-light btn-flat ">X</a>
         </div>
     </div>
 </template>
