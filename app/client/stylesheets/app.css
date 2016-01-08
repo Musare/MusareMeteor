@@ -1,0 +1,48 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background-color: rgb(245, 245, 245);
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+::-webkit-scrollbar{
+    width: 8px;
+}
+
+::-webkit-scrollbar-track{
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: white;
+}
+
+.brand-logo {
+    margin-left: 10px;
+}
+
+.feedback-btn{
+    margin-left: 10px
+}
+
+.scroll-fix{
+    margin-right: 20px;
+}
+
+.avatar{
+    width: auto;
+    height: auto;
+}
+
+.contact-details{
+    margin-bottom: 5px;
+}
+
+.contact-details .material-icons{
+    float: left;
+}
