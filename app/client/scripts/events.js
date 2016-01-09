@@ -382,16 +382,15 @@ Template.queues.events({
         Session.set("song", this);
         Session.set("genre", $(e.target).data("genre"));
         Session.set("type", "queue");
-        $("#type").val(this.type);
-        $("#mid").val(this.mid);
-        $("#artist").val(this.artist);
-        $("#title").val(this.title);
-        $("#img").val(this.img);
-        $("#id").val(this.id);
-        $("#likes").val(this.likes);
-        $("#dislikes").val(this.dislikes);
-        $("#duration").val(this.duration);
-        $("#skip-duration").val(this.skipDuration);
+        $("#mid").val(this.mid).change();
+        $("#artist").val(this.artist).change();
+        $("#title").val(this.title).change();
+        $("#img").val(this.img).change();
+        $("#id").val(this.id).change();
+        $("#likes").val(this.likes).change();
+        $("#dislikes").val(this.dislikes).change();
+        $("#duration").val(this.duration).change();
+        $("#skip-duration").val(this.skipDuration).change();
         $("#editModal").openModal();
     },
     "click .add-song-button": function(e){
@@ -513,12 +512,11 @@ Template.queues.events({
         newSong.title = $("#title").val();
         newSong.artist = $("#artist").val();
         newSong.img = $("#img").val();
-        newSong.type = $("#type").val();
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         if(newSong.skipDuration === undefined){
             newSong.skipDuration = 0;
-        };
+        }
         if (Session.get("type") === "playlist") {
             Meteor.call("updatePlaylistSong", Session.get("genre"), Session.get("song"), newSong, function() {
                 $('#editModal').modal('hide');
@@ -897,7 +895,6 @@ Template.room.events({
                             $("#title").val(songObj.title);
                             $("#artist").val("");
                             $("#id").val(songObj.id);
-                            $("#type").val("YouTube");
                             getSpotifyInfo(songObj.title.replace(/\[.*\]/g, ""), function (data) {
                                 if (data.tracks.items.length > 0) {
                                     $("#title").val(data.tracks.items[0].name);
@@ -1356,22 +1353,20 @@ Template.stations.events({
         Session.set("song", this);
         Session.set("genre", $(e.target).data("genre"));
         Session.set("type", "queue");
-        $("#type").val(this.type);
-        $("#mid").val(this.mid);
-        $("#artist").val(this.artist);
-        $("#title").val(this.title);
-        $("#img").val(this.img);
-        $("#id").val(this.id);
-        $("#likes").val(this.likes);
-        $("#dislikes").val(this.dislikes);
-        $("#duration").val(this.duration);
-        $("#skip-duration").val(this.skipDuration);
+        $("#mid").val(this.mid).change();
+        $("#artist").val(this.artist).change();
+        $("#title").val(this.title).change();
+        $("#img").val(this.img).change();
+        $("#id").val(this.id).change();
+        $("#likes").val(this.likes).change();
+        $("#dislikes").val(this.dislikes).change();
+        $("#duration").val(this.duration).change();
+        $("#skip-duration").val(this.skipDuration).change();
     },
     "click .edit-playlist-button": function(e){
         Session.set("song", this);
         Session.set("genre", $(e.target).data("genre"));
         Session.set("type", "playlist");
-        $("#type").val(this.type);
         $("#mid").val(this.mid);
         $("#artist").val(this.artist);
         $("#title").val(this.title);
@@ -1397,7 +1392,7 @@ Template.stations.events({
     "click #moveSong": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
         if (genre !== Session.get(genre)) {
-            Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+            Meteor.call("addSongToPlaylist", genre, Session.get("song"));
             Meteor.call("removeSongFromPlaylist", Session.get("genre"), Session.get("song").mid);
         }else {
             console.log("Something Went Wrong?!");
@@ -1407,7 +1402,7 @@ Template.stations.events({
     },
     "click #copySong": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-        Meteor.call("addSongToPlaylist", genre, {type: Session.get("song").type, mid: Session.get("song").mid, id: Session.get("song").id, title: Session.get("song").title, artist: Session.get("song").artist, duration: Session.get("song").duration, skipDuration: Session.get("song").skipDuration, img: Session.get("song").img, likes: Session.get("song").likes, dislikes: Session.get("song").dislikes});
+        Meteor.call("addSongToPlaylist", genre, Session.get("song"));
     },
     "click .copyMove-button": function(e){
         Session.set("song", this);
@@ -1523,7 +1518,6 @@ Template.stations.events({
         newSong.title = $("#title").val();
         newSong.artist = $("#artist").val();
         newSong.img = $("#img").val();
-        newSong.type = $("#type").val();
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         if(newSong.skipDuration === undefined){

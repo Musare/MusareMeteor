@@ -31,11 +31,6 @@ Schemas.FullSong = new SimpleSchema({
         type: String,
         label: "Song img"
     },
-    "type": {
-        type: String,
-        label: "Song type",
-        defaultValue: "YouTube"
-    },
     "duration": {
         type: Number,
         label: "Song duration",
@@ -88,11 +83,6 @@ Schemas.QueueSong = new SimpleSchema({
     "img": {
         type: String,
         label: "Song img"
-    },
-    "type": {
-        type: String,
-        label: "Song type",
-        defaultValue: "YouTube"
     },
     "duration": {
         type: Number,

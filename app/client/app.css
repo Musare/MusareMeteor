@@ -209,7 +209,7 @@ main {
     resize: none;
 }
 
-.song-input-select {
+/*.song-input-select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -249,7 +249,7 @@ main {
 .song-input:focus {
     width: 354px;
     color: white;
-}
+}*/
 
 #search-song {
     display: block;

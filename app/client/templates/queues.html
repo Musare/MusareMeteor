@@ -103,24 +103,53 @@
     </div-->
     <div id="editModal" class="modal modal-fixed-footer">
         <div class="modal-content">
-            <label for="mid" class="song-input-label">Song MID</label>
-            <input class="song-input" name="mid" id="mid" type="text"/>
-            <label for="id" class="song-input-label">Song ID</label>
-            <input class="song-input" name="id" id="id" type="text"/>
-            <label for="id" class="song-input-label">Song Artist</label>
-            <input class="song-input" name="artist" id="artist" type="text"/>
-            <label for="title" class="song-input-label">Song Title</label>
-            <input class="song-input" name="title" id="title" type="text"/>
-            <label for="title" class="song-input-label">Song Duration</label>
-            <input class="song-input" name="duration" id="duration" type="number"/>
-            <label for="skip-duration" class="song-input-label">Skip Duration</label>
-            <input class="song-input" id="skip-duration" type="number"/>
-            <label for="likes" class="song-input-label">Likes</label>
-            <input class="song-input" id="likes" type="number"/>
-            <label for="dislikes" class="song-input-label">Dislikes</label>
-            <input class="song-input" id="dislikes" type="number"/>
-            <label for="img" class="song-input-label">Song Image</label>
-            <input class="song-input" name="img" id="img" type="text"/>
+            <div class="row">
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <label for="mid" class="white-text">Song MID</label>
+                    <input class="validate" name="mid" id="mid" type="text" pattern=".{6}"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <label for="mid" class="white-text">Song ID</label>
+                    <input class="validate" name="id" id="id" type="text" pattern=".{11}"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">person</i>
+                    <label for="id" class="white-text">Song Artist</label>
+                    <input class="validate" name="artist" id="artist" aria-required="true" type="text"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">subject</i>
+                    <label for="title" class="white-text">Song Title</label>
+                    <input class="validate required" name="title" id="title" type="text"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">timelapse</i>
+                    <label for="title" class="white-text">Song Duration</label>
+                    <input class="validate" name="duration" id="duration" type="number" min="0"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">timer_off</i>
+                    <label for="skip-duration" class="white-text">Skip Duration</label>
+                    <input class="validate" id="skip-duration" type="number" min="0"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">thumb_up</i>
+                    <label for="likes" class="white-text">Likes</label>
+                    <input disabled id="likes" type="number"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">thumb_down</i>
+                    <label for="dislikes" class="white-text">Dislikes</label>
+                    <input disabled id="dislikes" type="number"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">image</i>
+                    <label for="img" class="white-text">Song Image</label>
+                    <input class="validate" name="img" id="img" type="url"/>
+                </div>
+            </div>
             <button type="button" id="get-spotify-info" class="button">Get Spotify Data</button>
             <button type="button" id="save-song-button" class="button">Save Changes</button>
         </div>
