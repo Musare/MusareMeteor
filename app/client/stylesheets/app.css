@@ -46,3 +46,15 @@ main {
 .contact-details .material-icons{
     float: left;
 }
+
+.user-num{
+    font-size: 1.6em !important;
+}
+
+.card i{
+    line-height: inherit;
+}
+
+.card-content p i{
+    float: left;
+}
