@@ -222,6 +222,7 @@ Template.feedback.events({
     "click #feedback_submit": function(){
         if($("#feedback_message").val().length !== 0){
             Meteor.call("sendFeedback", $("#feedback_message").val());
+            $("#feedback_message").val("");
         }
     }
 });
@@ -1317,6 +1318,8 @@ Template.settings.events({
             var bool = confirm("Are you sure you want to delete your account?");
             if(bool) {
                 Meteor.call("deleteAccount");
+            } else{
+                $("#delete-account").text("Delete");
             }
         })
     },

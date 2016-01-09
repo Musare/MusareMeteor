@@ -70,16 +70,16 @@ Router.route("/privacy", {
     template: "privacy"
 });
 
-Router.route("/about", {
-    template: "about"
-});
-
 Router.route("/feedback", {
     template: "feedback"
 })
 
 Router.route("/team", {
     template: "team"
+})
+
+Router.route("/news", {
+    template: "news"
 })
 
 Router.route("/project", {
@@ -136,6 +136,20 @@ Router.route("/admin/alerts", {
         var user = Meteor.users.findOne({});
         if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
             this.render("alertsDashboard");
+        } else {
+            this.redirect("/");
+        }
+    }
+});
+
+Router.route("/admin/news", {
+    waitOn: function() {
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
+    },
+    action: function() {
+        var user = Meteor.users.findOne({});
+        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin")) {
+            this.render("mnews");
         } else {
             this.redirect("/");
         }
