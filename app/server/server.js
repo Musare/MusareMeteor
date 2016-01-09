@@ -934,7 +934,13 @@ Meteor.methods({
                 if (Queues.find({type: type}).count() === 0) {
                     Queues.insert({type: type, songs: []});
                 }
-                if (songData !== undefined && Object.keys(songData).length === 5 && songData.type !== undefined && songData.title !== undefined && songData.artist !== undefined && songData.img !== undefined) {
+                var requiredProperties = ["title", "artist", "img", "id"];
+                if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
+                    for (var property in requiredProperties) {
+                        if (songData[requiredProperties[property]] === undefined) {
+                            throw new Meteor.Error(403, "Invalid data.");
+                        }
+                    }
                     songData.duration = Number(getSongDuration(songData.title, songData.artist));
                     songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
                     songData.skipDuration = 0;
@@ -955,7 +961,6 @@ Meteor.methods({
                                     likes: songData.likes,
                                     dislikes: songData.dislikes,
                                     img: songData.img,
-                                    type: songData.type,
                                     requestedBy: userId
                                 }
                             }

@@ -71,7 +71,6 @@ Template.registerHelper("rtime", function(date) {
 
 var allAlertSub = undefined;
 var YTPlayer = undefined;
-var SCPlayer = undefined;
 var previewEndSongTimeout = undefined;
 var hpSound = undefined;
 var songsArr = [];

@@ -1,4 +1,3 @@
-var SCPlayer = undefined;
 var minterval;
 var StationSubscription = undefined;
 var resizeSeekerbarInterval;
@@ -20,7 +19,6 @@ Template.banned.onCreated(function() {
 });
 
 Template.dashboard.onCreated(function() {
-    if (SCPlayer !== undefined) SCPlayer.stop();
     if (minterval !== undefined) {
         Meteor.clearInterval(minterval);
     }
@@ -79,7 +77,6 @@ Template.queues.onCreated(function() {
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     YTPlayer = undefined;
-    SCPlayer = undefined;
 });
 
 Template.register.onCreated(function() {
@@ -118,7 +115,6 @@ Template.room.onCreated(function () {
         resizeSeekerbarInterval = undefined;
     }
     YTPlayer = undefined;
-    SCPlayer = undefined;
     Session.set("videoHidden", false);
     var tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
@@ -161,93 +157,62 @@ Template.room.onCreated(function () {
         $("#time-elapsed").text("0:00");
         $("#vote-skip").attr("disabled", false);
         if (currentSong !== undefined) {
-            if (SCPlayer !== undefined) SCPlayer.stop();
             if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined) YTPlayer.stopVideo();
 
             var volume = localStorage.getItem("volume") || 20;
 
-            if (currentSong.type === "SoundCloud") {
-                if ($("#soundcloud-image").length !== 1) {
-                    //$("#media-container").append('<img alt="Not loading" src="/soundcloud-image.png" class="embed-responsive-item" id="soundcloud-image" />');
-                    $("#media-container").append('<h1 id="soundcloud-image">We have temporarily disabled the playing of SoundCloud songs. We are sorry for this inconvenience.</h1>');
-                }
-                if ($("#player").length === 1) {
-                    $("#player").hide();
-                }
-                $("#soundcloud-image").show();
-                //getSongInfo(currentSong);
-                /*SC.stream("/tracks/" + currentSong.id, function(sound){
-                 SCPlayer = sound;
-                 sound.setVolume(volume / 100);
-                 sound.play();
-                 var interval = setInterval(function() {
-                 if (sound.getState() === "playing") {
-                 sound.seek(getTimeElapsed());
-                 window.clearInterval(interval);
-                 }
-                 }, 200);
-                 Session.set("duration", parseInt(currentSong.duration));
-                 var d = moment.duration(parseInt(currentSong.duration), 'seconds');
-                 $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
-                 resizeSeekerbar();
-                 });*/
-            } else {
-                if ($("#player").length !== 1) {
-                    $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
-                }
-                if ($("#soundcloud-image").length === 1) {
-                    $("#soundcloud-image").hide();
-                }
-                $("#player").show();
-                function loadVideo() {
-                    if (!Session.get("YTLoaded")) {
-                        Session.set("loadVideoTimeout", Meteor.setTimeout(function () {
-                            loadVideo();
-                        }, 500));
-                    } else {
-                        if (YTPlayer === undefined) {
-                            YTPlayer = new YT.Player("player", {
-                                height: 540,
-                                width: 960,
-                                videoId: currentSong.id,
-                                playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
-                                events: {
-                                    'onReady': function (event) {
-                                        if (currentSong.skipDuration === undefined) {
-                                            currentSong.skipDuration = 0;
+            if ($("#player").length !== 1) {
+                $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
+            }
+            $("#player").show();
+            function loadVideo() {
+                if (!Session.get("YTLoaded")) {
+                    Session.set("loadVideoTimeout", Meteor.setTimeout(function () {
+                        loadVideo();
+                    }, 500));
+                } else {
+                    if (YTPlayer === undefined) {
+                        YTPlayer = new YT.Player("player", {
+                            height: 540,
+                            width: 960,
+                            videoId: currentSong.id,
+                            playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+                            events: {
+                                'onReady': function (event) {
+                                    if (currentSong.skipDuration === undefined) {
+                                        currentSong.skipDuration = 0;
+                                    }
+                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                    event.target.playVideo();
+                                    event.target.setVolume(volume);
+                                    resizeSeekerbar();
+                                },
+                                'onStateChange': function (event) {
+                                    if (Session.get("YTLoaded")) {
+                                        if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                            event.target.playVideo();
                                         }
-                                        event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                        event.target.playVideo();
-                                        event.target.setVolume(volume);
-                                        resizeSeekerbar();
-                                    },
-                                    'onStateChange': function (event) {
-                                        if (Session.get("YTLoaded")) {
-                                            if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                                event.target.playVideo();
-                                            }
-                                            if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                                event.target.pauseVideo();
-                                            }
+                                        if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                            event.target.pauseVideo();
                                         }
                                     }
                                 }
-                            });
-                        } else {
-                            YTPlayer.loadVideoById(currentSong.id);
-                            if (currentSong.skipDuration === undefined) {
-                                currentSong.skipDuration = 0;
                             }
-                            YTPlayer.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                        });
+                    } else {
+                        YTPlayer.loadVideoById(currentSong.id);
+                        if (currentSong.skipDuration === undefined) {
+                            currentSong.skipDuration = 0;
                         }
-                        Session.set("pauseVideo", false);
-                        getSongInfo(currentSong);
+                        YTPlayer.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                     }
+                    Session.set("pauseVideo", false);
+                    getSongInfo(currentSong);
                 }
-                loadVideo();
             }
+            loadVideo();
         }
     }
 
@@ -270,15 +235,11 @@ Template.room.onCreated(function () {
                         // TODO Fix issue where sometimes nothing loads with the YT is not defined error. The error points to around this.
                         if (YTPlayer !== undefined && YTPlayer.getPlayerState !== undefined && YTPlayer.getPlayerState() === 1) {
                             YTPlayer.pauseVideo();
-                        } else if (SCPlayer !== undefined && SCPlayer.getState().indexOf("playing") !== -1) {
-                            SCPlayer.pause();
                         }
                     } else {
                         Session.set("state", "playing");
                         if (YTPlayer !== undefined && YTPlayer.getPlayerState !== undefined && YTPlayer.getPlayerState() !== 1) {
                             YTPlayer.playVideo();
-                        } else if (SCPlayer !== undefined && SCPlayer.getState().indexOf("paused") !== -1) {
-                            SCPlayer.play();
                         }
                     }
                 }
@@ -347,5 +308,4 @@ Template.stations.onCreated(function() {
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     YTPlayer = undefined;
-    SCPlayer = undefined;
 });
