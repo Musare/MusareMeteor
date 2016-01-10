@@ -265,12 +265,6 @@ Template.login.events({
         Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
             console.log(err, res);
         });
-    },
-
-    "click #facebook-login": function(){
-        Meteor.loginWithFacebook(function(err, res) {
-            console.log(err, res);
-        });
     }
 });
 
@@ -567,12 +561,6 @@ Template.register.events({
 
     "click #github-login": function(){
         Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
-            console.log(err, res);
-        });
-    },
-
-    "click #facebook-login": function(){
-        Meteor.loginWithFacebook({loginStyle: "redirect"}, function(err, res) {
             console.log(err, res);
         });
     }
