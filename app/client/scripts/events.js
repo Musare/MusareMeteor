@@ -533,10 +533,11 @@ Template.queues.events({
 Template.register.events({
     "submit form": function(e){
         e.preventDefault();
-        var username = e.target.registerUsername.value;
-        var email = e.target.registerEmail.value;
-        var password = e.target.registerPassword.value;
+        var username = $("#username").val()
+        var email = $("#email").val()
+        var password = $("#password").val();
         var captchaData = grecaptcha.getResponse();
+        console.log(captchaData)
         Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
             grecaptcha.reset();
 
