@@ -9,6 +9,18 @@ main {
     flex: 1 0 auto;
 }
 
+main h3{
+    margin-left: 10px;
+}
+
+main h4.thin{
+    margin-left: 10px;
+}
+
+main p.flow-text{
+    margin-left: 10px;
+}
+
 ::-webkit-scrollbar{
     width: 8px;
 }
@@ -64,5 +76,6 @@ main {
 }
 
 .social{
-    margin: 10px 0 0 10px;
+    margin: 0px 0 10px 0px;
+    width: 155px;
 }
