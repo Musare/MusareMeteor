@@ -267,7 +267,7 @@ Schemas.UserProfile = new SimpleSchema({
         type: String,
         label: "Username",
         regEx: /^[a-zA-Z0-9_]+$/,
-        min: 6,
+        min: 4,
         max: 26
     },
     usernameL: {

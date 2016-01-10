@@ -1165,5 +1165,15 @@ Meteor.setInterval(function () {
 }, 10000);
 
 Meteor.users.after.insert(function (err, user) {
-    Accounts.sendVerificationEmail(user._id);
+    if(user.emails) {
+        Accounts.sendVerificationEmail(user._id);
+    }
+    else if(user.services.facebook.email){
+        Meteor.users.update({"profile.username": user.profile.username}, {$set: {emails: [{"address": user.services.facebook.email, "verified": false}]}})
+        Accounts.sendVerificationEmail(user._id);
+    }
+    else if(user.services.github.email){
+        Meteor.users.update({"profile.username": user.profile.username}, {$set: {emails: [{"address": user.services.github.email, "verified": false}]}})
+        Accounts.sendVerificationEmail(user._id, user.services.github.email);
+    }
 });
