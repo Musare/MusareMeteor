@@ -79,3 +79,13 @@ main p.flow-text{
     margin: 0px 0 10px 0px;
     width: 155px;
 }
+
+.login-btn{
+    margin: 10px 0 0 10px;
+}
+
+.upvote{
+    float: right;
+    color: #00C853;
+    cursor: pointer;
+}

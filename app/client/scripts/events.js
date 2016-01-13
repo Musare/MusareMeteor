@@ -224,6 +224,10 @@ Template.feedback.events({
             Meteor.call("sendFeedback", $("#feedback_message").val());
             $("#feedback_message").val("");
         }
+    },
+    "click .upvote": function(){
+        var message = $(this).parent("card").prevObject[0].message;
+        Meteor.call("upvoteFeedback", message)
     }
 });
 

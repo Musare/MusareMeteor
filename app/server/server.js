@@ -1153,9 +1153,15 @@ Meteor.methods({
                 if (res.content.indexOf("true") > -1) {
                     return true;
                 } else {
-                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message}}});
+                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message, upvotes: 0}}});
                 }
             });
+        }
+    },
+    upvoteFeedback: function(message){
+        if(!isBanned()){
+            //Check if the upvotedBy array in the feedback object contains user, if so, pull. Else, push.
+            Feedback.update({"messages.message": message}, {$inc: {"messages.$.upvotes": 1}});
         }
     }
 });

@@ -168,6 +168,12 @@ Schemas.Feedback = new SimpleSchema({
     "messages.$.message": {
         type: String,
         label: "Feedback message"
+    },
+    "messages.$.upvotes": {
+        type: Number,
+        defaultValue: 0,
+        min: 0,
+        label: "Number of upvotes for a particualar feedback"
     }
 })
 
