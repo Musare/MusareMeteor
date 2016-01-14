@@ -89,3 +89,19 @@ main p.flow-text{
     color: #00C853;
     cursor: pointer;
 }
+
+.upvote-text{
+    display: inline;
+    float: right;
+    font-size: 1.5em;
+    margin-top: 3px;
+    margin-right: 10px;
+    color: white;
+}
+
+.edit{
+    position: initial;
+    float: right;
+    margin-top: -3em;
+    margin-right: -2em;
+}

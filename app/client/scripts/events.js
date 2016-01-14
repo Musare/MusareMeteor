@@ -227,7 +227,11 @@ Template.feedback.events({
     },
     "click .upvote": function(){
         var message = $(this).parent("card").prevObject[0].message;
-        Meteor.call("upvoteFeedback", message)
+        Meteor.call("upvoteFeedback", message);
+    },
+    "click #delete": function(){
+        var message = $(this).parent("card").prevObject[0].message;
+        Meteor.call("deleteFeedback", message);
     }
 });
 

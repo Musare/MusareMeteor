@@ -1153,15 +1153,28 @@ Meteor.methods({
                 if (res.content.indexOf("true") > -1) {
                     return true;
                 } else {
-                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message, upvotes: 0}}});
+                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message, upvotes: 0, upvotedBy: []}}});
                 }
             });
         }
     },
     upvoteFeedback: function(message){
-        if(!isBanned()){
-            //Check if the upvotedBy array in the feedback object contains user, if so, pull. Else, push.
-            Feedback.update({"messages.message": message}, {$inc: {"messages.$.upvotes": 1}});
+        if(Meteor.userId() && !isBanned()){
+            console.log(Feedback.findOne({"messages.message": message}, {_id: 0, 'messages.$': 1}).messages[0].upvotedBy.indexOf(Meteor.user().profile.username));
+            if(Feedback.findOne({"messages.message": message}, {_id: 0, 'messages.$': 1}).messages[0].upvotedBy.indexOf(Meteor.user().profile.username) === -1){
+                Feedback.update({"messages.message": message}, {$push: {"messages.$.upvotedBy": Meteor.user().profile.username}});
+                Feedback.update({"messages.message": message}, {$inc: {"messages.$.upvotes": 1}});
+            } else{
+                Feedback.update({"messages.message": message}, {$pull: {"messages.$.upvotedBy": Meteor.user().profile.username}});
+                Feedback.update({"messages.message": message}, {$inc: {"messages.$.upvotes": -1}});
+            }
+        }
+    },
+    deleteFeedback: function(message){
+        if(isAdmin() && !isBanned()){
+            //Feedback.findOne({"messages.message": "This site rocks"}, {_id: 0, 'messages.$': 1}).messages[0].remove();
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
         }
     }
 });

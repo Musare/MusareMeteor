@@ -174,8 +174,16 @@ Schemas.Feedback = new SimpleSchema({
         defaultValue: 0,
         min: 0,
         label: "Number of upvotes for a particualar feedback"
+    },
+    "messages.$.upvotedBy": {
+        type: Array,
+        label: "Array of users who have upvoted a feedback"
+    },
+    "messages.$.upvotedBy.$": {
+        type: String,
+        label: "Username of user who upvoted a feedback"
     }
-})
+});
 
 Schemas.Room = new SimpleSchema({
     display: {
