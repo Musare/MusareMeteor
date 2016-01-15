@@ -99,8 +99,7 @@ main p.flow-text{
     color: white;
 }
 
-.edit{
-    position: initial;
+.delete{
     float: right;
     margin-top: -3em;
     margin-right: -2em;

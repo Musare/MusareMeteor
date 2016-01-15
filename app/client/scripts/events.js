@@ -229,7 +229,7 @@ Template.feedback.events({
         var message = $(this).parent("card").prevObject[0].message;
         Meteor.call("upvoteFeedback", message);
     },
-    "click #delete": function(){
+    "click .delete": function(){
         var message = $(this).parent("card").prevObject[0].message;
         Meteor.call("deleteFeedback", message);
     }

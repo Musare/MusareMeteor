@@ -1171,8 +1171,9 @@ Meteor.methods({
         }
     },
     deleteFeedback: function(message){
+        console.log("Hello");
         if(isAdmin() && !isBanned()){
-            //Feedback.findOne({"messages.message": "This site rocks"}, {_id: 0, 'messages.$': 1}).messages[0].remove();
+            Feedback.update({}, {$pull: {"messages": {"message": message}}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
