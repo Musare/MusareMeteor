@@ -225,6 +225,7 @@ Template.feedback.events({
         if($("#feedback_message").val().length !== 0){
             Meteor.call("sendFeedback", $("#feedback_message").val());
             $("#feedback_message").val("");
+            $("#modal1").closeModal()
         }
     },
     "click .upvote": function(){
@@ -246,6 +247,7 @@ Template.feedback.events({
         var newMessage = $("#edit_feedback_message").val()
         $("#edit_feedback_message").val("")
         Meteor.call("updateFeedback", oldMessage, newMessage);
+        $("#editFeedback").closeModal();
     }
 });
 

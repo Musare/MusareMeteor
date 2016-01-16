@@ -34,6 +34,10 @@ main p.flow-text{
     background-color: white;
 }
 
+textarea{
+    color: white;
+}
+
 .brand-logo {
     margin-left: 10px;
 }
@@ -88,13 +92,14 @@ main p.flow-text{
     float: right;
     color: #00C853;
     cursor: pointer;
+    line-height: initial !important;
 }
 
 .upvote-text{
     display: inline;
     float: right;
     font-size: 1.5em;
-    margin-top: 3px;
+    margin-top: -3px;
     margin-right: 10px;
     color: white;
 }
@@ -104,4 +109,12 @@ main p.flow-text{
     float: right;
     margin-top: -3em;
     margin-right: -2em;
+}
+
+.character-counter{
+    color: white;
+}
+
+.fixed-action-btn.horizontal ul{
+    right: 45px;
 }
