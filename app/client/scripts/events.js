@@ -1,3 +1,5 @@
+var feedbackData;
+
 function getSpotifyInfo(title, cb, artist) {
     var q = "";
     q = title;
@@ -232,6 +234,18 @@ Template.feedback.events({
     "click #delete": function(){
         var message = $(this).parent("card").prevObject[0].message;
         Meteor.call("deleteFeedback", message);
+    },
+    "click #edit": function(){
+        $("#editModal").click()
+        var data = Feedback.findOne({"message": $(this).parent("card").prevObject[0].message});
+        feedbackData = data.message;
+        $("#edit_feedback_message").val(data.message);
+    },
+    "click #edit_feedback_submit": function(){
+        var oldMessage = feedbackData;
+        var newMessage = $("#edit_feedback_message").val()
+        $("#edit_feedback_message").val("")
+        Meteor.call("updateFeedback", oldMessage, newMessage);
     }
 });
 

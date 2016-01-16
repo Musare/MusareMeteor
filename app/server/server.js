@@ -1181,6 +1181,13 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
+    },
+    updateFeedback: function(oldMessage, newMessage){
+        if(isAdmin() && !isBanned()){
+            Feedback.update({"message": oldMessage}, {$set: {"message": newMessage}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     }
 });
 

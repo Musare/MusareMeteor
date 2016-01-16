@@ -3,6 +3,8 @@
     <main>
         <h3 class="black-text thin text-center">Feedback</h3>
         <a class="waves-effect waves-light btn modal-trigger feedback-btn" href="#modal1">Send New Feedback</a>
+        <a id="editModal" class="modal-trigger" href="#editFeedback" style="display:none"></a>
+
         <div class="row">
             {{#each feedback}}
                 <div class="col s12 m4">
@@ -40,6 +42,15 @@
                 <label for="feedback_message">Give us your feedback and suggestions!</label>
             </div>
             <a id="feedback_submit" class="waves-effect waves-light btn">Submit</a>
+        </div>
+    </div>
+    <div id="editFeedback" class="modal">
+        <div class="modal-content teal darken-4">
+            <label>Edit Feedback Message</label>
+            <div class="input-field">
+                <textarea id="edit_feedback_message" class="materialize-textarea" length="500"></textarea>
+            </div>
+            <a id="edit_feedback_submit" class="waves-effect waves-light btn">Submit</a>
         </div>
     </div>
     {{> footer}}
