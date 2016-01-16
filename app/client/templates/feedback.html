@@ -9,7 +9,17 @@
                     <div class="card blue-grey darken-1">
                         <div class="card-content white-text">
                             {{#if isAdmin}}
-                                <a class="btn-floating btn-large waves-effect waves-light red delete"><i class="material-icons">delete</i></a>
+                                <div class="fixed-action-btn horizontal float-btn" style="bottom: 45px; right: 24px;">
+                                    <a class="btn-floating btn-large red">
+                                        <i class="large material-icons">more_vert</i>
+                                    </a>
+                                    <ul>
+                                        <li><a id="edit" class="btn-floating green"><i
+                                                class="material-icons">create</i></a></li>
+                                        <li><a id="delete" class="btn-floating red"><i class="material-icons">delete</i></a>
+                                        </li>
+                                    </ul>
+                                </div>
                             {{/if}}
                             <p>{{message}}</p>
                         </div>

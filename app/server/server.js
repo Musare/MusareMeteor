@@ -1153,27 +1153,31 @@ Meteor.methods({
                 if (res.content.indexOf("true") > -1) {
                     return true;
                 } else {
-                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message, upvotes: 0, upvotedBy: []}}});
+                    Feedback.insert({
+                        "username": Meteor.user().profile.username,
+                        "message": message,
+                        upvotes: 0,
+                        upvotedBy: []
+                    })
                 }
             });
         }
     },
     upvoteFeedback: function(message){
         if(Meteor.userId() && !isBanned()){
-            console.log(Feedback.findOne({"messages.message": message}, {_id: 0, 'messages.$': 1}).messages[0].upvotedBy.indexOf(Meteor.user().profile.username));
-            if(Feedback.findOne({"messages.message": message}, {_id: 0, 'messages.$': 1}).messages[0].upvotedBy.indexOf(Meteor.user().profile.username) === -1){
-                Feedback.update({"messages.message": message}, {$push: {"messages.$.upvotedBy": Meteor.user().profile.username}});
-                Feedback.update({"messages.message": message}, {$inc: {"messages.$.upvotes": 1}});
+            console.log(Feedback.findOne({"message": message}));
+            if(Feedback.findOne({"message": message}).upvotedBy.indexOf(Meteor.user().profile.username) === -1){
+                Feedback.update({"message": message}, {$inc: {"upvotes": 1}});
+                Feedback.update({"message": message}, {$push: {"upvotedBy": Meteor.user().profile.username}});
             } else{
-                Feedback.update({"messages.message": message}, {$pull: {"messages.$.upvotedBy": Meteor.user().profile.username}});
-                Feedback.update({"messages.message": message}, {$inc: {"messages.$.upvotes": -1}});
+                Feedback.update({"message": message}, {$inc: {"upvotes": -1}});
+                Feedback.update({"message": message}, {$pull: {"upvotedBy": Meteor.user().profile.username}});
             }
         }
     },
     deleteFeedback: function(message){
-        console.log("Hello");
         if(isAdmin() && !isBanned()){
-            Feedback.update({}, {$pull: {"messages": {"message": message}}});
+            Feedback.remove({"message": message});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

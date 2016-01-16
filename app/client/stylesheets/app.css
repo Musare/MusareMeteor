@@ -99,7 +99,8 @@ main p.flow-text{
     color: white;
 }
 
-.delete{
+.float-btn{
+    position: initial;
     float: right;
     margin-top: -3em;
     margin-right: -2em;

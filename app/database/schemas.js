@@ -153,33 +153,23 @@ Schemas.Alert = new SimpleSchema({
 });
 
 Schemas.Feedback = new SimpleSchema({
-    messages: {
-        type: Array,
-        label: "Array of feedback messages"
-    },
-    "messages.$": {
-        type: Object,
-        label: "Object for each feedback"
-    },
-    "messages.$.username": {
+    username: {
         type: String,
         label: "Username of user who submitted feedback"
     },
-    "messages.$.message": {
+    message: {
         type: String,
         label: "Feedback message"
     },
-    "messages.$.upvotes": {
+    upvotes: {
         type: Number,
-        defaultValue: 0,
-        min: 0,
-        label: "Number of upvotes for a particualar feedback"
+        label: "Number of upvotes for a feedback"
     },
-    "messages.$.upvotedBy": {
+    upvotedBy: {
         type: Array,
-        label: "Array of users who have upvoted a feedback"
+        label: "Array of usernames of users who upvoted a feedback"
     },
-    "messages.$.upvotedBy.$": {
+    "upvotedBy.$": {
         type: String,
         label: "Username of user who upvoted a feedback"
     }
