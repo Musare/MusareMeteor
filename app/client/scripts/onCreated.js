@@ -77,6 +77,14 @@ Template.queues.onCreated(function() {
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     YTPlayer = undefined;
+    $(document).keydown(function(evt){
+        if (evt.keyCode==83 && (evt.ctrlKey)){
+            evt.preventDefault();
+            if (Session.get("editing") === true) {
+                $("#save-song-button").click();
+            }
+        }
+    });
 });
 
 Template.register.onCreated(function() {

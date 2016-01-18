@@ -208,6 +208,9 @@ Template.queues.helpers({
             }
         });
         return queues;
+    },
+    song_image: function() {
+        return Session.get("image_url");
     }
 });
 

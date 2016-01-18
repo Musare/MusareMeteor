@@ -14,24 +14,14 @@ Template.queues.onRendered(function() {
         }
     });
     $(document).ready(function() {
-        function makeSlider(){
-            var slider = $("#volume-slider").slider();
-            var volume = localStorage.getItem("volume") || 20;
-            $("#volume-slider").slider("setValue", volume);
-            if (slider.length === 0) {
-                Meteor.setTimeout(function() {
-                    makeSlider();
-                }, 500);
-            } else {
-                slider.on("slide", function(val) {
-                    localStorage.setItem("volume", val.value);
-                    if (YTPlayer !== undefined) {
-                        YTPlayer.setVolume(val.value);
-                    }
-                });
+        var volume = localStorage.getItem("volume") || 20;
+        $("#volume_slider").val(volume).on("input", function() {
+            volume = Number($("#volume_slider").val());
+            localStorage.setItem("volume", volume);
+            if (YTPlayer !== undefined) {
+                YTPlayer.setVolume(volume);
             }
-        }
-        makeSlider();
+        });
     });
 });
 

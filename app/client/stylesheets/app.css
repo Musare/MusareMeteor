@@ -46,3 +46,59 @@ main {
 .contact-details .material-icons{
     float: left;
 }
+
+.musare {
+    background-color: rgb(107, 197, 164) !important;
+}
+
+.range-field > input[type="range"] {
+    border-color: #C2C0C2;
+    border-right: 0;
+    border-left: 0;
+}
+
+.table-right-td {
+     text-align: right;
+ }
+
+.table-right-th {
+    width: 1px;
+}
+
+.hide-preview {
+    padding-bottom: 0 !important;
+}
+
+#song-preview {
+    width: 210px;
+    height: 210px;
+    min-height: 210px;
+    min-width: 210px;
+    max-height: 210px;
+    max-width: 210px;
+}
+
+#previewPlayerContainer {
+    margin-bottom: 20px;
+}
+
+
+.seeker-bar {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+}
+
+.seeker-bar-container {
+    position: relative;
+    height: 5px;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+
+}
+
+#preview-time {
+    margin-top: -9px;
+}

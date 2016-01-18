@@ -985,8 +985,14 @@ Meteor.methods({
     updateQueueSong: function (genre, oldSong, newSong) {
         if (isModerator() && !isBanned()) {
             newSong.mid = oldSong.mid;
-            Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
-            return true;
+            Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}}, function(err) {
+                console.log(err);
+                if (err) {
+                    throw err.sanitizedError;
+                } else {
+                    return true;
+                }
+            });
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
@@ -1034,13 +1040,14 @@ Meteor.methods({
         }
     },
     addSongToPlaylist: function (type, songData) {
+        console.log(songData);
         if (isModerator() && !isBanned()) {
             type = type.toLowerCase();
             if (Rooms.find({type: type}).count() === 1) {
                 if (Playlists.find({type: type}).count() === 0) {
                     Playlists.insert({type: type, songs: []});
                 }
-                var requiredProperties = ["type", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy"];
+                var requiredProperties = ["mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy"];
                 if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
                     for (var property in requiredProperties) {
                         if (songData[requiredProperties[property]] === undefined) {
