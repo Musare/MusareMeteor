@@ -153,23 +153,27 @@ Schemas.Alert = new SimpleSchema({
 });
 
 Schemas.Feedback = new SimpleSchema({
-    messages: {
-        type: Array,
-        label: "Array of feedback messages"
-    },
-    "messages.$": {
-        type: Object,
-        label: "Object for each feedback"
-    },
-    "messages.$.username": {
+    username: {
         type: String,
         label: "Username of user who submitted feedback"
     },
-    "messages.$.message": {
+    message: {
         type: String,
         label: "Feedback message"
+    },
+    upvotes: {
+        type: Number,
+        label: "Number of upvotes for a feedback"
+    },
+    upvotedBy: {
+        type: Array,
+        label: "Array of usernames of users who upvoted a feedback"
+    },
+    "upvotedBy.$": {
+        type: String,
+        label: "Username of user who upvoted a feedback"
     }
-})
+});
 
 Schemas.Room = new SimpleSchema({
     display: {
@@ -267,7 +271,7 @@ Schemas.UserProfile = new SimpleSchema({
         type: String,
         label: "Username",
         regEx: /^[a-zA-Z0-9_]+$/,
-        min: 6,
+        min: 4,
         max: 26
     },
     usernameL: {

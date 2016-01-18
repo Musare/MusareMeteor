@@ -1,9 +1,41 @@
 <template name="mnews">
     <div class="landing">
-	    {{> header}}
+        {{> header}}
         <div class="row">
             <div class="about col-md-8 col-md-offset-2">
-              <h1>Manage News Here...</h1>
+                <h1 class="center-align">Add A New Article:</h1>
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input id="input_text" type="text" length="10">
+                                <label for="input_text">Article Title:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <textarea id="textarea1" class="materialize-textarea" length="120"></textarea>
+                                <label for="textarea1">Article Content:</label>
+                            </div>
+                        </div>
+                        <div class="switch">
+                          <p>Post As "Musare Admin"</p>
+                            <label>
+                                No
+                                <input type="checkbox">
+                                <span class="lever"></span>
+                                Yes
+                            </label>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <a class="btn-floating btn-large waves-effect waves-light right red"><i class="material-icons">add</i></a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr />
+                <h1 class="center-align">Article List:</h1>
             </div>
         </div>
     </div>

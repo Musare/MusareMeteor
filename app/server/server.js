@@ -1160,9 +1160,40 @@ Meteor.methods({
                 if (res.content.indexOf("true") > -1) {
                     return true;
                 } else {
-                    Feedback.update({}, {$push: {messages: {username: Meteor.user().profile.username, message: message}}});
+                    Feedback.insert({
+                        "username": Meteor.user().profile.username,
+                        "message": message,
+                        upvotes: 0,
+                        upvotedBy: []
+                    })
                 }
             });
+        }
+    },
+    upvoteFeedback: function(message){
+        if(Meteor.userId() && !isBanned()){
+            console.log(Feedback.findOne({"message": message}));
+            if(Feedback.findOne({"message": message}).upvotedBy.indexOf(Meteor.user().profile.username) === -1){
+                Feedback.update({"message": message}, {$inc: {"upvotes": 1}});
+                Feedback.update({"message": message}, {$push: {"upvotedBy": Meteor.user().profile.username}});
+            } else{
+                Feedback.update({"message": message}, {$inc: {"upvotes": -1}});
+                Feedback.update({"message": message}, {$pull: {"upvotedBy": Meteor.user().profile.username}});
+            }
+        }
+    },
+    deleteFeedback: function(message){
+        if(isAdmin() && !isBanned()){
+            Feedback.remove({"message": message});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    updateFeedback: function(oldMessage, newMessage){
+        if(isAdmin() && !isBanned()){
+            Feedback.update({"message": oldMessage}, {$set: {"message": newMessage}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
         }
     }
 });

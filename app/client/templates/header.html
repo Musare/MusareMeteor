@@ -12,7 +12,7 @@
         </ul>
         <ul id="accountDrop" class="dropdown-content">
             {{#if currentUser}}
-                <li><a href="/u/{{currentUser.username}}">Profile</a></li>
+                <li><a href="/u/{{currentUser.profile.username}}">Profile</a></li>
                 <li><a href="/settings">Settings</a></li>
                 <li class="divider"></li>
                 <li class="logout"><a>Logout</a></li>
@@ -23,7 +23,7 @@
         </ul>
         <nav>
             <div class="nav-wrapper teal accent-4">
-                <a href="/" class="brand-logo">Musare</a>
+                <a href="/" class="brand-logo light">Musare</a>
                 <a href="#" data-activates="mobile-navi" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down scroll-fix">
                     <li><a href="/news">News</a></li>
@@ -33,7 +33,7 @@
                             class="material-icons right">arrow_drop_down</i></a></li>
                     <li><a class="dropdown-button" href="#!" data-activates="accountDrop">
                         {{#if currentUser}}
-                            {{currentUser.username}}
+                            {{currentUser.profile.username}}
                         {{else}}
                             Account
                         {{/if}}
@@ -66,7 +66,7 @@
                         <li>
                             <div class="collapsible-header black-text"><i class="material-icons">arrow_drop_down</i>
                                 {{#if currentUser}}
-                                    {{currentUser.username}}
+                                    {{currentUser.profile.username}}
                                 {{else}}
                                     Account
                                 {{/if}}

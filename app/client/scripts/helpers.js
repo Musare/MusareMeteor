@@ -1,36 +1,36 @@
 Template.admin.helpers({
-    queueCount: function(display) {
+    queueCount: function (display) {
         var d = display.toLowerCase();
         return queues && "songs" in queues ? queues.songs.length : 0;
         var queues = Queues.findOne({type: d});
     },
-    queues: function() {
+    queues: function () {
         var queues = Queues.find({}).fetch();
         return queues;
     },
-    usersOnline: function(){
-        Meteor.call("getUserNum", function(err, num){
-            if(err){
+    usersOnline: function () {
+        Meteor.call("getUserNum", function (err, num) {
+            if (err) {
                 console.log(err);
             }
             Session.set("userNum", num);
         });
         return Session.get("userNum");
     },
-    roomUserNum: function(){
+    roomUserNum: function () {
         var type = this.type;
         var userNum = Rooms.findOne({type: type}).users;
         return userNum;
     },
-    allUsers: function(){
-        Meteor.call("getTotalUsers", function(err, num){
+    allUsers: function () {
+        Meteor.call("getTotalUsers", function (err, num) {
             Session.set("allUsers", num);
         })
         return Session.get("allUsers");
     },
-    playlists: function() {
+    playlists: function () {
         var playlists = Playlists.find({}).fetch();
-        playlists.map(function(playlist) {
+        playlists.map(function (playlist) {
             if (Rooms.find({type: playlist.type}).count() !== 1) {
                 return;
             } else {
@@ -40,45 +40,45 @@ Template.admin.helpers({
         });
         return playlists;
     },
-    reportsCount: function(room) {
+    reportsCount: function (room) {
         room = room.toLowerCase();
-        var reports = Reports.findOne({room:room});
+        var reports = Reports.findOne({room: room});
         return reports && "report" in reports ? reports.report.length : 0;
     }
 });
 
 Template.alerts.helpers({
-    alerts: function() {
+    alerts: function () {
         return Alerts.find({active: true});
     }
 });
 
 Template.alertsDashboard.helpers({
-    "activeAlerts": function() {
+    "activeAlerts": function () {
         return Alerts.find({active: true});
     },
-    "inactiveAlerts": function() {
+    "inactiveAlerts": function () {
         return Alerts.find({active: false});
     }
 });
 
 Template.banned.helpers({
-    bannedAt: function() {
+    bannedAt: function () {
         if (Session.get("ban") !== undefined) {
             return Session.get("ban").bannedAt;
         }
     },
-    bannedBy: function() {
+    bannedBy: function () {
         if (Session.get("ban") !== undefined) {
             return Session.get("ban").bannedBy;
         }
     },
-    bannedUntil: function() {
+    bannedUntil: function () {
         if (Session.get("ban") !== undefined) {
             return Session.get("ban").bannedUntil;
         }
     },
-    bannedReason: function() {
+    bannedReason: function () {
         if (Session.get("ban") !== undefined) {
             return Session.get("ban").bannedReason;
         }
@@ -86,33 +86,28 @@ Template.banned.helpers({
 });
 
 Template.feedback.helpers({
-    feedback: function(){
-        var data = Feedback.findOne();
-        if(data !== undefined) {
-            return data.messages.reverse();
-        } else{
-            return [];
-        }
+    feedback: function () {
+        return Feedback.find().fetch().reverse();
     }
 })
 
 Template.header.helpers({
-    userId: function() {
+    userId: function () {
         return Meteor.userId();
     }
 });
 
 Template.home.helpers({
-    currentSong: function(){
+    currentSong: function () {
         var type = this.type;
         var room = Rooms.findOne({type: type});
-        if(room !== undefined){
+        if (room !== undefined) {
             return room.currentSong;
         } else {
             return false;
         }
     },
-    userNum: function(){
+    userNum: function () {
         var type = this.type;
         var userNum = Rooms.findOne({type: type}).users;
         return userNum;
@@ -120,13 +115,13 @@ Template.home.helpers({
 });
 
 Template.playlist.helpers({
-    playlist_songs: function() {
+    playlist_songs: function () {
         parts = location.href.split('/');
         id = parts.pop();
         type = id.toLowerCase();
         var data = Playlists.findOne({type: type});
         if (data !== undefined) {
-            data.songs.map(function(song) {
+            data.songs.map(function (song) {
                 if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
                     song.current = true;
                 } else {
@@ -142,28 +137,28 @@ Template.playlist.helpers({
 });
 
 Template.profile.helpers({
-    "real_name": function(){
+    "real_name": function () {
         return Session.get("real_name");
     },
-    "username": function() {
+    "username": function () {
         return Session.get("username")
     },
-    "first_joined": function() {
+    "first_joined": function () {
         return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
     },
-    "rank": function() {
+    "rank": function () {
         return Session.get("rank");
     },
-    loaded: function() {
+    loaded: function () {
         return Session.get("loaded");
     },
-    likedSongs: function(){
+    likedSongs: function () {
         var likedArr = [];
-        Session.get("liked").forEach(function(mid){
-            Rooms.find().forEach(function(room){
-                Playlists.find({type: room.type}).forEach(function(pl){
-                    for(var i in pl.songs){
-                        if(pl.songs[i].mid === mid){
+        Session.get("liked").forEach(function (mid) {
+            Rooms.find().forEach(function (room) {
+                Playlists.find({type: room.type}).forEach(function (pl) {
+                    for (var i in pl.songs) {
+                        if (pl.songs[i].mid === mid) {
                             likedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
                         }
                     }
@@ -172,14 +167,18 @@ Template.profile.helpers({
         });
         return likedArr;
     },
-    dislikedSongs: function(){
+    dislikedSongs: function () {
         var dislikedArr = [];
-        Session.get("disliked").forEach(function(mid){
-            Rooms.find().forEach(function(room){
-                Playlists.find({type: room.type}).forEach(function(pl){
-                    for(var i in pl.songs){
-                        if(pl.songs[i].mid === mid){
-                            dislikedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
+        Session.get("disliked").forEach(function (mid) {
+            Rooms.find().forEach(function (room) {
+                Playlists.find({type: room.type}).forEach(function (pl) {
+                    for (var i in pl.songs) {
+                        if (pl.songs[i].mid === mid) {
+                            dislikedArr.push({
+                                title: pl.songs[i].title,
+                                artist: pl.songs[i].artist,
+                                room: room.display
+                            });
                         }
                     }
                 });
@@ -187,19 +186,19 @@ Template.profile.helpers({
         });
         return dislikedArr;
     },
-    isUser: function(){
+    isUser: function () {
         var parts = Router.current().url.split('/');
         var username = parts.pop();
-        if(username === Meteor.user().profile.username){
+        if (username === Meteor.user().profile.username) {
             return true;
         }
     }
 });
 
 Template.queues.helpers({
-    queues: function() {
+    queues: function () {
         var queues = Queues.find({}).fetch();
-        queues.map(function(queue) {
+        queues.map(function (queue) {
             if (Rooms.find({type: queue.type}).count() !== 1) {
                 return;
             } else {
@@ -215,31 +214,31 @@ Template.queues.helpers({
 });
 
 Template.room.helpers({
-    singleVideo: function() {
+    singleVideo: function () {
         return true;
     },
-    chat: function() {
-        Meteor.setTimeout(function() {
+    chat: function () {
+        Meteor.setTimeout(function () {
             var elem = document.getElementById('chat');
             if (elem !== undefined && elem !== null) {
                 elem.scrollTop = elem.scrollHeight;
             }
         }, 100);
-        return Chat.find({type: Session.get("type")}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
+        return Chat.find({type: Session.get("type")}, {sort: {time: -1}, limit: 50}).fetch().reverse();
     },
-    globalChat: function() {
-        Meteor.setTimeout(function() {
+    globalChat: function () {
+        Meteor.setTimeout(function () {
             var elem = document.getElementById('global-chat');
             if (elem !== undefined && elem !== null) {
                 elem.scrollTop = elem.scrollHeight;
             }
         }, 100);
-        return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50 }).fetch().reverse();
+        return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
     },
-    likes: function() {
+    likes: function () {
         var playlist = Playlists.findOne({type: Session.get("type")});
         var likes = 0;
-        playlist.songs.forEach(function(song) {
+        playlist.songs.forEach(function (song) {
             if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
                 likes = song.likes;
                 return;
@@ -247,10 +246,10 @@ Template.room.helpers({
         });
         return likes;
     },
-    dislikes: function() {
+    dislikes: function () {
         var playlist = Playlists.findOne({type: Session.get("type")});
         var dislikes = 0;
-        playlist.songs.forEach(function(song) {
+        playlist.songs.forEach(function (song) {
             if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
                 dislikes = song.dislikes;
                 return;
@@ -258,7 +257,7 @@ Template.room.helpers({
         });
         return dislikes;
     },
-    liked: function() {
+    liked: function () {
         if (Meteor.userId()) {
             var currentSong = Session.get("currentSong");
             if (currentSong && Meteor.user().profile.liked.indexOf(currentSong.mid) !== -1) {
@@ -270,7 +269,7 @@ Template.room.helpers({
             "";
         }
     },
-    disliked: function() {
+    disliked: function () {
         if (Meteor.userId()) {
             var currentSong = Session.get("currentSong");
             if (currentSong && Meteor.user().profile.disliked.indexOf(currentSong.mid) !== -1) {
@@ -282,81 +281,81 @@ Template.room.helpers({
             "";
         }
     },
-    type: function() {
+    type: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
         return Rooms.findOne({type: id}).display;
     },
-    users: function() {
+    users: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
         return Rooms.findOne({type: id}).users;
     },
-    title: function(){
+    title: function () {
         return Session.get("title");
     },
-    artist: function(){
+    artist: function () {
         return Session.get("artist");
     },
-    loaded: function() {
+    loaded: function () {
         return Session.get("loaded");
     },
-    paused: function() {
+    paused: function () {
         return Session.get("state") === "paused";
     },
-    private: function() {
+    private: function () {
         return Rooms.findOne({type: Session.get("type")}).private === true;
     },
-    report: function() {
+    report: function () {
         return Session.get("reportObj");
     },
-    reportSong: function() {
+    reportSong: function () {
         return Session.get("reportSong");
     },
-    reportTitle: function() {
+    reportTitle: function () {
         return Session.get("reportTitle");
     },
-    reportAuthor: function() {
+    reportAuthor: function () {
         return Session.get("reportAuthor");
     },
-    reportDuration: function() {
+    reportDuration: function () {
         return Session.get("reportDuration");
     },
-    reportAudio: function() {
+    reportAudio: function () {
         return Session.get("reportAudio");
     },
-    reportAlbumart: function() {
+    reportAlbumart: function () {
         return Session.get("reportAlbumart");
     },
-    reportOther: function() {
+    reportOther: function () {
         return Session.get("reportOther");
     },
-    currentSong: function() {
+    currentSong: function () {
         return Session.get("currentSong");
     },
-    previousSong: function() {
+    previousSong: function () {
         return Session.get("previousSong");
     },
-    currentSongR: function() {
+    currentSongR: function () {
         return Session.get("currentSongR");
     },
-    previousSongR: function() {
+    previousSongR: function () {
         return Session.get("previousSongR");
     },
-    reportingSong: function() {
+    reportingSong: function () {
         if (Session.get("reportPrevious")) {
             return Session.get("previousSongR");
         } else {
             return Session.get("currentSongR");
         }
     },
-    votes: function(){
+    votes: function () {
         return Rooms.findOne({type: Session.get("type")}).votes;
     }
 });
 
 Template.settings.helpers({
-    username: function() {
+    username: function () {
         if (Meteor.user() !== undefined) {
             return Meteor.user().profile.username;
         } else {
@@ -366,15 +365,15 @@ Template.settings.helpers({
 });
 
 Template.stations.helpers({
-    playlist: function() {
+    playlist: function () {
         var query = {type: Session.get("playlistToEdit").toLowerCase()};
         var playlists = Playlists.find(query).fetch();
         return playlists;
     },
-    whichStation: function(){
+    whichStation: function () {
         return Session.get("playlistToEdit");
     },
-    reports: function() {
+    reports: function () {
         var query = {room: Session.get("playlistToEdit").toLowerCase()};
         var reports = Reports.find(query).fetch();
         console.log(reports);

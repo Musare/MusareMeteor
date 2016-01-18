@@ -1,3 +1,5 @@
+var feedbackData;
+
 function getSpotifyInfo(title, cb, artist) {
     var q = "";
     q = title;
@@ -223,7 +225,29 @@ Template.feedback.events({
         if($("#feedback_message").val().length !== 0){
             Meteor.call("sendFeedback", $("#feedback_message").val());
             $("#feedback_message").val("");
+            $("#modal1").closeModal()
         }
+    },
+    "click .upvote": function(){
+        var message = $(this).parent("card").prevObject[0].message;
+        Meteor.call("upvoteFeedback", message);
+    },
+    "click #delete": function(){
+        var message = $(this).parent("card").prevObject[0].message;
+        Meteor.call("deleteFeedback", message);
+    },
+    "click #edit": function(){
+        $("#editModal").click()
+        var data = Feedback.findOne({"message": $(this).parent("card").prevObject[0].message});
+        feedbackData = data.message;
+        $("#edit_feedback_message").val(data.message);
+    },
+    "click #edit_feedback_submit": function(){
+        var oldMessage = feedbackData;
+        var newMessage = $("#edit_feedback_message").val()
+        $("#edit_feedback_message").val("")
+        Meteor.call("updateFeedback", oldMessage, newMessage);
+        $("#editFeedback").closeModal();
     }
 });
 
@@ -617,10 +641,11 @@ Template.queues.events({
 Template.register.events({
     "submit form": function(e){
         e.preventDefault();
-        var username = e.target.registerUsername.value;
-        var email = e.target.registerEmail.value;
-        var password = e.target.registerPassword.value;
+        var username = $("#username").val()
+        var email = $("#email").val()
+        var password = $("#password").val();
         var captchaData = grecaptcha.getResponse();
+        console.log(captchaData)
         Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
             grecaptcha.reset();
 
