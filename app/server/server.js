@@ -1000,7 +1000,17 @@ Meteor.methods({
     updatePlaylistSong: function (genre, oldSong, newSong) {
         if (isModerator() && !isBanned()) {
             newSong.mid = oldSong.mid;
-            Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}});
+            newSong.approvedBy = Meteor.userId();
+            console.log(genre);
+            console.log(oldSong);
+            Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}}, function(err) {
+                console.log(err);
+                if (err) {
+                    throw err.sanitizedError;
+                } else {
+                    return true;
+                }
+            });
             return true;
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");

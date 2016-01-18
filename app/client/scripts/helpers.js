@@ -213,6 +213,28 @@ Template.queues.helpers({
     }
 });
 
+Template.manageStation.helpers({
+    songs: function () {
+        var parts = location.href.split('/');
+        parts.pop();
+        var id = parts.pop();
+        var type = id.toLowerCase();
+
+        var playlist = Playlists.findOne({type: type});
+        return playlist.songs;
+    },
+    song_image: function() {
+        return Session.get("image_url");
+    },
+    genre: function() {
+        var parts = location.href.split('/');
+        parts.pop();
+        var id = parts.pop();
+        var type = id.toLowerCase();
+        return type;
+    }
+});
+
 Template.room.helpers({
     singleVideo: function () {
         return true;
@@ -361,22 +383,5 @@ Template.settings.helpers({
         } else {
             return "";
         }
-    }
-});
-
-Template.stations.helpers({
-    playlist: function () {
-        var query = {type: Session.get("playlistToEdit").toLowerCase()};
-        var playlists = Playlists.find(query).fetch();
-        return playlists;
-    },
-    whichStation: function () {
-        return Session.get("playlistToEdit");
-    },
-    reports: function () {
-        var query = {room: Session.get("playlistToEdit").toLowerCase()};
-        var reports = Reports.find(query).fetch();
-        console.log(reports);
-        return reports;
     }
 });

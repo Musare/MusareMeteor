@@ -100,20 +100,6 @@ Router.route("/admin", {
     }
 });
 
-Router.route("/admin/stations", {
-    waitOn: function() {
-        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
-    },
-    action: function() {
-        var user = Meteor.users.findOne({});
-        if (user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
-            this.render("stations");
-        } else {
-            this.redirect("/");
-        }
-    }
-});
-
 Router.route("/admin/queues", {
     waitOn: function() {
         return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
@@ -169,6 +155,21 @@ Router.route("/:type", {
         var room = Rooms.findOne({type: this.params.type});
         if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
             this.render("room");
+        } else {
+            this.redirect("/");
+        }
+    }
+});
+
+Router.route("/:type/manage", {
+    waitOn: function() {
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId())];
+    },
+    action: function() {
+        var user = Meteor.users.findOne({});
+        var room = Rooms.findOne({type: this.params.type});
+        if (room !== undefined && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) {
+            this.render("manageStation");
         } else {
             this.redirect("/");
         }

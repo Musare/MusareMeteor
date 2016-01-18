@@ -87,6 +87,22 @@ Template.queues.onCreated(function() {
     });
 });
 
+Template.manageStation.onCreated(function() {
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    YTPlayer = undefined;
+    $(document).keydown(function(evt){
+        if (evt.keyCode==83 && (evt.ctrlKey)){
+            evt.preventDefault();
+            if (Session.get("editing") === true) {
+                $("#save-song-button").click();
+            }
+        }
+    });
+});
+
 Template.register.onCreated(function() {
     Accounts.onLoginFailure(function() {
         var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to register with GitHub. Maybe an account with that username already exists?</div>');
@@ -308,12 +324,4 @@ Template.settings.onCreated(function() {
         }
         initSettings();
     });
-});
-
-Template.stations.onCreated(function() {
-    var tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    YTPlayer = undefined;
 });
