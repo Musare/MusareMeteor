@@ -442,7 +442,7 @@ Template.queues.events({
     },
     "click .add-song-button": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-        Meteor.call("addSongToPlaylist", genre, this, function(err) {
+        Meteor.call("addSongToPlaylist", this, function(err) {
             console.log(err);
             if (err) {
                 var $toastContent = $('<span><strong>Song not added.</strong> ' + err.reason + '</span>');
@@ -452,7 +452,7 @@ Template.queues.events({
     },
     "click .deny-song-button": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-        Meteor.call("removeSongFromQueue", genre, this.mid);
+        Meteor.call("removeSongFromQueue", this.mid);
     },
     "click #play": function() {
         var duration = Session.get("song").duration;
@@ -680,7 +680,7 @@ Template.manageStation.events({
     },
     "click .remove-song-button": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-        Meteor.call("removeSongFromPlaylist", genre, this.mid);
+        Meteor.call("removeSongFromPlaylist", this.mid);
     },
     "click #play": function() {
         var duration = Session.get("song").duration;
@@ -1025,7 +1025,7 @@ Template.room.events({
         var total = YTImportQueue.length;
         YTImportQueue.forEach(function (song) {
             var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: ""};
-            Meteor.call("addSongToQueue", Session.get("type"), songData, function (err, res) {
+            Meteor.call("addSongToQueue", songData, function (err, res) {
                 if (err) {
                     console.log(err);
                     failed++;
@@ -1163,7 +1163,7 @@ Template.room.events({
                 $(this).remove();
             });
         } else {
-            Meteor.call("addSongToQueue", genre, songData, function (err, res) {
+            Meteor.call("addSongToQueue", songData, function (err, res) {
                 console.log(err, res);
                 if (err) {
                     $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> Something went wrong.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {

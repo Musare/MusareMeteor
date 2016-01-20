@@ -196,17 +196,8 @@ Template.profile.helpers({
 });
 
 Template.queues.helpers({
-    queues: function () {
-        var queues = Queues.find({}).fetch();
-        queues.map(function (queue) {
-            if (Rooms.find({type: queue.type}).count() !== 1) {
-                return;
-            } else {
-                queue.display = Rooms.findOne({type: queue.type}).display;
-                return queue;
-            }
-        });
-        return queues;
+    songs: function () {
+        return Queues.find({}).fetch();
     },
     song_image: function() {
         return Session.get("image_url");
@@ -221,7 +212,15 @@ Template.manageStation.helpers({
         var type = id.toLowerCase();
 
         var playlist = Playlists.findOne({type: type});
-        return playlist.songs;
+        var songs = [];
+        if (playlist !== undefined && playlist.songs !== undefined) {
+            playlist.songs.forEach(function(songMid) {
+                console.log(songMid);
+                console.log(Songs.findOne({mid: songMid}));
+                songs.push(Songs.findOne({mid: songMid}));
+            });
+        }
+        return songs;
     },
     song_image: function() {
         return Session.get("image_url");

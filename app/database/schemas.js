@@ -43,6 +43,14 @@ Schemas.FullSong = new SimpleSchema({
         min: 0,
         decimal: true
     },
+    "genres": {
+        type: Array,
+        label: "Array of song genre's"
+    },
+    "genres.$": {
+        type: String,
+        label: "Song genre"
+    },
     "requestedBy": {
         type: String,
         label: "User ID of the person who requested the song"
@@ -95,6 +103,14 @@ Schemas.QueueSong = new SimpleSchema({
         label: "Song skipDuration",
         min: 0,
         decimal: true
+    },
+    "genres": {
+        type: Array,
+        label: "Array of song genre's"
+    },
+    "genres.$": {
+        type: String,
+        label: "Song genre"
     },
     "requestedBy": {
         type: String,
@@ -237,32 +253,16 @@ Schemas.Playlist = new SimpleSchema({
     },
     songs: {
         type: Array,
-        label: "All songs in that playlist"
+        label: "Array of song MID's"
     },
     "songs.$": {
-        type: Schemas.FullSong,
-        label: "Song object"
+        type: String,
+        label: "Song mid"
     },
     lastSong: {
         type: Number,
         label: "Index of the previous song",
         defaultValue: 0
-    }
-});
-
-Schemas.Queue = new SimpleSchema({
-    type: {
-        type: String,
-        label: "Type of the room the playlist is for",
-        regEx: /^[a-z0-9_]{1,20}$/
-    },
-    songs: {
-        type: Array,
-        label: "All songs in that playlist"
-    },
-    "songs.$": {
-        type: Schemas.QueueSong,
-        label: "Song object"
     }
 });
 
@@ -503,7 +503,8 @@ Rooms.attachSchema(Schemas.Room);
 Alerts.attachSchema(Schemas.Alert);
 Chat.attachSchema(Schemas.Chat);
 Playlists.attachSchema(Schemas.Playlist);
-Queues.attachSchema(Schemas.Queue);
+Queues.attachSchema(Schemas.QueueSong);
 Meteor.users.attachSchema(Schemas.User);
 Reports.attachSchema(Schemas.Report);
 Feedback.attachSchema(Schemas.Feedback);
+Songs.attachSchema(Schemas.FullSong);

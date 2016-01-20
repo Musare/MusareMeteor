@@ -18,6 +18,7 @@ Deps.autorun(function() {
     Meteor.subscribe("reports");
     Meteor.subscribe("chat");
     Meteor.subscribe("playlists");
+    Meteor.subscribe("songs");
     Meteor.subscribe("alerts");
     Meteor.subscribe("rooms");
     Meteor.subscribe("userData", Meteor.userId());
