@@ -28,6 +28,7 @@
                                     <td></td>
                                     <td>{{reportsCount display}}</td>
                                     <td>{{queueCount display}}</td>
+                                    <td><a id="edit_desc" class="btn right modal-trigger" href="#desc-modal">Edit Desc.</a></td>
                                     <td><a href="/{{type}}/manage" class="btn right" id="manage-{{display}}">Manage</a></td> <!-- TODO Make this redirect to playlist -->
                                 </tr>
                             {{/each}}
@@ -85,7 +86,7 @@
     <script>
         $(document).ready(function(){
             // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-            $('#new_room').leanModal();
+            $('.modal-trigger').leanModal();
         });
     </script>
 
@@ -100,6 +101,25 @@
                 <div class="modal-body">
                     <h3 style="margin-top: 0">Are you sure you want to reset all likes and dislikes?</h3>
                     <button id="rreset_confirm" class="btn btn-danger waves-effect waves-light">Reset All Ratings</button>
+                </div>
+                <div class="modal-footer">
+                    <button id="close-modal" type="button" class="btn btn-default waves-effect waves-light" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="desc-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Room Description</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-field">
+                        <textarea id="desc_text" class="materialize-textarea"></textarea>
+                    </div>
+                    <a id="submit_desc" class="waves-effect waves-light btn">Submit</a>
                 </div>
                 <div class="modal-footer">
                     <button id="close-modal" type="button" class="btn btn-default waves-effect waves-light" data-dismiss="modal">Close</button>

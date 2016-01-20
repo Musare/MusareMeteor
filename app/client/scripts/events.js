@@ -202,6 +202,16 @@ Template.admin.events({
     "click #rreset_confirm": function(){
         $('#confirmModal').modal('hide');
         Meteor.call("resetRating");
+    },
+    "click #edit_desc": function(){
+        console.log($(this));
+        console.log($(this)[0].type);
+        Session.set("roomDesc", $(this)[0].type);
+    },
+    "click #submit_desc": function(){
+        var description = $("#desc_text").val();
+        Meteor.call("editRoomDesc", Session.get("roomDesc"), description);
+        $("#desc-modal").closeModal();
     }
 });
 
