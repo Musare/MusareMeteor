@@ -154,7 +154,6 @@ textarea{
     margin-bottom: 20px;
 }
 
-
 .seeker-bar {
     top: 0;
     left: 0;
@@ -168,9 +167,12 @@ textarea{
     display: block;
     width: 100%;
     overflow: hidden;
-
 }
 
 #preview-time {
     margin-top: -9px;
+}
+
+#desc_text{
+    color: black;
 }

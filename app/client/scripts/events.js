@@ -211,6 +211,7 @@ Template.admin.events({
     "click #submit_desc": function(){
         var description = $("#desc_text").val();
         Meteor.call("editRoomDesc", Session.get("roomDesc"), description);
+        $("#desc-modal").closeModal();
     }
 });
 
