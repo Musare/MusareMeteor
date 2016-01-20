@@ -1205,6 +1205,13 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
+    },
+    editRoomDesc: function(type, description){
+        if(isAdmin() && !isBanned()){
+            Rooms.update({type: type}, {$set: {"roomDesc": description}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     }
 });
 

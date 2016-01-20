@@ -226,6 +226,10 @@ Schemas.Room = new SimpleSchema({
         type: Boolean,
         defaultValue: false,
         label: "Room private or not"
+    },
+    roomDesc: {
+        type: String,
+        label: "Room description"
     }
 });
 
