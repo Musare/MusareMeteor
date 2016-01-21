@@ -3,49 +3,47 @@
     <div class="landing">
         {{> header}}
         <div class="row">
-            {{#each queues}}
-                <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-queue-panel card-panel teal accent-3">
-                    <div class="card-content white-text">
-                        <h3 class="text-center">{{display}} review queue</h3>
-                        <table class="bordered">
-                            <thead>
+            <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-queue-panel card-panel teal accent-3">
+                <div class="card-content white-text">
+                    <h3 class="text-center">Review queue</h3>
+                    <table class="bordered">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Artist(s)</th>
+                            <th>Id</th>
+                            <th>Mid</th>
+                            <th class="table-right-th">Edit</th>
+                            <th class="table-right-th">Add</th>
+                            <th class="table-right-th">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each songs}}
                             <tr>
-                                <th>Title</th>
-                                <th>Artist(s)</th>
-                                <th>Id</th>
-                                <th>Mid</th>
-                                <th class="table-right-th">Edit</th>
-                                <th class="table-right-th">Add</th>
-                                <th class="table-right-th">Remove</th>
+                                <th align="left" scope="row">{{title}}</th>
+                                <td align="left">{{artist}}</td>
+                                <td align="left">{{id}}</td>
+                                <td align="left">{{mid}}</td>
+                                <td class="table-right-td">
+                                    <button class="btn edit-queue-button" data-genre="{{../type}}"
+                                            data-toggle="modal" data-target="#editModal">Edit
+                                    </button>
+                                </td>
+                                <td class="table-right-td">
+                                    <button class="btn green add-song-button" data-genre="{{../type}}"><i
+                                            class="material-icons">thumb_up</i></button>
+                                </td>
+                                <td class="table-right-td">
+                                    <button class="btn red deny-song-button" data-genre="{{../type}}"><i
+                                            class="material-icons">thumb_down</i></button>
+                                </td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {{#each songs}}
-                                <tr>
-                                    <th align="left" scope="row">{{title}}</th>
-                                    <td align="left">{{artist}}</td>
-                                    <td align="left">{{id}}</td>
-                                    <td align="left">{{mid}}</td>
-                                    <td class="table-right-td">
-                                        <button class="btn edit-queue-button" data-genre="{{../type}}"
-                                                data-toggle="modal" data-target="#editModal">Edit
-                                        </button>
-                                    </td>
-                                    <td class="table-right-td">
-                                        <button class="btn green add-song-button" data-genre="{{../type}}"><i
-                                                class="material-icons">thumb_up</i></button>
-                                    </td>
-                                    <td class="table-right-td">
-                                        <button class="btn red deny-song-button" data-genre="{{../type}}"><i
-                                                class="material-icons">thumb_down</i></button>
-                                    </td>
-                                </tr>
-                            {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
+                        {{/each}}
+                        </tbody>
+                    </table>
                 </div>
-            {{/each}}
+            </div>
         </div>
     </div>
     <div id="editModal" class="modal modal-fixed-footer">

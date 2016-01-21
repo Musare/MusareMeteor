@@ -21,6 +21,10 @@ Meteor.startup(function () {
     Accounts.config({
         sendVerificationEmail: true
     });
+
+    if (Songs.find().count() === 0) {
+        Songs.insert(default_song);
+    }
 });
 
 var default_song = {
@@ -35,7 +39,8 @@ var default_song = {
     duration: 181,
     skipDuration: 0,
     requestedBy: "NONE",
-    approvedBy: "NONE"
+    approvedBy: "NONE",
+    genres: []
 };
 
 Alerts.update({active: true}, {$set: {active: false}}, {multi: true});
@@ -136,9 +141,18 @@ function createRoom(display, tag, private) {
 
 function Station(type) {
     if (Playlists.find({type: type}).count() === 0) {
-        Playlists.insert({type: type, songs: [default_song], lastSong: 0});
-    } else if (Playlists.findOne({type: type}).songs.length === 0) {
-        Playlists.update({type: type}, {$push: {songs: default_song}});
+        Playlists.insert({type: type, songs: [default_song.mid], lastSong: 0});
+    }
+    if (Songs.find({genres: type}).count() > 0) {
+        var list = Songs.find({genres: type}).fetch();
+        list.forEach(function(song){
+            if (Playlists.findOne({type: type, songs: song.mid}) === undefined) {
+                Playlists.update({type: type}, {$push: {songs: song.mid}});
+            }
+        });
+    }
+    if (Playlists.findOne({type: type}).songs.length === 0) {
+        Playlists.update({type: type}, {$push: {songs: default_song.mid}});
     }
     Meteor.publish(type, function () {
         return undefined;
@@ -152,11 +166,11 @@ function Station(type) {
     if (currentSong < (songs.length - 1)) {
         currentSong++;
     } else currentSong = 0;
-    var currentTitle = songs[currentSong].title;
+    var currentMid = songs[currentSong];
 
     var res = Rooms.update({type: type}, {
         $set: {
-            currentSong: {song: songs[currentSong], started: startedAt},
+            currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt},
             users: 0
         }
     });
@@ -167,8 +181,8 @@ function Station(type) {
         voteNum = 0;
         Rooms.update({type: type}, {$set: {votes: 0}});
         songs = Playlists.findOne({type: type}).songs;
-        songs.forEach(function (song, index) {
-            if (song.title === currentTitle) {
+        songs.forEach(function (mid, index) {
+            if (mid === currentMid) {
                 currentSong = index;
             }
         });
@@ -179,17 +193,11 @@ function Station(type) {
         if (currentSong === 0) {
             this.shufflePlaylist();
         } else {
-            if (songs[currentSong].mid === undefined) {
-                var newSong = songs[currentSong];
-                newSong.mid = createUniqueSongId();
-                songs[currentSong].mid = newSong.mid;
-                Playlists.update({type: type, "songs": songs[currentSong]}, {$set: {"songs.$": newSong}});
-            }
-            currentTitle = songs[currentSong].title;
+            currentMid = songs[currentSong];
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
             Rooms.update({type: type}, {$set: {timePaused: 0}});
             this.songTimer();
-            Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
+            Rooms.update({type: type}, {$set: {currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt}}});
         }
     };
 
@@ -202,16 +210,13 @@ function Station(type) {
         Playlists.update({type: type}, {$set: {"songs": []}});
         songs = shuffle(songs);
         songs.forEach(function (song) {
-            if (song.mid === undefined) {
-                song.mid = createUniqueSongId();
-            }
             Playlists.update({type: type}, {$push: {"songs": song}});
         });
-        currentTitle = songs[currentSong].title;
+        currentMid = songs[currentSong];
         Playlists.update({type: type}, {$set: {lastSong: currentSong}});
         Rooms.update({type: type}, {$set: {timePaused: 0}});
         this.songTimer();
-        Rooms.update({type: type}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
+        Rooms.update({type: type}, {$set: {currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt}}});
     };
 
     Rooms.update({type: type}, {$set: {timePaused: 0}});
@@ -226,7 +231,7 @@ function Station(type) {
         }
         timer = new Timer(function () {
             self.skipSong();
-        }, songs[currentSong].duration * 1000);
+        }, Songs.findOne({mid: songs[currentSong]}).duration * 1000);
     };
 
     var state = Rooms.findOne({type: type}).state;
@@ -450,6 +455,10 @@ Meteor.publish("playlists", function () {
 
 Meteor.publish("rooms", function () {
     return Rooms.find({});
+});
+
+Meteor.publish("songs", function () {
+    return Songs.find({});
 });
 
 Meteor.publish("queues", function () {
@@ -926,66 +935,50 @@ Meteor.methods({
             return true;
         }
     },
-    addSongToQueue: function (type, songData) {
+    addSongToQueue: function (songData) {
         if (Meteor.userId() && !isBanned()) {
-            type = type.toLowerCase();
             var userId = Meteor.userId();
-            if (Rooms.find({type: type}).count() === 1) {
-                if (Queues.find({type: type}).count() === 0) {
-                    Queues.insert({type: type, songs: []});
+            var requiredProperties = ["title", "artist", "img", "id", "genres"];
+            if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
+                for (var property in requiredProperties) {
+                    if (songData[requiredProperties[property]] === undefined) {
+                        throw new Meteor.Error(403, "Invalid data.");
+                    }
                 }
-                var requiredProperties = ["title", "artist", "img", "id"];
-                if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
-                    for (var property in requiredProperties) {
-                        if (songData[requiredProperties[property]] === undefined) {
-                            throw new Meteor.Error(403, "Invalid data.");
+                songData.duration = Number(getSongDuration(songData.title, songData.artist));
+                songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
+                songData.skipDuration = 0;
+                songData.likes = 0;
+                songData.dislikes = 0;
+                songData.requestedBy = userId;
+                var mid = createUniqueSongId();
+                if (mid !== undefined) {
+                    songData.mid = mid;
+                    Queues.insert(songData, function(err, res) {
+                        if (err) {
+                            console.log(err);
+                            throw err.sanitizedError;
+                        } else {
+                            var songsRequested = (Meteor.user().profile !== undefined && Meteor.user().profile.statistics !== undefined && Meteor.user().profile.statistics.songsRequested !== undefined) ? Meteor.user().profile.statistics.songsRequested : 0;
+                            songsRequested++;
+                            Meteor.users.update(Meteor.userId(), {$set: {"profile.statistics.songsRequested": songsRequested}}); // TODO Make mongo query use $inc correctly.
+                            return true;
                         }
-                    }
-                    songData.duration = Number(getSongDuration(songData.title, songData.artist));
-                    songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
-                    songData.skipDuration = 0;
-                    songData.likes = 0;
-                    songData.dislikes = 0;
-                    var mid = createUniqueSongId();
-                    if (mid !== undefined) {
-                        songData.mid = mid;
-                        Queues.update({type: type}, {
-                            $push: {
-                                songs: {
-                                    id: songData.id,
-                                    mid: songData.mid,
-                                    title: songData.title,
-                                    artist: songData.artist,
-                                    duration: songData.duration,
-                                    skipDuration: songData.skipDuration,
-                                    likes: songData.likes,
-                                    dislikes: songData.dislikes,
-                                    img: songData.img,
-                                    requestedBy: userId
-                                }
-                            }
-                        });
-                        var songsRequested = (Meteor.user().profile !== undefined && Meteor.user().profile.statistics !== undefined && Meteor.user().profile.statistics.songsRequested !== undefined) ? Meteor.user().profile.statistics.songsRequested : 0;
-                        songsRequested++;
-                        Meteor.users.update(Meteor.userId(), {$set: {"profile.statistics.songsRequested": songsRequested}}); // TODO Make mongo query use $inc correctly.
-                        return true;
-                    } else {
-                        throw new Meteor.Error(500, "Am error occured.");
-                    }
+                    });
                 } else {
-                    throw new Meteor.Error(403, "Invalid data.");
+                    throw new Meteor.Error(500, "Am error occured.");
                 }
             } else {
-                throw new Meteor.Error(403, "Invalid genre.");
+                throw new Meteor.Error(403, "Invalid data.");
             }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    updateQueueSong: function (genre, oldSong, newSong) {
+    updateQueueSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = oldSong.mid;
-            Queues.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}}, function(err) {
+            newSong.mid = mid;
+            Queues.update({mid: mid}, newSong, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -997,13 +990,11 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    updatePlaylistSong: function (genre, oldSong, newSong) {
+    updatePlaylistSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = oldSong.mid;
+            newSong.mid = mid;
             newSong.approvedBy = Meteor.userId();
-            console.log(genre);
-            console.log(oldSong);
-            Playlists.update({type: genre, "songs": oldSong}, {$set: {"songs.$": newSong}}, function(err) {
+            Playlists.update({mid: mid}, newSong, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -1016,84 +1007,52 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    removeSongFromQueue: function (type, mid) {
+    removeSongFromQueue: function (mid) {
         if (isModerator() && !isBanned()) {
-            type = type.toLowerCase();
-            Queues.update({type: type}, {$pull: {songs: {mid: mid}}});
+            Queues.remove({mid: mid});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    removeSongFromPlaylist: function (type, mid) {
+    removeSongFromPlaylist: function (mid) {
         if (isModerator() && !isBanned()) {
-            type = type.toLowerCase();
-            var songs = Playlists.findOne({type: type}).songs;
-            var song = undefined;
-            songs.forEach(function (curr_song) {
-                if (mid === curr_song.mid) {
-                    song = curr_song;
-                    return;
-                }
-            });
-            Playlists.update({type: type}, {$pull: {songs: {mid: mid}}});
+            Playlists.remove({}, {$pull: {songs: mid}});
+            var song = Songs.findOne({mid: mid});
+            Songs.remove({mid: mid});
             if (song !== undefined) {
                 song.deletedBy = Meteor.userId();
                 song.deletedAt = new Date(Date.now());
-                if (Deleted.find({type: type}).count() === 0) {
-                    Deleted.insert({type: type, songs: [song]});
-                } else {
-                    Deleted.update({type: type}, {$push: {songs: song}});
-                }
+                song.deletedType = "song";
+                Deleted.insert(song);
             }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    addSongToPlaylist: function (type, songData) {
-        console.log(songData);
+    addSongToPlaylist: function (songData) {
         if (isModerator() && !isBanned()) {
-            type = type.toLowerCase();
-            if (Rooms.find({type: type}).count() === 1) {
-                if (Playlists.find({type: type}).count() === 0) {
-                    Playlists.insert({type: type, songs: []});
-                }
-                var requiredProperties = ["mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy"];
-                if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
-                    for (var property in requiredProperties) {
-                        if (songData[requiredProperties[property]] === undefined) {
-                            throw new Meteor.Error(403, "Invalid data.");
-                        }
+            var requiredProperties = ["_id", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy", "genres"];
+            if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
+                for (var property in requiredProperties) {
+                    if (songData[requiredProperties[property]] === undefined) {
+                        throw new Meteor.Error(403, "Invalid data.");
                     }
-                    Playlists.update({type: type}, {
-                        $push: {
-                            songs: {
-                                id: songData.id,
-                                mid: songData.mid,
-                                title: songData.title,
-                                artist: songData.artist,
-                                duration: songData.duration,
-                                skipDuration: Number(songData.skipDuration),
-                                img: songData.img,
-                                type: songData.type,
-                                likes: Number(songData.likes),
-                                dislikes: Number(songData.dislikes),
-                                requestedBy: songData.requestedBy,
-                                approvedBy: Meteor.userId()
-                            }
-                        }
-                    });
-                    Queues.update({type: type}, {$pull: {songs: {mid: songData.mid}}});
-                    getStation(type, function (station) {
-                        if (station === undefined) {
-                            stations.push(new Station(type));
-                        }
-                    });
-                    return true;
-                } else {
-                    throw new Meteor.Error(403, "Invalid data.");
                 }
+                delete songData._id;
+                songData.approvedBy = Meteor.userId();
+                Songs.insert(songData);
+                Queues.remove({mid: songData.mid});
+                songData.genres.forEach(function(genre) {
+                    genre = genre.toLowerCase();
+                    if (Playlists.findOne({type: genre}) === undefined) {
+                        Playlists.insert({type: genre, songs: [songData.mid]});
+                    } else {
+                        Playlists.update({type: genre}, {$push: {songs: songData.mid}});
+                    }
+                });
+                return true;
             } else {
-                throw new Meteor.Error(403, "Invalid genre.");
+                throw new Meteor.Error(403, "Invalid data.");
             }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
@@ -1109,8 +1068,6 @@ Meteor.methods({
     deleteRoom: function (type) {
         if (isAdmin() && !isBanned()) {
             Rooms.remove({type: type});
-            Playlists.remove({type: type});
-            Queues.remove({type: type});
             return true;
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
