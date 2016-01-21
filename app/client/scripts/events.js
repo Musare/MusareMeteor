@@ -207,6 +207,7 @@ Template.admin.events({
         console.log($(this));
         console.log($(this)[0].type);
         Session.set("roomDesc", $(this)[0].type);
+        $("#desc_text").val(Rooms.findOne({type: Session.get("roomDesc")}).roomDesc);
     },
     "click #submit_desc": function(){
         var description = $("#desc_text").val();
