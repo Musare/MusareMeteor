@@ -643,6 +643,8 @@ Template.queues.events({
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);
             } else {
+                var $toastContent = $('<span><strong>Song saved!</strong> No errors were found.</span>');
+                Materialize.toast($toastContent, 4000);
                 Session.set("song", newSong);
             }
         });
@@ -869,6 +871,8 @@ Template.manageStation.events({
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);
             } else {
+                var $toastContent = $('<span><strong>Song saved!</strong> No errors were found.</span>');
+                Materialize.toast($toastContent, 4000);
                 Session.set("song", newSong);
             }
         });
