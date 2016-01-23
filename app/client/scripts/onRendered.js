@@ -50,6 +50,15 @@ Template.manageStation.onRendered(function() {
     });
 });
 
+Template.news.onRendered(function() {
+    if (rTimeInterval !== undefined) {
+        Meteor.clearInterval(rTimeInterval)
+    }
+    rTimeInterval = Meteor.setInterval(function() {
+        Session.set("time", new Date().getTime());
+    }, 10000);
+});
+
 Template.room.onRendered(function() {
     if (rTimeInterval !== undefined) {
         Meteor.clearInterval(rTimeInterval)

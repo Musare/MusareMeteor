@@ -176,3 +176,9 @@ textarea{
 #desc_text{
     color: black;
 }
+
+#team-page-container {
+    margin-left: 0;
+    margin-right: 0;
+    /* Weird hack... No clue why this is needed but it is.*/
+}

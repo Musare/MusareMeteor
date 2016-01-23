@@ -1,31 +1,22 @@
 <template name="news">
     {{> header}}
-    <main class="content-box">
-        <h3 class="black-text thin">News, Updates & Announcements</h3>
-        <ul class="collection">
-        <!--
-        {{#each chat}}
-        <li class="collection-item news-box">
-            <span class="news-title">{{title}}</span>
-            <hr>
-            <p class="news-content">{{content}}</p>
-            <p class="news-creator">Posted by: {{postBy}}</p>
-            <p class="news-postTime">{{timePostedAgo}}. ({{timePostedDate}})</p>
-        </li>
-        {{/each}}
-        -->
-
-        <!-- TEMP HARDCODED NEWS ARTICLE, soon you can add/remove news from the admin panel -->
-        <li class="collection-item news-box">
-            <span class="news-title">Welcome To Musare 2.0</span>
-            <hr>
-            <p class="news-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla rhoncus magna orci, tristique aliquam arcu ultricies non.
-              <br />Vivamus iaculis leo lectus. In quis nunc rhoncus nulla hendrerit pellentesque in nec ipsum. Curabitur facilisis enim nulla, sit amet dapibus lacus aliquet ut. Integer lacinia pharetra semper.
-              <br />Duis mattis varius egestas. Cras sit amet venenatis lacus. Curabitur ut maximus urna, vel pulvinar ex. Do It Work?!</p>
-            <p class="news-creator">Posted by: Johand</p>
-            <p class="news-postTime">5days ago. (5/01/2016)</p>
-        </li>
-        </ul>
+    <main class="content-box row">
+        <h3 class="black-text thin center">News</h3>
+            {{#each articles}}
+                <div class="card teal-text col m6 s12 l6 offset-m3 offset-l3">
+                    <div class="card-content">
+                        <span>{{title}}</span>
+                        <hr>
+                        <p class="flow-text" style="word-wrap:break-word;">
+                            {{content}}
+                        </p>
+                    </div>
+                    <div class="card-action">
+                        <span>Posted by: {{author}}.</span><br>
+                        <span>Created at: {{rtime time}}.</span>
+                    </div>
+                </div>
+            {{/each}}
     </main>
     {{> footer}}
 </template>
