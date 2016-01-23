@@ -207,6 +207,7 @@ Template.admin.events({
         console.log($(this));
         console.log($(this)[0].type);
         Session.set("roomDesc", $(this)[0].type);
+        $("#desc_text").val(Rooms.findOne({type: Session.get("roomDesc")}).roomDesc);
     },
     "click #submit_desc": function(){
         var description = $("#desc_text").val();
@@ -633,15 +634,17 @@ Template.queues.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
+        newSong.genres = Session.get("song").genres;
         if(newSong.skipDuration === undefined){
             newSong.skipDuration = 0;
         }
-        Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function(err, res) {
-            console.log(err, res);
+        Meteor.call("updateQueueSong", newSong.mid, newSong, function(err, res) {
             if (err) {
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);
             } else {
+                var $toastContent = $('<span><strong>Song saved!</strong> No errors were found.</span>');
+                Materialize.toast($toastContent, 4000);
                 Session.set("song", newSong);
             }
         });
@@ -861,12 +864,15 @@ Template.manageStation.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        Meteor.call("updatePlaylistSong", Session.get("genre"), Session.get("song"), newSong, function(err, res) {
+        newSong.genres = Session.get("song").genres;
+        Meteor.call("updatePlaylistSong", newSong.mid, newSong, function(err, res) {
             console.log(err, res);
             if (err) {
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);
             } else {
+                var $toastContent = $('<span><strong>Song saved!</strong> No errors were found.</span>');
+                Materialize.toast($toastContent, 4000);
                 Session.set("song", newSong);
             }
         });

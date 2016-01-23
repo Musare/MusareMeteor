@@ -13,7 +13,7 @@ Meteor.startup(function () {
     var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
     for (var i in stations) {
         if (Rooms.find({type: stations[i]}).count() === 0) {
-            createRoom(stations[i].display, stations[i].tag, false);
+            createRoom(stations[i].display, stations[i].tag, false, "Room description.");
         }
     }
     emojione.ascii = true;
@@ -118,7 +118,7 @@ function getStation(type, cb) {
     });
 }
 
-function createRoom(display, tag, private) {
+function createRoom(display, tag, private, desc) {
     var type = tag;
     if (Rooms.find({type: type}).count() === 0) {
         Rooms.insert({
@@ -126,7 +126,8 @@ function createRoom(display, tag, private) {
             type: type,
             users: 0,
             private: private,
-            currentSong: {song: default_song, started: 0}
+            currentSong: {song: default_song, started: 0},
+            roomDesc: desc
         }, function (err) {
             if (err) {
                 throw err;
@@ -1012,8 +1013,14 @@ Meteor.methods({
     },
     updateQueueSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = mid;
-            Queues.update({mid: mid}, newSong, function(err) {
+            Queues.update({mid: mid}, {$set: {
+                "title": newSong.title,
+                "artist": newSong.artist,
+                "id": newSong.id,
+                "img": newSong.img,
+                "duration" : newSong.duration,
+                "skipDuration" : newSong.skipDuration
+            }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -1027,9 +1034,15 @@ Meteor.methods({
     },
     updatePlaylistSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = mid;
-            newSong.approvedBy = Meteor.userId();
-            Playlists.update({mid: mid}, newSong, function(err) {
+            Songs.update({mid: mid}, {$set: {
+                "title": newSong.title,
+                "artist": newSong.artist,
+                "id": newSong.id,
+                "img": newSong.img,
+                "duration": newSong.duration,
+                "skipDuration": newSong.skipDuration,
+                "approvedBy": Meteor.userId()
+        }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -1093,9 +1106,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    createRoom: function (display, tag, private) {
+    createRoom: function (display, tag, private, desc) {
         if (isAdmin() && !isBanned()) {
-            createRoom(display, tag, private);
+            createRoom(display, tag, private, desc);
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
