@@ -503,6 +503,25 @@ Schemas.Report = new SimpleSchema({
     }
 });
 
+Schemas.Article = new SimpleSchema({
+    "title": {
+        type: String,
+        label: "Article Title"
+    },
+    "content": {
+        type: String,
+        label: "Article Content"
+    },
+    "author": {
+        type: String,
+        label: "Article's Author"
+    },
+    "time": {
+        type: Date,
+        label: "Article's Create Date"
+    }
+});
+
 Rooms.attachSchema(Schemas.Room);
 Alerts.attachSchema(Schemas.Alert);
 Chat.attachSchema(Schemas.Chat);
@@ -512,3 +531,4 @@ Meteor.users.attachSchema(Schemas.User);
 Reports.attachSchema(Schemas.Report);
 Feedback.attachSchema(Schemas.Feedback);
 Songs.attachSchema(Schemas.FullSong);
+News.attachSchema(Schemas.Article);

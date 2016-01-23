@@ -437,6 +437,10 @@ Meteor.publish("alerts", function () {
     return Alerts.find({active: true})
 });
 
+Meteor.publish("news", function () {
+    return News.find({})
+});
+
 Meteor.publish("userData", function (userId) {
     if (userId !== undefined) {
         return Meteor.users.find(userId, {fields: {"services.github.username": 1, "punishments": 1}})
@@ -933,6 +937,37 @@ Meteor.methods({
                 });
             }
             return true;
+        }
+    },
+    createArticle: function(data) {
+        if (!isBanned() && isModerator()) {
+            var userId = Meteor.userId();
+            var requiredProperties = ["title", "content", "author"];
+            if (data !== undefined && Object.keys(data).length === requiredProperties.length) {
+                for (var property in requiredProperties) {
+                    if (data[requiredProperties[property]] === undefined) {
+                        throw new Meteor.Error(403, "Invalid data.");
+                    }
+                }
+                if (data.author === true) {
+                    data.author = Meteor.user().profile.username
+                } else {
+                    data.author = "A Musare Admin";
+                }
+                data.time =  new Date();
+                News.insert(data, function(err, res) {
+                    if (err) {
+                        console.log(err);
+                        throw err.sanitizedError;
+                    } else {
+                        return true;
+                    }
+                });
+            } else {
+                throw new Meteor.Error(403, "Invalid data.");
+            }
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
     addSongToQueue: function (songData) {
