@@ -634,11 +634,11 @@ Template.queues.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
+        newSong.genres = Session.get("song").genres;
         if(newSong.skipDuration === undefined){
             newSong.skipDuration = 0;
         }
-        Meteor.call("updateQueueSong", Session.get("genre"), Session.get("song"), newSong, function(err, res) {
-            console.log(err, res);
+        Meteor.call("updateQueueSong", newSong.mid, newSong, function(err, res) {
             if (err) {
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);

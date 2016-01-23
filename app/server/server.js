@@ -977,8 +977,14 @@ Meteor.methods({
     },
     updateQueueSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = mid;
-            Queues.update({mid: mid}, newSong, function(err) {
+            Queues.update({mid: mid}, {$set: {
+                "title": newSong.title,
+                "artist": newSong.artist,
+                "id": newSong.id,
+                "img": newSong.img,
+                "duration" : newSong.duration,
+                "skipDuration" : newSong.skipDuration,
+            }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
