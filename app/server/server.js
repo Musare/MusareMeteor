@@ -983,7 +983,7 @@ Meteor.methods({
                 "id": newSong.id,
                 "img": newSong.img,
                 "duration" : newSong.duration,
-                "skipDuration" : newSong.skipDuration,
+                "skipDuration" : newSong.skipDuration
             }}, function(err) {
                 console.log(err);
                 if (err) {
@@ -998,9 +998,14 @@ Meteor.methods({
     },
     updatePlaylistSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = mid;
-            newSong.approvedBy = Meteor.userId();
-            Playlists.update({mid: mid}, newSong, function(err) {
+            Songs.update({mid: mid}, {$set: {
+                "title": newSong.title,
+                "artist": newSong.artist,
+                "id": newSong.id,
+                "img": newSong.img,
+                "duration": newSong.duration,
+                "skipDuration": newSong.skipDuration
+        }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;

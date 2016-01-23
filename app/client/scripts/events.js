@@ -862,7 +862,8 @@ Template.manageStation.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        Meteor.call("updatePlaylistSong", Session.get("genre"), Session.get("song"), newSong, function(err, res) {
+        newSong.genres = Session.get("song").genres;
+        Meteor.call("updatePlaylistSong", newSong.mid, newSong, function(err, res) {
             console.log(err, res);
             if (err) {
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
