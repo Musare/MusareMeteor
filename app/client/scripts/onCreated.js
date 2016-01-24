@@ -185,9 +185,6 @@ Template.room.onCreated(function () {
 
             var volume = localStorage.getItem("volume") || 20;
 
-            if ($("#player").length !== 1) {
-                $("#media-container").append('<div id="player" class="embed-responsive-item"></div>');
-            }
             $("#player").show();
             function loadVideo() {
                 if (!Session.get("YTLoaded")) {
@@ -197,8 +194,8 @@ Template.room.onCreated(function () {
                 } else {
                     if (YTPlayer === undefined) {
                         YTPlayer = new YT.Player("player", {
-                            height: 540,
-                            width: 960,
+                            height: 270,
+                            width: 480,
                             videoId: currentSong.id,
                             playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
                             events: {
@@ -240,6 +237,13 @@ Template.room.onCreated(function () {
         }
     }
 
+    function getSongAudio() {
+      var ytURL = "www.youtube.com/watch?v=" + currentSong.id;
+      Meteor.call('getSongAudio', ytURL);
+
+      startSong();
+    }
+
     Session.set("loaded", false);
     Meteor.subscribe("rooms", function() {
         var parts = location.href.split('/');
@@ -276,7 +280,7 @@ Template.room.onCreated(function () {
                     currentSong.started = room.currentSong.started;
                     Session.set("currentSong", currentSong);
                     Meteor.clearTimeout(Session.get("loadVideoTimeout"));
-                    startSong();
+                    getSongAudio();
                 }
 
                 if (currentSong !== undefined) {

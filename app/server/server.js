@@ -13,7 +13,7 @@ Meteor.startup(function () {
     var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
     for (var i in stations) {
         if (Rooms.find({type: stations[i]}).count() === 0) {
-            createRoom(stations[i].display, stations[i].tag, false, "Room description.");
+            createRoom(stations[i].display, stations[i].tag, false, "Room description goes here.");
         }
     }
     emojione.ascii = true;

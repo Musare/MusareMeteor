@@ -137,6 +137,7 @@ Router.route("/:type", {
         return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("rooms")];
     },
     action: function() {
+      console.log("Hello Bitch");
         var user = Meteor.users.findOne({});
         var room = Rooms.findOne({type: this.params.type});
         if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
