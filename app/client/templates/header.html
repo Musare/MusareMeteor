@@ -9,6 +9,7 @@
         <ul id="aboutDrop" class="dropdown-content">
             <li><a href="/project">The Project</a></li>
             <li><a href="/team">The Team</a></li>
+            <li><a href="/faq">FAQ</a></li>
         </ul>
         <ul id="accountDrop" class="dropdown-content">
             {{#if currentUser}}
@@ -26,6 +27,9 @@
                 <a href="/" class="brand-logo light">Musare</a>
                 <a href="#" data-activates="mobile-navi" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down scroll-fix">
+                  {{#if isModerator}}
+                    <li><a  class="orange-text" href="/admin"><b>Admin</b></a></li>
+                  {{/if}}
                     <li><a href="/news">News</a></li>
                     <li><a class="dropdown-button" href="#!" data-activates="contributeDrop">Contribute<i
                             class="material-icons right">arrow_drop_down</i></a></li>
@@ -41,6 +45,9 @@
                 </ul>
                 <ul class="side-nav" id="mobile-navi" style="width: 240px;">
                     <ul class="collapsible" data-collapsible="accordion">
+                      {{#if isModerator}}
+                        <li><a href="/admin">Admin</a></li>
+                      {{/if}}
                         <li>
                             <a href="/news">News</a>
                         </li>

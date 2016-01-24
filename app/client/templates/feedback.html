@@ -1,9 +1,11 @@
 <template name="feedback">
     {{> header}}
     <main>
-        <h3 class="black-text thin text-center">Feedback</h3>
+        <div class="center-align">
+        <h3 class="black-text thin">Feedback</h3>
         <a class="waves-effect waves-light btn modal-trigger feedback-btn" href="#modal1">Send New Feedback</a>
         <a id="editModal" class="modal-trigger" href="#editFeedback" style="display:none"></a>
+        </div>
 
         <div class="row">
             {{#each feedback}}
