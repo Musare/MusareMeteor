@@ -177,7 +177,8 @@ textarea{
     color: black;
 }
 
-#media-container {
-  min-height: 460px;
-  margin-top: 10px;
+#team-page-container {
+    margin-left: 0;
+    margin-right: 0;
+    /* Weird hack... No clue why this is needed but it is.*/
 }

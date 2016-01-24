@@ -13,7 +13,7 @@ Meteor.startup(function () {
     var stations = [{tag: "edm", display: "EDM"}, {tag: "pop", display: "Pop"}]; //Rooms to be set on server startup
     for (var i in stations) {
         if (Rooms.find({type: stations[i]}).count() === 0) {
-            createRoom(stations[i].display, stations[i].tag, false);
+            createRoom(stations[i].display, stations[i].tag, false, "Room description goes here.");
         }
     }
     emojione.ascii = true;
@@ -118,7 +118,7 @@ function getStation(type, cb) {
     });
 }
 
-function createRoom(display, tag, private) {
+function createRoom(display, tag, private, desc) {
     var type = tag;
     if (Rooms.find({type: type}).count() === 0) {
         Rooms.insert({
@@ -126,8 +126,8 @@ function createRoom(display, tag, private) {
             type: type,
             users: 0,
             private: private,
-            roomDesc: "Test room yo",
-            currentSong: {song: default_song, started: 0}
+            currentSong: {song: default_song, started: 0},
+            roomDesc: desc
         }, function (err) {
             if (err) {
                 throw err;
@@ -438,6 +438,10 @@ Meteor.publish("alerts", function () {
     return Alerts.find({active: true})
 });
 
+Meteor.publish("news", function () {
+    return News.find({})
+});
+
 Meteor.publish("userData", function (userId) {
     if (userId !== undefined) {
         return Meteor.users.find(userId, {fields: {"services.github.username": 1, "punishments": 1}})
@@ -566,18 +570,6 @@ function isMuted() {
 }
 
 Meteor.methods({
-    getSongAudio: function(url) {
-      var ytdl = Meteor.npmRequire("ytdl-core");
-      var stream = ytdl(url);
-      console.log(url);
-
-      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      var analyser = audioCtx.createAnalyser();
-
-      var source = audioCtx.createMediaStreamSource(stream);
-      source.connect(analyser);
-      analyser.connect(distortion);
-    },
     lockRoom: function (type) {
         if (isAdmin() && !isBanned()) {
             getStation(type, function (station) {
@@ -948,6 +940,37 @@ Meteor.methods({
             return true;
         }
     },
+    createArticle: function(data) {
+        if (!isBanned() && isModerator()) {
+            var userId = Meteor.userId();
+            var requiredProperties = ["title", "content", "author"];
+            if (data !== undefined && Object.keys(data).length === requiredProperties.length) {
+                for (var property in requiredProperties) {
+                    if (data[requiredProperties[property]] === undefined) {
+                        throw new Meteor.Error(403, "Invalid data.");
+                    }
+                }
+                if (data.author === true) {
+                    data.author = Meteor.user().profile.username
+                } else {
+                    data.author = "A Musare Admin";
+                }
+                data.time =  new Date();
+                News.insert(data, function(err, res) {
+                    if (err) {
+                        console.log(err);
+                        throw err.sanitizedError;
+                    } else {
+                        return true;
+                    }
+                });
+            } else {
+                throw new Meteor.Error(403, "Invalid data.");
+            }
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     addSongToQueue: function (songData) {
         if (Meteor.userId() && !isBanned()) {
             var userId = Meteor.userId();
@@ -990,8 +1013,14 @@ Meteor.methods({
     },
     updateQueueSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = mid;
-            Queues.update({mid: mid}, newSong, function(err) {
+            Queues.update({mid: mid}, {$set: {
+                "title": newSong.title,
+                "artist": newSong.artist,
+                "id": newSong.id,
+                "img": newSong.img,
+                "duration" : newSong.duration,
+                "skipDuration" : newSong.skipDuration
+            }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -1005,9 +1034,15 @@ Meteor.methods({
     },
     updatePlaylistSong: function (mid, newSong) {
         if (isModerator() && !isBanned()) {
-            newSong.mid = mid;
-            newSong.approvedBy = Meteor.userId();
-            Playlists.update({mid: mid}, newSong, function(err) {
+            Songs.update({mid: mid}, {$set: {
+                "title": newSong.title,
+                "artist": newSong.artist,
+                "id": newSong.id,
+                "img": newSong.img,
+                "duration": newSong.duration,
+                "skipDuration": newSong.skipDuration,
+                "approvedBy": Meteor.userId()
+        }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -1071,9 +1106,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    createRoom: function (display, tag, private) {
+    createRoom: function (display, tag, private, desc) {
         if (isAdmin() && !isBanned()) {
-            createRoom(display, tag, private);
+            createRoom(display, tag, private, desc);
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

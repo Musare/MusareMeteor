@@ -204,6 +204,12 @@ Template.queues.helpers({
     }
 });
 
+Template.news.helpers({
+    articles: function() {
+        return News.find().fetch().reverse();
+    }
+});
+
 Template.manageStation.helpers({
     songs: function () {
         var parts = location.href.split('/');
