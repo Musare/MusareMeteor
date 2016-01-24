@@ -176,3 +176,8 @@ textarea{
 #desc_text{
     color: black;
 }
+
+#media-container {
+  min-height: 460px;
+  margin-top: 10px;
+}

@@ -126,6 +126,7 @@ function createRoom(display, tag, private) {
             type: type,
             users: 0,
             private: private,
+            roomDesc: "Test room yo",
             currentSong: {song: default_song, started: 0}
         }, function (err) {
             if (err) {
@@ -565,6 +566,18 @@ function isMuted() {
 }
 
 Meteor.methods({
+    getSongAudio: function(url) {
+      var ytdl = Meteor.npmRequire("ytdl-core");
+      var stream = ytdl(url);
+      console.log(url);
+
+      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var analyser = audioCtx.createAnalyser();
+
+      var source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+      analyser.connect(distortion);
+    },
     lockRoom: function (type) {
         if (isAdmin() && !isBanned()) {
             getStation(type, function (station) {
