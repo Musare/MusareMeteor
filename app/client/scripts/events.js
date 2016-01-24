@@ -915,6 +915,25 @@ Template.register.events({
     }
 });
 
+Template.news.events({
+    "click #createArticleButton": function() {
+        var title = $("#title").val();
+        var content = $("#content").val();
+        var anonymous = $("#anonymous").is(":checked");
+        Meteor.call("createArticle", {title: title, content: content, anonymous: anonymous}, function(err, res) {
+            if (err) {
+                var $toastContent = $('<span><strong>Article not created.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 8000);
+            } else {
+                $('#createArticle').closeModal()
+                $("#title").val("").change();
+                $("#content").val("").change();
+                $("#anonymous").prop("checked", false).change();
+            }
+        });
+    }
+});
+
 Template.room.events({
     "click #youtube-playlist-button": function () {
         if (!Session.get("importingPlaylist")) {
