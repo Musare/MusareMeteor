@@ -1511,10 +1511,10 @@ Template.room.onCreated(function () {
     Session.set("reportAudio", false);
     Session.set("reportAlbumart", false);
     Session.set("reportOther", false);
-    if (resizeSeekerbarInterval !== undefined) {
+    /*if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
-    }
+    }*/
     YTPlayer = undefined;
     Session.set("videoHidden", false);
     var tag = document.createElement("script");
