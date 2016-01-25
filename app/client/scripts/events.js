@@ -176,22 +176,13 @@ function sendMessageGlobal() {
 }
 
 Template.admin.events({
-    "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
-            if (err) {
-                alert("Error " + err.error + ": " + err.reason);
-            } else {
-                window.location = "/" + $("#croom_tag").val();
-            }
-        });
-    },
     "click a": function(e){
         var id = e.currentTarget.id;
         console.log(id.toLowerCase());
         Session.set("playlistToEdit", id);
     },
     "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#two").prop("checked"), function (err, res) {
+        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#croom_private").prop("checked"), function (err, res) {
             if (err) {
                 alert("Error " + err.error + ": " + err.reason);
             } else {
