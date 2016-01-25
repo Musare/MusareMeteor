@@ -9,10 +9,6 @@ main {
     flex: 1 0 auto;
 }
 
-main h3{
-    margin-left: 10px;
-}
-
 main h4.thin{
     margin-left: 10px;
 }

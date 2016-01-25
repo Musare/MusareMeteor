@@ -943,18 +943,19 @@ Meteor.methods({
     createArticle: function(data) {
         if (!isBanned() && isModerator()) {
             var userId = Meteor.userId();
-            var requiredProperties = ["title", "content", "author"];
+            var requiredProperties = ["title", "content", "anonymous"];
             if (data !== undefined && Object.keys(data).length === requiredProperties.length) {
                 for (var property in requiredProperties) {
                     if (data[requiredProperties[property]] === undefined) {
                         throw new Meteor.Error(403, "Invalid data.");
                     }
                 }
-                if (data.author === true) {
+                if (data.anonymous === false) {
                     data.author = Meteor.user().profile.username
                 } else {
                     data.author = "A Musare Admin";
                 }
+                delete data.anonymous;
                 data.time =  new Date();
                 News.insert(data, function(err, res) {
                     if (err) {
