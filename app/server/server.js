@@ -169,9 +169,15 @@ function Station(type) {
     } else currentSong = 0;
     var currentMid = songs[currentSong];
 
+    var song = Songs.findOne({mid: songs[currentSong]});
+    if (song === undefined) {
+        Playlists.remove({}, {$pull: {songs: currentMid}});
+        song = default_song;
+    }
+
     var res = Rooms.update({type: type}, {
         $set: {
-            currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt},
+            currentSong: {song: song, started: startedAt},
             users: 0
         }
     });
