@@ -178,3 +178,7 @@ textarea{
     margin-right: 0;
     /* Weird hack... No clue why this is needed but it is.*/
 }
+
+.feedback-message{
+    word-wrap: break-word;
+}
