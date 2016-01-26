@@ -19,7 +19,7 @@
             </nav>
         </header>
 
-        <main>
+        <main id="room-content">
             <div class="container">
                 <div class="row">
                     <div class="col s12 m10 l8 offset-l2 offset-m1" id="media-container">
@@ -33,17 +33,23 @@
                                 <h3>{{{title}}} - {{{artist}}}</h3>
                                 <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span></h4>
                                 <div class="row">
-                                    <form action="#" class="col s4 m4 l4">
-                                        <p class="range-field" style="margin-top: 0">
-                                            <input type="range" id="volume_slider" min="0" max="100" />
-                                        </p>
-                                    </form>
+                                  <form action="#" class="left col s4 m4 l4">
+                                      <p class="range-field" style="margin-top: 0">
+                                          <input type="range" id="volume_slider" min="0" max="100" />
+                                      </p>
+                                  </form>
+                                  <div class="right col s4 m2 l2">
+                                    <ul>
+                                      <li class="left"><a href="#add_song_modal"><i class="material-icons black-text">thumb_up</i></a></li>
+                                      <li class="right"><a href="#bug_report_modal"><i class="material-icons black-text">thumb_down</i></a></li>
+                                    </ul>
+                                  </div>
                                 </div>
                                 <div class="seeker-bar-container white" id="preview-progress">
                                     <div class="seeker-bar teal" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <img alt="Not loading" class="song-img col s12 m12 l4" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
+                            <img alt="Not loading" class="responsive-img song-img col s12 m12 l4" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
                         </div>
                     </div>
                 </div>

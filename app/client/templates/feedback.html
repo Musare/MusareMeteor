@@ -1,9 +1,11 @@
 <template name="feedback">
     {{> header}}
     <main>
-        <h3 class="black-text thin text-center">Feedback</h3>
+        <div class="center-align">
+        <h3 class="black-text thin">Feedback</h3>
         <a class="waves-effect waves-light btn modal-trigger feedback-btn" href="#modal1">Send New Feedback</a>
         <a id="editModal" class="modal-trigger" href="#editFeedback" style="display:none"></a>
+        </div>
 
         <div class="row">
             {{#each feedback}}
@@ -23,7 +25,7 @@
                                     </ul>
                                 </div>
                             {{/if}}
-                            <p>{{message}}</p>
+                            <p class="feedback-message">{{message}}</p>
                         </div>
                         <div class="card-action">
                             <a class="lowercase" href="/u/{{username}}">{{username}}</a>
@@ -38,7 +40,7 @@
     <div id="modal1" class="modal">
         <div class="modal-content teal darken-4">
             <div class="input-field">
-                <textarea id="feedback_message" class="materialize-textarea" length="500"></textarea>
+                <textarea id="feedback_message" class="materialize-textarea validate" length="500"></textarea>
                 <label for="feedback_message">Give us your feedback and suggestions!</label>
             </div>
             <a id="feedback_submit" class="waves-effect waves-light btn">Submit</a>
@@ -48,7 +50,7 @@
         <div class="modal-content teal darken-4">
             <label>Edit Feedback Message</label>
             <div class="input-field">
-                <textarea id="edit_feedback_message" class="materialize-textarea" length="500"></textarea>
+                <textarea id="edit_feedback_message" class="materialize-textarea validate" length="500"></textarea>
             </div>
             <a id="edit_feedback_submit" class="waves-effect waves-light btn">Submit</a>
         </div>

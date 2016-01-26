@@ -176,22 +176,13 @@ function sendMessageGlobal() {
 }
 
 Template.admin.events({
-    "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), function (err, res) {
-            if (err) {
-                alert("Error " + err.error + ": " + err.reason);
-            } else {
-                window.location = "/" + $("#croom_tag").val();
-            }
-        });
-    },
     "click a": function(e){
         var id = e.currentTarget.id;
         console.log(id.toLowerCase());
         Session.set("playlistToEdit", id);
     },
     "click #croom_create": function() {
-        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#two").prop("checked"), function (err, res) {
+        Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#croom_private").prop("checked"), $("#croom_desc").val(), function (err, res) {
             if (err) {
                 alert("Error " + err.error + ": " + err.reason);
             } else {
@@ -233,10 +224,13 @@ Template.alertsDashboard.events({
 
 Template.feedback.events({
     "click #feedback_submit": function(){
-        if($("#feedback_message").val().length !== 0){
+        if($("#feedback_message").val().length !== 0 && $("#feedback_message").hasClass("invalid") === false){
             Meteor.call("sendFeedback", $("#feedback_message").val());
             $("#feedback_message").val("");
             $("#modal1").closeModal()
+        } else{
+            var $toastContent = $('<span><strong>Feedback not sent.</strong> Possible reasons include:<ul><li>- Empty Feedback Message</li><li>- Feedback is more than 500 words</li></ul></span>');
+            Materialize.toast($toastContent, 8000);
         }
     },
     "click .upvote": function(){

@@ -178,3 +178,11 @@ textarea{
     margin-right: 0;
     /* Weird hack... No clue why this is needed but it is.*/
 }
+
+#room-content {
+  padding-top: 15px;
+}
+
+.feedback-message{
+    word-wrap: break-word;
+}
