@@ -39,7 +39,7 @@ var default_song = {
     duration: 181,
     skipDuration: 0,
     requestedBy: "NONE",
-    approvedBy: "NONE",
+    approvedBy: "GOD",
     genres: []
 };
 
@@ -1071,7 +1071,7 @@ Meteor.methods({
     },
     removeSongFromPlaylist: function (type, mid) {
         if (isModerator() && !isBanned()) {
-            Playlists.remove({}, {$pull: {songs: mid}});
+            Playlists.remove({type: type}, {$pull: {songs: mid}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
