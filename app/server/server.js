@@ -1072,14 +1072,6 @@ Meteor.methods({
     removeSongFromPlaylist: function (mid) {
         if (isModerator() && !isBanned()) {
             Playlists.remove({}, {$pull: {songs: mid}});
-            var song = Songs.findOne({mid: mid});
-            Songs.remove({mid: mid});
-            if (song !== undefined) {
-                song.deletedBy = Meteor.userId();
-                song.deletedAt = new Date(Date.now());
-                song.deletedType = "song";
-                Deleted.insert(song);
-            }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
