@@ -1069,7 +1069,7 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    removeSongFromPlaylist: function (mid) {
+    removeSongFromPlaylist: function (type, mid) {
         if (isModerator() && !isBanned()) {
             Playlists.remove({}, {$pull: {songs: mid}});
         } else {
