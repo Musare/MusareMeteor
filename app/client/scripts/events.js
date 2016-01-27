@@ -212,7 +212,7 @@ Template.alertsDashboard.events({
         Meteor.call("addAlert", $("#calert-description").val(), $("#calert-priority").val().toLowerCase(), function (err, res) {
             if (err) {
                 alert("Error " + err.error + ": " + err.reason);
-            } else {.
+            } else {
                 $("#calert-description").val("");
             }
         });
