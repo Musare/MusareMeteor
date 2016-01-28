@@ -180,7 +180,22 @@ textarea{
 }
 
 #room-content {
+  background-color: black;
+  color: white;
   padding-top: 15px;
+}
+
+#thumbs_up, #thumbs_down {
+  color: white;
+  cursor: pointer;
+}
+
+#thumbs_up:hover {
+  color: #00bfa5;
+}
+
+#thumbs_down:hover {
+  color: #e53935;
 }
 
 .feedback-message{

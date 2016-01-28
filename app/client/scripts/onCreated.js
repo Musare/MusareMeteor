@@ -127,6 +127,7 @@ Template.room.onCreated(function () {
             }
         }
     });
+
     Session.set("reportSong", false);
     Session.set("reportTitle", false);
     Session.set("reportAuthor", false);
@@ -149,6 +150,7 @@ Template.room.onCreated(function () {
 
     var currentSong = undefined;
     var currentSongR = undefined;
+    var type = Session.get("type");
 
     function getTimeElapsed() {
         if (currentSong !== undefined) {

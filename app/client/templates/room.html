@@ -6,7 +6,7 @@
                 <div class="nav-wrapper teal accent-4">
                     <ul class="left hide-on-med-and-down">
                         <li><a href="/"><i class="material-icons">home</i></a></li>
-                        <li><a href="#add_song_modal"><i class="material-icons">playlist_add</i></a></li>
+                        <li><a href="#add_song_modal" id="add-song-button"><i class="material-icons">playlist_add</i></a></li>
                         <li><a href="#bug_report_modal"><i class="material-icons">bug_report</i></a></li>
                         <li><a href="#vote_to_skip" id="skip_vote"><i class="material-icons">skip_next</i></a></li>
                     </ul>
@@ -40,8 +40,8 @@
                                   </form>
                                   <div class="right col s4 m2 l2">
                                     <ul>
-                                      <li class="left"><a href="#add_song_modal"><i class="material-icons black-text">thumb_up</i></a></li>
-                                      <li class="right"><a href="#bug_report_modal"><i class="material-icons black-text">thumb_down</i></a></li>
+                                      <li class="left"><i id="thumbs_up" class="material-icons">thumb_up</i></li>
+                                      <li class="right"><i id="thumbs_down" class="material-icons">thumb_down</i></li>
                                     </ul>
                                   </div>
                                 </div>
@@ -54,6 +54,46 @@
                     </div>
                 </div>
             </div>
+            <div id="add_song_modal" class="modal">
+              <div class="center modal-content">
+                <div class="row">
+                  <a class="dropdown-button btn" href="#" data-activates="type_dropdown">Select import type</a>
+                  <ul id="type_dropdown" class="dropdown-content">
+                    <li><a href="#!">Single Song</a></li>
+                    <li><a href="#!">Import Playlist</a></li>
+                  </ul>
+                </div>
+                <div class="row">
+                  <a class="dropdown-button btn" href="#" data-activates="source_dropdown">Select music source</a>
+                  <ul id="source_dropdown" class="dropdown-content">
+                    <li><a href="#!">YouTube</a></li>
+                    <li><a href="#!">SoundCloud</a></li>
+                  </ul>
+                </div>
+                <div class="row">
+                  <div class="input-field">
+                    <input id="search_for_song" type="text" class="validate black-text">
+                    <label for="search_for_song">Search for song</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+              <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect btn">Close</a>
+              </div>
+            </div>
         </main>
+        <script>
+          $("#add-song-button").leanModal({
+            dismissible: true,
+            opacity: .5,
+            in_duration: 500,
+            out_duration: 200
+          });
+          $(".dropdown-button").dropdown({
+            constrain_width: true
+          });
+        </script>
     {{/if}}
 </template>
