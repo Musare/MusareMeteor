@@ -687,7 +687,7 @@ Template.manageStation.events({
     },
     "click .remove-song-button": function(e){
         var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
-        Meteor.call("removeSongFromPlaylist", this.mid);
+        Meteor.call("removeSongFromPlaylist", genre, this.mid);
     },
     "click #play": function() {
         var duration = Session.get("song").duration;

@@ -39,7 +39,7 @@ var default_song = {
     duration: 181,
     skipDuration: 0,
     requestedBy: "NONE",
-    approvedBy: "NONE",
+    approvedBy: "GOD",
     genres: []
 };
 
@@ -169,9 +169,15 @@ function Station(type) {
     } else currentSong = 0;
     var currentMid = songs[currentSong];
 
+    var song = Songs.findOne({mid: songs[currentSong]});
+    if (song === undefined) {
+        Playlists.remove({}, {$pull: {songs: currentMid}});
+        song = default_song;
+    }
+
     var res = Rooms.update({type: type}, {
         $set: {
-            currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt},
+            currentSong: {song: song, started: startedAt},
             users: 0
         }
     });
@@ -1063,17 +1069,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    removeSongFromPlaylist: function (mid) {
+    removeSongFromPlaylist: function (type, mid) {
         if (isModerator() && !isBanned()) {
-            Playlists.remove({}, {$pull: {songs: mid}});
-            var song = Songs.findOne({mid: mid});
-            Songs.remove({mid: mid});
-            if (song !== undefined) {
-                song.deletedBy = Meteor.userId();
-                song.deletedAt = new Date(Date.now());
-                song.deletedType = "song";
-                Deleted.insert(song);
-            }
+            Playlists.remove({type: type}, {$pull: {songs: mid}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
