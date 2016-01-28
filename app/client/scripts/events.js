@@ -1204,34 +1204,6 @@ Template.room.events({
                     );
                     songs.push({title: item.snippet.title, id: item.id.videoId});
                 }
-                $("#song-results > div").click(function () {
-                    $("#search-info").hide();
-                    $("#add-info").show();
-                    var title = $(this).find("div > .song-result-title").text();
-                    for (var i in songs) {
-                        if (songs[i].title === title) {
-                            var songObj = {
-                                id: songs[i].id,
-                                title: songs[i].title,
-                                type: "youtube"
-                            };
-                            $("#title").val(songObj.title);
-                            $("#artist").val("");
-                            $("#id").val(songObj.id);
-                            getSpotifyInfo(songObj.title.replace(/\[.*\]/g, ""), function (data) {
-                                if (data.tracks.items.length > 0) {
-                                    $("#title").val(data.tracks.items[0].name);
-                                    var artists = [];
-                                    $("#img").val(data.tracks.items[0].album.images[2].url);
-                                    data.tracks.items[0].artists.forEach(function (artist) {
-                                        artists.push(artist.name);
-                                    });
-                                    $("#artist").val(artists.join(", "));
-                                }
-                            });
-                        }
-                    }
-                })
             }
         })
     },
@@ -1258,8 +1230,10 @@ Template.room.events({
         Meteor.call("shufflePlaylist", type);
     },
     "change input": function (e) {
+      console.log(e, e.target, e.target.id, "hello");
         if (e.target && e.target.id) {
             var partsOfId = e.target.id.split("-");
+            console.log(partsOfId);
             partsOfId[1] = partsOfId[1].charAt(0).toUpperCase() + partsOfId[1].slice(1);
             var camelCase = partsOfId.join("");
             Session.set(camelCase, e.target.checked);
