@@ -134,6 +134,9 @@ Template.room.onCreated(function () {
     Session.set("reportAudio", false);
     Session.set("reportAlbumart", false);
     Session.set("reportOther", false);
+    var parts = location.href.split('/');
+    var id = parts.pop();
+    var type = id.toLowerCase();
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
