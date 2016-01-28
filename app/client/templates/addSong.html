@@ -1,0 +1,70 @@
+<template name="addSong">
+    {{> header}}
+    <main class="content-box row hack-container">
+        <h3 class="black-text thin center">Add Song</h3>
+        <div class="card teal-text col m6 s12 l6 offset-m3 offset-l3">
+            <div class="card-content">
+                <span>Import Video</span>
+                <hr>
+                <div class="row">
+                    <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                        <input class="validate" name="query" id="query" type="text"/>
+                        <label for="query">Song Title / URL</label>
+                    </div>
+                    <button type="button" id="search-song" class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Search</button>
+                </div>
+                <hr>
+                <ul class="collection">
+                    <li class="collection-item avatar youtube-search-result-li">
+                        <img src="http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg" alt="" class="video-import-thumbnail">
+                        <span class="title video-import-text">Title</span>
+                        <p class="video-import-text">First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+
+    <div id="createArticle" class="modal">
+        <div class="modal-content musare white-text">
+            <h4 class="center-align">Create Article</h4>
+            <div class="row">
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <label for="title" class="white-text">Title</label>
+                    <input class="validate" name="title" id="title" type="text"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <textarea class="materialize-textarea validate" name="content" id="content" type="text"></textarea>
+                    <label for="content" class="white-text">Content</label>
+                </div>
+                <div class="col l8 m8 s12 offset-l2 offset-m2">
+                    <div class="switch">
+                        <label class="white-text">
+                            Post as myself
+                            <input id="anonymous" type="checkbox">
+                            <span class="lever"></span>
+                            Post anonymous
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <button type="button" id="createArticleButton" class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Create Article</button>
+            </div>
+        </div>
+        <div class="modal-footer musare white-text">
+            <a href="#!" class="modal-action modal-close waves-effect waves-light btn-flat white">X</a>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('.modal-trigger').leanModal();
+        });
+    </script>
+    {{> footer}}
+</template>

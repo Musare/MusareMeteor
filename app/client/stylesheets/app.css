@@ -173,7 +173,7 @@ textarea{
     color: black;
 }
 
-#team-page-container {
+.hack-container{
     margin-left: 0;
     margin-right: 0;
     /* Weird hack... No clue why this is needed but it is.*/
@@ -185,4 +185,22 @@ textarea{
 
 .feedback-message{
     word-wrap: break-word;
+}
+
+.video-import-thumbnail {
+    position: absolute;
+    height: 150px;
+    width: 267px;
+    overflow: hidden;
+    left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.youtube-search-result-li {
+    height: 170px;
+}
+
+.video-import-text {
+    margin-left: 225px !important;
 }

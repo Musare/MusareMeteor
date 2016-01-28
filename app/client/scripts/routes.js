@@ -54,6 +54,10 @@ Router.route("/settings", {
     }
 });
 
+Router.route("/add", {
+    template: "addSong"
+});
+
 Router.route("/terms", {
     template: "terms"
 });
