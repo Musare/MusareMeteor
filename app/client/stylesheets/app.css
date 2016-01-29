@@ -175,7 +175,7 @@ textarea{
     color: black;
 }
 
-#team-page-container {
+.hack-container{
     margin-left: 0;
     margin-right: 0;
     /* Weird hack... No clue why this is needed but it is.*/
@@ -185,6 +185,56 @@ textarea{
   padding-top: 15px;
 }
 
+#thumbs_up, #thumbs_down {
+  color: white;
+  cursor: pointer;
+}
+
+#thumbs_up:hover {
+  color: #00bfa5;
+}
+
+#thumbs_down:hover {
+  color: #e53935;
+}
+
 .feedback-message{
     word-wrap: break-word;
+}
+
+.brand-logo{
+	font-weight:900;
+}
+
+.dropdown-content {
+  background-color: #FFFFFF;
+  margin: 0;
+  display: none;
+  min-width: 300px; /* Changed this to accomodate content width */
+  height: 100vh;
+	margin-left: -1px; /* Add this to keep dropdown in line with edge of navbar */
+  overflow: hidden; /* Changed this from overflow-y:auto; to overflow:hidden; */
+  opacity: 0;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 1;
+  will-change: width, height;
+}
+
+.video-import-thumbnail {
+    position: absolute;
+    height: 150px;
+    width: 267px;
+    overflow: hidden;
+    left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.youtube-search-result-li {
+    height: 170px;
+}
+
+.video-import-text {
+    margin-left: 225px !important;
 }

@@ -127,6 +127,7 @@ Template.room.onCreated(function () {
             }
         }
     });
+
     Session.set("reportSong", false);
     Session.set("reportTitle", false);
     Session.set("reportAuthor", false);
@@ -134,6 +135,9 @@ Template.room.onCreated(function () {
     Session.set("reportAudio", false);
     Session.set("reportAlbumart", false);
     Session.set("reportOther", false);
+    var parts = location.href.split('/');
+    var id = parts.pop();
+    var type = id.toLowerCase();
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
@@ -149,6 +153,7 @@ Template.room.onCreated(function () {
 
     var currentSong = undefined;
     var currentSongR = undefined;
+    var type = Session.get("type");
 
     function getTimeElapsed() {
         if (currentSong !== undefined) {
