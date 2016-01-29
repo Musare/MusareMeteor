@@ -1,4 +1,12 @@
 var feedbackData;
+function gup( name, url ) {
+    if (!url) url = location.href;
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( url );
+    return results == null ? null : results[1];
+}
 
 function getSpotifyInfo(title, cb, artist) {
     var q = "";
@@ -929,9 +937,10 @@ Template.news.events({
 });
 
 Template.room.events({
-    "click #youtube-playlist-button": function () {
+    "click #import-playlist-button": function () {
         if (!Session.get("importingPlaylist")) {
-            var playlist_link = $("#youtube-playlist-input").val();
+            Session.set("songResults", []);
+            var playlist_link = $("#playlist-url").val();
             var playlist_id = gup("list", playlist_link);
             var ytImportQueue = [];
             var totalVideos = 0;
@@ -941,16 +950,12 @@ Template.room.events({
             var ranOnce = false;
 
             Session.set("importingPlaylist", true);
-            $("#youtube-playlist-button").attr("disabled", "");
-            $("#youtube-playlist-button").addClass("disabled");
-            $("#youtube-playlist-input").attr("disabled", "");
-            $("#youtube-playlist-input").addClass("disabled");
-            $("#playlist-import-queue").empty();
-            $("#playlist-import-queue").hide();
-            $("#add-youtube-playlist").addClass("hidden-2");
-            $("#import-progress").attr("aria-valuenow", 0);
+            $("#import-playlist-button").attr("disabled", "");
+            $("#import-playlist-button").addClass("disabled");
+            $("#playlist-url").attr("disabled", "");
+            $("#playlist-url").addClass("disabled");
+
             $("#import-progress").css({width: "0%"});
-            $("#import-progress").text("0%");
 
             function makeAPICall(playlist_id, nextPageToken) {
                 if (nextPageToken !== undefined) {
@@ -984,24 +989,9 @@ Template.room.events({
                                     }, {songs: {$elemMatch: {id: item.snippet.resourceId.videoId}}}).count() !== 0) {
                                     videosInQueue++;
                                 } else {
-                                    $("#playlist-import-queue").append(
-                                        "<div class='youtube-import-queue-item'>" +
-                                        "<img src='" + item.snippet.thumbnails.medium.url + "' class='song-result-thumbnail'/>" +
-                                        "<div>" +
-                                        "<span class='song-result-title'>" + item.snippet.title + "</span>" +
-                                        "<span class='song-result-channel'>" + item.snippet.channelTitle + "</span>" +
-                                        "</div>" +
-                                        "<i class='fa fa-times remove-import-song'></i>" +
-                                        "</div>"
-                                    );
                                     var percentage = ytImportQueue.length / (totalVideos - videosInvalid) * 100;
-                                    $("#import-progress").attr("aria-valuenow", percentage.toFixed(2));
                                     $("#import-progress").css({width: percentage + "%"});
-                                    $("#import-progress").text(percentage.toFixed(1) + "%");
-                                    ytImportQueue.push({
-                                        title: item.snippet.title,
-                                        id: item.snippet.resourceId.videoId
-                                    });
+                                    ytImportQueue.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
                                 }
                             } else {
                                 videosInvalid++;
@@ -1010,7 +1000,7 @@ Template.room.events({
                         if (nextToken !== undefined) {
                             makeAPICall(playlist_id, nextToken);
                         } else {
-                            $("#playlist-import-queue > div > i").click(function () {
+                            /*$("#playlist-import-queue > div > i").click(function () {
                                 var title = $(this).parent().find("div > .song-result-title").text();
                                 for (var i in ytImportQueue) {
                                     if (ytImportQueue[i].title === title) {
@@ -1019,18 +1009,15 @@ Template.room.events({
                                 }
                                 $(this).parent().remove();
                                 Session.set("YTImportQueue", ytImportQueue);
-                            });
+                            });*/
                             Session.set("importingPlaylist", false);
-                            $("#import-progress").attr("aria-valuenow", 100);
                             $("#import-progress").css({width: "100%"});
-                            $("#import-progress").text("100%");
-                            $("#youtube-playlist-button").removeAttr("disabled");
-                            $("#youtube-playlist-button").removeClass("disabled");
-                            $("#youtube-playlist-input").removeAttr("disabled");
-                            $("#youtube-playlist-input").removeClass("disabled");
-                            $("#playlist-import-queue").show();
-                            $("#add-youtube-playlist").removeClass("hidden-2");
+                            $("#import-playlist-button").removeAttr("disabled");
+                            $("#import-playlist-button").removeClass("disabled");
+                            $("#playlist-url").removeAttr("disabled");
+                            $("#playlist-url").removeClass("disabled");
                             Session.set("YTImportQueue", ytImportQueue);
+                            Session.set("songResults", ytImportQueue);
                         }
                     }
                 })
@@ -1039,21 +1026,19 @@ Template.room.events({
             makeAPICall(playlist_id);
         }
     },
-    "click #add-youtube-playlist": function () {
+    "click #confirm-import": function () {
         var YTImportQueue = Session.get("YTImportQueue");
-        $("#youtube-playlist-button").attr("disabled", "");
-        $("#youtube-playlist-button").addClass("disabled");
-        $("#youtube-playlist-input").attr("disabled", "");
-        $("#youtube-playlist-input").addClass("disabled");
-        $("#import-progress").attr("aria-valuenow", 0);
+        $("#import-playlist-button").attr("disabled", "");
+        $("#import-playlist-button").addClass("disabled");
+        $("#playlist-url").attr("disabled", "");
+        $("#playlist-url").addClass("disabled");
         $("#import-progress").css({width: "0%"});
-        $("#import-progress").text("0%");
         var failed = 0;
         var success = 0;
         var processed = 0;
         var total = YTImportQueue.length;
         YTImportQueue.forEach(function (song) {
-            var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: ""};
+            var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: "", genres: [Session.get("type")]};
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 if (err) {
                     console.log(err);
@@ -1063,11 +1048,15 @@ Template.room.events({
                 }
                 processed++;
                 var percentage = processed / total * 100;
-                $("#import-progress").attr("aria-valuenow", percentage.toFixed(2));
                 $("#import-progress").css({width: percentage + "%"});
-                $("#import-progress").text(percentage.toFixed(1) + "%");
             });
         });
+        $("#import-playlist-button").removeAttr("disabled");
+        $("#import-playlist-button").removeClass("disabled");
+        $("#playlist-url").removeAttr("disabled", "");
+        $("#playlist-url").removeClass("disabled");
+        Session.set("songResults", []);
+        Session.set("YTImportQueue", [])
     },
     "click #chat-tab": function () {
         $("#chat-tab").removeClass("unread-messages");
@@ -1225,7 +1214,7 @@ Template.room.events({
     },
     "click #search-song": function () {
         var songs = [];
-        $("#song-results").empty();
+        Session.set("songResults", songs);
         $.ajax({
             type: "GET",
             url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
@@ -1234,18 +1223,10 @@ Template.room.events({
             success: function (data) {
                 for (var i in data.items) {
                     var item = data.items[i];
-                    $("#song-results").append(
-                        "<div>" +
-                        "<img src='" + item.snippet.thumbnails.medium.url + "' class='song-result-thumbnail'/>" +
-                        "<div>" +
-                        "<span class='song-result-title'>" + item.snippet.title + "</span>" +
-                        "<span class='song-result-channel'>" + item.snippet.channelTitle + "</span>" +
-                        "</div>" +
-                        "</div>"
-                    );
-                    songs.push({title: item.snippet.title, id: item.id.videoId});
+                    songs.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
                 }
-                $("#song-results > div").click(function () {
+                Session.set("songResults", songs);
+                /*$("#song-results > div").click(function () {
                     $("#search-info").hide();
                     $("#add-info").show();
                     var title = $(this).find("div > .song-result-title").text();
@@ -1272,7 +1253,7 @@ Template.room.events({
                             });
                         }
                     }
-                })
+                })*/
             }
         })
     },
@@ -1330,14 +1311,8 @@ Template.room.events({
         });
     },
     "change #si_or_pl": function () {
-        if ($("#select_playlist").is(':selected')) {
-            $("#search-info").hide();
-            $("#playlist-import").show();
-        }
-        if ($("#select_single").is(':selected')) {
-            $("#search-info").show();
-            $("#playlist-import").hide();
-        }
+        Session.set("songResults", []);
+        Session.set("si_or_pl", $("#si_or_pl").val());
     },
     "click #close-modal-a": function () {
         $("#select_single").attr("selected", true);

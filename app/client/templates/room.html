@@ -6,20 +6,27 @@
                 <div class="nav-wrapper teal accent-4">
                     <ul class="left hide-on-med-and-down">
                         <li><a href="/"><i class="material-icons">home</i></a></li>
-                        <li><a href="#add_song_modal" id="add-song-button"><i class="material-icons">playlist_add</i></a></li>
+                        <li><a href="#add_song_modal" id="add-song-button"><i
+                                class="material-icons">playlist_add</i></a></li>
                         <li><a href="#bug_report_modal"><i class="material-icons">bug_report</i></a></li>
                         <li><a href="#vote_to_skip" id="skip_vote"><i class="material-icons">skip_next</i></a></li>
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
                     <ul class="right hide-on-med-and-down">
                         <li><a href="#"><i class="material-icons">queue_music</i></a></li>
-                        <li><a href="#" data-activates="chat" class="dropdown-button"><i class="material-icons">chat</i></a></li>
+                        <li><a href="#" data-activates="chat" class="dropdown-button"><i class="material-icons">chat</i></a>
+                        </li>
                     </ul>
                     <div id='chat' class='dropdown-content right'>
-                      <ul id="chat-ul">
-                                {{#each chat}}
-                                    {{#emojione}}
-                                        <li class="chat-message"><small class="rank-{{this.rawrank}}">{{this.rank}}</small> <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b class="bold">{{this.username}}</b></a> <span title="{{time}}" style="float: right;">{{rtime time}}</span> <br/>
+                        <ul id="chat-ul">
+                            {{#each chat}}
+                                {{#emojione}}
+                                    <li class="chat-message">
+                                        <small class="rank-{{this.rawrank}}">{{this.rank}}</small>
+                                        <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank"><b
+                                                class="bold">{{this.username}}</b></a> <span title="{{time}}"
+                                                                                             style="float: right;">{{rtime time}}</span>
+                                        <br/>
                                         {{#if this.isMentioned}}
                                             {{#if this.curUserMention}}
                                                 <span style="background-color: lightblue">{{this.message}}</span>
@@ -29,19 +36,23 @@
                                         {{else}}
                                             {{this.message}}
                                         {{/if}}
-                                        </li>
-                                    {{/emojione}}
-                                    <hr>
-                                {{/each}}
-                            </ul>
-                            <div id="chat-input-div">
-                                {{#if currentUser}}
-                                    <textarea id="chat-input" placeholder="Type a message..."></textarea>
-                                {{else}}
-                                    <input id="chat-input" placeholder="Please register and login to chat." disabled>
-                                {{/if}}
-                                <div id="submit"><button class="btn btn-primary btn-block">Submit<i id="submit-message" class="fa fa-paper-plane-o"></i></button></div>
+                                    </li>
+                                {{/emojione}}
+                                <hr>
+                            {{/each}}
+                        </ul>
+                        <div id="chat-input-div">
+                            {{#if currentUser}}
+                                <textarea id="chat-input" placeholder="Type a message..."></textarea>
+                            {{else}}
+                                <input id="chat-input" placeholder="Please register and login to chat." disabled>
+                            {{/if}}
+                            <div id="submit">
+                                <button class="btn btn-primary btn-block">Submit<i id="submit-message"
+                                                                                   class="fa fa-paper-plane-o"></i>
+                                </button>
                             </div>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -59,87 +70,137 @@
                         <div class="row">
                             <div class="col s12 m12 l8">
                                 <h3>{{{title}}} - {{{artist}}}</h3>
-                                <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span></h4>
+                                <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span>
+                                </h4>
                                 <div class="row">
-                                  <form action="#" class="left col s4 m4 l4">
-                                      <p class="range-field" style="margin-top: 0">
-                                          <input type="range" id="volume_slider" min="0" max="100" />
-                                      </p>
-                                  </form>
-                                  <div class="right col s4 m2 l2">
-                                    <ul>
-                                      <li class="left"><i id="thumbs_up" class="material-icons">thumb_up</i></li>
-                                      <li class="right"><i id="thumbs_down" class="material-icons">thumb_down</i></li>
-                                    </ul>
-                                  </div>
+                                    <form action="#" class="left col s4 m4 l4">
+                                        <p class="range-field" style="margin-top: 0">
+                                            <input type="range" id="volume_slider" min="0" max="100"/>
+                                        </p>
+                                    </form>
+                                    <div class="right col s4 m2 l2">
+                                        <ul>
+                                            <li class="left"><i id="thumbs_up" class="material-icons">thumb_up</i></li>
+                                            <li class="right"><i id="thumbs_down" class="material-icons">thumb_down</i>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                                 <div class="seeker-bar-container white" id="preview-progress">
                                     <div class="seeker-bar teal" style="width: 0%"></div>
                                 </div>
                             </div>
-                            <img alt="Not loading" class="responsive-img song-img col s12 m12 l4" onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" id="song-img"/>
+                            <img alt="Not loading" class="responsive-img song-img col s12 m12 l4"
+                                 onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'"
+                                 id="song-img"/>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="add_song_modal" class="modal">
-              <div class="center modal-content container">
-                <div class="row">
-                  <form class="black-text" id="search-info">
+                <div class="modal-content container">
                     <div class="row">
-                      <div class="input-field">
-                        <select>
-                          <option value="" disabled selected>Select import type</option>
-                          <option value="singleSong">Single Song</option>
-                          <option value="importPlaylist">Import Playlist</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="input-field">
-                        <input id="song-input" type="text" class="validate">
-                        <label for="search_for_song">Search for song</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <a class="waves-effect waves-light btn" id="search-song"><i class="material-icons left">search</i>Search</a>
-                    </div>
-                  </form>
-                  <div id="song-results"></div>
-                </div>
-                <div class="row">
-                  <form class="black-text hide" id="add-info">
-                    <div class="row">
-                      <div class="input-field">
-                        <input id="song-id" type="text" class="validate">
-                        <label for="song-id">Song ID</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <a class="waves-effect waves-light btn" id="add-song-button"><i class="material-icons left">playlist_add</i>Request Song</a>
-                    </div>
-                  </form>
-                </div>
-              </div>
+                        <form class="black-text" id="search-info">
+                            <div class="row">
+                                <div class="input-field">
+                                    <select id="si_or_pl">
+                                        <option value="singleVideo" selected>Single Song</option>
+                                        <option value="importPlaylist">Import Playlist</option>
+                                        <label>Import Type</label>
+                                    </select>
+                                </div>
+                            </div>
+                            {{#if singleVideo}}
+                            <div class="row" id="single-video">
+                                <div class="input-field">
+                                    <input id="song-input" type="text" class="validate">
+                                    <label for="search_for_song">Search for song</label>
+                                </div>
+                                <a class="waves-effect waves-light btn" id="search-song"><i class="material-icons left">search</i>Search</a>
+                                {{#if singleVideoResultsActive}}
+                                <div id="single-video-results">
+                                    <ul class="collection teal-text">
+                                        {{#each result in singleVideoResults}}
+                                        <li class="collection-item avatar youtube-search-result-li">
+                                            <img src="{{result.image}}" onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" alt="" class="video-import-thumbnail">
+                                            <span class="title video-import-text">{{result.title}}</span>
+                                            <p class="video-import-text">{{result.artist}} <br>
+                                                <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video In YouTube</a>
+                                            </p>
+                                            <a href="#!" class="secondary-content" id="addSong" data-result="{{id}}"><i class="material-icons">add</i></a>
+                                        </li>
+                                        {{/each}}
+                                    </ul>
+                                </div>
+                                {{/if}}
+                            </div>
+                            {{else}}
+                            <div class="row" id="import-playlist">
+                                <div class="input-field">
+                                    <input id="playlist-url" type="text" class="validate">
+                                    <label for="search_for_song">Playlist URL</label>
+                                </div>
+                                <div class="progress">
+                                    <div class="determinate" id="import-progress" style="width: 0%"></div>
+                                </div>
+                                <a class="waves-effect waves-light btn" id="import-playlist-button">Import Playlist</a>
+                                {{#if playlistImportVideosActive}}
+                                    <a class="waves-effect waves-light btn" id="confirm-import">Confirm selection and add songs to queue</a>
 
-              <div class="divider"></div>
-              <div class="modal-footer">
-                <a href="#!" class="modal-action modal-close waves-effect btn">Close</a>
-              </div>
+                                    <div id="import-playlist-results">
+                                        <ul class="collection teal-text">
+                                            {{#each result in importPlaylistVideos}}
+                                                <li class="collection-item avatar youtube-search-result-li">
+                                                    <img src="{{result.image}}" onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" alt="" class="video-import-thumbnail">
+                                                    <span class="title video-import-text">{{result.title}}</span>
+                                                    <p class="video-import-text">{{result.artist}} <br>
+                                                        <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video In YouTube</a>
+                                                    </p>
+                                                    <a href="#!" class="secondary-content" id="removeSong" data-result="{{id}}"><i class="material-icons">remove</i></a>
+                                                </li>
+                                            {{/each}}
+                                        </ul>
+                                    </div>
+                                {{/if}}
+                            </div>
+                            {{/if}}
+                        </form>
+                        <div id="song-results"></div>
+                    </div>
+                    <div class="row">
+                        <form class="black-text hide" id="add-info">
+                            <div class="row">
+                                <div class="input-field">
+                                    <input id="song-id" type="text" class="validate">
+                                    <label for="song-id">Song ID</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <a class="waves-effect waves-light btn" id="add-song-button"><i
+                                        class="material-icons left">playlist_add</i>Request Song</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-action modal-close waves-effect btn">Close</a>
+                </div>
             </div>
         </main>
         <script>
-          $("#add-song-button").leanModal({
-            dismissible: true,
-            opacity: .5,
-            in_duration: 500,
-            out_duration: 200
-          });
-          $(".dropdown-button").dropdown({
-            belowOrigin: true,
-            alignment: 'right'
-          });
-          $('select').material_select();
+            $("#add-song-button").leanModal({
+                dismissible: true,
+                opacity: .5,
+                in_duration: 500,
+                out_duration: 200
+            });
+            $(".dropdown-button").dropdown({
+                belowOrigin: true,
+                alignment: 'right'
+            });
+            $('select').material_select();
         </script>
     {{/if}}
 </template>

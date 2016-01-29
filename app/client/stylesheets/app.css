@@ -211,7 +211,6 @@ textarea{
   margin: 0;
   display: none;
   min-width: 300px; /* Changed this to accomodate content width */
-  height: 100vh;
 	margin-left: -1px; /* Add this to keep dropdown in line with edge of navbar */
   overflow: hidden; /* Changed this from overflow-y:auto; to overflow:hidden; */
   opacity: 0;

@@ -241,8 +241,30 @@ Template.manageStation.helpers({
 });
 
 Template.room.helpers({
+    singleVideoResults: function () {
+        return Session.get("songResults");
+    },
+    singleVideoResultsActive: function() {
+        var songs = Session.get("songResults");
+        if (songs !== undefined && songs.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    importPlaylistVideos: function () {
+        return Session.get("songResults");
+    },
+    playlistImportVideosActive: function() {
+        var songs = Session.get("songResults");
+        if (songs !== undefined && songs.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
     singleVideo: function () {
-        return true;
+        return Session.get("si_or_pl") === "singleVideo";
     },
     chat: function () {
         Meteor.setTimeout(function () {

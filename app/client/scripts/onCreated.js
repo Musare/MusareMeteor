@@ -135,6 +135,7 @@ Template.room.onCreated(function () {
     Session.set("reportAudio", false);
     Session.set("reportAlbumart", false);
     Session.set("reportOther", false);
+    Session.set("si_or_pl", "singleVideo");
     var parts = location.href.split('/');
     var id = parts.pop();
     var type = id.toLowerCase();
