@@ -65,10 +65,12 @@ textarea{
 
 .card i{
     line-height: inherit;
+    float: right;
 }
 
-.card-content p i{
-    float: left;
+.card-content div{
+    float: right;
+    line-height: 2;
 }
 
 .register{

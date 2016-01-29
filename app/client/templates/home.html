@@ -7,20 +7,21 @@
                     <div class="col s12 m5 l2">
                         <div class="card">
                             <div class="card-image waves-effect waves-block waves-light">
-                                <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
-                                <figcaption>
-                                    <h5>{{currentSong.song.title}}</h5>
-                                    <h5>{{currentSong.song.artist}}</h5>
-                                    <a href=/{{type}} class="waves-effect waves-light btn">Join Room</a>
-                                </figcaption>
+                                <a href=/{{type}}>
+                                    <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
+                                    <figcaption>
+                                        <h5>{{currentSong.song.title}}</h5>
+                                        <h5>{{currentSong.song.artist}}</h5>
+                                        <a href=/{{type}} class="waves-effect waves-light btn">Join Room</a>
+                                    </figcaption>
+                                </a>
                             </div>
                             <div class="card-content">
-                            <span class="card-title activator grey-text text-darken-4">{{display}}<i class="material-icons right">more_vert</i></span>
-                            <p><span class="user-num">{{userNum}}</span> <i class="material-icons">perm_identity</i></p>
+                                <span class="card-title grey-text text-darken-4">{{display}}</span><div><span class="user-num">{{userNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                <p>{{roomDesc}}</p>
                             </div>
-                            <div class="card-reveal">
-                                <span class="card-title grey-text text-darken-4">{{display}}<i class="material-icons right">close</i></span>
-                                {{roomDesc}}
+                            <div class="card-action">
+                                <a href=/{{type}}>Join Room</a>
                             </div>
                         </div>
                     </div>
