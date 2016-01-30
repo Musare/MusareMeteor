@@ -237,3 +237,10 @@ textarea{
 .video-import-text {
     margin-left: 225px !important;
 }
+
+.album-art-row img{
+    width: 10%;
+    float: left;
+    height: 10%;
+    opacity: 0.7;
+}

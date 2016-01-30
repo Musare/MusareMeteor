@@ -55,6 +55,10 @@ Handlebars.registerHelper("rooms", function(){
     return Rooms.find({});
 });
 
+Handlebars.registerHelper("songs", function(){
+    return Songs.find({});
+});
+
 Handlebars.registerHelper('active', function(path) {
     return curPath() == path ? 'active' : '';
 });
