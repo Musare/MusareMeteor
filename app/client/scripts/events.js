@@ -937,6 +937,11 @@ Template.news.events({
 });
 
 Template.room.events({
+    "click #addSong": function(e) {
+        console.log("Clicked addSong!");
+        var id = $(e.target).data("result");
+        console.log(id);
+    },
     "click #import-playlist-button": function () {
         if (!Session.get("importingPlaylist")) {
             Session.set("songResults", []);
@@ -1217,12 +1222,13 @@ Template.room.events({
         Session.set("songResults", songs);
         $.ajax({
             type: "GET",
-            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
+            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video",
             applicationType: "application/json",
             contentType: "json",
             success: function (data) {
                 for (var i in data.items) {
                     var item = data.items[i];
+                    console.log(item);
                     songs.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
                 }
                 Session.set("songResults", songs);
