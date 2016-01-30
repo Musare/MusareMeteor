@@ -241,6 +241,9 @@ Template.manageStation.helpers({
 });
 
 Template.room.helpers({
+    editingSong: function() {
+        return Session.get("editingSong");
+    },
     singleVideoResults: function () {
         return Session.get("songResults");
     },
