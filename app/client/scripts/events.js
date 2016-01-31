@@ -937,6 +937,9 @@ Template.news.events({
 });
 
 Template.room.events({
+    "click #add-song-modal-button": function() {
+        Session.set("songResults", []);
+    },
     "click #return-button": function() {
         Session.set("editingSong", false);
     },
@@ -944,11 +947,9 @@ Template.room.events({
         var id = $(e.target).data("result");
         var songs = Session.get("songResults");
         var currentSong;
-        console.log(id);
         songs = songs.filter(function(song) {
             return id !== song.id;
         });
-        console.log(songs);
         Session.set("songResults", []);
         Session.set("songResults", songs);
     },
@@ -957,13 +958,11 @@ Template.room.events({
         var songs = Session.get("songResults");
         var currentSong;
         songs.forEach(function(song) {
-            console.log(song.id === id);
             if (song.id === id) {
                 currentSong = song;
             }
         });
         Session.set("editingSong", true);
-        console.log(currentSong);
         var title = currentSong.title;
         var artist = currentSong.artist;
         var img = currentSong.img;
@@ -981,6 +980,13 @@ Template.room.events({
                 $("#img").val(img).change();
                 $("#id").val(id).change();
                 $("#genres").val(null).change();
+            } else {
+                $("#title").val(title).change();
+                $("#artist").val(artist).change();
+                $("#img").val(img).change();
+                $("#id").val(id).change();
+                $("#genres").val(null).change();
+                // I give up for now... Will fix this later. -Kris
             }
         });
     },
@@ -1264,7 +1270,7 @@ Template.room.events({
         Session.set("songResults", songs);
         $.ajax({
             type: "GET",
-            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video",
+            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video&maxResults=25",
             applicationType: "application/json",
             contentType: "json",
             success: function (data) {
