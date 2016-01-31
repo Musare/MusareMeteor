@@ -189,8 +189,6 @@ Template.room.onCreated(function () {
         $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
         Session.set("timeFormat", d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
         document.title = Session.get("title") + " - " + Session.get("artist") + " - Musare"
-        var msg = new SpeechSynthesisUtterance("New song:" + Session.get("title") + " By: " + Session.get("artist"));
-        window.speechSynthesis.speak(msg);
     }
 
     function resizeSeekerbar() {
