@@ -63,6 +63,10 @@ Handlebars.registerHelper('active', function(path) {
     return curPath() == path ? 'active' : '';
 });
 
+Handlebars.registerHelper('isLoggedIn', function(path) {
+    return Meteor.userId();
+});
+
 UI.registerHelper("formatTime", function(seconds) {
     var d = moment.duration(parseInt(seconds), 'seconds');
     return d.minutes() + ":" + ("0" + d.seconds()).slice(-2);

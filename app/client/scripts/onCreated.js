@@ -9,6 +9,7 @@ Template.alertsDashboard.onCreated(function() {
 });
 
 Template.landing.onCreated(function(){
+    $("body").css("overflow", "hidden");
     function pageScroll() {
         window.scrollBy(0,1);
         if($(window).scrollTop() + $(window).height() == $(document).height()) {
