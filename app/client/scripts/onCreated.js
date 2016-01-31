@@ -148,6 +148,7 @@ Template.room.onCreated(function () {
     Session.set("reportAlbumart", false);
     Session.set("reportOther", false);
     Session.set("si_or_pl", "singleVideo");
+    Session.set("editingSong", false);
     var parts = location.href.split('/');
     var id = parts.pop();
     var type = id.toLowerCase();

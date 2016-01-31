@@ -6,7 +6,7 @@
                 <div class="nav-wrapper teal accent-4">
                     <ul class="left hide-on-med-and-down">
                         <li><a href="/"><i class="material-icons">home</i></a></li>
-                        <li><a href="#add_song_modal" id="add-song-button"><i
+                        <li><a href="#add_song_modal" id="add-song-modal-button"><i
                                 class="material-icons">playlist_add</i></a></li>
                         <li><a href="#bug_report_modal"><i class="material-icons">bug_report</i></a></li>
                         <li><a href="#vote_to_skip" id="skip_vote"><i class="material-icons">skip_next</i></a></li>
@@ -132,8 +132,68 @@
                                         {{/each}}
                                     </ul>
                                 </div>
+                                {{#if editingSong}}
+                                    <div class="row">
+                                        <button type="button" id="return-button" style="margin-bottom: 20px;" class="btn btn-small col l4 m4 s8 offset-l4 offset-m4 offset-s2 center waves-effect waves-light">Return</button>
+                                        <h4 class="center-align col l12 m12 s12">Add Song</h4>
+                                        <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                                            <select multiple id="genres">
+                                                <option value="" disabled selected>Select Genre(s):</option>
+                                                <option value="edm">EDM</option>
+                                                <option value="chill">Chill</option>
+                                            </select>
+                                            <label>Genre(s)</label>
+                                        </div>
+                                        <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                                            <i class="material-icons prefix">vpn_key</i>
+                                            <label for="id" class="teal-text">Song ID</label>
+                                            <input class="validate" name="id" id="id" type="text" pattern=".{11}"/>
+                                        </div>
+                                        <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                                            <i class="material-icons prefix">person</i>
+                                            <label for="artist" class="teal-text">Song Artist</label>
+                                            <input class="validate" name="artist" id="artist" aria-required="true" type="text"/>
+                                        </div>
+                                        <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                                            <i class="material-icons prefix">subject</i>
+                                            <label for="title" class="teal-text">Song Title</label>
+                                            <input class="validate required" name="title" id="title" type="text"/>
+                                        </div>
+                                        <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                                            <i class="material-icons prefix">image</i>
+                                            <label for="img" class="teal-text">Song Image</label>
+                                            <input class="validate" name="img" id="img" type="url"/>
+                                        </div>
+                                        <button type="button" id="add-song-button" class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Add Song</button>
+                                    </div>
+                                    <script>
+                                        $('#genres').material_select();
+                                    </script>
+                                {{else}}
+                                    <div class="row" id="single-video">
+                                        <div class="input-field">
+                                            <input id="song-input" type="text" class="validate">
+                                            <label for="search_for_song">Search for song</label>
+                                        </div>
+                                        <a class="waves-effect waves-light btn" id="search-song"><i class="material-icons left">search</i>Search</a>
+                                        {{#if singleVideoResultsActive}}
+                                            <div id="single-video-results">
+                                                <ul class="collection teal-text">
+                                                    {{#each result in singleVideoResults}}
+                                                        <li class="collection-item avatar youtube-search-result-li">
+                                                            <img src="{{result.image}}" onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" alt="" class="video-import-thumbnail">
+                                                            <span class="title video-import-text">{{result.title}}</span>
+                                                            <p class="video-import-text">{{result.artist}} <br>
+                                                                <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video In YouTube</a>
+                                                            </p>
+                                                            <a href="#!" class="secondary-content" id="addSong" data-result="{{result.id}}"><i class="material-icons" data-result="{{result.id}}">add</i></a>
+                                                        </li>
+                                                    {{/each}}
+                                                </ul>
+                                            </div>
+                                        {{/if}}
+                                    </div>
                                 {{/if}}
-                            </div>
                             {{else}}
                             <div class="row" id="import-playlist">
                                 <div class="input-field">
@@ -156,7 +216,7 @@
                                                     <p class="video-import-text">{{result.artist}} <br>
                                                         <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video In YouTube</a>
                                                     </p>
-                                                    <a href="#!" class="secondary-content" id="removeSong" data-result="{{id}}"><i class="material-icons">remove</i></a>
+                                                    <a href="#!" class="secondary-content" id="removeSong" data-result="{{result.id}}"><i class="material-icons" data-result="{{result.id}}">remove</i></a>
                                                 </li>
                                             {{/each}}
                                         </ul>
@@ -190,7 +250,7 @@
             </div>
         </main>
         <script>
-            $("#add-song-button").leanModal({
+            $("#add-song-modal-button").leanModal({
                 dismissible: true,
                 opacity: .5,
                 in_duration: 500,

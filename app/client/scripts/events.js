@@ -937,10 +937,58 @@ Template.news.events({
 });
 
 Template.room.events({
-    "click #addSong": function(e) {
-        console.log("Clicked addSong!");
+    "click #add-song-modal-button": function() {
+        Session.set("songResults", []);
+    },
+    "click #return-button": function() {
+        Session.set("editingSong", false);
+    },
+    "click #removeSong": function(e) {
         var id = $(e.target).data("result");
-        console.log(id);
+        var songs = Session.get("songResults");
+        var currentSong;
+        songs = songs.filter(function(song) {
+            return id !== song.id;
+        });
+        Session.set("songResults", []);
+        Session.set("songResults", songs);
+    },
+    "click #addSong": function(e) {
+        var id = $(e.target).data("result");
+        var songs = Session.get("songResults");
+        var currentSong;
+        songs.forEach(function(song) {
+            if (song.id === id) {
+                currentSong = song;
+            }
+        });
+        Session.set("editingSong", true);
+        var title = currentSong.title;
+        var artist = currentSong.artist;
+        var img = currentSong.img;
+        getSpotifyInfo(title.replace(/\[.*\]/g, ""), function (data) {
+            if (data.tracks.items.length > 0) {
+                title = data.tracks.items[0].name;
+                var artists = [];
+                img = data.tracks.items[0].album.images[2].url;
+                data.tracks.items[0].artists.forEach(function (artist) {
+                    artists.push(artist.name);
+                });
+                artist = artists.join(", ");
+                $("#title").val(title).change();
+                $("#artist").val(artist).change();
+                $("#img").val(img).change();
+                $("#id").val(id).change();
+                $("#genres").val(null).change();
+            } else {
+                $("#title").val(title).change();
+                $("#artist").val(artist).change();
+                $("#img").val(img).change();
+                $("#id").val(id).change();
+                $("#genres").val(null).change();
+                // I give up for now... Will fix this later. -Kris
+            }
+        });
     },
     "click #import-playlist-button": function () {
         if (!Session.get("importingPlaylist")) {
@@ -996,7 +1044,7 @@ Template.room.events({
                                 } else {
                                     var percentage = ytImportQueue.length / (totalVideos - videosInvalid) * 100;
                                     $("#import-progress").css({width: percentage + "%"});
-                                    ytImportQueue.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
+                                    ytImportQueue.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.snippet.resourceId.videoId, image: item.snippet.thumbnails.medium.url});
                                 }
                             } else {
                                 videosInvalid++;
@@ -1024,6 +1072,14 @@ Template.room.events({
                             Session.set("YTImportQueue", ytImportQueue);
                             Session.set("songResults", ytImportQueue);
                         }
+                    },
+                    error: function() {
+                        Session.set("importingPlaylist", false);
+                        $("#import-progress").css({width: "0%"});
+                        $("#import-playlist-button").removeAttr("disabled");
+                        $("#import-playlist-button").removeClass("disabled");
+                        $("#playlist-url").removeAttr("disabled");
+                        $("#playlist-url").removeClass("disabled");
                     }
                 })
             }
@@ -1170,36 +1226,28 @@ Template.room.events({
         var title = $("#title").val();
         var artist = $("#artist").val();
         var img = $("#img").val();
-        var songData = {type: type, id: id, title: title, artist: artist, img: img};
-        if (Playlists.find({
-                type: genre,
-                "songs.id": songData.id
-            }, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
-            $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song is already in the playlist.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
-                $(this).remove();
-            });
-        } else if (Queues.find({
-                type: genre,
-                "songs.id": songData.id
-            }, {songs: {$elemMatch: {id: songData.id}}}).count() !== 0) {
-            $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> This song has already been requested.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
-                $(this).remove();
-            });
+        var genres = $("#genres").val() || [];
+        var songData = {type: type, id: id, title: title, artist: artist, img: img, genres: genres};
+        if (Songs.find({"id": songData.id}).count() > 0) {
+            var $toastContent = $('<span><strong>Song not added.</strong> This song has already been added.</span>');
+            Materialize.toast($toastContent, 8000);
+        } else if (Queues.find({"id": songData.id}).count() > 0) {
+            var $toastContent = $('<span><strong>Song not added.</strong> This song has already been requested.</span>');
+            Materialize.toast($toastContent, 8000);
         } else {
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 console.log(err, res);
                 if (err) {
-                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song not added.</strong> Something went wrong.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
-                        $(this).remove();
-                    });
+                    var $toastContent = $('<span><strong>Song not added.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 8000);
                 } else {
-                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Song added.</strong> Your song has been added to the queue.</div>").prependTo($(".landing")).delay(7000).fadeOut(1000, function () {
-                        $(this).remove();
-                    });
+                    var $toastContent = $('<span><strong>Song added.</strong> Your song has succesfully been added to the queue.</span>');
+                    Materialize.toast($toastContent, 8000);
+                    $('#add_song_modal').closeModal();
+                    Session.set("editingSong", false);
                 }
             });
         }
-        $("#close-modal-a").click();
     },
     "click #toggle-video": function (e) {
         e.preventDefault();
@@ -1222,7 +1270,7 @@ Template.room.events({
         Session.set("songResults", songs);
         $.ajax({
             type: "GET",
-            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video",
+            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video&maxResults=25",
             applicationType: "application/json",
             contentType: "json",
             success: function (data) {
@@ -1286,12 +1334,12 @@ Template.room.events({
         Meteor.call("shufflePlaylist", type);
     },
     "change input": function (e) {
-        if (e.target && e.target.id) {
+        /*if (e.target && e.target.id) {
             var partsOfId = e.target.id.split("-");
             partsOfId[1] = partsOfId[1].charAt(0).toUpperCase() + partsOfId[1].slice(1);
             var camelCase = partsOfId.join("");
             Session.set(camelCase, e.target.checked);
-        }
+        }*/
     },
     "click #report-song-button": function () {
         var room = Session.get("type");
