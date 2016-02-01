@@ -66,4 +66,10 @@ Template.room.onRendered(function() {
     rTimeInterval = Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
     }, 10000);
+    window.setTimeout(function(){
+        console.log("THIS IS ME!")
+        var volume = Number(localStorage.getItem("volume")) || 20;
+        $("#volume_slider").val(volume);
+        console.log($("#volume_slider").val());
+    }, 1000)
 });
