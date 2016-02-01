@@ -937,6 +937,14 @@ Template.news.events({
 });
 
 Template.room.events({
+    "input #volume_slider": function() {
+        console.log("Test3");
+        var volume = Number($("#volume_slider").val());
+        localStorage.setItem("volume", volume);
+        if (YTPlayer !== undefined) {
+            YTPlayer.setVolume(volume);
+        }
+    },
     "click #add-song-modal-button": function() {
         Session.set("songResults", []);
     },

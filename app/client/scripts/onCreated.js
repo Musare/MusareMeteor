@@ -256,13 +256,6 @@ Template.room.onCreated(function () {
         }
     }
 
-    function getSongAudio() {
-      var ytURL = "www.youtube.com/watch?v=" + currentSong.id;
-      Meteor.call('getSongAudio', ytURL);
-
-      startSong();
-    }
-
     Session.set("loaded", false);
     Meteor.subscribe("rooms", function() {
         var parts = location.href.split('/');
@@ -299,7 +292,7 @@ Template.room.onCreated(function () {
                     currentSong.started = room.currentSong.started;
                     Session.set("currentSong", currentSong);
                     Meteor.clearTimeout(Session.get("loadVideoTimeout"));
-                    getSongAudio();
+                    startSong();
                 }
 
                 if (currentSong !== undefined) {
@@ -307,6 +300,8 @@ Template.room.onCreated(function () {
                         var duration = (Date.now() - currentSong.started - room.timePaused) / 1000;
                         var song_duration = currentSong.duration;
                         if (song_duration <= duration) {
+                            console.log("True!!! ", duration, "  ", song_duration);
+                            console.log("True!!!222 ", currentSong.started, "  ", room.timePaused);
                             Session.set("pauseVideo", true);
                         }
                         var d = moment.duration(duration, 'seconds');

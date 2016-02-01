@@ -66,35 +66,4 @@ Template.room.onRendered(function() {
     rTimeInterval = Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
     }, 10000);
-    $(document).ready(function() {
-        function makeSlider(){
-            var slider = $("#volume-slider").slider();
-            var volume = Number(localStorage.getItem("volume"));
-            $("#volume-slider").slider("setValue", volume);
-            if (slider.length === 0) {
-                Meteor.setTimeout(function() {
-                    makeSlider();
-                }, 500);
-            } else {
-                if (volume === 0) {
-                    $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
-                } else {
-                    $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
-                }
-                slider.on("slide", function(val) {
-                    if (val.value === 0) {
-                        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
-                    } else {
-                        $("#volume-icon").removeClass("fa-volume-off").addClass("fa-volume-down")
-                    }
-
-                    if (YTPlayer !== undefined) {
-                        YTPlayer.setVolume(val.value);
-                        localStorage.setItem("volume", val.value);
-                    }
-                });
-            }
-        }
-        makeSlider();
-    });
 });

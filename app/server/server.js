@@ -22,7 +22,7 @@ Meteor.startup(function () {
         sendVerificationEmail: true
     });
 
-    if (Songs.find().count() === 0) {
+    if (Songs.find().count() === 0 || Songs.find({mid: default_song.mid}).count() === 0) {
         Songs.insert(default_song);
     }
 });
@@ -141,6 +141,7 @@ function createRoom(display, tag, private, desc) {
 }
 
 function Station(type) {
+    console.log(type);
     if (Playlists.find({type: type}).count() === 0) {
         Playlists.insert({type: type, songs: [default_song.mid], lastSong: 0});
     }
@@ -169,12 +170,13 @@ function Station(type) {
     } else currentSong = 0;
     var currentMid = songs[currentSong];
 
-    var song = Songs.findOne({mid: songs[currentSong]});
+    var song = Songs.findOne({mid: currentMid});
     if (song === undefined) {
         Playlists.remove({}, {$pull: {songs: currentMid}});
         song = default_song;
     }
-
+console.log(startedAt);
+console.log(song);
     var res = Rooms.update({type: type}, {
         $set: {
             currentSong: {song: song, started: startedAt},
@@ -393,7 +395,9 @@ Rooms.find({}).fetch().forEach(function (room) {
         Playlists.insert({type: type, songs: []});
     }
     if (Playlists.findOne({type: type}).songs.length === 0) {
-        // Add a global video to Playlist so it can proceed
+        Playlists.update({type: type}, {$push: {songs: default_song.mid}}, function() {
+            stations.push(new Station(type));
+        });
     } else {
         stations.push(new Station(type));
     }
