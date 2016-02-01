@@ -167,9 +167,9 @@ Template.room.onCreated(function () {
 
     var currentSong = undefined;
     var currentSongR = undefined;
-    var type = Session.get("type");
 
     function getTimeElapsed() {
+        var type = Session.get("type");
         if (currentSong !== undefined) {
             var room = Rooms.findOne({type: type});
             if (room !== undefined) {
@@ -262,6 +262,7 @@ Template.room.onCreated(function () {
         var parts = location.href.split('/');
         var id = parts.pop();
         var type = id.toLowerCase();
+        console.log("Set Type!!!");
         Session.set("type", type);
         if (Rooms.find({type: type}).count() !== 1) {
             window.location = "/";
