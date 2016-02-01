@@ -10,11 +10,12 @@ Router.onBeforeAction(function() {
             if (res) {
                 self.render('banned');
             } else {
+                document.title = 'Musare';
                 next();
             }
         });
     } else {
-        next();
+       this.next();
     }
 });
 
