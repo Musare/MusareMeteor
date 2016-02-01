@@ -1,0 +1,180 @@
+<template name="manageSongs">
+    {{> alerts}}
+    <div class="landing">
+        {{> header}}
+        <div class="row">
+            <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-playlist-panel card-panel teal accent-3">
+                <div class="card-content white-text">
+                    <h3 class="text-center">Filters</h3>
+                    <p>
+                        <input checked="checked" type="checkbox" id="show_genres_cb" />
+                        <label for="show_genres_cb" class="white-text">Show songs with genres</label>
+                    </p>
+                    <p>
+                        <input type="checkbox" id="show_no_genres_cb" />
+                        <label for="show_no_genres_cb" class="white-text">Show songs without a genre</label>
+                    </p>
+                </div>
+            </div>
+            <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-playlist-panel card-panel teal accent-3">
+                <div class="card-content white-text">
+                    <h3 class="text-center">Songs</h3>
+                    <table class="bordered">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Artist(s)</th>
+                            <th>Id</th>
+                            <th>Mid</th>
+                            <th>Genres</th>
+                            <th>Likes</th>
+                            <th>Dislikes</th>
+                            <th class="table-right-th">Edit</th>
+                            <th class="table-right-th">Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each songs}}
+                            <tr>
+                                <th align="left" scope="row">{{title}}</th>
+                                <td align="left">{{artist}}</td>
+                                <td align="left">{{id}}</td>
+                                <td align="left">{{mid}}</td>
+                                <td align="left">{{genres}}</td>
+                                <td align="left">{{likes}}</td>
+                                <td align="left">{{dislikes}}</td>
+                                <td class="table-right-td">
+                                    <button class="btn edit-song-button"
+                                            data-toggle="modal" data-target="#editModal">Edit
+                                    </button>
+                                </td>
+                                <td class="table-right-td">
+                                    <button class="btn red remove-song-button"><i
+                                            class="material-icons">remove_circle</i></button>
+                                </td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="editModal" class="modal modal-fixed-footer">
+        <div class="modal-content musare white-text">
+            <div class="row">
+                <h4 class="center-align">Video Preview</h4>
+                <div class="video-container" id="previewPlayerContainer">
+                    <div width="960" height="540" id="previewPlayer"></div>
+                </div>
+                <div class="seeker-bar-container col l10 m10 s10 white" id="preview-progress">
+                    <div class="seeker-bar teal" style="width: 0%"></div>
+                </div>
+            <span class="col l2 m2 s2 center" id="preview-time">
+                <span id="time-elapsed">0:00</span> / <span id="time-total">0:00</span>
+            </span>
+                <button id="play" title="Play video" class="btn green col m1 s1 l1 offset-l3 offset-m3 offset-s3">
+                    <i class="material-icons">play_arrow</i>
+                </button>
+                <button id="stop" title="Stop video" class="btn red col m1 s1 l1" disabled>
+                    <i class="material-icons">stop</i>
+                </button>
+                <button id="pause" title="Pause video" class="btn orange col m1 s1 l1" disabled>
+                    <i class="material-icons">pause</i>
+                </button>
+                <button id="forward" title="Go to the last 10 seconds of the video" class="btn blue col m1 s1 l1"
+                        disabled>
+                    <i class="material-icons">fast_forward</i>
+                </button>
+                <form class="col m2 s2 l2" action="#">
+                    <p class="range-field" style="margin-top: 0">
+                        <input type="range" id="volume_slider" min="0" max="100"/>
+                    </p>
+                </form>
+            </div>
+            <div class="row">
+                <h4 class="center-align">Image Preview</h4>
+                <img id="song-preview"
+                     onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'"
+                     class="center-block" src="{{song_image}}"/>
+            </div>
+            <div class="row">
+                <h4 class="center-align">Edit Info</h4>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <select multiple id="genres">
+                        <option value="" disabled selected>Select Genre(s):</option>
+                        <option value="edm">EDM</option>
+                        <option value="chill">Chill</option>
+                    </select>
+                    <label class="white-text">Genre(s)</label>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <label for="mid" class="white-text">Song MID</label>
+                    <input class="validate" name="mid" id="mid" type="text" pattern=".{6}"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <label for="mid" class="white-text">Song ID</label>
+                    <input class="validate" name="id" id="id" type="text" pattern=".{11}"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">vpn_key</i>
+                    <label for="mid" class="white-text">Song Genres</label>
+                    <input class="validate" name="genres" id="genres" type="text" disabled/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">person</i>
+                    <label for="id" class="white-text">Song Artist</label>
+                    <input class="validate" name="artist" id="artist" aria-required="true" type="text"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">subject</i>
+                    <label for="title" class="white-text">Song Title</label>
+                    <input class="validate required" name="title" id="title" type="text"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">timelapse</i>
+                    <label for="title" class="white-text">Song Duration</label>
+                    <input class="validate" name="duration" id="duration" type="number" step="any" min="0"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">timer_off</i>
+                    <label for="skip-duration" class="white-text">Skip Duration</label>
+                    <input class="validate" id="skip-duration" type="number" step="any" min="0"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">thumb_up</i>
+                    <label for="likes" class="white-text">Likes</label>
+                    <input disabled id="likes" type="number"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">thumb_down</i>
+                    <label for="dislikes" class="white-text">Dislikes</label>
+                    <input disabled id="dislikes" type="number"/>
+                </div>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <i class="material-icons prefix">image</i>
+                    <label for="img" class="white-text">Song Image</label>
+                    <input class="validate" name="img" id="img" type="url"/>
+                </div>
+            </div>
+            <div class="row">
+                <button type="button" id="get-spotify-info"
+                        class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Get
+                    Spotify Data
+                </button>
+                <button type="button" id="save-song-button"
+                        class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Save
+                    Changes
+                </button>
+            </div>
+            <script>
+                $('#genres').material_select();
+            </script>
+        </div>
+        <div class="modal-footer musare white-text">
+            <a href="#!" class="modal-action modal-close waves-effect waves-light btn-flat white">X</a>
+        </div>
+    </div>
+</template>

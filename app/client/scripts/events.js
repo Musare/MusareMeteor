@@ -441,6 +441,8 @@ Template.queues.events({
         $("#dislikes").val(this.dislikes).change();
         $("#duration").val(this.duration).change();
         $("#skip-duration").val(this.skipDuration).change();
+        $("#genres").val(this.genres).change();
+        $("#genres").material_select();
         $("#previewPlayerContainer").addClass("hide-preview");
         Session.set("image_url", this.img);
         Session.set("editing", true);
@@ -636,7 +638,7 @@ Template.queues.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        newSong.genres = Session.get("song").genres;
+        newSong.genres = $("#genres").val();
         if(newSong.skipDuration === undefined){
             newSong.skipDuration = 0;
         }
@@ -866,7 +868,245 @@ Template.manageStation.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        newSong.genres = Session.get("song").genres;
+        newSong.genres = $("#genres").val();
+        Meteor.call("updatePlaylistSong", newSong.mid, newSong, function(err, res) {
+            console.log(err, res);
+            if (err) {
+                var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 8000);
+            } else {
+                var $toastContent = $('<span><strong>Song saved!</strong> No errors were found.</span>');
+                Materialize.toast($toastContent, 4000);
+                Session.set("song", newSong);
+            }
+        });
+    }
+});
+
+Template.manageSongs.events({
+    /* TODO Add undo delete button */
+    "change #show_genres_cb": function() {
+        var selected = $("#show_genres_cb").is(":checked");
+        Session.set("showGenres", selected);
+    },
+    "change #show_no_genres_cb": function() {
+        var selected = $("#show_no_genres_cb").is(":checked");
+        Session.set("showNoGenres", selected);
+    },
+    "input #id": function() {
+        $("#previewPlayerContainer").addClass("hide-preview");
+    },
+    "input #img": function() {
+        var url = $("#img").val();
+        Session.set("image_url", url);
+    },
+    "click .preview-button": function(e){
+        Session.set("song", this);
+        $("#previewModal").openModal();
+    },
+    "click #previewImageButton": function() {
+        $("#preview-image").attr("src", Session.get("song").img);
+    },
+    "click .edit-song-button": function(e){
+        Session.set("song", this);
+        Session.set("genre", $(e.target).data("genre"));
+        $("#mid").val(this.mid).change();
+        $("#artist").val(this.artist).change();
+        $("#title").val(this.title).change();
+        $("#img").val(this.img).change();
+        $("#id").val(this.id).change();
+        $("#likes").val(this.likes).change();
+        $("#dislikes").val(this.dislikes).change();
+        $("#duration").val(this.duration).change();
+        $("#skip-duration").val(this.skipDuration).change();
+        $("#genres").val(this.genres).change();
+        $("#genres").material_select();
+        $("#previewPlayerContainer").addClass("hide-preview");
+        Session.set("image_url", this.img);
+        Session.set("editing", true);
+        $("#editModal").openModal({
+            complete : function() {
+                Session.set("editing", false);
+                if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined) {
+                    YTPlayer.stopVideo();
+                }
+            }
+        });
+    },
+    "click .remove-song-button": function(e){
+        var genre = $(e.target).data("genre") || $(e.target).parent().data("genre");
+        Meteor.call("removeSongFromPlaylist", genre, this.mid);
+    },
+    "click #play": function() {
+        var duration = Session.get("song").duration;
+        var d = moment.duration(parseInt(duration), 'seconds');
+        $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
+        $("#previewPlayerContainer").removeClass("hide-preview");
+        var song = Session.get("song");
+        var id = song.id;
+        var volume = localStorage.getItem("volume") || 20;
+        if (song.duration !== 0) {
+            $("#play").attr("disabled", true);
+            $("#stop").attr("disabled", false);
+            $("#pause").attr("disabled", false);
+            $("#forward").attr("disabled", false);
+            if (YTPlayer === undefined) {
+                YTPlayer = new YT.Player("previewPlayer", {
+                    height: 540,
+                    width: 568,
+                    videoId: id,
+                    playerVars: {autoplay: 1, controls: 0, iv_load_policy: 3, showinfo: 0, fs: 0},
+                    events: {
+                        'onReady': function(event) {
+                            event.target.seekTo(Number(song.skipDuration));
+                            event.target.playVideo();
+                            event.target.setVolume(volume);
+                        },
+                        'onStateChange': function(event){
+                            if (event.data == YT.PlayerState.PAUSED) {
+                                if (seekerBarInterval !== undefined) {
+                                    Meteor.clearInterval(seekerBarInterval);
+                                    seekerBarInterval = undefined;
+                                }
+                            }
+                            if (event.data == YT.PlayerState.UNSTARTED) {
+                                if (seekerBarInterval !== undefined) {
+                                    Meteor.clearInterval(seekerBarInterval);
+                                    seekerBarInterval = undefined;
+                                }
+                                $(".seeker-bar").css({width: "0"});
+                                $("#time-elapsed").text("0:00");
+                                $("#previewPlayerContainer").addClass("hide-preview");
+                            }
+                            if (event.data == YT.PlayerState.PLAYING) {
+                                seekerBarInterval = Meteor.setInterval(function() {
+                                    var duration = Session.get("song").duration;
+                                    var timeElapsed = YTPlayer.getCurrentTime();
+                                    var skipDuration = Session.get("song").skipDuration;
+
+                                    if (duration <= (timeElapsed - skipDuration)) {
+                                        YTPlayer.stopVideo();
+                                        $("#play").attr("disabled", false);
+                                        $("#stop").attr("disabled", true);
+                                        $("#pause").attr("disabled", true);
+                                        $("#forward").attr("disabled", true);
+                                        $("#previewPlayerContainer").addClass("hide-preview");
+                                        $(".seeker-bar").css({width: "0"});
+                                        $("#time-elapsed").text("0:00");
+                                        Meteor.clearInterval(seekerBarInterval);
+                                    } else {
+                                        var percentComplete = (timeElapsed - skipDuration) / duration * 100;
+                                        $(".seeker-bar").css({width: percentComplete + "%"});
+                                        var d = moment.duration(timeElapsed - skipDuration, 'seconds');
+                                        $("#time-elapsed").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
+                                    }
+                                }, 100);
+                                $("#play").attr("disabled", true);
+                                $("#stop").attr("disabled", false);
+                                $("#pause").attr("disabled", false);
+                                $("#forward").attr("disabled", false);
+                            } else {
+                                $("#play").attr("disabled", false);
+                                $("#stop").attr("disabled", true);
+                                $("#pause").attr("disabled", true);
+                                $("#forward").attr("disabled", true);
+                            }
+                        }
+                    }
+                });
+            } else {
+                if (YTPlayer.getPlayerState() === 2) {
+                    YTPlayer.playVideo();
+                } else {
+                    console.log(id, song.skipDuration, song.duration);
+                    YTPlayer.loadVideoById(id);
+                    YTPlayer.seekTo(Number(song.skipDuration));
+                }
+            }
+            $("#previewPlayerContainer").removeClass("hide-preview");
+        }
+    },
+    "click #stop": function() {
+        $("#play").attr("disabled", false);
+        $("#stop").attr("disabled", true);
+        $("#pause").attr("disabled", true);
+        $("#forward").attr("disabled", true);
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined) {
+            YTPlayer.stopVideo();
+        }
+    },
+    "click #pause": function() {
+        $("#play").attr("disabled", false);
+        $("#stop").attr("disabled", false);
+        $("#pause").attr("disabled", true);
+        $("#forward").attr("disabled", true);
+        if (previewEndSongTimeout !== undefined) {
+            Meteor.clearTimeout(previewEndSongTimeout);
+        }
+        if (YTPlayer !== undefined && YTPlayer.pauseVideo !== undefined) {
+            YTPlayer.pauseVideo();
+        }
+    },
+    "click #forward": function() {
+        var error = false;
+        if (YTPlayer !== undefined) {
+            var duration = Number(Session.get("song").duration) | 0;
+            var skipDuration = Number(Session.get("song").skipDuration) | 0;
+            if (YTPlayer.getDuration() < duration + skipDuration) {
+                var $toastContent = $('<span><strong>Error.</strong> The song duration is longer than the length of the video.</span>');
+                Materialize.toast($toastContent, 8000);
+                error = true;
+            } else {
+                YTPlayer.seekTo(skipDuration + duration - 10);
+            }
+        }
+        if (!error) {
+            if (previewEndSongTimeout !== undefined) {
+                Meteor.clearTimeout(previewEndSongTimeout);
+            }
+            previewEndSongTimeout = Meteor.setTimeout(function() {
+                if (YTPlayer !== undefined) {
+                    YTPlayer.stopVideo();
+                }
+                $("#play").attr("disabled", false);
+                $("#stop").attr("disabled", true);
+                $("#pause").attr("disabled", true);
+                $("#forward").attr("disabled", true);
+                $("#previewPlayerContainer").addClass("hide-preview");
+            }, 10000);
+        }
+    },
+    "click #get-spotify-info": function() {
+        var search = $("#title").val();
+        var artistName = $("#artist").val();
+        getSpotifyInfo(search, function(data) {
+            for(var i in data){
+                for(var j in data[i].items){
+                    if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
+                        $("#img").val(data[i].items[j].album.images[2].url).change();
+                        $("#duration").val(data[i].items[j].duration_ms / 1000).change();
+                        return;
+                    }
+                }
+            }
+        }, artistName);
+    },
+    "click #save-song-button": function() {
+        var newSong = {};
+        newSong.mid = $("#mid").val();
+        newSong.id = $("#id").val();
+        newSong.likes = Number($("#likes").val());
+        newSong.dislikes = Number($("#dislikes").val());
+        newSong.title = $("#title").val();
+        newSong.artist = $("#artist").val();
+        newSong.img = $("#img").val();
+        newSong.duration = Number($("#duration").val());
+        newSong.skipDuration = $("#skip-duration").val();
+        newSong.requestedBy = Session.get("song").requestedBy;
+        newSong.genres = $("#genres").val() || [];
         Meteor.call("updatePlaylistSong", newSong.mid, newSong, function(err, res) {
             console.log(err, res);
             if (err) {
