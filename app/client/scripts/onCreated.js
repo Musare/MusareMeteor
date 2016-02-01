@@ -193,7 +193,7 @@ Template.room.onCreated(function () {
 
     function resizeSeekerbar() {
         if (Session.get("state") === "playing") {
-            $("#seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
+            $(".seeker-bar").width(((getTimeElapsed() / 1000) / Session.get("duration") * 100) + "%");
         }
     }
 

@@ -190,12 +190,12 @@ textarea{
   cursor: pointer;
 }
 
-#thumbs_up:hover {
-  color: #00bfa5;
+#thumbs_up:hover, .liked {
+  color: #00bfa5 !important;
 }
 
-#thumbs_down:hover {
-  color: #e53935;
+#thumbs_down:hover, .disliked {
+  color: #e53935 !important;
 }
 
 .feedback-message{
