@@ -188,8 +188,20 @@ Template.room.onCreated(function () {
         var d = moment.duration(parseInt(songData.duration), 'seconds');
         $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
         Session.set("timeFormat", d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
-        document.title = Session.get("title") + " - " + Session.get("artist") + " - Musare"
+        document.title = Session.get("title") + " - " + Session.get("artist") + " - ";
+        var title = Session.get("title") + " - " + Session.get("artist") + " - ";
+        if (Session.get("titleScroller") !== undefined) {
+            Meteor.clearInterval(Session.get("titleScroller"));
+        }
+        Session.set("titleScroller", Meteor.setInterval(function() {
+             title = title.split("");
+             var last = title.shift();
+             title.push(last);
+             title = title.join("");
+             document.title = title;
+        }, 500));
     }
+
 
     function resizeSeekerbar() {
         if (Session.get("state") === "playing") {
@@ -262,7 +274,6 @@ Template.room.onCreated(function () {
         var parts = location.href.split('/');
         var id = parts.pop();
         var type = id.toLowerCase();
-        console.log("Set Type!!!");
         Session.set("type", type);
         if (Rooms.find({type: type}).count() !== 1) {
             window.location = "/";
