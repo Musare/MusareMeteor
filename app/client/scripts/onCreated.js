@@ -33,6 +33,9 @@ Template.home.onCreated(function() {
     if (Session.get("minterval") !== undefined) {
         Meteor.clearInterval(Session.get("minterval"));
     }
+    if (Session.get("titleScroller") !== undefined) {
+        Meteor.clearInterval(Session.get("titleScroller"));
+    }
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
