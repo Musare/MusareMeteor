@@ -1,4 +1,3 @@
-var minterval;
 var StationSubscription = undefined;
 var resizeSeekerbarInterval;
 
@@ -30,9 +29,9 @@ Template.banned.onCreated(function() {
     Session.set("ban", Meteor.user().punishments.ban);
 });
 
-Template.dashboard.onCreated(function() {
-    if (minterval !== undefined) {
-        Meteor.clearInterval(minterval);
+Template.home.onCreated(function() {
+    if (Session.get("minterval") !== undefined) {
+        Meteor.clearInterval(Session.get("minterval"));
     }
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
@@ -280,7 +279,7 @@ Template.room.onCreated(function () {
         } else {
             StationSubscription = Meteor.subscribe(type);
             Session.set("loaded", true);
-            minterval = Meteor.setInterval(function () {
+            Session.set("minterval", Meteor.setInterval(function () {
                 var room = Rooms.findOne({type: type});
                 if (room !== undefined) {
                     if (room.state === "paused" || Session.get("pauseVideo")) {
@@ -313,8 +312,6 @@ Template.room.onCreated(function () {
                         var duration = (Date.now() - currentSong.started - room.timePaused) / 1000;
                         var song_duration = currentSong.duration;
                         if (song_duration <= duration) {
-                            console.log("True!!! ", duration, "  ", song_duration);
-                            console.log("True!!!222 ", currentSong.started, "  ", room.timePaused);
                             Session.set("pauseVideo", true);
                         }
                         var d = moment.duration(duration, 'seconds');
@@ -323,10 +320,10 @@ Template.room.onCreated(function () {
                         }
                     }
                 }
-            }, 100);
+            }, 100));
             resizeSeekerbarInterval = Meteor.setInterval(function () {
                 resizeSeekerbar();
-            }, 500);
+            }, 500)
         }
     });
 });
