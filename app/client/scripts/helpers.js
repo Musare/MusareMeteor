@@ -313,7 +313,7 @@ Template.room.helpers({
         if (Meteor.userId()) {
             var currentSong = Session.get("currentSong");
             if (currentSong && Meteor.user().profile.liked.indexOf(currentSong.mid) !== -1) {
-                return "active";
+                return "liked";
             } else {
                 return "";
             }
@@ -325,7 +325,7 @@ Template.room.helpers({
         if (Meteor.userId()) {
             var currentSong = Session.get("currentSong");
             if (currentSong && Meteor.user().profile.disliked.indexOf(currentSong.mid) !== -1) {
-                return "active";
+                return "disliked";
             } else {
                 return "";
             }

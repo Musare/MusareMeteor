@@ -806,15 +806,15 @@ Meteor.methods({
             var user = Meteor.user();
             if (user.profile.liked.indexOf(mid) === -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.liked": mid}});
-                Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.likes": 1}})
+                Songs.update({mid: mid}, {$inc: {"likes": 1}})
             } else {
                 Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.liked": mid}});
-                Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.likes": -1}})
+                Songs.update({mid: mid}, {$inc: {likes: -1}})
             }
 
             if (user.profile.disliked.indexOf(mid) !== -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.disliked": mid}});
-                Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.dislikes": -1}})
+                Songs.update({mid: mid}, {$inc: {dislikes: -1}})
             }
             return true;
         } else {
@@ -826,15 +826,15 @@ Meteor.methods({
             var user = Meteor.user();
             if (user.profile.disliked.indexOf(mid) === -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.disliked": mid}});
-                Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.dislikes": 1}});
+                Songs.update({mid: mid}, {$inc: {dislikes: 1}});
             } else {
                 Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.disliked": mid}});
-                Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.dislikes": -1}});
+                Songs.update({mid: mid}, {$inc: {dislikes: -1}});
             }
 
             if (user.profile.liked.indexOf(mid) !== -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$pull: {"profile.liked": mid}});
-                Playlists.update({"songs.mid": mid}, {$inc: {"songs.$.likes": -1}});
+                Songs.update({mid: mid}, {$inc: {likes: -1}});
             }
             return true;
         } else {
