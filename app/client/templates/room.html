@@ -157,6 +157,7 @@
                                         <a class="waves-effect waves-light btn" id="search-song"><i class="material-icons left">search</i>Search</a>
                                         {{#if singleVideoResultsActive}}
                                             <div id="single-video-results">
+                                              <div style="overflow: auto; height: 30vh; margin-top: 1rem;">
                                                 <ul class="collection teal-text">
                                                     {{#each result in singleVideoResults}}
                                                         <li class="collection-item avatar youtube-search-result-li">
@@ -170,6 +171,7 @@
                                                     {{/each}}
                                                 </ul>
                                             </div>
+                                          </div>
                                         {{/if}}
                                     </div>
                                 {{/if}}
