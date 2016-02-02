@@ -1081,6 +1081,13 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
+    deleteSong: function (mid) {
+        if (isModerator() && !isBanned()) {
+            Songs.remove({mid: mid})
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     addSongToPlaylist: function (songData) {
         if (isModerator() && !isBanned()) {
             var requiredProperties = ["_id", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy", "genres"];
