@@ -5,14 +5,13 @@
             <div class="row">
                 {{#each rooms}}
                     <div class="col s12 m5 l2">
-                        <div class="card">
+                        <div class="card hoverable">
                             <div class="card-image waves-effect waves-block waves-light">
                                 <a href=/{{type}}>
                                     <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
-                                    <figcaption>
-                                        <h5>{{currentSong.song.title}}</h5>
-                                        <h5>{{currentSong.song.artist}}</h5>
-                                        <a href=/{{type}} class="waves-effect waves-light btn">Join Room</a>
+                                    <figcaption class="caption center-align">
+                                      <h5>{{currentSong.song.title}}</h5>
+                                      <h5>{{currentSong.song.artist}}</h5>
                                     </figcaption>
                                 </a>
                             </div>
@@ -21,7 +20,7 @@
                                 <p>{{roomDesc}}</p>
                             </div>
                             <div class="card-action">
-                                <a href=/{{type}}>Join Room</a>
+                                <a href=/{{type}} class="teal-text text-accent-4">Join Room</a>
                             </div>
                         </div>
                     </div>

@@ -33,6 +33,9 @@ Template.home.onCreated(function() {
     if (Session.get("minterval") !== undefined) {
         Meteor.clearInterval(Session.get("minterval"));
     }
+    if (Session.get("titleScroller") !== undefined) {
+        Meteor.clearInterval(Session.get("titleScroller"));
+    }
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
@@ -99,6 +102,24 @@ Template.queues.onCreated(function() {
 });
 
 Template.manageStation.onCreated(function() {
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    YTPlayer = undefined;
+    $(document).keydown(function(evt){
+        if (evt.keyCode==83 && (evt.ctrlKey)){
+            evt.preventDefault();
+            if (Session.get("editing") === true) {
+                $("#save-song-button").click();
+            }
+        }
+    });
+});
+
+Template.manageSongs.onCreated(function() {
+    Session.set("showNoGenres", false);
+    Session.set("showGenres", true);
     var tag = document.createElement("script");
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName('script')[0];

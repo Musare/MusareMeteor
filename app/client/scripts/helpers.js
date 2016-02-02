@@ -210,6 +210,23 @@ Template.news.helpers({
     }
 });
 
+Template.manageSongs.helpers({
+    songs: function () {
+        var noGenres = Session.get("showNoGenres");
+        var genres = Session.get("showGenres");
+        if (noGenres === true && genres === true) {
+            return Songs.find();
+        } else if (noGenres === true && genres === false) {
+            return Songs.find({genres: []});
+        } else {
+            return Songs.find({$where : "this.genres.length > 0"});
+        }
+    },
+    song_image: function() {
+        return Session.get("image_url");
+    }
+});
+
 Template.manageStation.helpers({
     songs: function () {
         var parts = location.href.split('/');
@@ -221,8 +238,6 @@ Template.manageStation.helpers({
         var songs = [];
         if (playlist !== undefined && playlist.songs !== undefined) {
             playlist.songs.forEach(function(songMid) {
-                console.log(songMid);
-                console.log(Songs.findOne({mid: songMid}));
                 songs.push(Songs.findOne({mid: songMid}));
             });
         }

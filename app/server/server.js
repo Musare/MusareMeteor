@@ -1052,7 +1052,8 @@ Meteor.methods({
                 "img": newSong.img,
                 "duration": newSong.duration,
                 "skipDuration": newSong.skipDuration,
-                "approvedBy": Meteor.userId()
+                "approvedBy": Meteor.userId(),
+                "genres": newSong.genres
         }}, function(err) {
                 console.log(err);
                 if (err) {
