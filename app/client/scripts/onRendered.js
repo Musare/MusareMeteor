@@ -1,5 +1,3 @@
-var rTimeInterval = undefined;
-
 Template.queues.onRendered(function() {
     $("#previewModal").on("hidden.bs.modal", function() {
         if (previewEndSongTimeout !== undefined) {
@@ -76,21 +74,21 @@ Template.manageSongs.onRendered(function() {
 });
 
 Template.news.onRendered(function() {
-    if (rTimeInterval !== undefined) {
-        Meteor.clearInterval(rTimeInterval)
+    if (Session.get("rTimeInterval") !== undefined) {
+        Meteor.clearInterval(Session.get("rTimeInterval"))
     }
-    rTimeInterval = Meteor.setInterval(function() {
+    Session.set("rTimeInterval", Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
-    }, 10000);
+    }, 10000));
 });
 
 Template.room.onRendered(function() {
-    if (rTimeInterval !== undefined) {
-        Meteor.clearInterval(rTimeInterval)
+    if (Session.get("rTimeInterval") !== undefined) {
+        Meteor.clearInterval(Session.get("rTimeInterval"))
     }
-    rTimeInterval = Meteor.setInterval(function() {
+    Session.set("rTimeInterval", Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
-    }, 10000);
+    }, 10000));
     window.setTimeout(function(){
         console.log("THIS IS ME!")
         var volume = Number(localStorage.getItem("volume")) || 20;

@@ -378,6 +378,10 @@ Schemas.UserPunishments = new SimpleSchema({
         type: String,
         label: "Banned By"
     },
+    "ban.bannedReason": {
+        type: String,
+        label: "Banned Reason"
+    },
     "ban.bannedAt": {
         type: Date,
         label: "Banned At"
@@ -398,6 +402,10 @@ Schemas.UserPunishments = new SimpleSchema({
     "bans.$.bannedBy": {
         type: String,
         label: "Banned By"
+    },
+    "bans.$.bannedReason": {
+        type: String,
+        label: "Banned Reason"
     },
     "bans.$.bannedAt": {
         type: Date,
