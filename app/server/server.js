@@ -290,7 +290,7 @@ console.log(song);
         }
     };
 
-    this.songTimer();
+    this.skipSong();
     this.voted = [];
 }
 
