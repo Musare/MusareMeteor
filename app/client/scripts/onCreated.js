@@ -17,15 +17,15 @@ Template.landing.onCreated(function(){
         scrolldelay = setTimeout(pageScroll,50);
     }
     pageScroll();
-})
+});
 
 Template.banned.onCreated(function() {
-    if (rTimeInterval !== undefined) {
-        Meteor.clearInterval(rTimeInterval)
+    if (Session.get("rTimeInterval") !== undefined) {
+        Meteor.clearInterval(Session.get("rTimeInterval"))
     }
-    rTimeInterval = Meteor.setInterval(function() {
+    Session.set("rTimeInterval", Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
-    }, 10000);
+    }, 10000));
     Session.set("ban", Meteor.user().punishments.ban);
 });
 

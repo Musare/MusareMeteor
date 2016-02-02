@@ -290,7 +290,7 @@ console.log(song);
         }
     };
 
-    this.songTimer();
+    this.skipSong();
     this.voted = [];
 }
 
@@ -1077,6 +1077,13 @@ Meteor.methods({
     removeSongFromPlaylist: function (type, mid) {
         if (isModerator() && !isBanned()) {
             Playlists.remove({type: type}, {$pull: {songs: mid}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    deleteSong: function (mid) {
+        if (isModerator() && !isBanned()) {
+            Songs.remove({mid: mid})
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
