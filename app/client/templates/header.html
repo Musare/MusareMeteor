@@ -2,45 +2,45 @@
     <header>
         <!-- Dropdown Structure -->
         <ul id="contributeDrop" class="dropdown-content">
-            <li><a href="https://www.github.com/Musare/Musare" target="_blank">Github</a></li>
-            <li><a href="donate.html">Donate</a></li>
-            <li><a href="/feedback">Feedback</a></li>
+            <li><a href="https://www.github.com/Musare/Musare" target="_blank" class="grey-text text-darken-4">Github</a></li>
+            <li><a href="donate.html" class="grey-text text-darken-4">Donate</a></li>
+            <li><a href="/feedback" class="grey-text text-darken-4">Feedback</a></li>
         </ul>
         <ul id="aboutDrop" class="dropdown-content">
-            <li><a href="/project">The Project</a></li>
-            <li><a href="/team">The Team</a></li>
+            <li><a href="/project" class="grey-text text-darken-4">The Project</a></li>
+            <li><a href="/team" class="grey-text text-darken-4">The Team</a></li>
         </ul>
         <ul id="accountDrop" class="dropdown-content">
             {{#if currentUser}}
-                <li><a href="/u/{{currentUser.profile.username}}">Profile</a></li>
-                <li><a href="/settings">Settings</a></li>
+                <li><a href="/u/{{currentUser.profile.username}}" class="grey-text text-darken-4">Profile</a></li>
+                <li><a href="/settings" class="grey-text text-darken-4">Settings</a></li>
                 <li class="divider"></li>
-                <li class="logout"><a>Logout</a></li>
+                <li class="logout"><a class="grey-text text-darken-4">Logout</a></li>
             {{else}}
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
+                <li><a href="/login" class="grey-text text-darken-4">Login</a></li>
+                <li><a href="/register" class="grey-text text-darken-4">Register</a></li>
             {{/if}}
         </ul>
         <nav>
-            <div class="nav-wrapper teal accent-4">
-                <a href="/" class="brand-logo light">Musare</a>
-                <a href="#" data-activates="mobile-navi" class="button-collapse"><i class="material-icons">menu</i></a>
+            <div class="nav-wrapper grey darken-4">
+                <a href="/" class="brand-logo light white-text">Musare</a>
+                <a href="#" data-activates="mobile-navi" class="button-collapse white-text"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down scroll-fix">
                   {{#if isModerator}}
-                    <li><a  class="orange-text" href="/admin"><b>Admin</b></a></li>
+                    <li><a  class="teal-text text-accent-4" href="/admin"><b>Admin</b></a></li>
                   {{/if}}
-                    <li><a href="/news">News</a></li>
-                    <li><a class="dropdown-button" href="#!" data-activates="contributeDrop">Contribute<i
+                    <li><a href="/news" class="white-text">News</a></li>
+                    <li><a class="dropdown-button white-text" href="#!" data-activates="contributeDrop">Contribute<i
                             class="material-icons right">arrow_drop_down</i></a></li>
-                    <li><a class="dropdown-button" href="#!" data-activates="aboutDrop">About<i
+                    <li><a class="dropdown-button white-text" href="#!" data-activates="aboutDrop">About<i
                             class="material-icons right">arrow_drop_down</i></a></li>
-                    <li><a class="dropdown-button" href="#!" data-activates="accountDrop">
+                    <li><a class="dropdown-button white-text" href="#!" data-activates="accountDrop">
                         {{#if currentUser}}
                             {{currentUser.profile.username}}
                         {{else}}
                             Account
                         {{/if}}
-                        <i class="material-icons right">arrow_drop_down</i></a></li>
+                        <i class="material-icons right white-text">arrow_drop_down</i></a></li>
                 </ul>
                 <ul class="side-nav" id="mobile-navi" style="width: 240px;">
                     <ul class="collapsible" data-collapsible="accordion">
