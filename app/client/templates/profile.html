@@ -1,7 +1,5 @@
 <template name="profile">
-    {{> alerts}}
     {{> header}}
-    {{#if loaded}}
         <!--{{> avatar userId=profileUserId shape="circle" class="profile-img" initials=initials}}-->
         <h1 id="profile-name" class="center-align black-text thin">{{username}}</h1>
         <div class="row hack-container">
@@ -49,7 +47,4 @@
                 </div>
             </div>
         </div>
-    {{else}}
-        {{> loading}}
-    {{/if}}
 </template>
