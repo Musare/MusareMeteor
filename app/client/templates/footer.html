@@ -1,14 +1,39 @@
 <template name="footer">
     <footer class="page-footer grey lighten-2">
-        <div class="container row">
-            <div class="col l6 s12">
+        <div class="row">
+            <div class="col l3 s12 offset-l1 left">
                 <h5 class="grey-text text-darken-2">Stay Connected</h5>
                 <p class="grey-text text-darken-1">Follow us on social media or send us an email!</p>
-                <a href="https://www.facebook.com/MusareMusic" target="_blank"><img src="\FB-f-Logo__blue_57.png" height="24dp" width="24dp" /></a>
-                <a href="https://twitter.com/musareapp" target="_blank"><img src="\TwitterLogo_#55acee.png" height="24dp" width="24dp" /></a>
-                <a href="mailto:musaremusic@gmail.com"><i class="material-icons">email</i></a>
+                <a href="https://www.facebook.com/MusareMusic" target="_blank"><img src="\facebook.png" height="32dp" width="32dp" /></a>
+                <a href="https://twitter.com/musareapp" target="_blank"><img src="\twitter.png" height="32dp" width="32dp" /></a>
             </div>
-            <div class="col l4 offset-l2 s12">
+            <div class="col l6 hide-on-med-and-down">
+              <h5 class="grey-text text-darken-2">Contact Us</h5>
+                  <div class="row">
+                    <div class="input-field col l4">
+                      <input id="name" type="text" class="validate">
+                      <label for="name">Name</label>
+                    </div>
+                    <div class="input-field col l4">
+                      <input id="subject" type="text" class="validate">
+                      <label for="subject">Subject</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col l8">
+                      <textarea id="message" class="materialize-textarea black-text"></textarea>
+                      <label for="message">What would you like to tell us?</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col l4 offset-l6">
+                      <button class="btn waves-effect waves-light" type="submit" name="send_message">Submit
+                        <i class="material-icons right">send</i>
+                      </button>
+                    </div>
+                  </div>
+            </div>
+            <div class="col l2 s12">
                 <h5 class="grey-text text-darken-2">Links</h5>
                 <ul>
                     <li><a class="grey-text text-darken-1" href="/faq">FAQ</a></li>
