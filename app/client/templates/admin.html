@@ -35,9 +35,7 @@
                         </tbody>
                     </table>
                 <div class="row">
-                    <button class="btn col m6 s6 l6 waves-effect waves-light" id="rrating" data-toggle="modal"
-                            data-target="#confirmModal">Reset All Ratings
-                    </button>
+                    <a class="btn col m6 s6 l6 waves-effect waves-light" href="/admin/queues">Manage Queues</a> <!-- TODO Make this redirect to the queues -->
                     <a class="waves-effect waves-light btn col m6 s6 l6 modal-trigger" id="new_room" href="#addStation"> <!-- TODO Make this actually open the new room modal  -->
                         Add Room
                     </a>
@@ -45,14 +43,18 @@
             </div>
             <div class="col s12 m8 l3 offset-l1 offset-m2 card-panel teal accent-3 white-text" style="height: 80%;">
                 <div>
-                    <h2 class="center-align">Site statistics</h2>
+                    <h2 class="center-align">Other</h2>
                 </div>
                 <div class="section">
                     <p class="flow-text">Total Users Online: {{usersOnline}}</p>
                     <p class="flow-text">Total Registered Users: {{allUsers}}</p>
                 </div>
                 <div class="row">
-                    <a class="btn col l12 s12 m12 waves-effect waves-light" href="/admin/queues">Manage Queues</a> <!-- TODO Make this redirect to the queues -->
+                    <a class="btn col m12 s12 l12 waves-effect waves-light" id="rrating" data-toggle="modal" data-target="#confirmModal">Reset All Ratings</a>
+                </div>
+                <div class="row">
+                    <a class="btn col l6 m6 s12 waves-effect waves-light modal-trigger" href="#alerts-modal">Create New Alert</a>
+                    <a id="remove-alerts" class="btn col l6 m6 s12 waves-effect waves-light red darken-3">Remove Alerts</a>
                 </div>
             </div>
         </div>
@@ -86,13 +88,6 @@
             </div>
         </div>
     </div>
-    <script>
-        $(document).ready(function(){
-            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-            $('.modal-trigger').leanModal();
-        });
-    </script>
-
     <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
@@ -130,4 +125,30 @@
             </div>
         </div>
     </div>
+    <div id="alerts-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add New Alert</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-field">
+                        <input type="text" class="croom" id="alert-desc" required/>
+                        <label for="alert-desc" class="black-text">Alert Text</label>
+                        <a id="submit-alert" class="waves-effect waves-light btn">Submit</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function(){
+            // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+            $('.modal-trigger').leanModal();
+            $("select").material_select();
+        });
+    </script>
 </template>

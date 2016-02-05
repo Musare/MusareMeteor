@@ -36,6 +36,7 @@ textarea{
 
 .brand-logo {
     margin-left: 10px;
+    font-weight: 300 !important;
 }
 
 .feedback-btn{
@@ -256,12 +257,20 @@ textarea{
     float: left;
     height: 10%;
 }
-body {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-}
 
 .container {
     flex: 1 0 auto;
+}
+
+.alert{
+    font-size: 1.3em;
+    text-align: center;
+    padding: 5px;
+    margin: 0;
+    background-color: #009C87 !important;
+    color: white;
+}
+
+.alert i{
+    vertical-align: middle;
 }

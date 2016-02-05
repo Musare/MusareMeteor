@@ -53,15 +53,6 @@ Template.alerts.helpers({
     }
 });
 
-Template.alertsDashboard.helpers({
-    "activeAlerts": function () {
-        return Alerts.find({active: true});
-    },
-    "inactiveAlerts": function () {
-        return Alerts.find({active: false});
-    }
-});
-
 Template.banned.helpers({
     bannedAt: function () {
         if (Session.get("ban") !== undefined) {

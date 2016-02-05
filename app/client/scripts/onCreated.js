@@ -1,12 +1,6 @@
 var StationSubscription = undefined;
 var resizeSeekerbarInterval;
 
-Template.alertsDashboard.onCreated(function() {
-    if (allAlertSub === undefined) {
-        allAlertSub = Meteor.subscribe("allAlerts");
-    }
-});
-
 Template.landing.onCreated(function(){
     $("body").css("overflow", "hidden");
     function pageScroll() {

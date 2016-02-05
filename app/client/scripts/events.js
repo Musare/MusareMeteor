@@ -212,20 +212,14 @@ Template.admin.events({
         var description = $("#desc_text").val();
         Meteor.call("editRoomDesc", Session.get("roomDesc"), description);
         $("#desc-modal").closeModal();
-    }
-});
-
-Template.alertsDashboard.events({
-    "click #calart-create": function() {
-        Meteor.call("addAlert", $("#calert-description").val(), $("#calert-priority").val().toLowerCase(), function (err, res) {
-            if (err) {
-                alert("Error " + err.error + ": " + err.reason);
-            } else {
-                $("#calert-description").val("");
-            }
-        });
     },
-    "click #ralert-button": function() {
+    "click #submit-alert": function(){
+        var alertDesc = $("#alert-desc").val()
+        if(alertDesc !== ""){
+            Meteor.call("addAlert", alertDesc);
+        }
+    },
+    "click #remove-alerts": function(){
         Meteor.call("removeAlerts");
     }
 });
@@ -501,15 +495,16 @@ Template.queues.events({
                                     seekerBarInterval = undefined;
                                 }
                             }
-                            if (event.data == YT.PlayerState.UNSTARTED) {
-                                if (seekerBarInterval !== undefined) {
-                                    Meteor.clearInterval(seekerBarInterval);
-                                    seekerBarInterval = undefined;
-                                }
-                                $(".seeker-bar").css({width: "0"});
-                                $("#time-elapsed").text("0:00");
-                                $("#previewPlayerContainer").addClass("hide-preview");
-                            }
+                            // if (event.data == YT.PlayerState.UNSTARTED) {
+                            //     if (seekerBarInterval !== undefined) {
+                            //         Meteor.clearInterval(seekerBarInterval);
+                            //         seekerBarInterval = undefined;
+                            //     }
+                            //     $(".seeker-bar").css({width: "0"});
+                            //     $("#time-elapsed").text("0:00");
+                            //     $("#previewPlayerContainer").addClass("hide-preview");
+                            //     console.log("HIDE MEY STACY!!!!")
+                            // }
                             if (event.data == YT.PlayerState.PLAYING) {
                                 seekerBarInterval = Meteor.setInterval(function() {
                                     var duration = Session.get("song").duration;
@@ -731,15 +726,15 @@ Template.manageStation.events({
                                     seekerBarInterval = undefined;
                                 }
                             }
-                            if (event.data == YT.PlayerState.UNSTARTED) {
-                                if (seekerBarInterval !== undefined) {
-                                    Meteor.clearInterval(seekerBarInterval);
-                                    seekerBarInterval = undefined;
-                                }
-                                $(".seeker-bar").css({width: "0"});
-                                $("#time-elapsed").text("0:00");
-                                $("#previewPlayerContainer").addClass("hide-preview");
-                            }
+                            // if (event.data == YT.PlayerState.UNSTARTED) {
+                            //     if (seekerBarInterval !== undefined) {
+                            //         Meteor.clearInterval(seekerBarInterval);
+                            //         seekerBarInterval = undefined;
+                            //     }
+                            //     $(".seeker-bar").css({width: "0"});
+                            //     $("#time-elapsed").text("0:00");
+                            //     $("#previewPlayerContainer").addClass("hide-preview");
+                            // }
                             if (event.data == YT.PlayerState.PLAYING) {
                                 seekerBarInterval = Meteor.setInterval(function() {
                                     var duration = Session.get("song").duration;
@@ -970,15 +965,15 @@ Template.manageSongs.events({
                                     seekerBarInterval = undefined;
                                 }
                             }
-                            if (event.data == YT.PlayerState.UNSTARTED) {
-                                if (seekerBarInterval !== undefined) {
-                                    Meteor.clearInterval(seekerBarInterval);
-                                    seekerBarInterval = undefined;
-                                }
-                                $(".seeker-bar").css({width: "0"});
-                                $("#time-elapsed").text("0:00");
-                                $("#previewPlayerContainer").addClass("hide-preview");
-                            }
+                            // if (event.data == YT.PlayerState.UNSTARTED) {
+                            //     if (seekerBarInterval !== undefined) {
+                            //         Meteor.clearInterval(seekerBarInterval);
+                            //         seekerBarInterval = undefined;
+                            //     }
+                            //     $(".seeker-bar").css({width: "0"});
+                            //     $("#time-elapsed").text("0:00");
+                            //     $("#previewPlayerContainer").addClass("hide-preview");
+                            // }
                             if (event.data == YT.PlayerState.PLAYING) {
                                 seekerBarInterval = Meteor.setInterval(function() {
                                     var duration = Session.get("song").duration;
@@ -1214,18 +1209,25 @@ Template.room.events({
         Session.set("editingSong", true);
         var title = currentSong.title;
         var artist = currentSong.artist;
+        var img = currentSong.img;
         getSpotifyInfo(title.replace(/\[.*\]/g, ""), function (data) {
             if (data.tracks.items.length > 0) {
                 title = data.tracks.items[0].name;
                 var artists = [];
+                img = data.tracks.items[0].album.images[2].url;
+                data.tracks.items[0].artists.forEach(function (artist) {
+                    artists.push(artist.name);
+                });
                 artist = artists.join(", ");
                 $("#title").val(title).change();
                 $("#artist").val(artist).change();
+                $("#img").val(img).change();
                 $("#id").val(id).change();
                 $("#genres").val(null).change();
             } else {
                 $("#title").val(title).change();
                 $("#artist").val(artist).change();
+                $("#img").val(img).change();
                 $("#id").val(id).change();
                 $("#genres").val(null).change();
                 // I give up for now... Will fix this later. -Kris
@@ -1438,7 +1440,7 @@ Template.room.events({
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
     },
     "click #vote-skip": function () {
-        Meteor.call("voteSkip", Session.get("type"), function (err, res) {
+        Meteor.call("voteSkip", type, function (err, res) {
             $("#vote-skip").attr("disabled", true);
         });
     },
