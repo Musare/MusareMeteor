@@ -175,8 +175,8 @@ function Station(type) {
         Playlists.remove({}, {$pull: {songs: currentMid}});
         song = default_song;
     }
-console.log(startedAt);
-console.log(song);
+    console.log(startedAt);
+    console.log(song);
     var res = Rooms.update({type: type}, {
         $set: {
             currentSong: {song: song, started: startedAt},
@@ -290,6 +290,28 @@ console.log(song);
         }
     };
 
+    /* This function fetches all songs with the genre of this room that isn't in the playlist yet, and then puts it in the playlist */
+    this.fetchSongs = function() {
+        var genreSongs = Songs.find({genres: type}).fetch();
+        genreSongs.forEach(function(song) {
+            if (songs.indexOf(song.mid) === -1) {
+                Playlists.update({type: type}, {$push: {songs: song.mid}});
+            }
+        });
+    };
+
+    /* This function removes all songs that are in the playlist but do not have the type of the playlist in their genre */
+    this.removeSongs = function() {
+        songs.forEach(function(mid) {
+            var song = Songs.findOne({mid: mid});
+            if (song === undefined || song.genres.indexOf(type) === -1) {
+                Playlists.update({type: type}, {$pull: {songs: mid}});
+            }
+        });
+    };
+
+    this.removeSongs();
+    this.fetchSongs();
     this.skipSong();
     this.voted = [];
 }
@@ -580,6 +602,24 @@ function isMuted() {
 }
 
 Meteor.methods({
+    fetchSong: function(type) {
+        if (isAdmin() && !isBanned()) {
+            getStation(type, function (station) {
+                station.fetchSongs();
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    removeSongs: function(type) {
+        if (isAdmin() && !isBanned()) {
+            getStation(type, function (station) {
+                station.removeSongs();
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     lockRoom: function (type) {
         if (isAdmin() && !isBanned()) {
             getStation(type, function (station) {
@@ -1048,7 +1088,7 @@ Meteor.methods({
                 "skipDuration": newSong.skipDuration,
                 "approvedBy": Meteor.userId(),
                 "genres": newSong.genres
-        }}, function(err) {
+            }}, function(err) {
                 console.log(err);
                 if (err) {
                     throw err.sanitizedError;
@@ -1070,7 +1110,14 @@ Meteor.methods({
     },
     removeSongFromPlaylist: function (type, mid) {
         if (isModerator() && !isBanned()) {
-            Playlists.remove({type: type}, {$pull: {songs: mid}});
+            Playlists.update({type: type}, {$pull: {songs: mid}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    deleteSong: function (mid) {
+        if (isModerator() && !isBanned()) {
+            Songs.remove({mid: mid})
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
