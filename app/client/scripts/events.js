@@ -495,15 +495,16 @@ Template.queues.events({
                                     seekerBarInterval = undefined;
                                 }
                             }
-                            if (event.data == YT.PlayerState.UNSTARTED) {
-                                if (seekerBarInterval !== undefined) {
-                                    Meteor.clearInterval(seekerBarInterval);
-                                    seekerBarInterval = undefined;
-                                }
-                                $(".seeker-bar").css({width: "0"});
-                                $("#time-elapsed").text("0:00");
-                                $("#previewPlayerContainer").addClass("hide-preview");
-                            }
+                            // if (event.data == YT.PlayerState.UNSTARTED) {
+                            //     if (seekerBarInterval !== undefined) {
+                            //         Meteor.clearInterval(seekerBarInterval);
+                            //         seekerBarInterval = undefined;
+                            //     }
+                            //     $(".seeker-bar").css({width: "0"});
+                            //     $("#time-elapsed").text("0:00");
+                            //     $("#previewPlayerContainer").addClass("hide-preview");
+                            //     console.log("HIDE MEY STACY!!!!")
+                            // }
                             if (event.data == YT.PlayerState.PLAYING) {
                                 seekerBarInterval = Meteor.setInterval(function() {
                                     var duration = Session.get("song").duration;
@@ -517,6 +518,7 @@ Template.queues.events({
                                         $("#pause").attr("disabled", true);
                                         $("#forward").attr("disabled", true);
                                         $("#previewPlayerContainer").addClass("hide-preview");
+                                        console.log("HIDE ME! WINTER IS COMING!")
                                         $(".seeker-bar").css({width: "0"});
                                         $("#time-elapsed").text("0:00");
                                         Meteor.clearInterval(seekerBarInterval);
@@ -725,15 +727,15 @@ Template.manageStation.events({
                                     seekerBarInterval = undefined;
                                 }
                             }
-                            if (event.data == YT.PlayerState.UNSTARTED) {
-                                if (seekerBarInterval !== undefined) {
-                                    Meteor.clearInterval(seekerBarInterval);
-                                    seekerBarInterval = undefined;
-                                }
-                                $(".seeker-bar").css({width: "0"});
-                                $("#time-elapsed").text("0:00");
-                                $("#previewPlayerContainer").addClass("hide-preview");
-                            }
+                            // if (event.data == YT.PlayerState.UNSTARTED) {
+                            //     if (seekerBarInterval !== undefined) {
+                            //         Meteor.clearInterval(seekerBarInterval);
+                            //         seekerBarInterval = undefined;
+                            //     }
+                            //     $(".seeker-bar").css({width: "0"});
+                            //     $("#time-elapsed").text("0:00");
+                            //     $("#previewPlayerContainer").addClass("hide-preview");
+                            // }
                             if (event.data == YT.PlayerState.PLAYING) {
                                 seekerBarInterval = Meteor.setInterval(function() {
                                     var duration = Session.get("song").duration;
@@ -964,15 +966,15 @@ Template.manageSongs.events({
                                     seekerBarInterval = undefined;
                                 }
                             }
-                            if (event.data == YT.PlayerState.UNSTARTED) {
-                                if (seekerBarInterval !== undefined) {
-                                    Meteor.clearInterval(seekerBarInterval);
-                                    seekerBarInterval = undefined;
-                                }
-                                $(".seeker-bar").css({width: "0"});
-                                $("#time-elapsed").text("0:00");
-                                $("#previewPlayerContainer").addClass("hide-preview");
-                            }
+                            // if (event.data == YT.PlayerState.UNSTARTED) {
+                            //     if (seekerBarInterval !== undefined) {
+                            //         Meteor.clearInterval(seekerBarInterval);
+                            //         seekerBarInterval = undefined;
+                            //     }
+                            //     $(".seeker-bar").css({width: "0"});
+                            //     $("#time-elapsed").text("0:00");
+                            //     $("#previewPlayerContainer").addClass("hide-preview");
+                            // }
                             if (event.data == YT.PlayerState.PLAYING) {
                                 seekerBarInterval = Meteor.setInterval(function() {
                                     var duration = Session.get("song").duration;
