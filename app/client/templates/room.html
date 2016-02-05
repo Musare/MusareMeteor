@@ -7,7 +7,7 @@
                         <li><a href="/"><i class="material-icons">home</i></a></li>
                         <li><a href="#add_song_modal" id="add-song-modal-button"><i
                                 class="material-icons">playlist_add</i></a></li>
-                        <li><a href="#bug_report_modal"><i class="material-icons">bug_report</i></a></li>
+                        <li><a href="#report_modal" id="report-modal-button"><i class="material-icons">flag</i></a></li>
                         <li><a href="#" id="vote-skip"><i class="material-icons">skip_next</i> <span class="new badge">{{votes}}</span></a></li>
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
@@ -223,9 +223,26 @@
                     <a href="#" class="modal-action modal-close waves-effect btn">Close</a>
                 </div>
             </div>
+
+            <div id="report_modal" class="modal">
+                <div class="modal-content container">
+
+                </div>
+                <div class="divider"></div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-action modal-close waves-effect btn">Close</a>
+                </div>
+            </div>
         </main>
         <script>
             $("#add-song-modal-button").leanModal({
+                dismissible: true,
+                opacity: .5,
+                in_duration: 500,
+                out_duration: 200
+            });
+
+            $("#report-modal-button").leanModal({
                 dismissible: true,
                 opacity: .5,
                 in_duration: 500,
