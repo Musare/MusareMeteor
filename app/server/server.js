@@ -698,18 +698,11 @@ Meteor.methods({
             throw Meteor.Error(403, "Invalid permissions.");
         }
     },
-    addAlert: function (description, priority) {
+    addAlert: function (description) {
         if (isAdmin()) {
-            if (description.length > 0 && description.length < 400) {
-                var username = Meteor.user().profile.username;
-                if (["danger", "warning", "success", "primary"].indexOf(priority) === -1) {
-                    priority = "warning";
-                }
-                Alerts.insert({description: description, priority: priority, active: true, createdBy: username});
-                return true;
-            } else {
-                throw Meteor.Error(403, "Invalid description length.");
-            }
+            var username = Meteor.user().profile.username;
+            Alerts.insert({description: description, active: true, createdBy: username});
+            return true;
         } else {
             throw Meteor.Error(403, "Invalid permissions.");
         }
@@ -984,6 +977,7 @@ Meteor.methods({
     },
     addSongToQueue: function (songData) {
         if (Meteor.userId() && !isBanned()) {
+            console.log(songData);
             var userId = Meteor.userId();
             var requiredProperties = ["title", "artist", "img", "id", "genres"];
             if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
@@ -993,7 +987,7 @@ Meteor.methods({
                     }
                 }
                 songData.duration = Number(getSongDuration(songData.title, songData.artist));
-                songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
+                songData.img = songData.img || getSongAlbumArt(songData.title, songData.artist);
                 songData.skipDuration = 0;
                 songData.likes = 0;
                 songData.dislikes = 0;

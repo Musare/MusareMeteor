@@ -153,11 +153,6 @@ Schemas.Alert = new SimpleSchema({
         type: String,
         label: "The Alert's Description"
     },
-    priority: {
-        type: String,
-        allowedValues: ["danger", "warning", "success", "primary"],
-        label: "The Alert's Priority"
-    },
     active: {
         type: Boolean,
         label: "Whether or not the alert is active or not"

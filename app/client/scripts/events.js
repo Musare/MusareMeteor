@@ -212,20 +212,14 @@ Template.admin.events({
         var description = $("#desc_text").val();
         Meteor.call("editRoomDesc", Session.get("roomDesc"), description);
         $("#desc-modal").closeModal();
-    }
-});
-
-Template.alertsDashboard.events({
-    "click #calart-create": function() {
-        Meteor.call("addAlert", $("#calert-description").val(), $("#calert-priority").val().toLowerCase(), function (err, res) {
-            if (err) {
-                alert("Error " + err.error + ": " + err.reason);
-            } else {
-                $("#calert-description").val("");
-            }
-        });
     },
-    "click #ralert-button": function() {
+    "click #submit-alert": function(){
+        var alertDesc = $("#alert-desc").val()
+        if(alertDesc !== ""){
+            Meteor.call("addAlert", alertDesc);
+        }
+    },
+    "click #remove-alerts": function(){
         Meteor.call("removeAlerts");
     }
 });
@@ -1475,6 +1469,7 @@ Template.room.events({
         var title = $("#title").val();
         var artist = $("#artist").val();
         var img = $("#img").val();
+        console.log(img);
         var genres = $("#genres").val() || [];
         var songData = {type: type, id: id, title: title, artist: artist, img: img, genres: genres};
         if (Songs.find({"id": songData.id}).count() > 0) {
@@ -1484,6 +1479,7 @@ Template.room.events({
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been requested.</span>');
             Materialize.toast($toastContent, 8000);
         } else {
+            console.log(songData);
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 console.log(err, res);
                 if (err) {
