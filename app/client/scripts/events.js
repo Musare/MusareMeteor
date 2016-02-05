@@ -1214,25 +1214,18 @@ Template.room.events({
         Session.set("editingSong", true);
         var title = currentSong.title;
         var artist = currentSong.artist;
-        var img = currentSong.img;
         getSpotifyInfo(title.replace(/\[.*\]/g, ""), function (data) {
             if (data.tracks.items.length > 0) {
                 title = data.tracks.items[0].name;
                 var artists = [];
-                img = data.tracks.items[0].album.images[2].url;
-                data.tracks.items[0].artists.forEach(function (artist) {
-                    artists.push(artist.name);
-                });
                 artist = artists.join(", ");
                 $("#title").val(title).change();
                 $("#artist").val(artist).change();
-                $("#img").val(img).change();
                 $("#id").val(id).change();
                 $("#genres").val(null).change();
             } else {
                 $("#title").val(title).change();
                 $("#artist").val(artist).change();
-                $("#img").val(img).change();
                 $("#id").val(id).change();
                 $("#genres").val(null).change();
                 // I give up for now... Will fix this later. -Kris
@@ -1445,7 +1438,7 @@ Template.room.events({
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
     },
     "click #vote-skip": function () {
-        Meteor.call("voteSkip", type, function (err, res) {
+        Meteor.call("voteSkip", Session.get("type"), function (err, res) {
             $("#vote-skip").attr("disabled", true);
         });
     },
@@ -1474,9 +1467,8 @@ Template.room.events({
         id = $("#id").val();
         var title = $("#title").val();
         var artist = $("#artist").val();
-        var img = $("#img").val();
         var genres = $("#genres").val() || [];
-        var songData = {type: type, id: id, title: title, artist: artist, img: img, genres: genres};
+        var songData = {type: type, id: id, title: title, artist: artist, genres: genres};
         if (Songs.find({"id": songData.id}).count() > 0) {
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been added.</span>');
             Materialize.toast($toastContent, 8000);

@@ -1025,7 +1025,7 @@ Meteor.methods({
     addSongToQueue: function (songData) {
         if (Meteor.userId() && !isBanned()) {
             var userId = Meteor.userId();
-            var requiredProperties = ["title", "artist", "img", "id", "genres"];
+            var requiredProperties = ["title", "artist", "id", "genres"];
             if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
                 for (var property in requiredProperties) {
                     if (songData[requiredProperties[property]] === undefined) {
@@ -1033,7 +1033,7 @@ Meteor.methods({
                     }
                 }
                 songData.duration = Number(getSongDuration(songData.title, songData.artist));
-                songData.img = getSongAlbumArt(songData.title, songData.artist) || "";
+                songData.img = getSongAlbumArt(songData.title, songData.artist) | "";
                 songData.skipDuration = 0;
                 songData.likes = 0;
                 songData.dislikes = 0;

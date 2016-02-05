@@ -9,7 +9,7 @@
                         <li><a href="#add_song_modal" id="add-song-modal-button"><i
                                 class="material-icons">playlist_add</i></a></li>
                         <li><a href="#bug_report_modal"><i class="material-icons">bug_report</i></a></li>
-                        <li><a href="#vote_to_skip" id="skip_vote"><i class="material-icons">skip_next</i></a></li>
+                        <li><a href="#" id="vote-skip"><i class="material-icons">skip_next</i> <span class="new badge">{{votes}}</span></a></li>
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
                     <ul class="right hide-on-med-and-down">
@@ -137,11 +137,6 @@
                                             <i class="material-icons prefix">subject</i>
                                             <label for="title" class="teal-text">Song Title</label>
                                             <input class="validate required" name="title" id="title" type="text"/>
-                                        </div>
-                                        <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
-                                            <i class="material-icons prefix">image</i>
-                                            <label for="img" class="teal-text">Song Image</label>
-                                            <input class="validate" name="img" id="img" type="url"/>
                                         </div>
                                         <button type="button" id="add-song-button" class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Add Song</button>
                                     </div>
