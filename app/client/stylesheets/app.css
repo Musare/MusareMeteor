@@ -30,6 +30,10 @@ main p.flow-text{
     background-color: white;
 }
 
+header{
+    z-index: 2;
+}
+
 textarea{
     color: white;
 }
@@ -72,6 +76,10 @@ textarea{
 .card-content div{
     float: right;
     line-height: 2;
+}
+
+.acceptTerms{
+    margin-left: 1px !important;
 }
 
 .register{

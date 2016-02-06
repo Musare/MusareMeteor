@@ -227,13 +227,18 @@ Template.admin.events({
 
 Template.feedback.events({
     "click #feedback_submit": function(){
-        if($("#feedback_message").val().length !== 0 && $("#feedback_message").hasClass("invalid") === false){
-            Meteor.call("sendFeedback", $("#feedback_message").val());
-            $("#feedback_message").val("");
-            $("#createFeedback").closeModal()
-        } else{
-            var $toastContent = $('<span><strong>Feedback not sent.</strong> Possible reasons include:<ul><li>- Empty Feedback Message</li><li>- Feedback is more than 500 words</li></ul></span>');
-            Materialize.toast($toastContent, 8000);
+        if(Meteor.userId()){
+            if($("#feedback_message").val().length !== 0 && $("#feedback_message").hasClass("invalid") === false){
+                Meteor.call("sendFeedback", $("#feedback_message").val());
+                $("#feedback_message").val("");
+                $("#createFeedback").closeModal()
+            } else{
+                var $toastContent = $('<span><strong>Feedback not sent.</strong> Possible reasons include:<ul><li>- Empty Feedback Message</li><li>- Feedback is more than 500 words</li></ul></span>');
+                Materialize.toast($toastContent, 8000);
+            }
+        } else {
+            var $toastContent = $('<span><strong>Feedback not sent.</strong> You must be logged in.</span>');
+            Materialize.toast($toastContent, 4000);
         }
     },
     "click .upvote": function(){
@@ -282,11 +287,6 @@ Template.login.events({
             if (err) {
                 var $toastContent = $('<span><strong>Oh snap!</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);
-                Meteor.setTimeout(function() {
-                    errAlert.fadeOut(5000, function() {
-                        errAlert.remove();
-                    });
-                }, 5000);
             } else {
                 window.location.href = "/";
             }
@@ -679,8 +679,6 @@ Template.manageStation.events({
         $("#dislikes").val(this.dislikes).change();
         $("#duration").val(this.duration).change();
         $("#skip-duration").val(this.skipDuration).change();
-        $("#genres").val(this.genres).change();
-        $("#genres").material_select();
         $("#previewPlayerContainer").addClass("hide-preview");
         Session.set("image_url", this.img);
         Session.set("editing", true);
@@ -866,7 +864,7 @@ Template.manageStation.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        newSong.genres = $("#genres").val() || [];
+        newSong.genres = $("#genres").val();
         Meteor.call("updatePlaylistSong", newSong.mid, newSong, function(err, res) {
             console.log(err, res);
             if (err) {
@@ -1338,18 +1336,15 @@ Template.room.events({
         var YTImportQueue = Session.get("YTImportQueue");
         $("#import-playlist-button").attr("disabled", "");
         $("#import-playlist-button").addClass("disabled");
-        $("#confirm-import").addClass("disabled");
-        $("#confirm-import").addClass("disabled");
         $("#playlist-url").attr("disabled", "");
         $("#playlist-url").addClass("disabled");
         $("#import-progress").css({width: "0%"});
-        var genres = $("#genres_pl").val() || [];
         var failed = 0;
         var success = 0;
         var processed = 0;
         var total = YTImportQueue.length;
         YTImportQueue.forEach(function (song) {
-            var songData = {id: song.id, title: song.title, artist: "Unknown", genres: genres};
+            var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: "", genres: [Session.get("type")]};
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 if (err) {
                     console.log(err);
@@ -1358,21 +1353,16 @@ Template.room.events({
                     success++;
                 }
                 processed++;
-                var percent = processed / total * 100;
-                $("#import-progress").css({width: percent + "%"});
-                if (processed === total) {
-                    $("#import-playlist-button").removeAttr("disabled");
-                    $("#import-playlist-button").removeClass("disabled");
-                    $("#confirm-import").removeAttr("disabled");
-                    $("#confirm-import").removeClass("disabled");
-                    $("#playlist-url").removeAttr("disabled", "");
-                    $("#playlist-url").removeClass("disabled");
-                    $("#import-progress").css({width: "0%"});
-                    Session.set("songResults", []);
-                    Session.set("YTImportQueue", [])
-                }
+                var percentage = processed / total * 100;
+                $("#import-progress").css({width: percentage + "%"});
             });
         });
+        $("#import-playlist-button").removeAttr("disabled");
+        $("#import-playlist-button").removeClass("disabled");
+        $("#playlist-url").removeAttr("disabled", "");
+        $("#playlist-url").removeClass("disabled");
+        Session.set("songResults", []);
+        Session.set("YTImportQueue", [])
     },
     "click #chat-tab": function () {
         $("#chat-tab").removeClass("unread-messages");
@@ -1473,15 +1463,19 @@ Template.room.events({
     },
     "click #add-song-button": function (e) {
         e.preventDefault();
+        parts = location.href.split('/');
+        var roomType = parts.pop();
+        var genre = roomType.toLowerCase();
+        var type = $("#type").val();
         id = $("#id").val();
         var title = $("#title").val();
         var artist = $("#artist").val();
         var genres = $("#genres").val() || [];
-        var songData = {id: id, title: title, artist: artist, genres: genres};
-        if (Songs.find({id: id}).count() > 0) {
+        var songData = {type: type, id: id, title: title, artist: artist, genres: genres};
+        if (Songs.find({"id": songData.id}).count() > 0) {
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been added.</span>');
             Materialize.toast($toastContent, 8000);
-        } else if (Queues.find({id: id}).count() > 0) {
+        } else if (Queues.find({"id": songData.id}).count() > 0) {
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been requested.</span>');
             Materialize.toast($toastContent, 8000);
         } else {
@@ -1650,14 +1644,12 @@ Template.settings.events({
                     $("#old-password").val("");
                     $("#new-password").val("");
                     $("#confirm-password").val("");
-                    var $toastContent = $('<span><strong>Password not changed.</strong> ' + err.reason + '</span>');
-                    Materialize.toast($toastContent, 8000);
+                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Oh Snap! </strong>" + err.reason + "</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
                 } else {
                     $("#old-password").val("");
                     $("#new-password").val("");
                     $("#confirm-password").val("");
-                    var $toastContent = $('<span><strong>Password changed.</strong></span>');
-                    Materialize.toast($toastContent, 8000);
+                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Hooray!</strong> You changed your password successfully.</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
                 }
             });
         }

@@ -1229,8 +1229,8 @@ Meteor.methods({
                     Feedback.insert({
                         "username": Meteor.user().profile.username,
                         "message": message,
-                        upvotes: 0,
-                        upvotedBy: []
+                        "upvotes": 0,
+                        "upvotedBy": []
                     })
                 }
             });
