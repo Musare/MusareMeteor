@@ -274,3 +274,11 @@ textarea{
 .alert i{
     vertical-align: middle;
 }
+
+.dropdown-content {
+    z-index: 5 !important;
+}
+
+#add-song-button {
+    margin-bottom: 100px;
+}

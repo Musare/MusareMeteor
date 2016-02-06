@@ -13,6 +13,7 @@
                             <th>Artist(s)</th>
                             <th>Id</th>
                             <th>Mid</th>
+                            <th>Genres</th>
                             <th class="table-right-th">Edit</th>
                             <th class="table-right-th">Add</th>
                             <th class="table-right-th">Remove</th>
@@ -25,6 +26,7 @@
                                 <td align="left">{{artist}}</td>
                                 <td align="left">{{id}}</td>
                                 <td align="left">{{mid}}</td>
+                                <td align="left">{{genres}}</td>
                                 <td class="table-right-td">
                                     <button class="btn edit-queue-button" data-genre="{{../type}}"
                                             data-toggle="modal" data-target="#editModal">Edit
@@ -83,6 +85,22 @@
             </div>
             <div class="row">
                 <h4 class="center-align">Edit Info</h4>
+                <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
+                    <select multiple id="genres">
+                        <option value="" disabled selected>Select Genre(s):</option>
+                        <option value="edm">EDM</option>
+                        <option value="chill">Chill</option>
+                        <option value="pop">Pop</option>
+                        <option value="country">Country</option>
+                        <option value="rock">Rock</option>
+                        <option value="randb">R&B</option>
+                        <option value="rap">Rap</option>
+                        <option value="heavymetal">Heavy Metal</option>
+                        <option value="christmas">Christmas</option>
+                        <option value="alternative">Alternative</option>
+                    </select>
+                    <label class="white-text">Genre(s)</label>
+                </div>
                 <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                     <i class="material-icons prefix">vpn_key</i>
                     <label for="mid" class="white-text">Song MID</label>

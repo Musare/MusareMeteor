@@ -678,6 +678,8 @@ Template.manageStation.events({
         $("#dislikes").val(this.dislikes).change();
         $("#duration").val(this.duration).change();
         $("#skip-duration").val(this.skipDuration).change();
+        $("#genres").val(this.genres).change();
+        $("#genres").material_select();
         $("#previewPlayerContainer").addClass("hide-preview");
         Session.set("image_url", this.img);
         Session.set("editing", true);
@@ -863,7 +865,7 @@ Template.manageStation.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        newSong.genres = $("#genres").val();
+        newSong.genres = $("#genres").val() || [];
         Meteor.call("updatePlaylistSong", newSong.mid, newSong, function(err, res) {
             console.log(err, res);
             if (err) {
