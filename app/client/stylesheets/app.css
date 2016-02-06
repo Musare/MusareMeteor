@@ -30,6 +30,10 @@ main p.flow-text{
     background-color: white;
 }
 
+header{
+    z-index: 2;
+}
+
 textarea{
     color: white;
 }
