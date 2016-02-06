@@ -8,7 +8,8 @@
                         <li><a href="#add_song_modal" id="add-song-modal-button"><i
                                 class="material-icons">playlist_add</i></a></li>
                         <li><a href="#report_modal" id="report-modal-button"><i class="material-icons">flag</i></a></li>
-                        <li><a href="#" id="vote-skip"><i class="material-icons">skip_next</i> <span class="new badge">{{votes}}</span></a></li>
+                        <li><a href="#" id="vote-skip"><i class="material-icons">skip_next</i> <span
+                                class="new badge">{{votes}}</span></a></li>
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
                     <ul class="right hide-on-med-and-down">
@@ -79,8 +80,11 @@
                                     </form>
                                     <div class="right col s4 m2 l2">
                                         <ul>
-                                            <li id="like" class="left"><i id="thumbs_up" class="material-icons {{liked}}">thumb_up</i></li>
-                                            <li id="dislike" class="right"><i id="thumbs_down" class="material-icons {{disliked}}">thumb_down</i>
+                                            <li id="like" class="left"><i id="thumbs_up"
+                                                                          class="material-icons {{liked}}">thumb_up</i>
+                                            </li>
+                                            <li id="dislike" class="right"><i id="thumbs_down"
+                                                                              class="material-icons {{disliked}}">thumb_down</i>
                                             </li>
                                         </ul>
                                     </div>
@@ -112,7 +116,10 @@
                             {{#if singleVideo}}
                                 {{#if editingSong}}
                                     <div class="row">
-                                        <button type="button" id="return-button" style="margin-bottom: 20px;" class="btn btn-small col l4 m4 s8 offset-l4 offset-m4 offset-s2 center waves-effect waves-light">Return</button>
+                                        <button type="button" id="return-button" style="margin-bottom: 20px;"
+                                                class="btn btn-small col l4 m4 s8 offset-l4 offset-m4 offset-s2 center waves-effect waves-light">
+                                            Return
+                                        </button>
                                         <h4 class="center-align col l12 m12 s12">Add Song</h4>
                                         <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                                             <select multiple id="genres">
@@ -138,14 +145,18 @@
                                         <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                                             <i class="material-icons prefix">person</i>
                                             <label for="artist" class="teal-text">Song Artist</label>
-                                            <input class="validate" name="artist" id="artist" aria-required="true" type="text"/>
+                                            <input class="validate" name="artist" id="artist" aria-required="true"
+                                                   type="text"/>
                                         </div>
                                         <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                                             <i class="material-icons prefix">subject</i>
                                             <label for="title" class="teal-text">Song Title</label>
                                             <input class="validate required" name="title" id="title" type="text"/>
                                         </div>
-                                        <button type="button" id="add-song-button" class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">Add Song</button>
+                                        <button type="button" id="add-song-button"
+                                                class="btn btn-large col l6 m6 s10 offset-l3 offset-m3 offset-s1 waves-effect waves-light">
+                                            Add Song
+                                        </button>
                                     </div>
                                     <script>
                                         $('#genres').material_select();
@@ -156,56 +167,87 @@
                                             <input id="song-input" type="text" class="validate">
                                             <label for="search_for_song">Search for song</label>
                                         </div>
-                                        <a class="waves-effect waves-light btn" id="search-song"><i class="material-icons left">search</i>Search</a>
+                                        <a class="waves-effect waves-light btn" id="search-song"><i
+                                                class="material-icons left">search</i>Search</a>
                                         {{#if singleVideoResultsActive}}
                                             <div id="single-video-results">
-                                              <div style="overflow: auto; height: 30vh; margin-top: 1rem;">
-                                                <ul class="collection teal-text">
-                                                    {{#each result in singleVideoResults}}
-                                                        <li class="collection-item avatar youtube-search-result-li">
-                                                            <img src="{{result.image}}" onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" alt="" class="video-import-thumbnail">
-                                                            <span class="title video-import-text">{{result.title}}</span>
-                                                            <p class="video-import-text">{{result.artist}} <br>
-                                                                <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video In YouTube</a>
-                                                            </p>
-                                                            <a href="#" class="secondary-content" id="addSong" data-result="{{result.id}}"><i class="material-icons" data-result="{{result.id}}">add</i></a>
-                                                        </li>
-                                                    {{/each}}
-                                                </ul>
+                                                <div style="overflow: auto; height: 30vh; margin-top: 1rem;">
+                                                    <ul class="collection teal-text">
+                                                        {{#each result in singleVideoResults}}
+                                                            <li class="collection-item avatar youtube-search-result-li">
+                                                                <img src="{{result.image}}"
+                                                                     onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'"
+                                                                     alt="" class="video-import-thumbnail">
+                                                                <span class="title video-import-text">{{result.title}}</span>
+                                                                <p class="video-import-text">{{result.artist}} <br>
+                                                                    <a href="https://youtube.com/watch?v={{result.id}}"
+                                                                       target="_blank">View Video In YouTube</a>
+                                                                </p>
+                                                                <a href="#" class="secondary-content" id="addSong"
+                                                                   data-result="{{result.id}}"><i class="material-icons"
+                                                                                                  data-result="{{result.id}}">add</i></a>
+                                                            </li>
+                                                        {{/each}}
+                                                    </ul>
+                                                </div>
                                             </div>
-                                          </div>
                                         {{/if}}
                                     </div>
                                 {{/if}}
                             {{else}}
-                            <div class="row" id="import-playlist">
-                                <div class="input-field">
-                                    <input id="playlist-url" type="text" class="validate">
-                                    <label for="search_for_song">Playlist URL</label>
-                                </div>
-                                <div class="progress">
-                                    <div class="determinate" id="import-progress" style="width: 0%"></div>
-                                </div>
-                                <a class="waves-effect waves-light btn" id="import-playlist-button">Import Playlist</a>
-                                {{#if playlistImportVideosActive}}
-                                    <a class="waves-effect waves-light btn" id="confirm-import">Confirm selection and add songs to queue</a>
-
-                                    <div id="import-playlist-results">
-                                        <ul class="collection teal-text">
-                                            {{#each result in importPlaylistVideos}}
-                                                <li class="collection-item avatar youtube-search-result-li">
-                                                    <img src="{{result.image}}" onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" alt="" class="video-import-thumbnail">
-                                                    <span class="title video-import-text">{{result.title}}</span>
-                                                    <p class="video-import-text">{{result.artist}} <br>
-                                                        <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video In YouTube</a>
-                                                    </p>
-                                                    <a href="#" class="secondary-content" id="removeSong" data-result="{{result.id}}"><i class="material-icons" data-result="{{result.id}}">remove</i></a>
-                                                </li>
-                                            {{/each}}
-                                        </ul>
+                                <div class="row" id="import-playlist">
+                                    <div class="input-field">
+                                        <input id="playlist-url" type="text" class="validate">
+                                        <label for="search_for_song">Playlist URL</label>
                                     </div>
-                                {{/if}}
-                            </div>
+                                    <div class="progress">
+                                        <div class="determinate" id="import-progress" style="width: 0%"></div>
+                                    </div>
+                                    <a class="waves-effect waves-light btn" id="import-playlist-button">Import
+                                        Playlist</a>
+                                    {{#if playlistImportVideosActive}}
+                                        <a class="waves-effect waves-light btn" id="confirm-import">Confirm selection
+                                            and add songs to queue</a>
+                                        <div class="input-field col l12 m12 s12">
+                                            <select multiple id="genres_pl">
+                                                <option value="" disabled selected>Select Genre(s):</option>
+                                                <option value="edm">EDM</option>
+                                                <option value="chill">Chill</option>
+                                                <option value="pop">Pop</option>
+                                                <option value="country">Country</option>
+                                                <option value="rock">Rock</option>
+                                                <option value="randb">R&B</option>
+                                                <option value="rap">Rap</option>
+                                                <option value="heavymetal">Heavy Metal</option>
+                                                <option value="christmas">Christmas</option>
+                                                <option value="alternative">Alternative</option>
+                                            </select>
+                                            <label class="white-text">Genre(s)</label>
+                                        </div>
+                                        <script>
+                                            $('#genres_pl').material_select();
+                                        </script>
+                                        <div id="import-playlist-results">
+                                            <ul class="collection teal-text">
+                                                {{#each result in importPlaylistVideos}}
+                                                    <li class="collection-item avatar youtube-search-result-li">
+                                                        <img src="{{result.image}}"
+                                                             onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'"
+                                                             alt="" class="video-import-thumbnail">
+                                                        <span class="title video-import-text">{{result.title}}</span>
+                                                        <p class="video-import-text">{{result.artist}} <br>
+                                                            <a href="https://youtube.com/watch?v={{result.id}}"
+                                                               target="_blank">View Video In YouTube</a>
+                                                        </p>
+                                                        <a href="#" class="secondary-content" id="removeSong"
+                                                           data-result="{{result.id}}"><i class="material-icons"
+                                                                                          data-result="{{result.id}}">remove</i></a>
+                                                    </li>
+                                                {{/each}}
+                                            </ul>
+                                        </div>
+                                    {{/if}}
+                                </div>
                             {{/if}}
                         </form>
                         <div id="song-results"></div>

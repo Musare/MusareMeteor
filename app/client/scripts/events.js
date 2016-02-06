@@ -1337,15 +1337,18 @@ Template.room.events({
         var YTImportQueue = Session.get("YTImportQueue");
         $("#import-playlist-button").attr("disabled", "");
         $("#import-playlist-button").addClass("disabled");
+        $("#confirm-import").addClass("disabled");
+        $("#confirm-import").addClass("disabled");
         $("#playlist-url").attr("disabled", "");
         $("#playlist-url").addClass("disabled");
         $("#import-progress").css({width: "0%"});
+        var genres = $("#genres_pl").val() || [];
         var failed = 0;
         var success = 0;
         var processed = 0;
         var total = YTImportQueue.length;
         YTImportQueue.forEach(function (song) {
-            var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: "", genres: [Session.get("type")]};
+            var songData = {id: song.id, title: song.title, artist: "Unknown", genres: genres};
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 if (err) {
                     console.log(err);
@@ -1354,16 +1357,21 @@ Template.room.events({
                     success++;
                 }
                 processed++;
-                var percentage = processed / total * 100;
-                $("#import-progress").css({width: percentage + "%"});
+                var percent = processed / total * 100;
+                $("#import-progress").css({width: percent + "%"});
+                if (processed === total) {
+                    $("#import-playlist-button").removeAttr("disabled");
+                    $("#import-playlist-button").removeClass("disabled");
+                    $("#confirm-import").removeAttr("disabled");
+                    $("#confirm-import").removeClass("disabled");
+                    $("#playlist-url").removeAttr("disabled", "");
+                    $("#playlist-url").removeClass("disabled");
+                    $("#import-progress").css({width: "0%"});
+                    Session.set("songResults", []);
+                    Session.set("YTImportQueue", [])
+                }
             });
         });
-        $("#import-playlist-button").removeAttr("disabled");
-        $("#import-playlist-button").removeClass("disabled");
-        $("#playlist-url").removeAttr("disabled", "");
-        $("#playlist-url").removeClass("disabled");
-        Session.set("songResults", []);
-        Session.set("YTImportQueue", [])
     },
     "click #chat-tab": function () {
         $("#chat-tab").removeClass("unread-messages");
@@ -1464,19 +1472,15 @@ Template.room.events({
     },
     "click #add-song-button": function (e) {
         e.preventDefault();
-        parts = location.href.split('/');
-        var roomType = parts.pop();
-        var genre = roomType.toLowerCase();
-        var type = $("#type").val();
         id = $("#id").val();
         var title = $("#title").val();
         var artist = $("#artist").val();
         var genres = $("#genres").val() || [];
-        var songData = {type: type, id: id, title: title, artist: artist, genres: genres};
-        if (Songs.find({"id": songData.id}).count() > 0) {
+        var songData = {id: id, title: title, artist: artist, genres: genres};
+        if (Songs.find({id: id}).count() > 0) {
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been added.</span>');
             Materialize.toast($toastContent, 8000);
-        } else if (Queues.find({"id": songData.id}).count() > 0) {
+        } else if (Queues.find({id: id}).count() > 0) {
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been requested.</span>');
             Materialize.toast($toastContent, 8000);
         } else {
