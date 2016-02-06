@@ -74,6 +74,10 @@ textarea{
     line-height: 2;
 }
 
+.acceptTerms{
+    margin-left: 1px !important;
+}
+
 .register{
     margin: 10px 0 0 0px;
 }

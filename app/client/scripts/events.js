@@ -279,13 +279,8 @@ Template.login.events({
         var password = $("#password").val();
         Meteor.loginWithPassword(username, password, function(err) {
             if (err) {
-                var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
-                $(".landing").before(errAlert);
-                Meteor.setTimeout(function() {
-                    errAlert.fadeOut(5000, function() {
-                        errAlert.remove();
-                    });
-                }, 5000);
+                var $toastContent = $('<span><strong>Login Failed.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
             } else {
                 window.location.href = "/";
             }
@@ -1124,26 +1119,24 @@ Template.register.events({
         var email = $("#email").val()
         var password = $("#password").val();
         var captchaData = grecaptcha.getResponse();
-        console.log(captchaData)
-        Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
-            grecaptcha.reset();
-
-            if (err) {
-                console.log(err);
-                var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
-                $(".landing").before(errAlert);
-                Meteor.setTimeout(function() {
-                    errAlert.fadeOut(5000, function() {
-                        errAlert.remove();
-                    });
-                }, 5000);
-            } else {
-                Meteor.loginWithPassword(username, password);
-                Accounts.onLogin(function(){
-                    window.location.href = "/";
-                })
-            }
-        });
+        var hasAcceptedTerms = $("#termsPrivacyBTN").is(":checked");
+        if(hasAcceptedTerms){
+            Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
+                grecaptcha.reset();
+                if (err) {
+                    var $toastContent = $('<span><strong>Signup Failed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 4000);
+                } else {
+                    Meteor.loginWithPassword(username, password);
+                    Accounts.onLogin(function(){
+                        window.location.href = "/";
+                    })
+                }
+            });
+        } else{
+            var $toastContent = $('<span><strong>Signup Failed.</strong> You must accept the terms.</span>');
+            Materialize.toast($toastContent, 4000);
+        }
     },
 
     "click #github-login": function(){
