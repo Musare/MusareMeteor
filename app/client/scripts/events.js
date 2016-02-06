@@ -230,7 +230,7 @@ Template.feedback.events({
         if($("#feedback_message").val().length !== 0 && $("#feedback_message").hasClass("invalid") === false){
             Meteor.call("sendFeedback", $("#feedback_message").val());
             $("#feedback_message").val("");
-            $("#modal1").closeModal()
+            $("#createFeedback").closeModal()
         } else{
             var $toastContent = $('<span><strong>Feedback not sent.</strong> Possible reasons include:<ul><li>- Empty Feedback Message</li><li>- Feedback is more than 500 words</li></ul></span>');
             Materialize.toast($toastContent, 8000);
