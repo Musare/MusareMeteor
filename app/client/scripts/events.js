@@ -192,7 +192,8 @@ Template.admin.events({
     "click #croom_create": function() {
         Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#croom_private").prop("checked"), $("#croom_desc").val(), function (err, res) {
             if (err) {
-                alert("Error " + err.error + ": " + err.reason);
+                var $toastContent = $('<span><strong>Room not added.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 8000);
             } else {
                 window.location = "/" + $("#croom_tag").val();
             }
@@ -279,8 +280,8 @@ Template.login.events({
         var password = $("#password").val();
         Meteor.loginWithPassword(username, password, function(err) {
             if (err) {
-                var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
-                $(".landing").before(errAlert);
+                var $toastContent = $('<span><strong>Oh snap!</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 8000);
                 Meteor.setTimeout(function() {
                     errAlert.fadeOut(5000, function() {
                         errAlert.remove();
@@ -1122,30 +1123,30 @@ Template.manageSongs.events({
 Template.register.events({
     "submit form": function(e){
         e.preventDefault();
-        var username = $("#username").val()
-        var email = $("#email").val()
+        var username = $("#username").val();
+        var email = $("#email").val();
         var password = $("#password").val();
+        var acceptedTermsAndPrivacy = $("#termsPrivacyBTN").is(":checked");
         var captchaData = grecaptcha.getResponse();
-        console.log(captchaData)
-        Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
-            grecaptcha.reset();
+        if (acceptedTermsAndPrivacy) {
+            Meteor.call("createUserMethod", {username: username, email: email, password: password}, captchaData, function(err, res) {
+                grecaptcha.reset();
 
-            if (err) {
-                console.log(err);
-                var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> ' + err.reason + '</div>');
-                $(".landing").before(errAlert);
-                Meteor.setTimeout(function() {
-                    errAlert.fadeOut(5000, function() {
-                        errAlert.remove();
-                    });
-                }, 5000);
-            } else {
-                Meteor.loginWithPassword(username, password);
-                Accounts.onLogin(function(){
-                    window.location.href = "/";
-                })
-            }
-        });
+                if (err) {
+                    console.log(err);
+                    var $toastContent = $('<span><strong>Oh snap!</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 8000);
+                } else {
+                    Meteor.loginWithPassword(username, password);
+                    Accounts.onLogin(function(){
+                        window.location.href = "/";
+                    })
+                }
+            });
+        } else {
+            var $toastContent = $('<span><strong>Oh snap!</strong> Please read and accept the Terms and Conditions and the Privacy Policy.</span>');
+            Materialize.toast($toastContent, 8000);
+        }
     },
 
     "click #github-login": function(){
@@ -1649,12 +1650,14 @@ Template.settings.events({
                     $("#old-password").val("");
                     $("#new-password").val("");
                     $("#confirm-password").val("");
-                    $("<div class='alert alert-danger alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Oh Snap! </strong>" + err.reason + "</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                    var $toastContent = $('<span><strong>Password not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 8000);
                 } else {
                     $("#old-password").val("");
                     $("#new-password").val("");
                     $("#confirm-password").val("");
-                    $("<div class='alert alert-success alert-dismissible' role='alert' style='margin-bottom: 0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'><i class='fa fa-times'></i></span></button><strong>Hooray!</strong> You changed your password successfully.</div>").prependTo($("#head")).delay(7000).fadeOut(1000, function() { $(this).remove(); });
+                    var $toastContent = $('<span><strong>Password changed.</strong></span>');
+                    Materialize.toast($toastContent, 8000);
                 }
             });
         }
