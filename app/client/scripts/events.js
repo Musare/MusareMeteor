@@ -226,13 +226,18 @@ Template.admin.events({
 
 Template.feedback.events({
     "click #feedback_submit": function(){
-        if($("#feedback_message").val().length !== 0 && $("#feedback_message").hasClass("invalid") === false){
-            Meteor.call("sendFeedback", $("#feedback_message").val());
-            $("#feedback_message").val("");
-            $("#modal1").closeModal()
-        } else{
-            var $toastContent = $('<span><strong>Feedback not sent.</strong> Possible reasons include:<ul><li>- Empty Feedback Message</li><li>- Feedback is more than 500 words</li></ul></span>');
-            Materialize.toast($toastContent, 8000);
+        if(Meteor.userId()){
+            if($("#feedback_message").val().length !== 0 && $("#feedback_message").hasClass("invalid") === false){
+                Meteor.call("sendFeedback", $("#feedback_message").val());
+                $("#feedback_message").val("");
+                $("#modal1").closeModal()
+            } else{
+                var $toastContent = $('<span><strong>Feedback not sent.</strong> Possible reasons include:<ul><li>- Empty Feedback Message</li><li>- Feedback is more than 500 words</li></ul></span>');
+                Materialize.toast($toastContent, 8000);
+            }
+        } else {
+            var $toastContent = $('<span><strong>Feedback not sent.</strong> You must be logged in.</span>');
+            Materialize.toast($toastContent, 4000);
         }
     },
     "click .upvote": function(){
