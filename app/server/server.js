@@ -753,24 +753,7 @@ Meteor.methods({
             var time = new Date();
             var rawrank = user.profile.rank;
             var username = user.profile.username;
-            var profanity = false;
-            var mentionUsername;
-            var isCurUserMentioned;
-            if (message.indexOf("@") !== -1) {
-                var messageArr = message.split(" ");
-                for (var i in messageArr) {
-                    if (messageArr[i].indexOf("@") !== -1) {
-                        var mention = messageArr[i];
-                    }
-                }
-                Meteor.users.find().forEach(function (user) {
-                    if (mention.indexOf(user.profile.username) !== -1) {
-                        mentionUsername = true;
-                        isCurUserMentioned = Meteor.user().profile.username === user.profile.username;
-                    }
-                    ;
-                })
-            }
+            var profanity = false
             if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
@@ -821,7 +804,7 @@ Meteor.methods({
                         Chat.insert({
                             type: type,
                             rawrank: rawrank,
-                            rank: "",
+                            rank: "[D]",
                             message: message,
                             time: time,
                             username: username

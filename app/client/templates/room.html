@@ -13,8 +13,8 @@
                     <span class="brand-logo center">{{type}}</span>
                     <ul class="right hide-on-med-and-down">
                         <li><a href="#"><i class="material-icons">queue_music</i></a></li>
-                        <li><a href="#" data-activates="chat" class="dropdown-button"><i class="material-icons">chat</i></a>
-                        </li>
+                        <!-- <li><a href="#" data-activates="chat" class="dropdown-button"><i class="material-icons">chat</i></a></li> -->
+                        <li><a href="#" data-activates="slide-out" class="header-collapse"><i class="material-icons">chat</i></a></li>
                     </ul>
                     <div id='chat' class='dropdown-content right'>
                         <ul id="chat-ul">
@@ -217,13 +217,36 @@
                         </form>
                     </div>
                 </div>
-
                 <div class="divider"></div>
                 <div class="modal-footer">
                     <a href="#" class="modal-action modal-close waves-effect btn">Close</a>
                 </div>
             </div>
         </main>
+        <div id="slide-out" class="side-nav">
+            <ul class="chat-ul">
+                {{#each globalChat}}
+                    {{#emojione}}
+                        <li class="chat-message">
+                            <span title="{{time}}" style="float: right;">{{rtime time}}</span>
+                            <small class="rank-{{this.rawrank}}">{{this.rank}}</small>
+                            <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank">{{this.username}}</a>
+                            <p style="clear: both; margin-bottom: -10px">{{this.message}}</p>
+                        </li>
+                    {{/emojione}}
+                    <hr>
+                {{/each}}
+            </ul>
+            <div>
+                <div class="row">
+                    <div class="input-field col s12">
+                      <input id="chat-message" type="text">
+                      <label for="chat-message">Send a message</label>
+                    </div>
+                </div>
+                <a id="submit" class="waves-effect waves-light btn">Send</a>
+            </div>
+        </div>
         <script>
             $("#add-song-modal-button").leanModal({
                 dismissible: true,
@@ -236,6 +259,10 @@
                 alignment: 'right'
             });
             $('select').material_select();
+            $(".header-collapse").sideNav({
+                menuWidth: 350,
+                edge: 'right'
+            });
         </script>
     {{/if}}
 </template>
