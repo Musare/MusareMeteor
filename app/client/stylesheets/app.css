@@ -317,3 +317,7 @@ hr{
         line-height: 1.8em;
     }
 }
+
+.vote_count {
+  vertical-align: middle;
+}
