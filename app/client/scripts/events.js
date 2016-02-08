@@ -1357,11 +1357,11 @@ Template.room.events({
         Session.set("songResults", []);
         Session.set("YTImportQueue", [])
     },
-    "click #chat-tab": function () {
-        $("#chat-tab").removeClass("unread-messages");
-    },
     "click #global-chat-tab": function () {
         $("#global-chat-tab").removeClass("unread-messages");
+    },
+    "click .header-collapse": function(){
+        console.log("Hello");
     },
     "click #sync": function () {
         if (Session.get("currentSong") !== undefined) {

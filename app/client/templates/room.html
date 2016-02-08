@@ -14,7 +14,7 @@
                     <ul class="right hide-on-med-and-down">
                         <li><a href="#"><i class="material-icons">queue_music</i></a></li>
                         <!-- <li><a href="#" data-activates="chat" class="dropdown-button"><i class="material-icons">chat</i></a></li> -->
-                        <li><a href="#" data-activates="slide-out" class="header-collapse"><i class="material-icons">chat</i></a></li>
+                        <li><a href="#" id="chat-slideout" data-activates="slide-out" class="header-collapse"><i class="material-icons">chat</i></a></li>
                     </ul>
                     <div id='chat' class='dropdown-content right'>
                         <ul id="chat-ul">
@@ -223,7 +223,8 @@
                 </div>
             </div>
         </main>
-        <div id="slide-out" class="side-nav">
+        <div id="slide-out" class="side-nav room-slideout">
+            <h5>Chat</h5>
             <ul class="chat-ul">
                 {{#each globalChat}}
                     {{#emojione}}

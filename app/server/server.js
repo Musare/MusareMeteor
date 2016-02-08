@@ -770,8 +770,6 @@ Meteor.methods({
                             rawrank: rawrank,
                             rank: "[A]",
                             message: message,
-                            curUserMention: isCurUserMentioned,
-                            isMentioned: mentionUsername,
                             time: time,
                             username: username
                         });
