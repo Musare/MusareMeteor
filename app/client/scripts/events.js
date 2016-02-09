@@ -184,10 +184,15 @@ function sendMessageGlobal() {
 }
 
 Template.admin.events({
-    "click a": function(e){
-        var id = e.currentTarget.id;
-        console.log(id.toLowerCase());
-        Session.set("playlistToEdit", id);
+    "click a": function(e) {
+        var target = $(e.target);
+        if (target.hasClass("activate-alert-button") || target.parent().hasClass("activate-alert-button")) {
+            var id = target.data("id") || target.parent().data("id");
+            Meteor.call("activateAlert", id);
+        } else if (target.hasClass("deactivate-alert-button") || target.parent().hasClass("deactivate-alert-button")) {
+            var id = target.data("id") || target.parent().data("id");
+            Meteor.call("deactivateAlert", id);
+        }
     },
     "click #croom_create": function() {
         Meteor.call("createRoom", $("#croom_display").val(), $("#croom_tag").val(), $("#croom_private").prop("checked"), $("#croom_desc").val(), function (err, res) {
@@ -199,29 +204,16 @@ Template.admin.events({
             }
         });
     },
-    "click #rreset_confirm": function(){
-        $('#confirmModal').modal('hide');
-        Meteor.call("resetRating");
-    },
-    "click #edit_desc": function(){
-        console.log($(this));
-        console.log($(this)[0].type);
-        Session.set("roomDesc", $(this)[0].type);
-        $("#desc_text").val(Rooms.findOne({type: Session.get("roomDesc")}).roomDesc);
-    },
-    "click #submit_desc": function(){
-        var description = $("#desc_text").val();
-        Meteor.call("editRoomDesc", Session.get("roomDesc"), description);
-        $("#desc-modal").closeModal();
-    },
     "click #submit-alert": function(){
         var alertDesc = $("#alert-desc").val()
         if(alertDesc !== ""){
             Meteor.call("addAlert", alertDesc);
         }
     },
-    "click #remove-alerts": function(){
-        Meteor.call("removeAlerts");
+    "click .delete-alert-button": function(e) {
+        var target = $(e.target);
+        var id = $(e.target).data("id") || target.parent().data("id");
+        Meteor.call("deleteAlert", id);
     }
 });
 
@@ -634,7 +626,7 @@ Template.queues.events({
         newSong.duration = Number($("#duration").val());
         newSong.skipDuration = $("#skip-duration").val();
         newSong.requestedBy = Session.get("song").requestedBy;
-        newSong.genres = $("#genres").val();
+        newSong.genres = $("#genres").val() || [];
         if(newSong.skipDuration === undefined){
             newSong.skipDuration = 0;
         }

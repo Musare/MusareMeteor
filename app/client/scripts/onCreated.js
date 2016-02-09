@@ -55,6 +55,10 @@ Template.login.onCreated(function() {
     });
 });
 
+Template.admin.onCreated(function() {
+    Meteor.subscribe("allAlerts");
+});
+
 Template.feedback.onCreated(function(){
     Meteor.subscribe("feedback");
 })

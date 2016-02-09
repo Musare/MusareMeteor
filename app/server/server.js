@@ -470,6 +470,10 @@ Meteor.publish("alerts", function () {
     return Alerts.find({active: true})
 });
 
+Meteor.publish("allAlerts", function () {
+    return Alerts.find({})
+});
+
 Meteor.publish("news", function () {
     return News.find({})
 });
@@ -602,6 +606,27 @@ function isMuted() {
 }
 
 Meteor.methods({
+    activateAlert: function(id) {
+        if (isAdmin() && !isBanned()) {
+            Alerts.update(id, {$set: {active: true}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    deactivateAlert: function(id) {
+        if (isAdmin() && !isBanned()) {
+            Alerts.update(id, {$set: {active: false}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    deleteAlert: function(id) {
+        if (isAdmin() && !isBanned()) {
+            Alerts.remove(id);
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     fetchSong: function(type) {
         if (isAdmin() && !isBanned()) {
             getStation(type, function (station) {
@@ -727,13 +752,6 @@ Meteor.methods({
                 });
             });
             Meteor.users.update({}, {$set: {"profile.liked": [], "profile.disliked": []}}, {multi: true});
-        } else {
-            throw Meteor.Error(403, "Invalid permissions.");
-        }
-    },
-    removeAlerts: function () {
-        if (isAdmin() && !isBanned()) {
-            Alerts.update({active: true}, {$set: {active: false}}, {multi: true});
         } else {
             throw Meteor.Error(403, "Invalid permissions.");
         }
@@ -1063,7 +1081,8 @@ Meteor.methods({
                 "id": newSong.id,
                 "img": newSong.img,
                 "duration" : newSong.duration,
-                "skipDuration" : newSong.skipDuration
+                "skipDuration" : newSong.skipDuration,
+                "genres": newSong.genres
             }}, function(err) {
                 console.log(err);
                 if (err) {

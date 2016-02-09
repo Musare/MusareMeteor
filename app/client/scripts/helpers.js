@@ -1,8 +1,16 @@
 Template.admin.helpers({
-    queueCount: function (display) {
-        var d = display.toLowerCase();
-        return queues && "songs" in queues ? queues.songs.length : 0;
-        var queues = Queues.findOne({type: d});
+    queueCount: function () {
+        return Queues.find().count();
+    },
+    genreQueue: function(type) {
+        if (type === "none") {
+            return Queues.find({genres: []}).count();
+        } else {
+            return Queues.find({genres: type}).count();
+        }
+    },
+    alertsList: function() {
+        return Alerts.find({});
     },
     queues: function () {
         var queues = Queues.find({}).fetch();

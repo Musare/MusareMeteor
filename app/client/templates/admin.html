@@ -3,11 +3,10 @@
     <div class="landing">
         {{> header}}
         <div class="row" style="margin-top: 20px; height: 100%;">
-            <div class="col s12 l6 m10 offset-l1 offset-m1 card-panel teal accent-3 white-text" style="height: 80%;">
+            <div class="col s12 l6 m10 offset-m1 offset-l1 card-panel teal accent-3 white-text" style="height: 80%;">
                 <div>
                     <h2 class="center-align">Stations</h2>
                 </div>
-                    <p>{{display}}</p>
                     <table>
                         <thead>
                         <tr>
@@ -16,7 +15,6 @@
                             <th>Users</th>
                             <th>Admins</th>
                             <th>Reports</th>
-                            <th>Queue</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -27,21 +25,18 @@
                                     <td>{{roomUserNum}}</td>
                                     <td></td>
                                     <td>{{reportsCount display}}</td>
-                                    <td>{{queueCount display}}</td>
-                                    <td><a id="edit_desc" class="btn right modal-trigger" href="#desc-modal">Edit Desc.</a></td>
                                     <td><a href="/{{type}}/manage" class="btn right" id="manage-{{display}}">Manage</a></td> <!-- TODO Make this redirect to playlist -->
                                 </tr>
                             {{/each}}
                         </tbody>
                     </table>
                 <div class="row">
-                    <a class="btn col m6 s6 l6 waves-effect waves-light" href="/admin/queues">Manage Queues</a> <!-- TODO Make this redirect to the queues -->
-                    <a class="waves-effect waves-light btn col m6 s6 l6 modal-trigger" id="new_room" href="#addStation"> <!-- TODO Make this actually open the new room modal  -->
+                    <a class="waves-effect waves-light btn col m12 s12 l12 modal-trigger" id="new_room" href="#addStation"> <!-- TODO Make this actually open the new room modal  -->
                         Add Room
                     </a>
                 </div>
             </div>
-            <div class="col s12 m8 l3 offset-l1 offset-m2 card-panel teal accent-3 white-text" style="height: 80%;">
+            <div class="col s12 m10 l3 offset-m1 offset-l1 card-panel teal accent-3 white-text" style="height: 80%;">
                 <div>
                     <h2 class="center-align">Other</h2>
                 </div>
@@ -50,96 +45,161 @@
                     <p class="flow-text">Total Registered Users: {{allUsers}}</p>
                 </div>
                 <div class="row">
-                    <a class="btn col m12 s12 l12 waves-effect waves-light" id="rrating" data-toggle="modal" data-target="#confirmModal">Reset All Ratings</a>
+
                 </div>
+            </div>
+            <div class="col s12 l6 m10 offset-m1 offset-l1 card-panel teal accent-3 white-text" style="height: 80%;">
+                <div>
+                    <h2 class="center-align">Alerts</h2>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Created By</th>
+                        <th class="table-right-th">State</th>
+                        <th class="table-right-th">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each al in alertsList}}
+                        <tr>
+                            <td>{{al.description}}</td>
+                            <td>{{al.createdBy}}</td>
+
+                            <td class="table-right-td">
+                                {{#if al.active}}
+                                    <a href="#" class="btn red deactivate-alert-button" data-id="{{al._id}}"><i class="material-icons">thumb_down</i></a>
+                                {{else}}
+                                    <a href="#" class="btn green activate-alert-button" data-id="{{al._id}}"><i class="material-icons">thumb_up</i></a>
+                                {{/if}}
+                            </td>
+                            <td class="table-right-td">
+                                <button class="btn red delete-alert-button" data-id="{{al._id}}"><i class="material-icons">delete</i></button>
+                            </td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
                 <div class="row">
-                    <a class="btn col l6 m6 s12 waves-effect waves-light modal-trigger" href="#alerts-modal">Create New Alert</a>
-                    <a id="remove-alerts" class="btn col l6 m6 s12 waves-effect waves-light red darken-3">Remove Alerts</a>
+                    <a class="btn col l12 m12 s12 waves-effect waves-light modal-trigger" href="#alerts-modal">Create New Alert</a>
+                </div>
+            </div>
+            <div class="col s12 m10 l3 offset-m1 offset-l1 card-panel teal accent-3 white-text" style="height: 80%;">
+                <div>
+                    <h2 class="center-align">Queue</h2>
+                </div>
+                <div class="section">
+                    <p class="flow-text">Total Songs In Queue: {{queueCount}}</p>
+                </div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Genre</th>
+                        <th>Count</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>EDM</td>
+                        <td>{{genreQueue "edm"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Chill</td>
+                        <td>{{genreQueue "chill"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Pop</td>
+                        <td>{{genreQueue "pop"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Country</td>
+                        <td>{{genreQueue "country"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Rock</td>
+                        <td>{{genreQueue "rock"}}</td>
+                    </tr>
+                    <tr>
+                        <td>R&B</td>
+                        <td>{{genreQueue "randb"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Rap</td>
+                        <td>{{genreQueue "rap"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Heavy Metal</td>
+                        <td>{{genreQueue "heavymetal"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Christmas</td>
+                        <td>{{genreQueue "christmas"}}</td>
+                    </tr>
+                    <tr>
+                        <td>Alternative</td>
+                        <td>{{genreQueue "alternative"}}</td>
+                    </tr>
+                    <tr>
+                        <td>None</td>
+                        <td>{{genreQueue "none"}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <a class="btn col m12 s12 l12 waves-effect waves-light" href="/admin/queues">Manage Queues</a>
                 </div>
             </div>
         </div>
+
+
+        <!-- Modals -->
+
         <div id="addStation" class="modal">
             <!-- Modal content-->
-            <div class="modal-content">
+            <div class="modal-content musare white-text">
                 <div class="modal-body">
                     <h4>Add Room</h4>
                     <div class="input-field">
                         <input type="text" class="croom" id="croom_display" name="croom" required/>
-                        <label for="croom_display" class="black-text">Room Display Name</label>
+                        <label for="croom_display" class="white-text">Room Display Name</label>
                     </div>
                     <div class="input-field">
                         <input type="text" class="croom" id="croom_tag" name="croom" required/>
-                        <label for="croom_tag" class="black-text">Room Tag</label>
+                        <label for="croom_tag" class="white-text">Room Tag</label>
                     </div>
                     <div class="input-field">
                         <input type="text" class="croom" id="croom_desc" name="croom" required/>
-                        <label for="croom_desc" class="black-text">Room Description</label>
+                        <label for="croom_desc" class="white-text">Room Description</label>
                     </div>
                     <input type="checkbox" name="croom_private" id="croom_private"/>
-                    <label for="croom_private" class="black-text">Make Room Private?</label>
+                    <label for="croom_private" class="white-text">Make Room Private?</label>
                     <div class="section">
                         <button class="btn btn-warning btn-block waves-effect waves-light" id="croom_create">Create</button>
                     </div>
                     <div class="divider"></div>
                 </div>
-                <div class="modal-footer">
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="confirmModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Confirm Reset</h4>
-                </div>
-                <div class="modal-body">
-                    <h3 style="margin-top: 0">Are you sure you want to reset all likes and dislikes?</h3>
-                    <button id="rreset_confirm" class="btn btn-danger waves-effect waves-light">Reset All Ratings</button>
-                </div>
-                <div class="modal-footer">
-                    <button id="close-modal" type="button" class="btn btn-default waves-effect waves-light" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="desc-modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Room Description</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="input-field">
-                        <textarea id="desc_text" class="materialize-textarea"></textarea>
-                    </div>
-                    <a id="submit_desc" class="waves-effect waves-light btn">Submit</a>
-                </div>
-                <div class="modal-footer">
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat">Close</a>
+                <div class="modal-footer musare">
+                    <a href="#" class="modal-action modal-close waves-effect waves-light btn-flat white-text">Close</a>
                 </div>
             </div>
         </div>
     </div>
     <div id="alerts-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content musare white-text">
                 <div class="modal-header">
                     <h4 class="modal-title">Add New Alert</h4>
                 </div>
                 <div class="modal-body">
                     <div class="input-field">
                         <input type="text" class="croom" id="alert-desc" required/>
-                        <label for="alert-desc" class="black-text">Alert Text</label>
+                        <label for="alert-desc" class="white-text">Alert Text</label>
                         <a id="submit-alert" class="waves-effect waves-light btn">Submit</a>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat">Close</a>
+                <div class="modal-footer musare">
+                    <a href="#" class="modal-action modal-close waves-effect waves-light btn-flat white-text">Close</a>
                 </div>
             </div>
         </div>
