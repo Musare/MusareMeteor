@@ -345,6 +345,30 @@ Template.room.onCreated(function () {
             }, 500)
         }
     });
+    Meteor.setTimeout(function(){
+        $("#chat-slideout").on("click", function(e){
+            $("#chat-slideout").attr("disabled", true);
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            $(".chat-ul").scrollTop(1000000);
+            $(".container").css("margin-right", "370px")
+            if($("#slide-out").css("right") === "0px"){
+                $(".container").css("margin-right", marginRightWidth);
+            }
+        });
+        $("body").on("click", function(){
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            var interval = Meteor.setInterval(function(){
+                if($("#slide-out").css("right") < "0px"){
+                    $(".container").css("margin-right", marginRightWidth);
+                    Meteor.clearInterval(interval);
+                }
+            }, 10);
+        });
+        $(window).on("resize", function(){
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            $(".container").css("margin-right", marginRightWidth);
+        })
+    }, 1000);
 });
 
 Template.settings.onCreated(function() {
