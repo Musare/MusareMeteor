@@ -227,6 +227,17 @@ Template.manageSongs.helpers({
 });
 
 Template.manageStation.helpers({
+    editingDesc: function() {
+        return Session.get("editingDesc");
+    },
+    description: function() {
+        var parts = location.href.split('/');
+        parts.pop();
+        var id = parts.pop();
+        var type = id.toLowerCase();
+
+        return Rooms.findOne({type: type}).roomDesc;
+    },
     songs: function () {
         var parts = location.href.split('/');
         parts.pop();
