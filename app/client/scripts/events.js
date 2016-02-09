@@ -1360,9 +1360,6 @@ Template.room.events({
     "click #global-chat-tab": function () {
         $("#global-chat-tab").removeClass("unread-messages");
     },
-    "click .header-collapse": function(){
-        console.log("Hello");
-    },
     "click #sync": function () {
         if (Session.get("currentSong") !== undefined) {
             var room = Rooms.findOne({type: Session.get("type")});

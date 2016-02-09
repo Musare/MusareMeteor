@@ -7,11 +7,8 @@
                         <li><a href="/"><i class="material-icons">home</i></a></li>
                         <li><a href="#add_song_modal" id="add-song-modal-button"><i
                                 class="material-icons">playlist_add</i></a></li>
-                        <li><a href="#bug_report_modal"><i class="material-icons">flag</i></a></li>
-                        <li><a href="#"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
-                        {{#if isAdmin}}
-                          <li><a href="#"><i class="material-icons">shuffle</i></a></li>
-                        {{/if}}
+                        <li><a href="#bug_report_modal"><i class="material-icons">bug_report</i></a></li>
+                        <li><a href="#" id="vote-skip"><i class="material-icons">skip_next</i> <span class="new badge">{{votes}}</span></a></li>
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
                     <ul class="right hide-on-med-and-down">
