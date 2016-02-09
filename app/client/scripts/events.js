@@ -1579,6 +1579,11 @@ Template.room.events({
         $("#select_single").attr("selected", true);
         $("#search-info").show();
         $("#playlist-import").hide();
+    },
+    "click #admin-dropdown a": function(){
+        Meteor.setTimeout(function(){
+            $(".dropdown-button").click();
+        }, 1);
     }
 });
 // Settings Template

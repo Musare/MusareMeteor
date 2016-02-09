@@ -184,6 +184,11 @@ hr{
     overflow: hidden;
 }
 
+#time-display{
+    margin-top: 30px;
+    float: right;
+}
+
 #preview-time {
     margin-top: -9px;
 }

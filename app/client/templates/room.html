@@ -9,7 +9,7 @@
                         <li><a href="#bug_report_modal"><i class="material-icons">flag</i></a></li>
                         <li><a href="#"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
                         {{#if isAdmin}}
-                            <li><a href="#"><i class="material-icons">shuffle</i></a></li>
+                            <li><a class='dropdown-button' data-activates='admin-dropdown'><i class="material-icons">control_point</i></a></li>
                         {{/if}}
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
@@ -70,9 +70,9 @@
                     <div class="col s12 m10 l8 offset-l2 offset-m1">
                         <div class="row">
                             <div class="col s12 m12 l8">
-                                <h3>{{{title}}} - {{{artist}}}</h3>
-                                <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span>
-                                </h4>
+                                <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span></h4>
+                                <h3>{{{title}}}</h3>
+                                <h4 class="thin" style="margin-left: 0">{{{artist}}}</h4>
                                 <div class="row">
                                     <form action="#" class="left col s4 m4 l4">
                                         <p class="range-field" style="margin-top: 0">
@@ -93,7 +93,7 @@
                             </div>
                             <img alt="Not loading" class="responsive-img song-img col s12 m12 l4"
                                  onError="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'"
-                                 id="song-img"/>
+                                 id="song-img" style="margin-top: 10px !important"/>
                         </div>
                     </div>
                 </div>
@@ -250,6 +250,12 @@
                 <a id="submit" class="waves-effect waves-light btn">Send</a>
             </div>
         </div>
+        <ul id='admin-dropdown' style="background-color: #00bfa5 !important; display: none">
+            <li><a><i class="material-icons">pause</i></a></li>
+            <li><a><i class="material-icons">skip_next</i></a></li>
+            <li><a><i class="material-icons">shuffle</i></a></li>
+            <li><a><i class="material-icons">lock_outline</i></a></li>
+        </ul>
         <script>
             $("#add-song-modal-button").leanModal({
                 dismissible: true,
@@ -258,8 +264,7 @@
                 out_duration: 200
             });
             $(".dropdown-button").dropdown({
-                belowOrigin: true,
-                alignment: 'right'
+                belowOrigin: true
             });
             $('select').material_select();
             $(".header-collapse").sideNav({
