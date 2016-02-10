@@ -1,4 +1,4 @@
-accounts-base@1.2.2
+oraccounts-base@1.2.2
 accounts-facebook@1.0.6
 accounts-github@1.0.6
 accounts-oauth@1.1.8
@@ -35,7 +35,6 @@ emojione:emojione@1.5.2
 es5-shim@4.1.14
 facebook@1.2.2
 fastclick@1.0.7
-force-ssl@1.0.6
 geojson-utils@1.0.4
 github@1.1.4
 handlebars@1.0.4
@@ -94,7 +93,7 @@ routepolicy@1.0.6
 service-configuration@1.0.5
 session@1.1.1
 sha@1.0.4
-spacebars@1.0.7
+spacebars@1.0.or
 spacebars-compiler@1.0.7
 srp@1.0.4
 standard-minifiers@1.0.2
