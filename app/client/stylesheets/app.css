@@ -297,16 +297,15 @@ hr{
 }
 
 #sidenav-overlay{
-    background-color: initial !important;
-    z-index: 0 !important;
+    display: none
 }
 
-.room-slideout{
+.side-nav{
     top: 64px;
     height: 100%;
 }
 
-.room-slideout h5{
+.side-nav h5{
     text-align: center;
     background-color: #028A77 !important;
     margin: 0;

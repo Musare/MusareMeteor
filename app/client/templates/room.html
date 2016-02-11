@@ -14,9 +14,10 @@
                     </ul>
                     <span class="brand-logo center">{{type}}</span>
                     <ul class="right hide-on-med-and-down">
-                        <li><a href="#"><i class="material-icons">queue_music</i></a></li>
+                        <!-- <li><a href="#"><i class="material-icons">queue_music</i></a></li> -->
                         <!-- <li><a href="#" data-activates="chat" class="dropdown-button"><i class="material-icons">chat</i></a></li> -->
-                        <li><a href="#" id="chat-slideout" data-activates="slide-out" class="header-collapse"><i class="material-icons">chat</i></a></li>
+                        <li><a href="#" id="playlist-slideout" data-activates="playlist-slide-out" class="header-collapse"><i class="material-icons">queue_music</i></a></li>
+                        <li><a href="#" id="chat-slideout" data-activates="chat-slide-out" class="header-collapse"><i class="material-icons">chat</i></a></li>
                     </ul>
                     <div id='chat' class='dropdown-content right'>
                         <ul id="chat-ul">
@@ -285,7 +286,7 @@
                 </div>
             </div>
         </main>
-        <div id="slide-out" class="side-nav room-slideout">
+        <div id="chat-slide-out" class="side-nav">
             <h5>Chat</h5>
             <ul class="chat-ul">
                 {{#each globalChat}}
@@ -309,6 +310,9 @@
                 </div>
                 <a id="submit" class="waves-effect waves-light btn">Send</a>
             </div>
+        </div>
+        <div id="playlist-slide-out" class="side-nav">
+            <h5>Playlist</h5>
         </div>
         <ul id='admin-dropdown' style="background-color: #00bfa5 !important; display: none">
             <li><a><i class="material-icons">pause</i></a></li>
@@ -334,7 +338,11 @@
                 belowOrigin: true
             });
             $('select').material_select();
-            $(".header-collapse").sideNav({
+            $("#chat-slideout").sideNav({
+                menuWidth: 350,
+                edge: 'right'
+            });
+            $("#playlist-slideout").sideNav({
                 menuWidth: 350,
                 edge: 'right'
             });

@@ -346,23 +346,46 @@ Template.room.onCreated(function () {
         }
     });
     Meteor.setTimeout(function(){
-        $("#chat-slideout").on("click", function(e){
-            $("#chat-slideout").attr("disabled", true);
+        $("#playlist-slideout").on("click", function(){
+            if($("#chat-slide-out").css("right") === "0px"){
+                $("#chat-slideout").sideNav("hide");
+            }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
-            $(".chat-ul").scrollTop(1000000);
             $(".container").css("margin-right", "370px")
-            if($("#slide-out").css("right") === "0px"){
+            if($("#playlist-slide-out").css("right") === "0px"){
                 $(".container").css("margin-right", marginRightWidth);
             }
         });
-        $("body").on("click", function(){
+        $("#chat-slideout").on("click", function(){
+            if($("#playlist-slide-out").css("right") === "0px"){
+                $("#playlist-slideout").sideNav("hide");
+            }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
-            var interval = Meteor.setInterval(function(){
-                if($("#slide-out").css("right") < "0px"){
-                    $(".container").css("margin-right", marginRightWidth);
-                    Meteor.clearInterval(interval);
-                }
-            }, 10);
+            $(".chat-ul").scrollTop(1000000);
+            $(".container").css("margin-right", "370px")
+            if($("#chat-slide-out").css("right") === "0px"){
+                $(".container").css("margin-right", marginRightWidth);
+            }
+        });
+        $("body").on("click", function(e){
+            console.log(e.target);
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            if($("#playlist-slide-out").css("right") === "0px"){
+                var interval = Meteor.setInterval(function(){
+                    if($("#playlist-slide-out").css("right") < "0px"){
+                        $(".container").css("margin-right", marginRightWidth);
+                        Meteor.clearInterval(interval);
+                    }
+                }, 10);
+            }
+            if($("#chat-slide-out").css("right") === "0px"){
+                var interval = Meteor.setInterval(function(){
+                    if($("#chat-slide-out").css("right") < "0px"){
+                        $(".container").css("margin-right", marginRightWidth);
+                        Meteor.clearInterval(interval);
+                    }
+                }, 10);
+            }
         });
         $(window).on("resize", function(){
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
