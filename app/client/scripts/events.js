@@ -641,6 +641,20 @@ Template.queues.events({
 
 Template.manageStation.events({
     /* TODO Add undo delete button */
+    "click #editDescButton": function() {
+        var parts = location.href.split('/');
+        parts.pop();
+        var id = parts.pop();
+        var type = id.toLowerCase();
+        var editingDesc = Session.get("editingDesc");
+        if (!editingDesc) {
+            Session.set("editingDesc", !editingDesc);
+        } else {
+            var newDesc = $("#editDesc").val();
+            Meteor.call("editRoomDesc", type, newDesc);
+            Session.set("editingDesc", !editingDesc);
+        }
+    },
     "input #id": function() {
         $("#previewPlayerContainer").addClass("hide-preview");
     },
