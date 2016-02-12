@@ -3,18 +3,20 @@
     <div class="landing">
         {{> header}}
         <div class="row">
-            <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-playlist-panel card-panel teal accent-3">
+            <div class="col m12 s12 l8 offset-l2 admin-playlist-panel card-panel teal accent-3">
                 <div class="card-content white-text">
                     <h3 class="text-center">Description</h3>
-                    Meteor.call("editRoomDesc", Session.get("roomDesc"), description);
+                    <!--Meteor.call("editRoomDesc", Session.get("roomDesc"), description);-->
                     {{#if editingDesc}}
-                        <input val="{{description}}" id="editDesc"/>
+                        <input value="{{description}}" id="editDesc"/>
+                        <a class="waves-effect waves-light btn" id="editDescButton" style="margin-bottom: 10px;">Save</a>
                     {{else}}
                         <h5>{{description}}</h5>
+                        <a class="waves-effect waves-light btn" id="editDescButton" style="margin-bottom: 10px;">Edit</a>
                     {{/if}}
                 </div>
             </div>
-            <div class="col m8 s8 l8 offset-l2 offset-m1 offset-s2 admin-playlist-panel card-panel teal accent-3">
+            <div class="col m12 s12 l8 offset-l2 admin-playlist-panel card-panel teal accent-3">
                 <div class="card-content white-text">
                     <h3 class="text-center">{{display}} playlist</h3>
                     <table class="bordered">
