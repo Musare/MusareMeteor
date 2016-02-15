@@ -1,3 +1,5 @@
+/* Yolo Swag 420 */
+
 Meteor.startup(function () {
     reCAPTCHA.config({
         privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
