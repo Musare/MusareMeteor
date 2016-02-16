@@ -40,7 +40,7 @@ var default_song = {
     skipDuration: 0,
     requestedBy: "NONE",
     approvedBy: "GOD",
-    genres: []
+    genres: ["edm", "pop"]
 };
 
 Alerts.update({active: true}, {$set: {active: false}}, {multi: true});
