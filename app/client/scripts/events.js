@@ -1420,8 +1420,8 @@ Template.room.events({
         Meteor.call("dislikeSong", Session.get("currentSong").mid);
     },
     "click #vote-skip": function () {
-        Meteor.call("voteSkip", type, function (err, res) {
-            $("#vote-skip").attr("disabled", true);
+        Meteor.call("voteSkip", Session.get("type"), function (err, res) {
+            $("#vote-skip").addClass("disabled");
         });
     },
     "click #report-prev": function (e) {

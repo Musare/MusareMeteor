@@ -427,6 +427,7 @@ Template.room.helpers({
         }
     },
     votes: function () {
+        console.log(Rooms.findOne({type: Session.get("type")}).votes);
         return Rooms.findOne({type: Session.get("type")}).votes;
     }
 });

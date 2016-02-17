@@ -42,6 +42,14 @@ hr{
     margin: 0;
 }
 
+.disabled{
+    cursor: default;
+}
+
+.disabled:hover{
+    background-color: inherit;
+}
+
 .container{
     transition: all 0.1s;
 }

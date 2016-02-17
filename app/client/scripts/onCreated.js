@@ -278,6 +278,7 @@ Template.room.onCreated(function () {
                             currentSong.skipDuration = 0;
                         }
                         YTPlayer.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                        $("#vote-skip").removeClass("disabled");
                     }
                     Session.set("pauseVideo", false);
                     getSongInfo(currentSong);
