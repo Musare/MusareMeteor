@@ -1539,10 +1539,16 @@ Template.room.events({
         }
     },
     "click #play": function () {
-        Meteor.call("resumeRoom", type);
+        Meteor.call("resumeRoom", Session.get("type"));
+        var $parent = $("#play").parent();
+        $("#play").remove();
+        $parent.append('<a id="pause"><i class="material-icons">pause</i></a>')
     },
     "click #pause": function () {
-        Meteor.call("pauseRoom", type);
+        Meteor.call("pauseRoom", Session.get("type"));
+        var $parent = $("#pause").parent();
+        $("#pause").remove();
+        $parent.append('<a id="play"><i class="material-icons">play_arrow</i></a>')
     },
     "click #skip": function () {
         var parts = location.href.split('/');
