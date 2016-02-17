@@ -602,7 +602,7 @@ Template.queues.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[2].url).change();
+                        $("#img").val(data[i].items[j].album.images[0].url).change();
                         $("#duration").val(data[i].items[j].duration_ms / 1000).change();
                         return;
                     }
@@ -631,6 +631,7 @@ Template.queues.events({
                 var $toastContent = $('<span><strong>Song not saved.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 8000);
             } else {
+                $("#editModal").closeModal();
                 var $toastContent = $('<span><strong>Song saved!</strong> No errors were found.</span>');
                 Materialize.toast($toastContent, 4000);
                 Session.set("song", newSong);
@@ -846,7 +847,7 @@ Template.manageStation.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[2].url).change();
+                        $("#img").val(data[i].items[j].album.images[0].url).change();
                         $("#duration").val(data[i].items[j].duration_ms / 1000).change();
                         return;
                     }
@@ -1085,7 +1086,7 @@ Template.manageSongs.events({
             for(var i in data){
                 for(var j in data[i].items){
                     if(search.indexOf(data[i].items[j].name) !== -1 && artistName.indexOf(data[i].items[j].artists[0].name) !== -1){
-                        $("#img").val(data[i].items[j].album.images[2].url).change();
+                        $("#img").val(data[i].items[j].album.images[0].url).change();
                         $("#duration").val(data[i].items[j].duration_ms / 1000).change();
                         return;
                     }
@@ -1217,7 +1218,7 @@ Template.room.events({
             if (data.tracks.items.length > 0) {
                 title = data.tracks.items[0].name;
                 var artists = [];
-                img = data.tracks.items[0].album.images[2].url;
+                img = data.tracks.items[0].album.images[0].url;
                 data.tracks.items[0].artists.forEach(function (artist) {
                     artists.push(artist.name);
                 });
@@ -1544,6 +1545,9 @@ Template.room.events({
         Meteor.call("pauseRoom", type);
     },
     "click #skip": function () {
+        var parts = location.href.split('/');
+        var roomTypeStr = parts.pop();
+        var type = roomTypeStr.toLowerCase();
         Meteor.call("skipSong", type);
     },
     "click #shuffle": function () {
