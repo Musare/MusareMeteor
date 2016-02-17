@@ -308,12 +308,12 @@ hr{
     display: none
 }
 
-.side-nav{
+.room-slideout{
     top: 64px;
     height: 100%;
 }
 
-.side-nav h5{
+.room-slideout h5{
     text-align: center;
     background-color: #028A77 !important;
     margin: 0;
