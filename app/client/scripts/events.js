@@ -1384,9 +1384,15 @@ Template.room.events({
     },
     "click #lock": function () {
         Meteor.call("lockRoom", Session.get("type"));
+        var $parent = $("#lock").parent();
+        $("#lock").remove();
+        $parent.append('<a id="unlock"><i class="material-icons">lock_open</i></a>')
     },
     "click #unlock": function () {
         Meteor.call("unlockRoom", Session.get("type"));
+        var $parent = $("#unlock").parent();
+        $("#unlock").remove();
+        $parent.append('<a id="lock"><i class="material-icons">lock_outline</i></a>')
     },
     "click #submit": function () {
         sendMessageGlobal();
@@ -1551,13 +1557,10 @@ Template.room.events({
         $parent.append('<a id="play"><i class="material-icons">play_arrow</i></a>')
     },
     "click #skip": function () {
-        var parts = location.href.split('/');
-        var roomTypeStr = parts.pop();
-        var type = roomTypeStr.toLowerCase();
-        Meteor.call("skipSong", type);
+        Meteor.call("skipSong", Session.get("type"));
     },
     "click #shuffle": function () {
-        Meteor.call("shufflePlaylist", type);
+        Meteor.call("shufflePlaylist", Session.get("type"));
     },
     "change input": function (e) {
         /*if (e.target && e.target.id) {
@@ -1602,7 +1605,7 @@ Template.room.events({
     "click #admin-dropdown a": function(){
         Meteor.setTimeout(function(){
             $(".dropdown-button").click();
-        }, 1);
+        }, 10);
     }
 });
 // Settings Template
