@@ -1094,7 +1094,7 @@ Template.manageSongs.events({
             }
         }, artistName);
     },
-    "click #save-song-button": function() {
+    "click #save-song-button": function() {_
         var newSong = {};
         newSong.mid = $("#mid").val();
         newSong.id = $("#id").val();
@@ -1422,6 +1422,10 @@ Template.room.events({
     "click #vote-skip": function () {
         Meteor.call("voteSkip", Session.get("type"), function (err, res) {
             $("#vote-skip").addClass("disabled");
+            if(err){
+                var $toastContent = $('<span><strong>Vote not submitted</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
+            }
         });
     },
     "click #report-prev": function (e) {
