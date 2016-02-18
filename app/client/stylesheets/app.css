@@ -345,12 +345,6 @@ hr{
     margin: 0 10px !important;
 }
 
-@media screen and (max-width: 990px){
-    .card i{
-        line-height: 1.8em;
-    }
-}
-
 .vote_count {
   vertical-align: middle;
 }
@@ -361,4 +355,17 @@ hr{
 
 #add-song-button {
     margin-bottom: 100px;
+}
+
+.profile-card ul{
+    max-height: 365px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+/*Media queries stay on the bottom*/
+@media screen and (max-width: 990px){
+    .card i{
+        line-height: 1.8em;
+    }
 }
