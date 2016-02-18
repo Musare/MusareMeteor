@@ -18,15 +18,14 @@
                 <div class="card teal accent-3 profile-card">
                     <div class="card-content white-text">
                         <span class="card-title">Liked Songs</span>
-                        {{#each likedSongs}}
-                            <div class="profile-card-song">
-                                <div class="section">
-                                    <h5>Title</h5>
-                                    <p>Artist</p>
-                                </div>
-                                <div class="divider"></div>
-                            </div>
-                        {{/each}}
+                        <ul>
+                           {{#each likedSongs}}
+                               <li>
+                                   <h5>{{title}}</h5>
+                                   <h6>{{artist}}</h6>
+                               </li>
+                           {{/each}}
+                       </ul>
                     </div>
                 </div>
             </div>
@@ -35,13 +34,10 @@
                     <div class="card-content white-text">
                         <span class="card-title">Disliked Songs</span>
                         {{#each dislikedSongs}}
-                            <div class="profile-card-song">
-                                <div class="section">
-                                    <h5>Title</h5>
-                                    <p>Artist</p>
-                                </div>
-                                <div class="divider"></div>
-                            </div>
+                            <li>
+                                <h4>{{title}}</h4>
+                                <h5>{{artist}}</h5>
+                            </li>
                         {{/each}}
                     </div>
                 </div>

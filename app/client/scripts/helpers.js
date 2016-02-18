@@ -154,34 +154,22 @@ Template.profile.helpers({
     likedSongs: function () {
         var likedArr = [];
         Session.get("liked").forEach(function (mid) {
-            Rooms.find().forEach(function (room) {
-                Playlists.find({type: room.type}).forEach(function (pl) {
-                    for (var i in pl.songs) {
-                        if (pl.songs[i].mid === mid) {
-                            likedArr.push({title: pl.songs[i].title, artist: pl.songs[i].artist, room: room.display});
-                        }
-                    }
-                });
-            })
+            Songs.find().forEach(function (data) {
+                if (data.mid === mid) {
+                    likedArr.push({title: data.title, artist: data.artist});
+                }
+            });
         });
         return likedArr;
     },
     dislikedSongs: function () {
         var dislikedArr = [];
         Session.get("disliked").forEach(function (mid) {
-            Rooms.find().forEach(function (room) {
-                Playlists.find({type: room.type}).forEach(function (pl) {
-                    for (var i in pl.songs) {
-                        if (pl.songs[i].mid === mid) {
-                            dislikedArr.push({
-                                title: pl.songs[i].title,
-                                artist: pl.songs[i].artist,
-                                room: room.display
-                            });
-                        }
-                    }
-                });
-            })
+            Songs.find().forEach(function (data) {
+                if (data.mid === mid) {
+                    dislikedArr.push({title: data.title, artist: data.artist});
+                }
+            });
         });
         return dislikedArr;
     },
