@@ -462,7 +462,7 @@ Accounts.onCreateUser(function (options, user) {
         rank: "default",
         liked: [],
         disliked: [],
-        settings: {showRating: false},
+        settings: {showRating: true},
         realname: ""
     };
     return user;
@@ -730,7 +730,7 @@ Meteor.methods({
         if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
             if (showRating !== true && showRating !== false) {
-                showRating = false;
+                showRating = true;
             }
             if (user.profile.settings) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$set: {"profile.settings.showRating": showRating}});
