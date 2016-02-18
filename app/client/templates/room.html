@@ -3,18 +3,18 @@
         <nav>
             <div class="nav-wrapper teal accent-4">
                 <ul class="left hide-on-med-and-down">
-                    <li><a href="/"><i class="material-icons">home</i></a></li>
-                    <li><a href="#add_song_modal" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
-                    <li><a href="#bug_report_modal"><i class="material-icons">flag</i></a></li>
-                    <li><a id="vote-skip"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
+                    <li><a href="/" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Go back to home"><i class="material-icons">home</i></a></li>
+                    <li><a href="#add_song_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Request a song" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
+                    <li><a href="#bug_report_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Flag a song"><i class="material-icons">flag</i></a></li>
+                    <li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
                     {{#if isAdmin}}
                         <li><a class='dropdown-button' data-activates='admin-dropdown'><i class="material-icons">control_point</i></a></li>
                     {{/if}}
                 </ul>
                 <span class="brand-logo center">{{type}}</span>
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="#" id="playlist-slideout" data-activates="playlist-slide-out" class="header-collapse"><i class="material-icons">queue_music</i></a></li>
-                    <li><a href="#" id="chat-slideout" data-activates="chat-slide-out" class="header-collapse"><i class="material-icons">chat</i></a></li>
+                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Open playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
+                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Open chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
                 </ul>
             </div>
         </nav>
@@ -308,5 +308,6 @@
             menuWidth: 350,
             edge: 'right'
         });
+        $('.tooltipped').tooltip({delay: 50});
     </script>
 </template>
