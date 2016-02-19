@@ -363,6 +363,16 @@ hr{
     overflow-y: scroll;
 }
 
+.pl-item:hover{
+    background-color: inherit;
+}
+
+.pl-title{
+    margin: 0;
+    font-size: 1.4em;
+    line-height: 25px;
+}
+
 /*Media queries stay on the bottom*/
 @media screen and (max-width: 990px){
     .card i{

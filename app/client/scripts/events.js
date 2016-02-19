@@ -295,12 +295,14 @@ Template.playlist.events({
         } else {
             $(".pl-item").hide();
             var input = $("#search-playlist").val().toLowerCase();
-            $(".pl-item strong").each(function(i, el){
+            $(".pl-item .pl-title").each(function(i, el){
+                console.log($(el).text());
                 if($(el).text().toLowerCase().indexOf(input) !== -1){
                     $(el).parent(".pl-item").show();
                 }
             })
             $(".pl-item #pl-artist").each(function(i, el){
+                console.log($(el).text());
                 if($(el).text().toLowerCase().indexOf(input) !== -1){
                     $(el).parent(".pl-item").show();
                 }

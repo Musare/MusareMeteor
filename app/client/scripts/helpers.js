@@ -118,9 +118,9 @@ Template.playlist.helpers({
         parts = location.href.split('/');
         id = parts.pop();
         type = id.toLowerCase();
-        var data = Playlists.findOne({type: type});
+        var data = Songs.find({"genres": type}).fetch();
         if (data !== undefined) {
-            data.songs.map(function (song) {
+            data.map(function (song) {
                 if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
                     song.current = true;
                 } else {
@@ -128,7 +128,7 @@ Template.playlist.helpers({
                 }
                 return song;
             });
-            return data.songs;
+            return data;
         } else {
             return [];
         }

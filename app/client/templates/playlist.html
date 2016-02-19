@@ -1,12 +1,21 @@
 <template name="playlist">
-    <input type="text" id="search-playlist" placeholder="Search playlist..."  onfocus="this.placeholder = ''" onblur="this.placeholder = 'Search playlist...'" />
+    <div class="input-field">
+        <input type="text" id="search-playlist" style="padding-right: 10px;"/>
+        <label for="search-playlist">Search playlist by song/artist</label>
+    </div>
     <ul id="playlist-ul">
       {{#each playlist_songs}}
+        {{#if current}}
+            <li style="color: rgb(107, 197, 164) !important" class="pl-item">
+                <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>
+                <p class="pl-title">{{title}}</p>
+                <p id="pl-artist" style="margin-top: -10px">{{artist}}</p>
+            </li>
+        {{/if}}
         <li class="pl-item">
-            {{#if current}}<i class="fa fa-arrow-right" id="current-arrow"></i>{{/if}}
-            <p style="float:right;padding-right:10px;font-weight:900">{{formatTime duration}}</p>
-            <strong>{{title}}</strong>
-            <p id="pl-artist">{{artist}}</p>
+            <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>
+            <p class="pl-title">{{title}}</p>
+            <p id="pl-artist" style="margin-top: -10px">{{artist}}</p>
         </li>
       {{/each}}
     </ul>
