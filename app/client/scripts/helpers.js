@@ -115,9 +115,9 @@ Template.home.helpers({
 
 Template.playlist.helpers({
     playlist_songs: function () {
-        parts = location.href.split('/');
-        id = parts.pop();
-        type = id.toLowerCase();
+        var parts = location.href.split('/');
+        var id = parts.pop();
+        var type = id.toLowerCase();
         var data = Songs.find({"genres": type}).fetch();
         if (data !== undefined) {
             data.map(function (song) {
@@ -132,6 +132,22 @@ Template.playlist.helpers({
         } else {
             return [];
         }
+    },
+    currentSong: function(){
+        var parts = location.href.split('/');
+        var id = parts.pop();
+        var type = id.toLowerCase();
+        var data = Songs.find({"genres": type}).fetch();
+        for(var i = 0; i < data.length; i++){
+            if(data[i].mid === Session.get("currentSong").mid){
+                if(i === data.length - 1){
+                    Session.set("nextSong", [data[0]]);
+                } else{
+                    Session.set("nextSong", [data[i+1]]);
+                }
+            }
+        };
+        return Session.get("nextSong");
     }
 });
 

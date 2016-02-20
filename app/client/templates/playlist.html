@@ -1,22 +1,26 @@
 <template name="playlist">
     <div class="input-field">
-        <input type="text" id="search-playlist" style="padding-right: 10px;"/>
+        <input type="text" id="search-playlist" style="padding-left: 10px;"/>
         <label for="search-playlist">Search playlist by song/artist</label>
     </div>
+    <ul style="max-height: 65%; overflow-y: scroll">
+        {{#each currentSong}}
+            <p style="margin: -20px 0 0 15px; font-weight: 300;">Up Next</p>
+            <li class="pl-item" style="color: rgb(107, 197, 164) !important;">
+                <img src={{img}} style="width: 80px; float: left; margin: 0 10px 10px 0;">
+                <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>
+                <p class="pl-title" style="font-size: 1.2em">{{title}}</p>
+                <p id="pl-artist" style="margin-top: -20px; font-size: 0.7em">{{artist}}</p>
+            </li>
+        {{/each}}
+    </ul>
     <ul id="playlist-ul">
-      {{#each playlist_songs}}
-        {{#if current}}
-            <li style="color: rgb(107, 197, 164) !important" class="pl-item">
+        {{#each playlist_songs}}
+            <li class="pl-item" style="clear: both">
                 <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>
                 <p class="pl-title">{{title}}</p>
                 <p id="pl-artist" style="margin-top: -10px">{{artist}}</p>
             </li>
-        {{/if}}
-        <li class="pl-item">
-            <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>
-            <p class="pl-title">{{title}}</p>
-            <p id="pl-artist" style="margin-top: -10px">{{artist}}</p>
-        </li>
-      {{/each}}
+        {{/each}}
     </ul>
 </template>

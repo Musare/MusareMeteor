@@ -363,8 +363,8 @@ hr{
     overflow-y: scroll;
 }
 
-.pl-item:hover{
-    background-color: inherit;
+.pl-item{
+    pointer-events: none;
 }
 
 .pl-title{
