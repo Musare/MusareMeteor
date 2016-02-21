@@ -3,7 +3,7 @@
         <nav>
             <div class="nav-wrapper teal accent-4">
                 <ul class="left hide-on-med-and-down">
-                    <li><a href="/" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Go back to home"><i class="material-icons">home</i></a></li>
+                    <li><a href="/"><i class="material-icons">home</i></a></li>
                     <li><a href="#add_song_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Request a song" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
                     <li><a href="#bug_report_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Flag a song"><i class="material-icons">flag</i></a></li>
                     <li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
@@ -21,7 +21,7 @@
     </header>
     {{> alerts}}
     <main id="room-content">
-        <div class="container">
+        <div class="container room-container">
             <div class="row">
                 <div class="col s12 m10 l8 offset-l2 offset-m1" id="media-container">
                     <div class="video-container">
