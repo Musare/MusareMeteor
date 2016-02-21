@@ -1462,16 +1462,16 @@ Template.room.events({
             Materialize.toast($toastContent, 8000);
         } else if (Queues.find({"id": songData.id}).count() > 0) {
             var $toastContent = $('<span><strong>Song not added.</strong> This song has already been requested.</span>');
-            Materialize.toast($toastContent, 8000);
+            Materialize.toast($toastContent, 3000);
         } else {
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 console.log(err, res);
                 if (err) {
                     var $toastContent = $('<span><strong>Song not added.</strong> ' + err.reason + '</span>');
-                    Materialize.toast($toastContent, 8000);
+                    Materialize.toast($toastContent, 3000);
                 } else {
                     var $toastContent = $('<span><strong>Song added.</strong> Your song has succesfully been added to the queue.</span>');
-                    Materialize.toast($toastContent, 8000);
+                    Materialize.toast($toastContent, 3000);
                     $('#add_song_modal').closeModal();
                     Session.set("editingSong", false);
                 }

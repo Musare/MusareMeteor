@@ -352,9 +352,9 @@ Template.room.onCreated(function () {
                 $("#chat-slideout").sideNav("hide");
             }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
-            $(".container").css("margin-right", "370px")
+            $(".room-container").css("margin-right", "370px")
             if($("#playlist-slide-out").css("right") === "0px"){
-                $(".container").css("margin-right", marginRightWidth);
+                $(".room-container").css("margin-right", marginRightWidth);
             }
         });
         $("#chat-slideout").on("click", function(){
@@ -363,9 +363,9 @@ Template.room.onCreated(function () {
             }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
             $(".chat-ul").scrollTop(1000000);
-            $(".container").css("margin-right", "370px")
+            $(".room-container").css("margin-right", "370px")
             if($("#chat-slide-out").css("right") === "0px"){
-                $(".container").css("margin-right", marginRightWidth);
+                $(".room-container").css("margin-right", marginRightWidth);
             }
         });
         $("body").on("click", function(e){
