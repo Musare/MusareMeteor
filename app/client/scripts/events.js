@@ -292,7 +292,9 @@ Template.playlist.events({
     "keyup #search-playlist": function(){
         if($("#search-playlist").val().length === 0){
             $(".pl-item").show();
+            $("#up-next").show();
         } else {
+            $("#up-next").hide();
             $(".pl-item").hide();
             var input = $("#search-playlist").val().toLowerCase();
             $(".pl-item .pl-title").each(function(i, el){

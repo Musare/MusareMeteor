@@ -3,7 +3,7 @@
         <input type="text" id="search-playlist" style="padding-left: 10px;"/>
         <label for="search-playlist">Search playlist by song/artist</label>
     </div>
-    <ul>
+    <ul id="up-next">
         {{#each currentSong}}
             <p style="margin: -20px 0 0 15px; font-weight: 300;">Up Next</p>
             <li class="pl-item" style="color: rgb(107, 197, 164) !important;">
@@ -13,8 +13,8 @@
                 <p id="pl-artist" style="margin-top: -20px; font-size: 0.7em">{{artist}}</p>
             </li>
         {{/each}}
+        <hr style="clear: both">
     </ul>
-    <hr style="clear: both">
     <ul id="playlist-ul" style="max-height: 60%; overflow-y: scroll; margin-top: 30px">
         {{#each playlist_songs}}
             <li class="pl-item" style="clear: both">

@@ -69,14 +69,13 @@
         <ul class="chat-ul">
             {{#each globalChat}}
                 {{#emojione}}
-                    <li class="chat-message">
-                        <span title="{{time}}" style="float: right;">{{rtime time}}</span>
-                        <small class="rank-{{this.rawrank}}">{{this.rank}}</small>
-                        <a style="text-decoration: none" href="/u/{{this.username}}" target="_blank">{{this.username}}</a>
-                        <p style="clear: both; line-height: initial;">{{this.message}}</p>
+                    <li class="chat-message" style="line-height: 30px">
+                        <span title="{{time}}" style="float: right; margin-top: 15px">{{rtime time}}</span>
+                        <small class="rank-{{this.rawrank}}" style="margin-top: 15px">{{this.rank}}</small>
+                        <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500" href="/u/{{this.username}}" target="_blank">{{this.username}}</a>
+                        <p style="clear: both; line-height: 1.2em; margin-left: 13px; margin-bottom: 30px; font-size: 1.2em; height: 0">{{this.message}}</p>
                     </li>
                 {{/emojione}}
-                <hr>
             {{/each}}
         </ul>
         <div>
