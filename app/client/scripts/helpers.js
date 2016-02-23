@@ -115,10 +115,13 @@ Template.home.helpers({
 
 Template.playlist.helpers({
     playlist_songs: function () {
-        var parts = location.href.split('/');
-        var id = parts.pop();
-        var type = id.toLowerCase();
-        var data = Songs.find({"genres": type}).fetch();
+        var songIDs = Playlists.find({"type": Session.get("type")}).fetch()[0].songs
+        var data = [];
+        songIDs.forEach(function(id){
+            var song = Songs.findOne({"mid": id});
+            data.push(song);
+        })
+        console.log(data);
         if (data !== undefined) {
             data.map(function (song) {
                 if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
@@ -133,17 +136,17 @@ Template.playlist.helpers({
             return [];
         }
     },
-    currentSong: function(){
-        var parts = location.href.split('/');
-        var id = parts.pop();
-        var type = id.toLowerCase();
-        var data = Songs.find({"genres": type}).fetch();
+    nextSong: function(){
+        var song;
+        var data = Playlists.find({"type": Session.get("type")}).fetch()[0].songs
         for(var i = 0; i < data.length; i++){
-            if(data[i].mid === Session.get("currentSong").mid){
+            if(data[i] === Session.get("currentSong").mid){
                 if(i === data.length - 1){
-                    Session.set("nextSong", [data[0]]);
+                    song = Songs.findOne({"mid": data[0]});
+                    Session.set("nextSong", [song])
                 } else{
-                    Session.set("nextSong", [data[i+1]]);
+                    song = Songs.findOne({"mid": data[i+1]});
+                    Session.set("nextSong", [song]);
                 }
             }
         };
