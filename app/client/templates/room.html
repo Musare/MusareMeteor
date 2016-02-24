@@ -276,44 +276,41 @@
     <!--Report modal-->
     <div id="report_modal" class="modal">
         <div class="modal-content container">
-                {{#if previousSongR}}
-                <button type="button" id="report-prev" class="btn btn-warning btn-lg btn-block">Report previous song ({{previousSongR.title}})</button>
-                {{/if}}
-                <button type="button" id="report-curr" class="btn btn-warning btn-lg btn-block" disabled>Report current song ({{currentSongR.title}})</button>
-
-                <h3 class="text-primary"><b>Reporting:</b> {{reportingSong.title}} by {{reportingSong.artist}}</h3>
-
-                <div class="report-layer-1">
-                    <div class="checkbox">
-                        <input class="checkbox-box" type="checkbox" id="report-song">
-                        <label for="report-song">
-                            Song
-                        </label>
+            <h4>Reporting: {{currentSong.title}} by {{currentSong.artist}}</h4>
+            <div class="report-layer-1">
+                <p>
+                    <input type="checkbox" id="report-song">
+                    <label for="report-song">
+                        Song
+                    </label>
+                </p>
+                <!-- Layer2 -->
+                {{#if reportSong}}
+                    <div class="report-layer-2" id="report-song-list">
+                        <p>
+                            <input type="checkbox" id="report-song-not-playing">
+                            <label for="report-song-not-playing">
+                                Not playing
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-song-does-not-exist">
+                            <label for="report-song-does-not-exist">
+                                Does not exist
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-song-other">
+                            <label for="report-song-other">
+                                Other:
+                            </label>
+                            <div class="input-field">
+                                <textarea class="materialize-textarea" id="report-song-other-ta" type="text"></textarea>
+                                <label for="report-song-other-ta">What is the issue?</label>
+                            </div>
+                        </p>
                     </div>
-                    <!-- Layer2 -->
-                    {{#if reportSong}}
-                        <div class="report-layer-2" id="report-song-list">
-                            <div class="checkbox">
-                                <input type="checkbox" id="report-song-not-playing">
-                                <label for="report-song-not-playing">
-                                    Not playing
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="report-song-does-not-exist">
-                                <label for="report-song-does-not-exist">
-                                    Does not exist
-                                </label>
-                            </div>
-                            <div class="checkbox">
-                                <input type="checkbox" id="report-song-other">
-                                <label for="report-song-other">
-                                    Other: <br>
-                                    <textarea class="other-textarea" id="report-song-other-ta" type="text"></textarea>
-                                </label>
-                            </div>
-                        </div>
-                    {{/if}}
+                {{/if}}
                     <div class="checkbox">
                         <input class="checkbox-box" type="checkbox" id="report-title">
                         <label for="report-title">

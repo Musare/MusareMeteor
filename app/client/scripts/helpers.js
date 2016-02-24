@@ -390,48 +390,16 @@ Template.room.helpers({
     private: function () {
         return Rooms.findOne({type: Session.get("type")}).private === true;
     },
-    report: function () {
-        return Session.get("reportObj");
-    },
-    reportSong: function () {
-        return Session.get("reportSong");
-    },
-    reportTitle: function () {
-        return Session.get("reportTitle");
-    },
-    reportAuthor: function () {
-        return Session.get("reportAuthor");
-    },
-    reportDuration: function () {
-        return Session.get("reportDuration");
-    },
-    reportAudio: function () {
-        return Session.get("reportAudio");
-    },
-    reportAlbumart: function () {
-        return Session.get("reportAlbumart");
-    },
-    reportOther: function () {
-        return Session.get("reportOther");
-    },
-    currentSong: function () {
+    currentSong: function(){
         return Session.get("currentSong");
     },
-    previousSong: function () {
-        return Session.get("previousSong");
-    },
-    currentSongR: function () {
-        return Session.get("currentSongR");
-    },
-    previousSongR: function () {
-        return Session.get("previousSongR");
-    },
-    reportingSong: function () {
-        if (Session.get("reportPrevious")) {
-            return Session.get("previousSongR");
-        } else {
-            return Session.get("currentSongR");
-        }
+    reportSong: function(){
+        Meteor.setInterval(function(){
+            if($("#report-song").is(":checked")){
+                Session.set("reportSong", true)
+            } else { Session.set("reportSong", false) }
+        }, 500);
+        return Session.get("reportSong");
     },
     votes: function () {
         console.log(Rooms.findOne({type: Session.get("type")}).votes);
