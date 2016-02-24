@@ -1597,7 +1597,7 @@ Template.room.events({
         });
 
         console.log(reportData);
-        Meteor.call("submitReport", room, reportData, Session.get("id"), function () {
+        Meteor.call("submitReport", room, reportData, function () {
             $("#close-modal-r").click();
         });
     },
