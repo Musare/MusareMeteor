@@ -27,6 +27,8 @@ Meteor.startup(function () {
     if (Songs.find().count() === 0 || Songs.find({mid: default_song.mid}).count() === 0) {
         Songs.insert(default_song);
     }
+
+    Rooms.update({}, {$set: {userList: []}});
 });
 
 var default_song = {
@@ -159,6 +161,19 @@ function Station(type) {
         Playlists.update({type: type}, {$push: {songs: default_song.mid}});
     }
     Meteor.publish(type, function () {
+        var userId = this.userId;
+        Meteor.thisIsA = this;
+        var username = Meteor.users.findOne(userId).profile.username;
+        Rooms.update({type: type}, {$push: {userList: username}});
+        this.onStop(function() {
+            var list = Rooms.findOne({type: type}).userList;
+            var index = list.indexOf(username);
+            if (index >= 0) {
+                list.splice( index, 1 );
+            }
+
+            Rooms.update({type: type}, {$set: {userList: list}});
+        });
         return undefined;
     });
     var self = this;

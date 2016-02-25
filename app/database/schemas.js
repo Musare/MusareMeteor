@@ -241,6 +241,15 @@ Schemas.Room = new SimpleSchema({
     roomDesc: {
         type: String,
         label: "Room description"
+    },
+    userList: {
+        type: Array,
+        label: "List of currently online people",
+        defaultValue: []
+    },
+    "userList.$": {
+        type: String,
+        label: "Username of user currently in a room"
     }
 });
 
