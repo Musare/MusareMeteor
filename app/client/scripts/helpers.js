@@ -115,10 +115,13 @@ Template.home.helpers({
 
 Template.playlist.helpers({
     playlist_songs: function () {
-        var parts = location.href.split('/');
-        var id = parts.pop();
-        var type = id.toLowerCase();
-        var data = Songs.find({"genres": type}).fetch();
+        var songIDs = Playlists.find({"type": Session.get("type")}).fetch()[0].songs
+        var data = [];
+        songIDs.forEach(function(id){
+            var song = Songs.findOne({"mid": id});
+            data.push(song);
+        })
+        console.log(data);
         if (data !== undefined) {
             data.map(function (song) {
                 if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
@@ -133,17 +136,17 @@ Template.playlist.helpers({
             return [];
         }
     },
-    currentSong: function(){
-        var parts = location.href.split('/');
-        var id = parts.pop();
-        var type = id.toLowerCase();
-        var data = Songs.find({"genres": type}).fetch();
+    nextSong: function(){
+        var song;
+        var data = Playlists.find({"type": Session.get("type")}).fetch()[0].songs
         for(var i = 0; i < data.length; i++){
-            if(data[i].mid === Session.get("currentSong").mid){
+            if(data[i] === Session.get("currentSong").mid){
                 if(i === data.length - 1){
-                    Session.set("nextSong", [data[0]]);
+                    song = Songs.findOne({"mid": data[0]});
+                    Session.set("nextSong", [song])
                 } else{
-                    Session.set("nextSong", [data[i+1]]);
+                    song = Songs.findOne({"mid": data[i+1]});
+                    Session.set("nextSong", [song]);
                 }
             }
         };
@@ -387,48 +390,96 @@ Template.room.helpers({
     private: function () {
         return Rooms.findOne({type: Session.get("type")}).private === true;
     },
-    report: function () {
-        return Session.get("reportObj");
-    },
-    reportSong: function () {
-        return Session.get("reportSong");
-    },
-    reportTitle: function () {
-        return Session.get("reportTitle");
-    },
-    reportAuthor: function () {
-        return Session.get("reportAuthor");
-    },
-    reportDuration: function () {
-        return Session.get("reportDuration");
-    },
-    reportAudio: function () {
-        return Session.get("reportAudio");
-    },
-    reportAlbumart: function () {
-        return Session.get("reportAlbumart");
-    },
-    reportOther: function () {
-        return Session.get("reportOther");
-    },
-    currentSong: function () {
+    currentSong: function(){
         return Session.get("currentSong");
     },
-    previousSong: function () {
-        return Session.get("previousSong");
+    reportSong: function(){
+        Meteor.setInterval(function(){
+            if($("#report-song").is(":checked")){
+                Session.set("reportSong", true)
+            } else { Session.set("reportSong", false) }
+        }, 500);
+        return Session.get("reportSong");
     },
-    currentSongR: function () {
-        return Session.get("currentSongR");
+    reportSongOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-song-other").is(":checked")){
+                Session.set("reportSongOther", true)
+            } else { Session.set("reportSongOther", false) }
+        }, 500);
+        return Session.get("reportSongOther");
     },
-    previousSongR: function () {
-        return Session.get("previousSongR");
+    reportTitle: function(){
+        Meteor.setInterval(function(){
+            if($("#report-title").is(":checked")){
+                Session.set("reportTitle", true)
+            } else { Session.set("reportTitle", false) }
+        }, 500);
+        return Session.get("reportTitle");
     },
-    reportingSong: function () {
-        if (Session.get("reportPrevious")) {
-            return Session.get("previousSongR");
-        } else {
-            return Session.get("currentSongR");
-        }
+    reportTitleOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-title-other").is(":checked")){
+                Session.set("reportTitleOther", true)
+            } else { Session.set("reportTitleOther", false) }
+        }, 500);
+        return Session.get("reportTitleOther");
+    },
+    reportArtist: function(){
+        Meteor.setInterval(function(){
+            if($("#report-artist").is(":checked")){
+                Session.set("reportArtist", true)
+            } else { Session.set("reportArtist", false) }
+        }, 500);
+        return Session.get("reportArtist");
+    },
+    reportArtistOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-artist-other").is(":checked")){
+                Session.set("reportArtistOther", true)
+            } else { Session.set("reportArtistOther", false) }
+        }, 500);
+        return Session.get("reportArtistOther");
+    },
+    reportDuration: function(){
+        Meteor.setInterval(function(){
+            if($("#report-duration").is(":checked")){
+                Session.set("reportDuration", true)
+            } else { Session.set("reportDuration", false) }
+        }, 500);
+        return Session.get("reportDuration");
+    },
+    reportDurationOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-duration-other").is(":checked")){
+                Session.set("reportDurationOther", true)
+            } else { Session.set("reportDurationOther", false) }
+        }, 500);
+        return Session.get("reportDurationOther");
+    },
+    reportAlbumart: function(){
+        Meteor.setInterval(function(){
+            if($("#report-albumart").is(":checked")){
+                Session.set("reportAlbumart", true)
+            } else { Session.set("reportAlbumart", false) }
+        }, 500);
+        return Session.get("reportAlbumart");
+    },
+    reportAlbumartOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-albumart-other").is(":checked")){
+                Session.set("reportAlbumartOther", true)
+            } else { Session.set("reportAlbumartOther", false) }
+        }, 500);
+        return Session.get("reportAlbumartOther");
+    },
+    reportOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-other").is(":checked")){
+                Session.set("reportOther", true)
+            } else { Session.set("reportOther", false) }
+        }, 500);
+        return Session.get("reportOther");
     },
     votes: function () {
         console.log(Rooms.findOne({type: Session.get("type")}).votes);

@@ -5,7 +5,7 @@
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/"><i class="material-icons">home</i></a></li>
                     <li><a href="#add_song_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Request a song" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
-                    <li><a href="#bug_report_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Flag a song"><i class="material-icons">flag</i></a></li>
+                    <li><a href="#report_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Flag a song" id="report-modal-button"><i class="material-icons">flag</i></a></li>
                     <li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
                     {{#if isAdmin}}
                         <li><a class='dropdown-button' data-activates='admin-dropdown'><i class="material-icons">control_point</i></a></li>
@@ -73,7 +73,7 @@
                         <span title="{{time}}" style="float: right; margin-top: 15px">{{rtime time}}</span>
                         <small class="rank-{{this.rawrank}}" style="margin-top: 15px">{{this.rank}}</small>
                         <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500" href="/u/{{this.username}}" target="_blank">{{this.username}}</a>
-                        <p style="clear: both; line-height: 1.2em; margin-left: 13px; margin-bottom: 30px; font-size: 1.2em; height: 0">{{this.message}}</p>
+                        <p style="clear: both; line-height: 1.2em; margin-left: 13px; margin-bottom: 0; font-size: 1.2em">{{this.message}}</p>
                     </li>
                 {{/emojione}}
             {{/each}}
@@ -276,7 +276,204 @@
     <!--Report modal-->
     <div id="report_modal" class="modal">
         <div class="modal-content container">
-
+            <h4>Reporting:</h4>
+            <h5>{{currentSong.title}} <span class="thin">by</span> {{currentSong.artist}}</h5>
+            <div class="report-layer-1">
+                <div>
+                    <input type="checkbox" id="report-song">
+                    <label for="report-song">
+                        Song
+                    </label>
+                </div>
+                <!-- Layer2 -->
+                {{#if reportSong}}
+                    <div class="report-layer-2" id="report-song-list">
+                        <p>
+                            <input type="checkbox" id="report-song-not-playing">
+                            <label for="report-song-not-playing">
+                                Not playing
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-song-does-not-exist">
+                            <label for="report-song-does-not-exist">
+                                Does not exist
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-song-other">
+                            <label for="report-song-other">
+                                Other:
+                            </label>
+                            {{#if reportSongOther}}
+                                <div class="input-field">
+                                    <textarea class="materialize-textarea" id="report-song-other-ta" type="text"></textarea>
+                                    <label for="report-song-other-ta">What is the issue?</label>
+                                </div>
+                            {{/if}}
+                        </p>
+                    </div>
+                {{/if}}
+                <div class="checkbox">
+                    <input type="checkbox" id="report-title">
+                    <label for="report-title">
+                        Title
+                    </label>
+                </div>
+                <!-- Layer2 -->
+                {{#if reportTitle}}
+                    <div class="report-layer-2" id="report-title-list">
+                        <p>
+                            <input type="checkbox" id="report-title-incorrect">
+                            <label for="report-title-incorrect">
+                                Incorrect
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-title-inappropriate">
+                            <label for="report-title-inappropriate">
+                                Inappropriate
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-title-other">
+                            <label for="report-title-other">
+                                Other:
+                            </label>
+                            {{#if reportTitleOther}}
+                                <div class="input-field">
+                                    <textarea class="materialize-textarea" id="report-title-other-ta" type="text"></textarea>
+                                    <label for="report-title-other-ta">What is the issue?</label>
+                                </div>
+                            {{/if}}
+                        </p>
+                    </div>
+                {{/if}}
+                <div>
+                    <input type="checkbox" id="report-artist">
+                    <label for="report-artist">
+                        Artist
+                    </label>
+                </div>
+                <!-- Layer2 -->
+                {{#if reportArtist}}
+                    <div class="report-layer-2" id="report-artist-list">
+                        <p>
+                            <input type="checkbox" id="report-artist-incorrect">
+                            <label for="report-artist-incorrect">
+                                Incorrect
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-artist-inappropriate">
+                            <label for="report-artist-inappropriate">
+                                Inappropriate
+                            </label>
+                        </p>
+                        <p>
+                            <input type="checkbox" id="report-artist-other">
+                            <label for="report-artist-other">
+                                Other:
+                            </label>
+                            {{#if reportArtistOther}}
+                                <div class="input-field">
+                                    <textarea class="materialize-textarea" id="report-artist-other-ta" type="text"></textarea>
+                                    <label for="report-artist-other-ta">What is the issue?</label>
+                                </div>
+                            {{/if}}
+                        </p>
+                    </div>
+                {{/if}}
+                <div class="checkbox">
+                    <input type="checkbox" id="report-duration">
+                    <label for="report-duration">
+                        Duration
+                    </label>
+                </div>
+                <!-- Layer2 -->
+                {{#if reportDuration}}
+                    <div class="report-layer-2" id="report-duration-list">
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-duration-long">
+                            <label for="report-duration-long">
+                                Too long
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-duration-short">
+                            <label for="report-duration-short">
+                                Too short
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-duration-other">
+                            <label for="report-duration-other">
+                                Other: <br>
+                            </label>
+                            {{#if reportDurationOther}}
+                                <div class="input-field">
+                                    <textarea class="materialize-textarea" id="report-duration-other-ta" type="text"></textarea>
+                                    <label for="report-duration-other-ta">What is the issue?</label>
+                                </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/if}}
+                <div class="checkbox">
+                    <input type="checkbox" id="report-albumart">
+                    <label for="report-albumart">
+                        Albumart
+                    </label>
+                </div>
+                <!-- Layer2 -->
+                {{#if reportAlbumart}}
+                    <div class="report-layer-2" id="report-albumart-list">
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-albumart-incorrect">
+                            <label for="report-albumart-incorrect">
+                                Incorrect
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-albumart-inappropriate">
+                            <label for="report-albumart-inappropriate">
+                                Inappropriate
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-albumart-not-showing">
+                            <label for="report-albumart-not-showing">
+                                Not showing
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <input type="checkbox" id="report-albumart-other">
+                            <label for="report-albumart-other">
+                                Other:
+                            </label>
+                            {{#if reportAlbumartOther}}
+                                <div class="input-field">
+                                    <textarea class="materialize-textarea" id="report-albumart-other-ta" type="text"></textarea>
+                                    <label for="report-albumart-other-ta">What is the issue?</label>
+                                </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/if}}
+                <div class="checkbox">
+                    <input type="checkbox" id="report-other">
+                    <label for="report-other">
+                        Other: <br>
+                    </label>
+                    {{#if reportOther}}
+                        <div class="input-field">
+                            <textarea class="materialize-textarea" id="report-other-ta" type="text"></textarea>
+                            <label for="report-other-ta">What is the issue?</label>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+            <a id="report-song-button" class="waves-effect waves-light btn">Report Song</a>
         </div>
         <div class="divider"></div>
         <div class="modal-footer">

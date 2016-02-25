@@ -373,6 +373,14 @@ hr{
     line-height: 25px;
 }
 
+.report-layer-2{
+    margin-left: 38px;
+}
+
+#report_modal textarea{
+    color: black;
+}
+
 /*Media queries stay on the bottom*/
 @media screen and (max-width: 990px){
     .card i{
