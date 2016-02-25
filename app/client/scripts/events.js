@@ -1585,10 +1585,13 @@ Template.room.events({
         reportData.type = [];
         reportData.reason = [];
 
-        $(".report-layer-1 > .checkbox input:checked").each(function () {
-            reportData.type.push(this.id);
+        $(".report-layer-1 > div > input:checked").each(function () {
             if (this.id == "report-other") {
-                var otherText = $(".other-textarea").val();
+                var id = this.id;
+                var otherText = $(".other-textarea-ta").val();
+                reportData.type.push({"report-other": otherText});
+            } else {
+                reportData.type.push(this.id);
             }
         });
 
@@ -1598,7 +1601,7 @@ Template.room.events({
 
         console.log(reportData);
         Meteor.call("submitReport", room, reportData, function () {
-            $("#close-modal-r").click();
+            $("report_modal").closeModal();
         });
     },
     "change #si_or_pl": function () {

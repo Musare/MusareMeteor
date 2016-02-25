@@ -401,6 +401,86 @@ Template.room.helpers({
         }, 500);
         return Session.get("reportSong");
     },
+    reportSongOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-song-other").is(":checked")){
+                Session.set("reportSongOther", true)
+            } else { Session.set("reportSongOther", false) }
+        }, 500);
+        return Session.get("reportSongOther");
+    },
+    reportTitle: function(){
+        Meteor.setInterval(function(){
+            if($("#report-title").is(":checked")){
+                Session.set("reportTitle", true)
+            } else { Session.set("reportTitle", false) }
+        }, 500);
+        return Session.get("reportTitle");
+    },
+    reportTitleOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-title-other").is(":checked")){
+                Session.set("reportTitleOther", true)
+            } else { Session.set("reportTitleOther", false) }
+        }, 500);
+        return Session.get("reportTitleOther");
+    },
+    reportArtist: function(){
+        Meteor.setInterval(function(){
+            if($("#report-artist").is(":checked")){
+                Session.set("reportArtist", true)
+            } else { Session.set("reportArtist", false) }
+        }, 500);
+        return Session.get("reportArtist");
+    },
+    reportArtistOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-artist-other").is(":checked")){
+                Session.set("reportArtistOther", true)
+            } else { Session.set("reportArtistOther", false) }
+        }, 500);
+        return Session.get("reportArtistOther");
+    },
+    reportDuration: function(){
+        Meteor.setInterval(function(){
+            if($("#report-duration").is(":checked")){
+                Session.set("reportDuration", true)
+            } else { Session.set("reportDuration", false) }
+        }, 500);
+        return Session.get("reportDuration");
+    },
+    reportDurationOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-duration-other").is(":checked")){
+                Session.set("reportDurationOther", true)
+            } else { Session.set("reportDurationOther", false) }
+        }, 500);
+        return Session.get("reportDurationOther");
+    },
+    reportAlbumart: function(){
+        Meteor.setInterval(function(){
+            if($("#report-albumart").is(":checked")){
+                Session.set("reportAlbumart", true)
+            } else { Session.set("reportAlbumart", false) }
+        }, 500);
+        return Session.get("reportAlbumart");
+    },
+    reportAlbumartOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-albumart-other").is(":checked")){
+                Session.set("reportAlbumartOther", true)
+            } else { Session.set("reportAlbumartOther", false) }
+        }, 500);
+        return Session.get("reportAlbumartOther");
+    },
+    reportOther: function(){
+        Meteor.setInterval(function(){
+            if($("#report-other").is(":checked")){
+                Session.set("reportOther", true)
+            } else { Session.set("reportOther", false) }
+        }, 500);
+        return Session.get("reportOther");
+    },
     votes: function () {
         console.log(Rooms.findOne({type: Session.get("type")}).votes);
         return Rooms.findOne({type: Session.get("type")}).votes;

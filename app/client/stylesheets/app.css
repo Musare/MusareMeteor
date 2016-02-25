@@ -377,6 +377,10 @@ hr{
     margin-left: 38px;
 }
 
+#report_modal textarea{
+    color: black;
+}
+
 /*Media queries stay on the bottom*/
 @media screen and (max-width: 990px){
     .card i{
