@@ -1285,6 +1285,13 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
+    },
+    removeReport: function(query, obj){
+        if(isAdmin() && !isBanned()){
+            Reports.update(query, {$pull: {"report": obj}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
     }
 });
 
