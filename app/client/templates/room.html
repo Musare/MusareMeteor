@@ -15,6 +15,7 @@
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
+                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout" data-activates="users-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
                 </ul>
             </div>
         </nav>
@@ -92,6 +93,14 @@
     <div id="playlist-slide-out" class="side-nav room-slideout">
         <h5>Playlist</h5>
         {{> playlist}}
+    </div>
+    <div id="users-slide-out" class="side-nav room-slideout">
+        <h5>Users In Room</h5>
+        <ul>
+            {{#each usersInRoom}}
+                <li><a href=/u/{{this}} target="_blank">{{this}}</a></li>
+            {{/each}}
+        </ul>
     </div>
     <!--Admin room controls-->
     <ul id='admin-dropdown' style="background-color: #00bfa5 !important; display: none">
@@ -502,6 +511,10 @@
             edge: 'right'
         });
         $("#playlist-slideout").sideNav({
+            menuWidth: 350,
+            edge: 'right'
+        });
+        $("#users-slideout").sideNav({
             menuWidth: 350,
             edge: 'right'
         });

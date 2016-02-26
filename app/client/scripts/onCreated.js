@@ -351,6 +351,9 @@ Template.room.onCreated(function () {
             if($("#chat-slide-out").css("right") === "0px"){
                 $("#chat-slideout").sideNav("hide");
             }
+            if($("#users-slide-out").css("right") === "0px"){
+                $("#users-slideout").sideNav("hide");
+            }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
             $(".room-container").css("margin-right", "370px")
             if($("#playlist-slide-out").css("right") === "0px"){
@@ -361,10 +364,26 @@ Template.room.onCreated(function () {
             if($("#playlist-slide-out").css("right") === "0px"){
                 $("#playlist-slideout").sideNav("hide");
             }
+            if($("#users-slide-out").css("right") === "0px"){
+                $("#users-slideout").sideNav("hide");
+            }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
             $(".chat-ul").scrollTop(1000000);
             $(".room-container").css("margin-right", "370px")
             if($("#chat-slide-out").css("right") === "0px"){
+                $(".room-container").css("margin-right", marginRightWidth);
+            }
+        });
+        $("#users-slideout").on("click", function(){
+            if($("#playlist-slide-out").css("right") === "0px"){
+                $("#playlist-slideout").sideNav("hide");
+            }
+            if($("#chat-slide-out").css("right") === "0px"){
+                $("#chat-slideout").sideNav("hide");
+            }
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            $(".room-container").css("margin-right", "370px")
+            if($("#users-slide-out").css("right") === "0px"){
                 $(".room-container").css("margin-right", marginRightWidth);
             }
         });
