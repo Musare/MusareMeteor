@@ -883,6 +883,14 @@ Template.manageStation.events({
                 Session.set("song", newSong);
             }
         });
+    },
+    "click .remove-report-button": function(){
+        var parts = location.href.split('/');
+        parts.pop();
+        var id = parts.pop();
+        var query = {room: id.toLowerCase()};
+        var obj = $(this)[0];
+        Meteor.call("removeReport", query, obj);
     }
 });
 
@@ -1585,14 +1593,8 @@ Template.room.events({
         reportData.type = [];
         reportData.reason = [];
 
-        $(".report-layer-1 > div > input:checked").each(function () {
-            if (this.id == "report-other") {
-                var id = this.id;
-                var otherText = $(".other-textarea-ta").val();
-                reportData.type.push({"report-other": otherText});
-            } else {
-                reportData.type.push(this.id);
-            }
+        $(".report-layer-1 > div > input:checked").each(function (){
+            reportData.type.push(this.id);
         });
 
         $(".report-layer-2 input:checked").each(function () {

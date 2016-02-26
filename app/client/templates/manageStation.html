@@ -58,6 +58,33 @@
                     </table>
                 </div>
             </div>
+            <div class="col m12 s12 l8 offset-l2 admin-playlist-panel card-panel teal accent-3">
+                <div class="card-content white-text">
+                    <h3 class="text-center">Reports</h3>
+                    <table class="bordered">
+                        <thead>
+                            <tr>
+                                <th>Song mid</th>
+                                <th>Report Type</th>
+                                <th>Report Reason</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each reports}}
+                                {{#each report}}
+                                    <tr>
+                                        <td>{{song}}</td>
+                                        <td>{{type}}</td>
+                                        <td>{{reason}}</td>
+                                        <td><a class="btn red remove-report-button"><i class="material-icons">remove_circle</i></a></td>
+                                    </tr>
+                                {{/each}}
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <div id="editModal" class="modal modal-fixed-footer">

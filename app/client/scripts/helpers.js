@@ -269,6 +269,14 @@ Template.manageStation.helpers({
         var id = parts.pop();
         var type = id.toLowerCase();
         return type;
+    },
+    reports: function() {
+        var parts = location.href.split('/');
+        parts.pop();
+        var id = parts.pop();
+        var query = {room: id.toLowerCase()};
+        var reports = Reports.find(query).fetch();
+        return reports;
     }
 });
 
