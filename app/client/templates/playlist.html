@@ -15,7 +15,7 @@
         {{/each}}
         <hr style="clear: both">
     </ul>
-    <ul id="playlist-ul" style="max-height: 60%; overflow-y: scroll; margin-top: 30px">
+    <ul id="playlist-ul" style="max-height: calc(100% - 240px); overflow-y: scroll;">
         {{#each playlist_songs}}
             <li class="pl-item" style="clear: both">
                 <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>

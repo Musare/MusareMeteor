@@ -317,11 +317,13 @@ hr{
     text-align: center;
     background-color: #028A77 !important;
     margin: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
     color: white;
 }
 
 .chat-ul{
-    height: 70%;
+    height: calc(100% - 164px);
     overflow-y: scroll;
 }
 
@@ -343,6 +345,15 @@ hr{
     height: 36px;
     line-height: 36px;
     margin: 0 10px !important;
+    position: absolute;
+    bottom: 72px;
+    width: calc(100% - 20px);
+}
+
+#chat-input-div {
+    position: absolute;
+    bottom: 80px;
+    width: 100%;
 }
 
 .vote_count {
@@ -386,4 +397,18 @@ hr{
     .card i{
         line-height: 1.8em;
     }
+}
+
+.rank-admin {
+    color: red;
+    margin-right: 3px;
+}
+
+.rank-moderator {
+    color: green;
+    margin-right: 3px;
+}
+
+.side-nav li {
+    padding: 0 !important;
 }

@@ -68,15 +68,14 @@
                 {{#emojione}}
                     <li class="chat-message" style="line-height: 30px">
                         <span title="{{time}}" style="float: right; margin-top: 15px">{{rtime time}}</span>
-                        <small class="rank-{{this.rawrank}}" style="margin-top: 15px">{{this.rank}}</small>
-                        <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500" href="/u/{{this.username}}" target="_blank">{{this.username}}</a>
+                        <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500" href="/u/{{this.username}}" target="_blank"><span class="rank-{{this.rawrank}}">{{this.rank}}</span>{{this.username}}</a>
                         <p style="clear: both; line-height: 1.2em; margin-left: 13px; margin-bottom: 0; font-size: 1.2em">{{this.message}}</p>
                     </li>
                 {{/emojione}}
             {{/each}}
         </ul>
         <div>
-            <div class="row">
+            <div class="row" id="chat-input-div">
                 <div class="input-field col s12">
                   <input id="chat-message" type="text">
                   <label for="chat-message">Send a message</label>
