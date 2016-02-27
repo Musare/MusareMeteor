@@ -1368,7 +1368,7 @@ Template.room.events({
         var processed = 0;
         var total = YTImportQueue.length;
         YTImportQueue.forEach(function (song) {
-            var songData = {type: "YouTube", id: song.id, title: song.title, artist: "", img: "", genres: [Session.get("type")]};
+            var songData = {id: song.id, title: song.title, artist: "NONE", genres: [Session.get("type")]};
             Meteor.call("addSongToQueue", songData, function (err, res) {
                 if (err) {
                     console.log(err);
@@ -1379,6 +1379,11 @@ Template.room.events({
                 processed++;
                 var percentage = processed / total * 100;
                 $("#import-progress").css({width: percentage + "%"});
+                if (processed === total) {
+                    $("#import-progress").css({width: "0%"});
+                    var $toastContent = $('<span>' + failed + ' songs failed to import. ' + success + ' songs successfully imported.</span>');
+                    Materialize.toast($toastContent, 4000);
+                }
             });
         });
         $("#import-playlist-button").removeAttr("disabled");
