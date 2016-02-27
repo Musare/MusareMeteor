@@ -757,17 +757,8 @@ Meteor.methods({
         }
     },
     resetRating: function () {
-        if (isAdmin() && !isBanned()) {
-            stations.forEach(function (station) {
-                var type = station.type;
-                var temp_songs = Playlists.findOne({type: type}).songs;
-                Playlists.update({type: type}, {$set: {"songs": []}});
-                temp_songs.forEach(function (song) {
-                    song.likes = 0;
-                    song.dislikes = 0;
-                    Playlists.update({type: type}, {$push: {"songs": song}});
-                });
-            });
+        if (isAdmin() && !isBanned()){
+            Songs.update({}, {$set: {"likes": 0, "dislikes": 0}}, {multi: true});
             Meteor.users.update({}, {$set: {"profile.liked": [], "profile.disliked": []}}, {multi: true});
         } else {
             throw Meteor.Error(403, "Invalid permissions.");
