@@ -27,9 +27,6 @@ Template.home.onCreated(function() {
     if (Session.get("minterval") !== undefined) {
         Meteor.clearInterval(Session.get("minterval"));
     }
-    if (Session.get("titleScroller") !== undefined) {
-        Meteor.clearInterval(Session.get("titleScroller"));
-    }
     if (resizeSeekerbarInterval !== undefined) {
         Meteor.clearInterval(resizeSeekerbarInterval);
         resizeSeekerbarInterval = undefined;
@@ -206,18 +203,7 @@ Template.room.onCreated(function () {
         var d = moment.duration(parseInt(songData.duration), 'seconds');
         $("#time-total").text(d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
         Session.set("timeFormat", d.minutes() + ":" + ("0" + d.seconds()).slice(-2));
-        document.title = Session.get("title") + " - " + Session.get("artist") + " - ";
-        var title = Session.get("title") + " - " + Session.get("artist") + " - ";
-        if (Session.get("titleScroller") !== undefined) {
-            Meteor.clearInterval(Session.get("titleScroller"));
-        }
-        Session.set("titleScroller", Meteor.setInterval(function() {
-             title = title.split("");
-             var last = title.shift();
-             title.push(last);
-             title = title.join("");
-             document.title = title;
-        }, 500));
+        document.title = Session.get("title") + " - " + Session.get("artist") + " - Musare";
     }
 
 
