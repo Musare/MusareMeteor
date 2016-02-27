@@ -210,9 +210,6 @@ Template.admin.events({
         var target = $(e.target);
         var id = $(e.target).data("id") || target.parent().data("id");
         Meteor.call("deleteAlert", id);
-    },
-    "click #rrating": function(){
-        Meteor.call("resetRating");
     }
 });
 

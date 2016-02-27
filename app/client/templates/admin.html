@@ -25,18 +25,15 @@
                                     <td>{{roomUserNum}}</td>
                                     <td></td>
                                     <td>{{reportsCount display}}</td>
-                                    <td><a href="/{{type}}/manage" class="btn right" id="manage-{{display}}">Manage</a></td> <!-- TODO Make this redirect to playlist -->
+                                    <td><a href="/{{type}}/manage" class="btn right" id="manage-{{display}}">Manage</a></td>
                                 </tr>
                             {{/each}}
                         </tbody>
                     </table>
                 <div class="row">
-                    <a class="waves-effect waves-light btn col m12 s12 l12 modal-trigger" id="new_room" href="#addStation"> <!-- TODO Make this actually open the new room modal  -->
+                    <a class="waves-effect waves-light btn col m12 s12 l12 modal-trigger" id="new_room" href="#addStation">
                         Add Room
                     </a>
-                </div>
-                <div class="row">
-                    <a class="waves-effect waves-light btn col m12 s12 l12 red" id="rrating">Reset All Ratings</a>
                 </div>
             </div>
             <div class="col s12 m10 l3 offset-m1 offset-l1 card-panel teal accent-3 white-text" style="height: 80%;">

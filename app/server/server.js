@@ -756,14 +756,6 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    resetRating: function () {
-        if (isAdmin() && !isBanned()){
-            Songs.update({}, {$set: {"likes": 0, "dislikes": 0}}, {multi: true});
-            Meteor.users.update({}, {$set: {"profile.liked": [], "profile.disliked": []}}, {multi: true});
-        } else {
-            throw Meteor.Error(403, "Invalid permissions.");
-        }
-    },
     addAlert: function (description) {
         if (isAdmin()) {
             var username = Meteor.user().profile.username;
