@@ -494,7 +494,14 @@ Template.room.helpers({
         return Rooms.findOne({type: Session.get("type")}).votes;
     },
     usersInRoom: function(){
-        return Rooms.findOne({type: Session.get("type")}).userList;
+        var userList = [];
+        var roomUserList = Rooms.findOne({type: Session.get("type")}).userList;
+        roomUserList.forEach(function(user){
+            if(userList.indexOf(user) === -1){
+                userList.push(user);
+            }
+        })
+        return userList;
     }
 });
 
