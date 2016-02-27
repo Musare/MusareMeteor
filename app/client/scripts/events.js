@@ -1634,11 +1634,8 @@ Template.room.events({
 });
 // Settings Template
 Template.settings.events({
-    "click #save-settings": function() {
-        Meteor.call("updateSettings", $("#showRating").is(":checked"), function(err,res){
-            var $toastContent = $('<span><strong>Settings Saved!</strong> No errors were found.</span>');
-            Materialize.toast($toastContent, 3000);
-        });
+    "change #showRating": function() {
+        Meteor.call("updateSettings", $("#showRating").is(":checked"), function(){});
     },
     "click #delete-account": function(){
         $("#delete-account").text("Click to confirm");
