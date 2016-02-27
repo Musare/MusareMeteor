@@ -328,9 +328,9 @@ Template.room.helpers({
         return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
     },
     likes: function () {
-        var playlist = Playlists.findOne({type: Session.get("type")});
+        var playlist = Songs.find({"genres": Session.get("type")}).fetch();
         var likes = 0;
-        playlist.songs.forEach(function (song) {
+        playlist.forEach(function (song) {
             if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
                 likes = song.likes;
                 return;
@@ -339,9 +339,9 @@ Template.room.helpers({
         return likes;
     },
     dislikes: function () {
-        var playlist = Playlists.findOne({type: Session.get("type")});
+        var playlist = Songs.find({"genres": Session.get("type")}).fetch();
         var dislikes = 0;
-        playlist.songs.forEach(function (song) {
+        playlist.forEach(function (song) {
             if (Session.get("currentSong") && song.mid === Session.get("currentSong").mid) {
                 dislikes = song.dislikes;
                 return;
