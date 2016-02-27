@@ -7,8 +7,6 @@
                     <li><a href="#add_song_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Request a song" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
                     <li><a href="#report_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Flag a song" id="report-modal-button"><i class="material-icons">flag</i></a></li>
                     <li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
-                    <li><a id="like" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Like this song"><i class="material-icons left" style="font-size: 1.5em">thumb_up</i>{{likes}}</a></li>
-                    <li><a id="dislike" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Dislike this song"><i class="material-icons left" style="font-size: 1.5em">thumb_down</i>{{dislikes}}</a></li>
                     {{#if isAdmin}}
                         <li><a class='dropdown-button' data-activates='admin-dropdown'><i class="material-icons">control_point</i></a></li>
                     {{/if}}
@@ -43,14 +41,10 @@
                                         <input type="range" id="volume_slider" min="0" max="100"/>
                                     </p>
                                 </form>
-                                <div class="right col s4 m4 l2">
+                                <div class="right col s8 m5 l5">
                                     <ul>
-                                        <li id="like" class="left"><i id="thumbs_up"
-                                                                      class="material-icons {{liked}}">thumb_up</i>
-                                        </li>
-                                        <li id="dislike" class="right"><i id="thumbs_down"
-                                                                          class="material-icons {{disliked}}">thumb_down</i>
-                                        </li>
+                                        <li id="like" class="right"><span class="flow-text">{{likes}} </span> <i id="thumbs_up" class="material-icons grey-text {{liked}}">thumb_up</i></li>
+                                        <li style="margin-right: 10px;" id="dislike" class="right"><span class="flow-text">{{dislikes}} </span><i id="thumbs_down" class="material-icons grey-text {{disliked}}">thumb_down</i></li>
                                     </ul>
                                 </div>
                             </div>
