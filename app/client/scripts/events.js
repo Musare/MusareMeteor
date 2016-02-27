@@ -894,6 +894,12 @@ Template.manageStation.events({
         var query = {room: id.toLowerCase()};
         var obj = $(this)[0];
         Meteor.call("removeReport", query, obj);
+    },
+    "click #deleteRoom": function(){
+        var type = location.href.split("/")[3];
+        Meteor.call("deleteRoom", type, function(err,res){
+            window.location.href = "/";
+        })
     }
 });
 
