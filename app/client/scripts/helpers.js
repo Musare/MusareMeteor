@@ -281,6 +281,12 @@ Template.manageStation.helpers({
 });
 
 Template.room.helpers({
+    currentSongR: function() {
+        return Session.get("currentSongR");
+    },
+    previousSongR: function() {
+        return Session.get("previousSongR");
+    },
     editingSong: function() {
         return Session.get("editingSong");
     },
@@ -400,6 +406,13 @@ Template.room.helpers({
     },
     currentSong: function(){
         return Session.get("currentSong");
+    },
+    reportingSong: function() {
+        if (!Session.get("reportPrevious")) {
+            return Session.get("currentSongR");
+        } else {
+            return Session.get("previousSongR");
+        }
     },
     reportSong: function(){
         Meteor.setInterval(function(){
