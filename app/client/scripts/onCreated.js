@@ -337,7 +337,7 @@ Template.room.onCreated(function () {
             if($("#chat-slide-out").css("right") === "0px"){
                 $("#chat-slideout").sideNav("hide");
             }
-            if($("#users-slide-out").css("right") === "0px"){
+            else if($("#users-slide-out").css("right") === "0px"){
                 $("#users-slideout").sideNav("hide");
             }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
@@ -350,7 +350,7 @@ Template.room.onCreated(function () {
             if($("#playlist-slide-out").css("right") === "0px"){
                 $("#playlist-slideout").sideNav("hide");
             }
-            if($("#users-slide-out").css("right") === "0px"){
+            else if($("#users-slide-out").css("right") === "0px"){
                 $("#users-slideout").sideNav("hide");
             }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
@@ -364,7 +364,7 @@ Template.room.onCreated(function () {
             if($("#playlist-slide-out").css("right") === "0px"){
                 $("#playlist-slideout").sideNav("hide");
             }
-            if($("#chat-slide-out").css("right") === "0px"){
+            else if($("#chat-slide-out").css("right") === "0px"){
                 $("#chat-slideout").sideNav("hide");
             }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
