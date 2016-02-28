@@ -1418,19 +1418,29 @@ Template.room.events({
         $parent.append('<a id="lock"><i class="material-icons">lock_outline</i></a>')
     },
     "click #submit": function () {
-        sendMessageGlobal();
-        Meteor.setTimeout(function () {
-            $(".chat-ul").scrollTop(100000);
-        }, 1000)
+        if(Meteor.userId()){
+            sendMessageGlobal();
+            Meteor.setTimeout(function () {
+                $(".chat-ul").scrollTop(100000);
+            }, 1000)
+        } else {
+            var $toastContent = $('<span>Message not sent. You must log in</span>');
+            Materialize.toast($toastContent, 2000);
+        }
     },
     "keyup #chat-message": function (e) {
         if (e.type === "keyup" && e.which === 13) {
-            e.preventDefault();
-            if (!$('#chat-message').data('dropdownshown')) {
-                sendMessageGlobal();
-                Meteor.setTimeout(function () {
-                    $(".chat-ul").scrollTop(100000);
-                }, 1000)
+            if(Meteor.userId()){
+                e.preventDefault();
+                if (!$('#chat-message').data('dropdownshown')) {
+                    sendMessageGlobal();
+                    Meteor.setTimeout(function () {
+                        $(".chat-ul").scrollTop(100000);
+                    }, 1000)
+                }
+            } else {
+                var $toastContent = $('<span>Message not sent. You must log in</span>');
+                Materialize.toast($toastContent, 2000);
             }
         }
     },
