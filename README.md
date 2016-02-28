@@ -1,10 +1,24 @@
 ##Visit the official website!
 
-### http://musare.com/
+### https://musare.com/
 
 You can also find us on:
 * Twitter: https://twitter.com/musareapp
 * Facebook: https://www.facebook.com/MusareMusic
+
+##Get started with development!
+
+First download Meteor: https://www.meteor.com/
+Then download Git (CLI): https://git-scm.com/
+
+Get your favourite code-editor out and follow the following steps to start contributing:
+1. Star the repository!
+2. Fork the repository to your account
+3. Clone your forked repo to your local machine using ```git clone https://github.com/[YourUserName]/Musare.git```
+
+Navigate to "../app" and run ```meteor```. This will run a local instance of Musare on ```localhost:3000```.
+
+There you go, you're set to start coding!
 
 ##Does the site not load?
 
@@ -35,16 +49,3 @@ Try these methods first before reporting an issue:
 This did not fix your issue? or you're still not satisfied? Just create a issue ticket at:
 https://github.com/AkiraLaine/musare/issues
 Be sure to be as detailed as possible!
-
-##Get started with development!
-
-First download Meteor: https://www.meteor.com/
-
-Then download Git (CLI): https://git-scm.com/
-
-Once that is done:
- 1. Star the repository!
- 2. Fork the repository
- 3. Clone your forked repo to your local machine
-
-Navigate to "../app" and run "meteor". Go to localhost:3000 and you're set!
