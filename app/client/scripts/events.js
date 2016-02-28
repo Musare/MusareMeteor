@@ -1418,19 +1418,29 @@ Template.room.events({
         $parent.append('<a id="lock"><i class="material-icons">lock_outline</i></a>')
     },
     "click #submit": function () {
-        sendMessageGlobal();
-        Meteor.setTimeout(function () {
-            $(".chat-ul").scrollTop(100000);
-        }, 1000)
+        if(Meteor.userId()){
+            sendMessageGlobal();
+            Meteor.setTimeout(function () {
+                $(".chat-ul").scrollTop(100000);
+            }, 1000)
+        } else {
+            var $toastContent = $('<span>Message not sent. You must log in</span>');
+            Materialize.toast($toastContent, 2000);
+        }
     },
     "keyup #chat-message": function (e) {
         if (e.type === "keyup" && e.which === 13) {
-            e.preventDefault();
-            if (!$('#chat-message').data('dropdownshown')) {
-                sendMessageGlobal();
-                Meteor.setTimeout(function () {
-                    $(".chat-ul").scrollTop(100000);
-                }, 1000)
+            if(Meteor.userId()){
+                e.preventDefault();
+                if (!$('#chat-message').data('dropdownshown')) {
+                    sendMessageGlobal();
+                    Meteor.setTimeout(function () {
+                        $(".chat-ul").scrollTop(100000);
+                    }, 1000)
+                }
+            } else {
+                var $toastContent = $('<span>Message not sent. You must log in</span>');
+                Materialize.toast($toastContent, 2000);
             }
         }
     },
@@ -1597,10 +1607,15 @@ Template.room.events({
             Session.set(camelCase, e.target.checked);
         }*/
     },
+    "click #report-modal-button": function(){
+        $("#report-pre-song-button").removeClass("disabled")
+        Session.set("reportingSong", Session.get("currentSong"));
+        $("#report-which").html(Session.get("currentSong").title + ' <span class="thin">by</span> ' + Session.get("currentSong").artist);
+    },
     "click #report-song-button": function () {
         var room = Session.get("type");
         var reportData = {};
-        reportData.song = Session.get("currentSong").mid;
+        reportData.song = Session.get("reportingSong").mid;
         reportData.type = [];
         reportData.reason = [];
 
@@ -1614,6 +1629,7 @@ Template.room.events({
 
         console.log(reportData);
         Meteor.call("submitReport", room, reportData, function () {
+            $("#report-pre-song-button").removeClass("disabled")
             $("report_modal").closeModal();
         });
     },
@@ -1630,6 +1646,26 @@ Template.room.events({
         Meteor.setTimeout(function(){
             $(".dropdown-button").click();
         }, 10);
+    },
+    "click #report-pre-song-button": function(){
+        $("#report-pre-song-button").addClass("disabled")
+        var previousSong = {}
+        var songs = Songs.find({"genres": Session.get("type")}).fetch();
+        for(var i = 0; i < songs.length; i++){
+            if(songs[i].mid === Session.get("currentSong").mid){
+                if(i === 0){
+                    previousSong.title = songs[i].title;
+                    previousSong.artist = songs[i].artist;
+                } else {
+                    previousSong.title = songs[i-1].title;
+                    previousSong.artist = songs[i-1].artist;
+                    previousSong.mid = songs[i-1].mid;
+                    Session.set("reportingSong", previousSong);
+                }
+            }
+        }
+        console.log(previousSong.title + ' <span class="thin">by</span> ' + previousSong.artist);
+        $("#report-which").html(previousSong.title + ' <span class="thin">by</span> ' + previousSong.artist);
     }
 });
 // Settings Template
