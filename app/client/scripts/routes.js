@@ -1,10 +1,17 @@
-Router.configure({
-    loadingTemplate: 'loading'
-});
-
 Router.onBeforeAction(function() {
     var self = this;
     var next = self.next;
+    var isMaintanance = Admin.find().fetch()[0].isMaintanance;
+    if(isMaintanance){
+        var user = Meteor.user();
+        if(user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
+            self.render("home");
+        } else {
+            self.render("maintanance");
+        }
+    } else {
+        this.next();
+    }
     if (Meteor.userId()) {
         Meteor.call("isBanned", function(err, res) {
             if (res) {
@@ -16,7 +23,7 @@ Router.onBeforeAction(function() {
         });
     } else {
        this.next();
-    }
+   }
 });
 
 Router.route("/", {
@@ -85,10 +92,6 @@ Router.route("/team", {
 
 Router.route("/news", {
     template: "news"
-})
-
-Router.route("/welcome", {
-    template: "landing"
 })
 
 Router.route("/project", {

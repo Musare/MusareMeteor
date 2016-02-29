@@ -23,6 +23,7 @@ Deps.autorun(function() {
     Meteor.subscribe("rooms");
     Meteor.subscribe("news");
     Meteor.subscribe("userData", Meteor.userId());
+    Meteor.subscribe("admin");
 });
 
 Handlebars.registerHelper("isAdmin", function(argument){
