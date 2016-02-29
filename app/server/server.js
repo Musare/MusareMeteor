@@ -820,7 +820,7 @@ Meteor.methods({
                         Chat.insert({
                             type: type,
                             rawrank: rawrank,
-                            rank: "[D]",
+                            rank: "",
                             message: message,
                             time: time,
                             username: username
