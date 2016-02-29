@@ -279,9 +279,9 @@
     </div>
     <!--Report modal-->
     <div id="report_modal" class="modal">
-        <div class="modal-content container">
+        <div class="modal-content">
             <h4>Reporting:</h4>
-            <h5 id="report-which">{{currentSong.title}} <span class="thin">by</span> {{currentSong.artist}}</h5>
+            <h5 id="report-which">{{reportingSong.title}} <span class="thin">by</span> {{reportingSong.artist}}</h5>
             <div class="report-layer-1">
                 <div>
                     <input type="checkbox" id="report-song">
@@ -477,8 +477,11 @@
                     {{/if}}
                 </div>
             </div>
-            <a id="report-song-button" class="waves-effect waves-light btn">Report Song</a>
-            <a id="report-pre-song-button" class="waves-effect waves-light btn">Report Previous Song</a>
+            <a id="report-song-button" class="waves-effect waves-light btn btn-block red">Submit Song Report</a>
+            {{#if previousSongR}}
+                <a id="report-prev" class="waves-effect waves-light btn btn-block">Report Previous Song</a>
+            {{/if}}
+                <a id="report-curr" class="waves-effect waves-light btn btn-block">Report Current Song</a>
         </div>
         <div class="divider"></div>
         <div class="modal-footer">
@@ -496,7 +499,11 @@
             dismissible: true,
             opacity: .5,
             in_duration: 500,
-            out_duration: 200
+            out_duration: 200,
+            ready: function() {
+                Session.set("currentSongR", Session.get("currentSong"));
+                Session.set("previousSongR", Session.get("previousSong"));
+            }
         });
         $(".dropdown-button").dropdown({
             belowOrigin: true
