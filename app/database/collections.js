@@ -8,4 +8,3 @@ Deleted = new Mongo.Collection("deleted");
 Feedback = new Mongo.Collection("feedback");
 Songs = new Mongo.Collection("songs");
 News = new Mongo.Collection("news");
-Admin = new Mongo.Collection("admin");

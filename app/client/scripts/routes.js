@@ -1,29 +1,33 @@
+Router.configure({
+   loadingTemplate: 'loading'
+});
+
 Router.onBeforeAction(function() {
     var self = this;
     var next = self.next;
-    var isMaintanance = Admin.find().fetch()[0].isMaintanance;
-    if(isMaintanance){
+    var isMaintanance = Meteor.settings.public.maintenance;
+    if(isMaintanance === true){
         var user = Meteor.user();
-        if(user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
-            self.render("home");
+        console.log(user);
+        if(user !== null && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
+            next();
         } else {
-            self.render("maintanance");
+            this.render("maintenance");
         }
     } else {
-        this.next();
+        if (Meteor.userId()) {
+            Meteor.call("isBanned", function(err, res) {
+                if (res) {
+                    self.render('banned');
+                } else {
+                    document.title = 'Musare';
+                    next();
+                }
+            });
+        } else {
+            next();
+        }
     }
-    if (Meteor.userId()) {
-        Meteor.call("isBanned", function(err, res) {
-            if (res) {
-                self.render('banned');
-            } else {
-                document.title = 'Musare';
-                next();
-            }
-        });
-    } else {
-       this.next();
-   }
 });
 
 Router.route("/", {
