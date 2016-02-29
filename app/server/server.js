@@ -29,8 +29,6 @@ Meteor.startup(function () {
     }
 
     Rooms.update({}, {$set: {userList: []}});
-
-    console.log(Meteor.settings);
 });
 
 var default_song = {

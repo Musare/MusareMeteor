@@ -1,5 +1,6 @@
 Router.configure({
-   loadingTemplate: 'loading'
+    loadingTemplate: 'loading',
+    notFoundTemplate: '404'
 });
 
 Router.onBeforeAction(function() {
@@ -102,9 +103,9 @@ Router.route("/project", {
     template: "project"
 })
 
-Router.route("/donate", {
+/*Router.route("/donate", {
     template: "donate"
-})
+})*/
 
 Router.route("/admin", {
     waitOn: function() {
@@ -173,10 +174,14 @@ Router.route("/:type", {
     action: function() {
         var user = Meteor.users.findOne({});
         var room = Rooms.findOne({type: this.params.type});
-        if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
-            this.render("room");
+        if (room !== undefined) {
+            if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
+                this.render("room");
+            } else {
+                this.redirect("/");
+            }
         } else {
-            this.redirect("/");
+            this.render("404");
         }
     }
 });
