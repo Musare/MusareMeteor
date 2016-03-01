@@ -298,21 +298,16 @@ Template.playlist.events({
             $(".pl-item").hide();
             var input = $("#search-playlist").val().toLowerCase();
             $(".pl-item .pl-title").each(function(i, el){
-                console.log($(el).text());
                 if($(el).text().toLowerCase().indexOf(input) !== -1){
                     $(el).parent(".pl-item").show();
                 }
             })
             $(".pl-item #pl-artist").each(function(i, el){
-                console.log($(el).text());
                 if($(el).text().toLowerCase().indexOf(input) !== -1){
                     $(el).parent(".pl-item").show();
                 }
             })
         }
-    },
-    "click #pl-item": function(){
-        console.log($(this).text());
     }
 });
 
@@ -385,7 +380,6 @@ Template.profile.events({
         $("#cancel-rank").hide();
         var newRank = $("#select-rank option:selected").val();
         var username = Session.get("username");
-        console.log(username, newRank);
     },
     "click #cancel-rank": function() {
         $("#rank").show();
@@ -400,12 +394,10 @@ var seekerBarInterval = undefined;
 Template.queues.events({
     /* TODO Add undo delete button */
     "input #id": function() {
-        console.log("Change!");
         $("#previewPlayerContainer").addClass("hide-preview");
     },
     "input #img": function() {
         var url = $("#img").val();
-        console.log(url);
         Session.set("image_url", url);
     },
     "click .preview-button": function(e){
@@ -538,7 +530,6 @@ Template.queues.events({
                 if (YTPlayer.getPlayerState() === 2) {
                     YTPlayer.playVideo();
                 } else {
-                    console.log(id, song.skipDuration, song.duration);
                     YTPlayer.loadVideoById(id);
                     YTPlayer.seekTo(Number(song.skipDuration));
                 }
@@ -783,7 +774,6 @@ Template.manageStation.events({
                 if (YTPlayer.getPlayerState() === 2) {
                     YTPlayer.playVideo();
                 } else {
-                    console.log(id, song.skipDuration, song.duration);
                     YTPlayer.loadVideoById(id);
                     YTPlayer.seekTo(Number(song.skipDuration));
                 }
@@ -951,8 +941,6 @@ Template.manageSongs.events({
         });
     },
     "click .remove-song-button": function(){
-        console.log(this.mid);
-        console.log("TEST!");
         Meteor.call("deleteSong", this.mid);
     },
     "click #play": function() {
@@ -1036,7 +1024,6 @@ Template.manageSongs.events({
                 if (YTPlayer.getPlayerState() === 2) {
                     YTPlayer.playVideo();
                 } else {
-                    console.log(id, song.skipDuration, song.duration);
                     YTPlayer.loadVideoById(id);
                     YTPlayer.seekTo(Number(song.skipDuration));
                 }
@@ -1196,7 +1183,6 @@ Template.news.events({
 
 Template.room.events({
     "input #volume_slider": function() {
-        console.log("Test3");
         var volume = Number($("#volume_slider").val());
         localStorage.setItem("volume", volume);
         if (YTPlayer !== undefined) {
@@ -1536,7 +1522,6 @@ Template.room.events({
             success: function (data) {
                 for (var i in data.items) {
                     var item = data.items[i];
-                    console.log(item);
                     songs.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
                 }
                 Session.set("songResults", songs);
@@ -1626,7 +1611,6 @@ Template.room.events({
             reportData.reason.push(this.id);
         });
 
-        console.log(reportData);
         Meteor.call("submitReport", room, reportData, function () {
             $("report_modal").closeModal();
         });

@@ -121,7 +121,6 @@ Template.playlist.helpers({
             var song = Songs.findOne({"mid": id});
             data.push(song);
         })
-        console.log(data);
         if (data !== undefined) {
             data.map(function (song) {
                 if (Session.get("currentSong") !== undefined && song.mid === Session.get("currentSong").mid) {
@@ -503,7 +502,6 @@ Template.room.helpers({
         return Session.get("reportOther");
     },
     votes: function () {
-        console.log(Rooms.findOne({type: Session.get("type")}).votes);
         return Rooms.findOne({type: Session.get("type")}).votes;
     },
     usersInRoom: function(){

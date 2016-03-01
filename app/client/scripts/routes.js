@@ -9,7 +9,6 @@ Router.onBeforeAction(function() {
     var isMaintanance = Meteor.settings.public.maintenance;
     if(isMaintanance === true){
         var user = Meteor.user();
-        console.log(user);
         if(user !== null && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
             next();
         } else {

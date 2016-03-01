@@ -192,15 +192,12 @@ function Station(type) {
         Playlists.remove({}, {$pull: {songs: currentMid}});
         song = default_song;
     }
-    console.log(startedAt);
-    console.log(song);
     var res = Rooms.update({type: type}, {
         $set: {
             currentSong: {song: song, started: startedAt},
             users: 0
         }
     });
-    console.log(res);
 
     this.skipSong = function () {
         self.voted = [];
