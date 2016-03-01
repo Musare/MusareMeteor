@@ -145,7 +145,6 @@ function createRoom(display, tag, private, desc) {
 }
 
 function Station(type) {
-    console.log(type);
     if (Playlists.find({type: type}).count() === 0) {
         Playlists.insert({type: type, songs: [default_song.mid], lastSong: 0});
     }
@@ -247,14 +246,16 @@ function Station(type) {
     var timer;
 
     this.songTimer = function () {
-        startedAt = Date.now();
+        if (state !== "paused") {
+            startedAt = Date.now();
 
-        if (timer !== undefined) {
-            timer.pause();
+            if (timer !== undefined) {
+                timer.pause();
+            }
+            timer = new Timer(function () {
+                self.skipSong();
+            }, Songs.findOne({mid: songs[currentSong]}).duration * 1000);
         }
-        timer = new Timer(function () {
-            self.skipSong();
-        }, Songs.findOne({mid: songs[currentSong]}).duration * 1000);
     };
 
     var state = Rooms.findOne({type: type}).state;
@@ -498,10 +499,6 @@ Meteor.publish("userData", function (userId) {
     } else {
         return undefined;
     }
-});
-
-Meteor.publish("allAlerts", function () {
-    return Alerts.find({active: false})
 });
 
 Meteor.publish("playlists", function () {
