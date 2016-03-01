@@ -161,8 +161,9 @@ function Station(type) {
         Playlists.update({type: type}, {$push: {songs: default_song.mid}});
     }
     Meteor.publish(type, function () {
-        var username = Meteor.users.findOne(this.userId).profile.username;
-        if (username !== undefined) {
+        var user = Meteor.users.findOne(this.userId);
+        if (this.userId !== undefined && user !== undefined && user.profile !== undefined && user.profile.username !== undefined) {
+            var username = user.profile.username;
             Rooms.update({type: type}, {$push: {userList: username}});
             this.onStop(function() {
                 var list = Rooms.findOne({type: type}).userList;
@@ -170,7 +171,6 @@ function Station(type) {
                 if (index >= 0) {
                     list.splice( index, 1 );
                 }
-
                 Rooms.update({type: type}, {$set: {userList: list}});
             });
         }
