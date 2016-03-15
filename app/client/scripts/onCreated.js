@@ -61,6 +61,7 @@ Template.profile.onCreated(function() {
             Session.set("username", data.profile.username);
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);
+            Session.set("songs_requested", data.profile.statistics.songsRequested);
             Session.set("liked", data.profile.liked);
             Session.set("disliked", data.profile.disliked);
             Session.set("loaded", true);
