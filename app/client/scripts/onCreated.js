@@ -1,18 +1,6 @@
 var StationSubscription = undefined;
 var resizeSeekerbarInterval;
 
-Template.landing.onCreated(function(){
-    $("body").css("overflow", "hidden");
-    function pageScroll() {
-        window.scrollBy(0,1);
-        if($(window).scrollTop() + $(window).height() == $(document).height()) {
-            $(window).scrollTop(0);
-        }
-        scrolldelay = setTimeout(pageScroll,50);
-    }
-    pageScroll();
-});
-
 Template.banned.onCreated(function() {
     if (Session.get("rTimeInterval") !== undefined) {
         Meteor.clearInterval(Session.get("rTimeInterval"))
@@ -73,6 +61,7 @@ Template.profile.onCreated(function() {
             Session.set("username", data.profile.username);
             Session.set("first_joined", data.createdAt);
             Session.set("rank", data.profile.rank);
+            Session.set("songs_requested", data.profile.statistics.songsRequested);
             Session.set("liked", data.profile.liked);
             Session.set("disliked", data.profile.disliked);
             Session.set("loaded", true);

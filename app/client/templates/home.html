@@ -4,26 +4,51 @@
         {{> alerts}}
             <div class="row">
                 {{#each rooms}}
-                    <div class="col s6 m4 l2">
-                        <div class="card hoverable">
-                            <div class="card-image waves-effect waves-block waves-light">
-                                <a href=/{{type}}>
+                    {{#if private}}
+                        {{#if isModerator}}
+                            <div class="col s6 m4 l2">
+                                <div class="card hoverable">
+                                    <div class="card-image waves-effect waves-block waves-light">
+                                        <a href=/{{type}}>
+                                        <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
+                                        <figcaption class="caption center-align">
+                                            <h5>{{currentSong.song.title}}</h5>
+                                            <h5>{{currentSong.song.artist}}</h5>
+                                        </figcaption>
+                                        </a>
+                                    </div>
+                                    <div class="card-content">
+                                        <span class="card-title grey-text text-darken-4">{{display}}</span><div><span class="user-num">{{userNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                        <p>{{roomDesc}}</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href=/{{type}} class="teal-text text-accent-4">Join Room</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{else}}
+                        <div class="col s6 m4 l2">
+                            <div class="card hoverable">
+                                <div class="card-image waves-effect waves-block waves-light">
+                                    <a href=/{{type}}>
                                     <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
                                     <figcaption class="caption center-align">
-                                      <h5>{{currentSong.song.title}}</h5>
-                                      <h5>{{currentSong.song.artist}}</h5>
+                                        <h5>{{currentSong.song.title}}</h5>
+                                        <h5>{{currentSong.song.artist}}</h5>
                                     </figcaption>
-                                </a>
-                            </div>
-                            <div class="card-content">
-                                <span class="card-title grey-text text-darken-4">{{display}}</span><div><span class="user-num">{{userNum}}</span> <i class="material-icons">perm_identity</i></div>
-                                <p>{{roomDesc}}</p>
-                            </div>
-                            <div class="card-action">
-                                <a href=/{{type}} class="teal-text text-accent-4">Join Room</a>
+                                    </a>
+                                </div>
+                                <div class="card-content">
+                                    <span class="card-title grey-text text-darken-4">{{display}}</span><div><span class="user-num">{{userNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                    <p>{{roomDesc}}</p>
+                                </div>
+                                <div class="card-action">
+                                    <a href=/{{type}} class="teal-text text-accent-4">Join Room</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {{/if}}
                 {{/each}}
             </div>
     </main>

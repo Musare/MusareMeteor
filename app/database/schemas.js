@@ -279,7 +279,7 @@ Schemas.UserProfile = new SimpleSchema({
         type: String,
         label: "Username",
         regEx: /^[a-zA-Z0-9_]+$/,
-        min: 4,
+        min: 3,
         max: 26
     },
     usernameL: {
@@ -429,7 +429,7 @@ Schemas.User = new SimpleSchema({
         // Third-party login packages may not require either. Adjust this schema as necessary for your usage.
         optional: true,
         regEx: /^[a-zA-Z0-9_]+$/,
-        min: 6,
+        min: 3,
         max: 26
     },
     emails: {

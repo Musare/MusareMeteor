@@ -570,10 +570,6 @@ Meteor.publish("isModerator", function () {
     return Meteor.users.find({_id: this.userId, "profile.rank": "moderator"});
 });
 
-Meteor.publish("admin", function(){
-    return Admin.find();
-})
-
 Meteor.publish("feedback", function(){
     return Feedback.find();
 })
@@ -824,7 +820,7 @@ Meteor.methods({
                         Chat.insert({
                             type: type,
                             rawrank: rawrank,
-                            rank: "[D]",
+                            rank: "",
                             message: message,
                             time: time,
                             username: username

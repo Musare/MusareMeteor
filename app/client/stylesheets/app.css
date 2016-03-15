@@ -146,6 +146,10 @@ hr{
     background-color: rgb(107, 197, 164) !important;
 }
 
+.musare-text {
+    color: rgb(107, 197, 164) !important;
+}
+
 .range-field > input[type="range"] {
     border-color: #C2C0C2;
     border-right: 0;

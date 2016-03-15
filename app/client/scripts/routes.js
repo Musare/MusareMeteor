@@ -1,29 +1,34 @@
+Router.configure({
+    loadingTemplate: 'loading',
+    notFoundTemplate: '404'
+});
+
 Router.onBeforeAction(function() {
     var self = this;
     var next = self.next;
-    var isMaintanance = Admin.find().fetch()[0].isMaintanance;
-    if(isMaintanance){
+    var isMaintanance = Meteor.settings.public.maintenance;
+    if(isMaintanance === true){
         var user = Meteor.user();
-        if(user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
-            self.render("home");
+        console.log(user);
+        if(user !== null && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
+            next();
         } else {
-            self.render("maintanance");
+            this.render("maintenance");
         }
     } else {
-        this.next();
+        if (Meteor.userId()) {
+            Meteor.call("isBanned", function(err, res) {
+                if (res) {
+                    self.render('banned');
+                } else {
+                    document.title = 'Musare';
+                    next();
+                }
+            });
+        } else {
+            next();
+        }
     }
-    if (Meteor.userId()) {
-        Meteor.call("isBanned", function(err, res) {
-            if (res) {
-                self.render('banned');
-            } else {
-                document.title = 'Musare';
-                next();
-            }
-        });
-    } else {
-       this.next();
-   }
 });
 
 Router.route("/", {
@@ -98,9 +103,9 @@ Router.route("/project", {
     template: "project"
 })
 
-Router.route("/donate", {
+/*Router.route("/donate", {
     template: "donate"
-})
+})*/
 
 Router.route("/admin", {
     waitOn: function() {
@@ -169,10 +174,14 @@ Router.route("/:type", {
     action: function() {
         var user = Meteor.users.findOne({});
         var room = Rooms.findOne({type: this.params.type});
-        if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
-            this.render("room");
+        if (room !== undefined) {
+            if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
+                this.render("room");
+            } else {
+                this.redirect("/");
+            }
         } else {
-            this.redirect("/");
+            this.render("404");
         }
     }
 });
