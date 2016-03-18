@@ -166,6 +166,9 @@ Template.profile.helpers({
     "rank": function () {
         return Session.get("rank");
     },
+    "songs_requested": function () {
+        return Session.get("songs_requested");
+    },
     loaded: function () {
         return Session.get("loaded");
     },
