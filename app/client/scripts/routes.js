@@ -31,7 +31,8 @@ Router.onBeforeAction(function() {
 });
 
 Router.route("/", {
-    template: "home"
+    template: "home",
+    name: "home"
 });
 
 Router.route("/login", {
@@ -42,7 +43,8 @@ Router.route("/login", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "login"
 });
 
 Router.route("/register", {
@@ -53,7 +55,8 @@ Router.route("/register", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "register"
 });
 
 Router.route("/settings", {
@@ -63,47 +66,58 @@ Router.route("/settings", {
         } else {
             this.render("settings");
         }
-    }
+    },
+    name: "settings"
 });
 
 Router.route("/add", {
-    template: "addSong"
+    template: "addSong",
+    name: "addSong"
 });
 
 Router.route("/terms", {
-    template: "terms"
+    template: "terms",
+    name: "terms"
 });
 
 Router.route("/contact", {
-    template: "contact"
+    template: "contact",
+    name: "contact"
 });
 
 Router.route("/faq", {
-    template: "faq"
+    template: "faq",
+    name: "faq"
 });
 
 Router.route("/privacy", {
-    template: "privacy"
+    template: "privacy",
+    name: "privacy"
 });
 
 Router.route("/feedback", {
-    template: "feedback"
+    template: "feedback",
+    name: "feedback"
 })
 
 Router.route("/team", {
-    template: "team"
+    template: "team",
+    name: "team"
 })
 
 Router.route("/news", {
-    template: "news"
+    template: "news",
+    name: "news"
 })
 
 Router.route("/project", {
-    template: "project"
+    template: "project",
+    name: "project"
 })
 
 /*Router.route("/donate", {
-    template: "donate"
+    template: "donate",
+ name: "donate"
 })*/
 
 Router.route("/admin", {
@@ -117,7 +131,8 @@ Router.route("/admin", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "admin"
 });
 
 Router.route("/admin/songs", {
@@ -131,7 +146,8 @@ Router.route("/admin/songs", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "manageSongs"
 });
 
 Router.route("/admin/queues", {
@@ -145,7 +161,8 @@ Router.route("/admin/queues", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "queues"
 });
 
 Router.route("/admin/alerts", {
@@ -159,11 +176,13 @@ Router.route("/admin/alerts", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "alertsDashboard"
 });
 
-Router.route("/u/:user", function() {
-    this.render("profile");
+Router.route("/u/:user", {
+    template: "profile",
+    name: "profile"
 });
 
 Router.route("/:type", {
@@ -182,7 +201,8 @@ Router.route("/:type", {
         } else {
             this.render("404");
         }
-    }
+    },
+    name: "station"
 });
 
 Router.route("/:type/manage", {
@@ -197,5 +217,6 @@ Router.route("/:type/manage", {
         } else {
             this.redirect("/");
         }
-    }
+    },
+    name: "manageStation"
 });
