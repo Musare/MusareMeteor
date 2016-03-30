@@ -773,10 +773,10 @@ Meteor.methods({
                 throw new Meteor.Error(406, "Message length cannot be more than 300 characters long..");
             }
             else if (user.profile.rank === "admin") {
-                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
+                /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
                     if (res.content.indexOf("true") > -1) {
                         return true;
-                    } else {
+                    } else {*/
                         Chat.insert({
                             type: type,
                             rawrank: rawrank,
@@ -785,15 +785,15 @@ Meteor.methods({
                             time: time,
                             username: username
                         });
-                    }
-                });
+                    /*}
+                });*/
                 return true;
             }
             else if (user.profile.rank === "moderator") {
-                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
+                /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
                     if (res.content.indexOf("true") > -1) {
                         return true;
-                    } else {
+                    } else {*/
                         Chat.insert({
                             type: type,
                             rawrank: rawrank,
@@ -802,15 +802,15 @@ Meteor.methods({
                             time: time,
                             username: username
                         });
-                    }
-                });
+                    /*}
+                });*/
                 return true;
             }
             else {
-                HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
+                /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
                     if (res.content.indexOf("true") > -1) {
                         return true;
-                    } else {
+                    } else {*/
                         Chat.insert({
                             type: type,
                             rawrank: rawrank,
@@ -819,8 +819,8 @@ Meteor.methods({
                             time: time,
                             username: username
                         });
-                    }
-                });
+                    /*}
+                });*/
                 return true;
             }
         } else {
