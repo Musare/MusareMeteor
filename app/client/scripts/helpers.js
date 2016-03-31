@@ -137,9 +137,9 @@ Template.playlist.helpers({
     },
     nextSong: function(){
         var song;
-        var data = Playlists.find({"type": Session.get("type")}).fetch()[0].songs
+        var data = Playlists.find({"type": Session.get("type")}).fetch()[0].songs;
         for(var i = 0; i < data.length; i++){
-            if(data[i] === Session.get("currentSong").mid){
+            if(Session.get("currentSong") !== undefined && data[i] === Session.get("currentSong").mid){
                 if(i === data.length - 1){
                     song = Songs.findOne({"mid": data[0]});
                     Session.set("nextSong", [song])
@@ -148,7 +148,7 @@ Template.playlist.helpers({
                     Session.set("nextSong", [song]);
                 }
             }
-        };
+        }
         return Session.get("nextSong");
     }
 });
@@ -404,7 +404,8 @@ Template.room.helpers({
         return Session.get("state") === "paused";
     },
     private: function () {
-        return Rooms.findOne({type: Session.get("type")}).private === true;
+        return 1;
+        //return Rooms.findOne({type: Session.get("type")}).private === true;
     },
     currentSong: function(){
         return Session.get("currentSong");

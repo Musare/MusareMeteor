@@ -194,6 +194,7 @@ Router.route("/:type", {
         var room = Rooms.findOne({type: this.params.type});
         if (room !== undefined) {
             if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || room.private === false) {
+                Session.set("type", this.params.type);
                 this.render("room");
             } else {
                 this.redirect("/");

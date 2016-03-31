@@ -244,6 +244,7 @@ function Station(type) {
     Rooms.update({type: type}, {$set: {timePaused: 0}});
 
     var timer;
+    var timerInitialised = false;
 
     this.songTimer = function () {
         if (state !== "paused") {
@@ -252,6 +253,7 @@ function Station(type) {
             if (timer !== undefined) {
                 timer.pause();
             }
+            timerInitialised = true;
             timer = new Timer(function () {
                 self.skipSong();
             }, Songs.findOne({mid: songs[currentSong]}).duration * 1000);
@@ -269,6 +271,11 @@ function Station(type) {
     };
     this.resumeRoom = function () {
         if (state !== "playing") {
+            if (!timerInitialised) {
+                timer = new Timer(function () {
+                    self.skipSong();
+                }, Songs.findOne({mid: songs[currentSong]}).duration * 1000);
+            }
             timer.resume();
             Rooms.update({type: type}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
             state = "playing";

@@ -209,6 +209,7 @@ Template.room.onCreated(function () {
             if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined) YTPlayer.stopVideo();
 
             var volume = localStorage.getItem("volume") || 20;
+            $("#volume_slider").val(volume);
 
             $("#player").show();
             function loadVideo() {

@@ -12,7 +12,7 @@ Template.queues.onRendered(function() {
         }
     });
     $(document).ready(function() {
-        var volume = localStorage.getItem("volume") || 20;
+        var volume = (localStorage.getItem("volume") !== undefined) ? localStorage.getItem("volume") : 20;
         $("#volume_slider").val(volume).on("input", function() {
             volume = Number($("#volume_slider").val());
             localStorage.setItem("volume", volume);
@@ -37,7 +37,7 @@ Template.manageStation.onRendered(function() {
         }
     });
     $(document).ready(function() {
-        var volume = localStorage.getItem("volume") || 20;
+        var volume = (localStorage.getItem("volume") !== undefined) ? localStorage.getItem("volume") : 20;
         $("#volume_slider").val(volume).on("input", function() {
             volume = Number($("#volume_slider").val());
             localStorage.setItem("volume", volume);
@@ -62,7 +62,7 @@ Template.manageSongs.onRendered(function() {
         }
     });
     $(document).ready(function() {
-        var volume = localStorage.getItem("volume") || 20;
+        var volume = (localStorage.getItem("volume") !== undefined) ? localStorage.getItem("volume") : 20;
         $("#volume_slider").val(volume).on("input", function() {
             volume = Number($("#volume_slider").val());
             localStorage.setItem("volume", volume);
@@ -90,7 +90,7 @@ Template.room.onRendered(function() {
         Session.set("time", new Date().getTime());
     }, 10000));
     window.setTimeout(function(){
-        var volume = Number(localStorage.getItem("volume")) || 20;
+        var volume = (localStorage.getItem("volume") !== undefined) ? localStorage.getItem("volume") : 20;
         $("#volume_slider").val(volume);
     }, 1000)
 });
