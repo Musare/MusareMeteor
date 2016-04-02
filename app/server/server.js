@@ -159,18 +159,25 @@ function Station(type) {
     if (Playlists.findOne({type: type}).songs.length === 0) {
         Playlists.update({type: type}, {$push: {songs: default_song.mid}});
     }
+    var usersObj = {};
     Meteor.publish(type, function () {
         var user = Meteor.users.findOne(this.userId);
         if (this.userId !== undefined && user !== undefined && user.profile !== undefined && user.profile.username !== undefined) {
             var username = user.profile.username;
+            if (usersObj[username] === undefined) {
+                usersObj[username] = 1;
+            }
             Rooms.update({type: type}, {$push: {userList: username}});
             this.onStop(function() {
+                usersObj[username]--;
                 var list = Rooms.findOne({type: type}).userList;
                 var index = list.indexOf(username);
                 if (index >= 0) {
-                    list.splice( index, 1 );
+                    var t = {};
+                    t["userList" + index] = 1;
+                    Rooms.update({type: type}, {$unset : t});
+                    Rooms.update({type: type}, {$pull : {"userList": null}});
                 }
-                Rooms.update({type: type}, {$set: {userList: list}});
             });
         }
         return undefined;
