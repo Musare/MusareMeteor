@@ -185,13 +185,13 @@ Router.route("/u/:user", {
     name: "profile"
 });
 
-Router.route("/private/:type", {
+Router.route("/private/:name", {
     waitOn: function() {
-        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("rooms")];
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("private_rooms")];
     },
     action: function() {
         var user = Meteor.users.findOne({});
-        var room = Rooms.findOne({type: this.params.type});
+        var room = PrivateRooms.findOne({name: this.params.name});
         if (room !== undefined) {
             if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" ||
                 user.profile.rank === "moderator")) || room.private === false || (user !== undefined && user.profile !== undefined && room.allowed.includes(user.profile))) {

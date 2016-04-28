@@ -1630,6 +1630,108 @@ Template.room.events({
         }, 10);
     }
 });
+
+Template.privateRoom.events({
+    "input #volume_slider": function() {
+        var volume = Number($("#volume_slider").val());
+        localStorage.setItem("volume", volume);
+        if (YTPlayer !== undefined) {
+            YTPlayer.setVolume(volume);
+        }
+    },
+    "click #global-chat-tab": function () {
+        $("#global-chat-tab").removeClass("unread-messages");
+    },
+    "click #sync": function () {
+        if (Session.get("currentSong") !== undefined) {
+            var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+            if (room !== undefined) {
+                var timeIn = Date.now() - Session.get("currentSong").started - room.timePaused;
+                if (YTPlayer !== undefined) {
+                    YTPlayer.seekTo(timeIn / 1000);
+                }
+            }
+        }
+    },
+    "click #lock": function () {
+        Meteor.call("lockPrivateRoom", Session.get("privateRoomName"));
+        var $parent = $("#lock").parent();
+        $("#lock").remove();
+        $parent.append('<a id="unlock"><i class="material-icons">lock_open</i></a>')
+    },
+    "click #unlock": function () {
+        Meteor.call("unlockPrivateRoom", Session.get("privateRoomName"));
+        var $parent = $("#unlock").parent();
+        $("#unlock").remove();
+        $parent.append('<a id="lock"><i class="material-icons">lock_outline</i></a>')
+    },
+    "click #submit": function () {
+        if(Meteor.userId()){
+            sendMessageGlobal();
+            Meteor.setTimeout(function () {
+                $(".chat-ul").scrollTop(100000);
+            }, 1000)
+        } else {
+            var $toastContent = $('<span>Message not sent. You must log in</span>');
+            Materialize.toast($toastContent, 2000);
+        }
+    },
+    "keyup #chat-message": function (e) {
+        if (e.type === "keyup" && e.which === 13) {
+            if(Meteor.userId()){
+                e.preventDefault();
+                if (!$('#chat-message').data('dropdownshown')) {
+                    sendMessageGlobal();
+                    Meteor.setTimeout(function () {
+                        $(".chat-ul").scrollTop(100000);
+                    }, 1000)
+                }
+            } else {
+                var $toastContent = $('<span>Message not sent. You must log in</span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        }
+    },
+    "click #vote-skip": function () {
+        Meteor.call("votePrivateSkip", Session.get("privateRoomName"), function (err, res) {
+            $("#vote-skip").addClass("disabled");
+            if(err){
+                var $toastContent = $('<span><strong>Vote not submitted</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
+            }
+        });
+    },
+    "click #volume-icon": function () {
+        var volume = 0;
+        var slider = $("#volume-slider").slider();
+        $("#volume-icon").removeClass("fa-volume-down").addClass("fa-volume-off")
+        if (YTPlayer !== undefined) {
+            YTPlayer.setVolume(volume);
+            localStorage.setItem("volume", volume);
+            $("#volume-slider").slider("setValue", volume);
+        }
+    },
+    "click #play": function () {
+        Meteor.call("resumePrivateRoom", Session.get("privateRoomName"));
+        var $parent = $("#play").parent();
+        $("#play").remove();
+        $parent.append('<a id="pause"><i class="material-icons">pause</i></a>')
+    },
+    "click #pause": function () {
+        Meteor.call("pausePrivateRoom", Session.get("privateRoomName"));
+        var $parent = $("#pause").parent();
+        $("#pause").remove();
+        $parent.append('<a id="play"><i class="material-icons">play_arrow</i></a>')
+    },
+    "click #skip": function () {
+        Meteor.call("skipPrivateSong", Session.get("privateRoomName"));
+    },
+    "click #admin-dropdown a": function(){
+        Meteor.setTimeout(function(){
+            $(".dropdown-button").click();
+        }, 10);
+    }
+});
 // Settings Template
 Template.settings.events({
     "change #showRating": function() {

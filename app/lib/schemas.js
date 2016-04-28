@@ -61,6 +61,23 @@ Schemas.FullSong = new SimpleSchema({
     }
 });
 
+Schemas.UserSong = new SimpleSchema({
+    "id": {
+        type: String,
+        label: "Song YouTube id"
+    },
+    "title": {
+        type: String,
+        label: "Song title"
+    },
+    "duration": {
+        type: Number,
+        label: "Song duration",
+        min: 0,
+        decimal: true
+    }
+});
+
 Schemas.QueueSong = new SimpleSchema({
     "id": {
         type: String,
@@ -250,6 +267,119 @@ Schemas.Room = new SimpleSchema({
     "userList.$": {
         type: String,
         label: "Username of user currently in a room"
+    }
+});
+
+Schemas.PrivateRoom = new SimpleSchema({
+    name: {
+        type: String,
+        label: "Room Name",
+        regEx: /^[a-z0-9A-Z_\s]{1,30}$/
+    },
+    displayName: {
+        type: String,
+        label: "Room Display Name"
+    },
+    currentSong: {
+        type: Object,
+        defaultValue: {song: {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}, started: 0},
+        label: "Current Song Object"
+    },
+    "currentSong.song": {
+        type: Schemas.UserSong,
+        label: "Current Song Object"
+    },
+    "currentSong.started": {
+        type: Number,
+        label: "Current Song Start Date"
+    },
+    timePaused: {
+        type: Number,
+        defaultValue: 0,
+        label: "Amount of time a room has been paused for"
+    },
+    users: {
+        type: Number,
+        defaultValue: 0,
+        label: "Users Online",
+        min: 0
+    },
+    state: {
+        type: String,
+        defaultValue: "paused",
+        allowedValues: ["paused", "playing"],
+        label: "Room State"
+    },
+    votes: {
+        type: Number,
+        defaultValue: 0,
+        label: "Current votes to skip current song",
+        min: 0
+    },
+    private: {
+        type: Boolean,
+        defaultValue: false,
+        label: "Room private or not"
+    },
+    roomDesc: {
+        type: String,
+        label: "Room description"
+    },
+    userList: {
+        type: Array,
+        label: "List of currently online people",
+        defaultValue: []
+    },
+    "userList.$": {
+        type: String,
+        label: "Username of user currently in a room"
+    },
+    allowed: {
+        type: Array,
+        label: "List of allowed users in the room",
+        defaultValue: []
+    },
+    "allowed.$": {
+        type: String,
+        label: "Username of user allowed in room"
+    },
+    "playlist": {
+        type: String,
+        optional: true,
+        label: "Playlist in room"
+    },
+    "owner": {
+        type: String,
+        label: "Username of owner"
+    },
+    lastSong: {
+        type: Number,
+        label: "Index of the previous song",
+        defaultValue: 0
+    }
+});
+
+Schemas.PrivatePlaylist = new SimpleSchema({
+    name: {
+        type: String,
+        label: "Name of playlist",
+        regEx: /^[a-z0-9_]{1,20}$/
+    },
+    displayName: {
+        type: String,
+        label: "Displayname of playlist"
+    },
+    songs: {
+        type: Array,
+        label: "Array of song objects"
+    },
+    "songs.$": {
+        type: Schemas.UserSong,
+        label: "Song Object"
+    },
+    owner: {
+        type: String,
+        label: "Owner of playlist"
     }
 });
 
@@ -544,3 +674,5 @@ Reports.attachSchema(Schemas.Report);
 Feedback.attachSchema(Schemas.Feedback);
 Songs.attachSchema(Schemas.FullSong);
 News.attachSchema(Schemas.Article);
+PrivateRooms.attachSchema(Schemas.PrivateRoom);
+PrivatePlaylists.attachSchema(Schemas.PrivatePlaylist);

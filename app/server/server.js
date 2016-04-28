@@ -45,9 +45,17 @@ var default_song = {
     genres: ["edm", "pop"]
 };
 
+var default_private_playlist = {
+    name: "default",
+    displayName: "Default Playlist",
+    songs: [{id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}],
+    owner: "NONE"
+};
+
 Alerts.update({active: true}, {$set: {active: false}}, {multi: true});
 
 var stations = [];
+var privateStations = [];
 var voteNum = 0;
 
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
@@ -120,6 +128,15 @@ function getStation(type, cb) {
     });
 }
 
+function getPrivateStation(name, cb) {
+    privateStations.forEach(function (station) {
+        if (station.name === name) {
+            cb(station);
+            return;
+        }
+    });
+}
+
 function createRoom(display, tag, private, desc) {
     var type = tag;
     if (Rooms.find({type: type}).count() === 0) {
@@ -139,6 +156,26 @@ function createRoom(display, tag, private, desc) {
         });
     } else {
         return "Room already exists";
+    }
+}
+
+function createPrivateRoom(name, display, private, desc, owner) {
+    if (PrivateRooms.find({name: name}).count() === 0) {
+        PrivateRooms.insert({
+            name: name,
+            displayName: display,
+            private: private,
+            roomDesc: desc,
+            owner: owner
+        }, function (err) {
+            if (err) {
+                throw err;
+            } else {
+                privateStations.push(new PrivateStation(name));
+            }
+        });
+    } else {
+        return "Private room with that name already exists";
     }
 }
 
@@ -173,7 +210,7 @@ function Station(type) {
                 usersObj[username]--;
                 var list = Rooms.findOne({type: type}).userList;
                 var index = list.indexOf(username);
-                if (index >= 0) { //TODO Fix this
+                if (index >= 0) {
                     list.splice(index, 1);
                     Rooms.update({type: type}, {$set: {userList: list}});
                 }
@@ -344,6 +381,166 @@ function Station(type) {
     this.voted = [];
 }
 
+function PrivateStation(name) {
+    var usersObj = {};
+    PrivateRooms.update({name: name}, {$set: {userList: []}});
+    Meteor.publish("pr_" + name, function () {
+        var user = Meteor.users.findOne(this.userId);
+        if (this.userId !== undefined && user !== undefined && user.profile !== undefined && user.profile.username !== undefined) {
+            var username = user.profile.username;
+            if (usersObj[username] === undefined) {
+                usersObj[username] = 1;
+            } else {
+                usersObj[username]++;
+            }
+            PrivateRooms.update({name: name}, {$push: {userList: username}});
+            this.onStop(function() {
+                usersObj[username]--;
+                var list = PrivateRooms.findOne({name: name}).userList;
+                var index = list.indexOf(username);
+                if (index >= 0) {
+                    list.splice(index, 1);
+                    PrivateRooms.update({name: name}, {$set: {userList: list}});
+                }
+            });
+        }
+        return undefined;
+    });
+    var self = this;
+    var startedAt = Date.now();
+    var _room = PrivateRooms.findOne({name: name});
+    var playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
+    if (playlist === undefined) {
+        playlist = default_private_playlist;
+    }
+    var songs = playlist.songs;
+
+    var currentSong = 0;
+    if (currentSong < (songs.length - 1)) {
+        currentSong++;
+    } else currentSong = 0;
+    var currentId = songs[currentSong];
+
+    var song = songs[songs.indexOf(currentId)];
+    if (song === undefined) {
+        song = {song: {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}, started: 0};
+    }
+    var res = PrivateRooms.update({name: name}, {
+        $set: {
+            currentSong: {song: song, started: startedAt},
+            users: 0
+        }
+    });
+
+    this.skipSong = function () {
+        self.voted = [];
+        voteNum = 0;
+        PrivateRooms.update({name: name}, {$set: {votes: 0}});
+        playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
+        if (playlist === undefined) {
+            playlist = default_private_playlist;
+        }
+        songs = playlist.songs;
+        songs.forEach(function (id, index) {
+            if (id === currentId) {
+                currentSong = index;
+            }
+        });
+        if (currentSong < (songs.length - 1)) {
+            currentSong++;
+        } else currentSong = 0;
+        currentId = songs[currentSong];
+        PrivateRooms.update({name: name}, {$set: {timePaused: 0}});
+        this.songTimer();
+        PrivateRooms.update({name: name}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
+    };
+
+    PrivateRooms.update({name: name}, {$set: {timePaused: 0}});
+
+    var timer;
+    var timerInitialised = false;
+
+    this.songTimer = function () {
+        if (state !== "paused") {
+            startedAt = Date.now();
+
+            if (timer !== undefined) {
+                timer.pause();
+            }
+            timerInitialised = true;
+            timer = new Timer(function () {
+                self.skipSong();
+            }, songs[currentSong].duration * 1000);
+        }
+    };
+
+    var state = PrivateRooms.findOne({name: name}).state;
+
+    this.pauseRoom = function () {
+        if (state !== "paused") {
+            timer.pause();
+            PrivateRooms.update({name: name}, {$set: {state: "paused"}});
+            state = "paused";
+        }
+    };
+    this.resumeRoom = function () {
+        if (state !== "playing") {
+            if (!timerInitialised) {
+                timer = new Timer(function () {
+                    self.skipSong();
+                }, songs[currentSong] * 1000);
+            }
+            timer.resume();
+            PrivateRooms.update({name: name}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
+            state = "playing";
+        }
+    };
+    this.cancelTimer = function () {
+        timer.pause();
+    };
+    this.getState = function () {
+        return state;
+    };
+    this.name = name;
+
+    var private = PrivateRooms.findOne({name: name}).private;
+
+    if (typeof private !== "boolean") {
+        PrivateRooms.update({name: name}, {$set: {"private": false}});
+        private = false;
+    }
+
+    this.private = private;
+
+    this.unlock = function () {
+        if (self.private) {
+            self.private = false;
+            PrivateRooms.update({name: name}, {$set: {"private": false}});
+        }
+    };
+
+    this.lock = function () {
+        if (!self.private) {
+            self.private = true;
+            PrivateRooms.update({name: name}, {$set: {"private": true}});
+        }
+    };
+
+    this.setPlaylist = function (plName) {
+        if (PrivatePlaylists.findOne({name: plName, owner: _room.owner}) !== undefined) {
+            PrivateRooms.update({name: name}, {$set: {"playlist": plName}});
+            _room.playlist = plName;
+            playlist = PrivatePlaylists({name: plName, owner: _room.owner});
+            songs = playlist.songs;
+
+            currentSong = 0;
+        }
+    };
+
+    this.skipSong();
+    this.voted = [];
+}
+
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -453,6 +650,11 @@ Rooms.find({}).fetch().forEach(function (room) {
     }
 });
 
+PrivateRooms.find({}).fetch().forEach(function (room) {
+    var name = room.name;
+    privateStations.push(new PrivateStation(name));
+});
+
 Accounts.validateNewUser(function (user) {
     var username;
     if (user.services) {
@@ -518,8 +720,17 @@ Meteor.publish("playlists", function () {
     return Playlists.find({})
 });
 
+Meteor.publish("private_playlists", function () {
+    return PrivatePlaylists.find({})
+});
+
+
 Meteor.publish("rooms", function () {
     return Rooms.find({});
+});
+
+Meteor.publish("private_rooms", function () {
+    return PrivateRooms.find({});
 });
 
 Meteor.publish("songs", function () {
@@ -580,6 +791,16 @@ Meteor.publish("isModerator", function () {
 Meteor.publish("feedback", function(){
     return Feedback.find();
 })
+
+function isPrivateRoomOwner(name) {
+    var userData = Meteor.users.find(Meteor.userId());
+    var room = PrivateRooms.findOne({name: name});
+    if (Meteor.userId() && userData.count !== 0 && room !== undefined && userData.fetch()[0].profile.username === room.owner) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function isAdmin() {
     var userData = Meteor.users.find(Meteor.userId());
@@ -681,6 +902,24 @@ Meteor.methods({
     unlockRoom: function (type) {
         if (isAdmin() && !isBanned()) {
             getStation(type, function (station) {
+                station.unlock();
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    lockPrivateRoom: function (name) {
+        if ((isAdmin() || isPrivateRoomOwner()) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                station.lock();
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    unlockPrivateRoom: function (name) {
+        if ((isAdmin() || isPrivateRoomOwner) && !isBanned()) {
+            getPrivateStation(name, function (station) {
                 station.unlock();
             });
         } else {
@@ -974,6 +1213,43 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
+    skipPrivateSong: function (name) {
+        if ((isAdmin() || isRoomOwner()) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(404, "Station not found.");
+                } else {
+                    station.skipSong();
+                }
+            });
+        }
+    },
+    pausePrivateRoom: function (name) {
+        if ((isAdmin() || isPrivateRoomOwner()) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(403, "Room doesn't exist.");
+                } else {
+                    station.pauseRoom();
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    resumePrivateRoom: function (name) {
+        if ((isAdmin() || isPrivateRoomOwner()) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(403, "Room doesn't exist.");
+                } else {
+                    station.resumeRoom();
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     createUserMethod: function (formData, captchaData) {
         if (!isBanned()) {
             var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
@@ -1167,6 +1443,22 @@ Meteor.methods({
     createRoom: function (display, tag, private, desc) {
         if (isAdmin() && !isBanned()) {
             createRoom(display, tag, private, desc);
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    createPrivateRoom: function (name, display, private, desc) {
+        if (Meteor.userId() && !isBanned()) {
+            createPrivateRoom(name, display, private, desc, Meteor.user().profile.username);
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    createPrivatePlaylist: function (name, display) {
+        if (Meteor.userId() && !isBanned()) {
+            if (PrivatePlaylists.findOne({name: name, owner: Meteor.user().profile.username}) === undefined) {
+                PrivatePlaylists.insert({name: name, displayName: display, songs: [{id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}], owner: Meteor.user().profile.username});
+            }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

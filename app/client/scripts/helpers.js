@@ -520,6 +520,57 @@ Template.room.helpers({
     }
 });
 
+Template.privateRoom.helpers({
+    globalChat: function () {
+        Meteor.setTimeout(function () {
+            var elem = document.getElementById('global-chat');
+            if (elem !== undefined && elem !== null) {
+                elem.scrollTop = elem.scrollHeight;
+            }
+        }, 100);
+        return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
+    },
+    privateRoomDisplayName: function () {
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        return PrivateRooms.findOne({name: id}).displayName;
+    },
+    users: function () {
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        return PrivateRooms.findOne({name: id}).users;
+    },
+    title: function () {
+        return Session.get("title");
+    },
+    loaded: function () {
+        return Session.get("loaded");
+    },
+    paused: function () {
+        return Session.get("state") === "paused";
+    },
+    private: function () {
+        return 1;
+        //return Rooms.findOne({type: Session.get("type")}).private === true;
+    },
+    currentSong: function(){
+        return Session.get("currentSong");
+    },
+    votes: function () {
+        return PrivateRooms.findOne({name: Session.get("privateRoomName")}).votes;
+    },
+    usersInRoom: function(){
+        var userList = [];
+        var roomUserList = PrivateRooms.findOne({type: Session.get("privateRoomName")}).userList;
+        roomUserList.forEach(function(user){
+            if(userList.indexOf(user) === -1){
+                userList.push(user);
+            }
+        })
+        return userList;
+    }
+});
+
 Template.settings.helpers({
     username: function () {
         if (Meteor.user() !== undefined) {

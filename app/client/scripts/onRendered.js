@@ -94,3 +94,16 @@ Template.room.onRendered(function() {
         $("#volume_slider").val(volume);
     }, 1000)
 });
+
+Template.privateRoom.onRendered(function() {
+    if (Session.get("rTimeInterval") !== undefined) {
+        Meteor.clearInterval(Session.get("rTimeInterval"))
+    }
+    Session.set("rTimeInterval", Meteor.setInterval(function() {
+        Session.set("time", new Date().getTime());
+    }, 10000));
+    window.setTimeout(function(){
+        var volume = (localStorage.getItem("volume") !== undefined) ? localStorage.getItem("volume") : 20;
+        $("#volume_slider").val(volume);
+    }, 1000)
+});
