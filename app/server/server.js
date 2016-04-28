@@ -172,12 +172,12 @@ function Station(type) {
                 usersObj[username]--;
                 var list = Rooms.findOne({type: type}).userList;
                 var index = list.indexOf(username);
-                if (index >= 0) {
+                /*if (index >= 0) { //TODO Fix this
                     var t = {};
                     t["userList" + index] = 1;
                     Rooms.update({type: type}, {$unset : t});
                     Rooms.update({type: type}, {$pull : {"userList": null}});
-                }
+                }*/
             });
         }
         return undefined;

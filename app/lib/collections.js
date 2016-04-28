@@ -1,5 +1,7 @@
 Playlists = new Mongo.Collection("playlists");
+//UserPlaylists = new Mongo.Collection("user_playlists");
 Rooms = new Mongo.Collection("rooms");
+//PrivateRooms = new Mongo.Collection("private_rooms");
 Queues = new Mongo.Collection("queues");
 Reports = new Mongo.Collection("reports");
 Chat = new Mongo.Collection("chat");
