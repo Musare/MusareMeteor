@@ -1610,6 +1610,7 @@ Meteor.methods({
     },
     createPrivateRoom: function (name, display, private, desc) {
         if (Meteor.userId() && !isBanned()) {
+            name = name.toLowerCase();
             createPrivateRoom(name, display, private, desc, Meteor.userId());
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
