@@ -575,7 +575,7 @@ Template.privateRoom.helpers({
     },
     allowed: function () {
         var parts = location.href.split('/');
-        var id = parts.pop().toLowerCase();
+        var id = parts.pop().toLowerCase();deploy
         var arr = [];
         PrivateRooms.findOne({name: id}).allowed.forEach(function(allowed) {
             arr.push({name: Meteor.users.findOne(allowed).profile.username, id: allowed});

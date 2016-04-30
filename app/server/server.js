@@ -1,5 +1,3 @@
-/* Yolo Swag 420 */
-
 Meteor.startup(function () {
     reCAPTCHA.config({
         privatekey: '6LcVxg0TAAAAAI2fgIEEWHFxwNXeVIs8mzq5cfRM'
@@ -1618,6 +1616,7 @@ Meteor.methods({
     },
     createPrivatePlaylist: function (name, display) {
         if (Meteor.userId() && !isBanned()) {
+			name = name.toLowerCase();
             if (PrivatePlaylists.findOne({name: name, owner: Meteor.userId()}) === undefined) {
                 PrivatePlaylists.insert({name: name, displayName: display, songs: [{id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}], owner: Meteor.userId()});
             }
