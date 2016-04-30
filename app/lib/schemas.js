@@ -267,6 +267,11 @@ Schemas.Room = new SimpleSchema({
     "userList.$": {
         type: String,
         label: "Username of user currently in a room"
+    },
+    "playlist": {
+        type: String,
+        optional: true,
+        label: "Name of current playlist selected from owner"
     }
 });
 

@@ -219,35 +219,41 @@ Template.room.onCreated(function () {
                     }, 500));
                 } else {
                     if (YTPlayer === undefined) {
-                        YTPlayer = new YT.Player("player", {
-                            height: 270,
-                            width: 480,
-                            videoId: currentSong.id,
-                            playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
-                            events: {
-                                'onReady': function (event) {
-                                    if (currentSong.skipDuration === undefined) {
-                                        currentSong.skipDuration = 0;
-                                    }
-                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                    event.target.playVideo();
-                                    event.target.setVolume(volume);
-                                    resizeSeekerbar();
-                                },
-                                'onStateChange': function (event) {
-                                    if (Session.get("YTLoaded")) {
-                                        if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                            event.target.playVideo();
+                        if (YT !== undefined && YT.Player !== undefined) {
+                            YTPlayer = new YT.Player("player", {
+                                height: 270,
+                                width: 480,
+                                videoId: currentSong.id,
+                                playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+                                events: {
+                                    'onReady': function (event) {
+                                        if (currentSong.skipDuration === undefined) {
+                                            currentSong.skipDuration = 0;
                                         }
-                                        if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                            event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
-                                            event.target.pauseVideo();
+                                        event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                        event.target.playVideo();
+                                        event.target.setVolume(volume);
+                                        resizeSeekerbar();
+                                    },
+                                    'onStateChange': function (event) {
+                                        if (Session.get("YTLoaded")) {
+                                            if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                event.target.playVideo();
+                                            }
+                                            if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                                event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                event.target.pauseVideo();
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            setTimeout(function() {
+                                startSong();
+                            }, 500);
+                        }
                     } else {
                         YTPlayer.loadVideoById(currentSong.id);
                         if (currentSong.skipDuration === undefined) {
@@ -445,32 +451,38 @@ Template.privateRoom.onCreated(function () {
                     }, 500));
                 } else {
                     if (YTPlayer === undefined) {
-                        YTPlayer = new YT.Player("player", {
-                            height: 270,
-                            width: 480,
-                            videoId: currentSong.id,
-                            playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
-                            events: {
-                                'onReady': function (event) {
-                                    event.target.seekTo(getTimeElapsed() / 1000);
-                                    event.target.playVideo();
-                                    event.target.setVolume(volume);
-                                    resizeSeekerbar();
-                                },
-                                'onStateChange': function (event) {
-                                    if (Session.get("YTLoaded")) {
-                                        if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
-                                            event.target.seekTo(getTimeElapsed() / 1000);
-                                            event.target.playVideo();
-                                        }
-                                        if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
-                                            event.target.seekTo(getTimeElapsed() / 1000);
-                                            event.target.pauseVideo();
+                        if (YT !== undefined && YT.Player !== undefined) {
+                            YTPlayer = new YT.Player("player", {
+                                height: 270,
+                                width: 480,
+                                videoId: currentSong.id,
+                                playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+                                events: {
+                                    'onReady': function (event) {
+                                        event.target.seekTo(getTimeElapsed() / 1000);
+                                        event.target.playVideo();
+                                        event.target.setVolume(volume);
+                                        resizeSeekerbar();
+                                    },
+                                    'onStateChange': function (event) {
+                                        if (Session.get("YTLoaded")) {
+                                            if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                                event.target.seekTo(getTimeElapsed() / 1000);
+                                                event.target.playVideo();
+                                            }
+                                            if (event.data == YT.PlayerState.PLAYING && Session.get("state") === "paused") {
+                                                event.target.seekTo(getTimeElapsed() / 1000);
+                                                event.target.pauseVideo();
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            setTimeout(function() {
+                                startSong();
+                            }, 500);
+                        }
                     } else {
                         YTPlayer.loadVideoById(currentSong.id);
                         YTPlayer.seekTo(getTimeElapsed() / 1000);
@@ -550,6 +562,12 @@ Template.privateRoom.onCreated(function () {
             else if($("#users-slide-out").css("right") === "0px"){
                 $("#users-slideout").sideNav("hide");
             }
+            else if($("#allowed-slide-out").css("right") === "0px"){
+                $("#allowed-slideout").sideNav("hide");
+            }
+            else if($("#playlists-slide-out").css("right") === "0px"){
+                $("#playlists-slideout").sideNav("hide");
+            }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
             $(".room-container").css("margin-right", "370px")
             if($("#playlist-slide-out").css("right") === "0px"){
@@ -562,6 +580,12 @@ Template.privateRoom.onCreated(function () {
             }
             else if($("#users-slide-out").css("right") === "0px"){
                 $("#users-slideout").sideNav("hide");
+            }
+            else if($("#allowed-slide-out").css("right") === "0px"){
+                $("#allowed-slideout").sideNav("hide");
+            }
+            else if($("#playlists-slide-out").css("right") === "0px"){
+                $("#playlists-slideout").sideNav("hide");
             }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
             $(".chat-ul").scrollTop(1000000);
@@ -577,9 +601,53 @@ Template.privateRoom.onCreated(function () {
             else if($("#chat-slide-out").css("right") === "0px"){
                 $("#chat-slideout").sideNav("hide");
             }
+            else if($("#allowed-slide-out").css("right") === "0px"){
+                $("#allowed-slideout").sideNav("hide");
+            }
+            else if($("#playlists-slide-out").css("right") === "0px"){
+                $("#playlists-slideout").sideNav("hide");
+            }
             var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
             $(".room-container").css("margin-right", "370px")
             if($("#users-slide-out").css("right") === "0px"){
+                $(".room-container").css("margin-right", marginRightWidth);
+            }
+        });
+        $("#allowed-slideout").on("click", function(){
+            if($("#playlist-slide-out").css("right") === "0px"){
+                $("#playlist-slideout").sideNav("hide");
+            }
+            else if($("#chat-slide-out").css("right") === "0px"){
+                $("#chat-slideout").sideNav("hide");
+            }
+            else if($("#users-slide-out").css("right") === "0px"){
+                $("#users-slideout").sideNav("hide");
+            }
+            else if($("#playlists-slide-out").css("right") === "0px"){
+                $("#playlists-slideout").sideNav("hide");
+            }
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            $(".room-container").css("margin-right", "370px")
+            if($("#allowed-slide-out").css("right") === "0px"){
+                $(".room-container").css("margin-right", marginRightWidth);
+            }
+        });
+        $("#playlists-slideout").on("click", function(){
+            if($("#playlist-slide-out").css("right") === "0px"){
+                $("#playlist-slideout").sideNav("hide");
+            }
+            else if($("#chat-slide-out").css("right") === "0px"){
+                $("#chat-slideout").sideNav("hide");
+            }
+            else if($("#users-slide-out").css("right") === "0px"){
+                $("#users-slideout").sideNav("hide");
+            }
+            else if($("#allowed-slide-out").css("right") === "0px"){
+                $("#allowed-slideout").sideNav("hide");
+            }
+            var marginRightWidth = ($(document).width() - $(".container").width()) / 2 + "px";
+            $(".room-container").css("margin-right", "370px")
+            if($("#playlists-slide-out").css("right") === "0px"){
                 $(".room-container").css("margin-right", marginRightWidth);
             }
         });

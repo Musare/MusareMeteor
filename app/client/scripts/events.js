@@ -1654,22 +1654,20 @@ Template.privateRoom.events({
         }
     },
     "click #lock": function () {
+        console.log("Lock");
+        console.log(Session.get("privateRoomName"));
         Meteor.call("lockPrivateRoom", Session.get("privateRoomName"));
-        var $parent = $("#lock").parent();
-        $("#lock").remove();
-        $parent.append('<a id="unlock"><i class="material-icons">lock_open</i></a>')
     },
     "click #unlock": function () {
+        console.log("Unlock");
+        console.log(Session.get("privateRoomName"));
         Meteor.call("unlockPrivateRoom", Session.get("privateRoomName"));
-        var $parent = $("#unlock").parent();
-        $("#unlock").remove();
-        $parent.append('<a id="lock"><i class="material-icons">lock_outline</i></a>')
     },
     "click #submit": function () {
         if(Meteor.userId()){
             sendMessageGlobal();
             Meteor.setTimeout(function () {
-                $(".chat-ul").scrollTop(100000);
+                $("#chat-ul").scrollTop(100000);
             }, 1000)
         } else {
             var $toastContent = $('<span>Message not sent. You must log in</span>');
@@ -1683,13 +1681,28 @@ Template.privateRoom.events({
                 if (!$('#chat-message').data('dropdownshown')) {
                     sendMessageGlobal();
                     Meteor.setTimeout(function () {
-                        $(".chat-ul").scrollTop(100000);
+                        $("#chat-ul").scrollTop(100000);
                     }, 1000)
                 }
             } else {
                 var $toastContent = $('<span>Message not sent. You must log in</span>');
                 Materialize.toast($toastContent, 2000);
             }
+        }
+    },
+    "click #add-allowed-submit": function (e) {
+        if(Meteor.userId()){
+            e.preventDefault();
+            Meteor.call("addAllowedToPrivateRoom", Session.get("privateRoomName"), $("#add-allowed").val());
+            $("#add-allowed").val("");
+        } else {
+            var $toastContent = $('<span>User not added. You must log in</span>');
+            Materialize.toast($toastContent, 2000);
+        }
+    },
+    "keyup #add-allowed": function (e) {
+        if (e.type === "keyup" && e.which === 13) {
+            $("#add-allowed-submit").click();
         }
     },
     "click #vote-skip": function () {
@@ -1713,15 +1726,9 @@ Template.privateRoom.events({
     },
     "click #play": function () {
         Meteor.call("resumePrivateRoom", Session.get("privateRoomName"));
-        var $parent = $("#play").parent();
-        $("#play").remove();
-        $parent.append('<a id="pause"><i class="material-icons">pause</i></a>')
     },
     "click #pause": function () {
         Meteor.call("pausePrivateRoom", Session.get("privateRoomName"));
-        var $parent = $("#pause").parent();
-        $("#pause").remove();
-        $parent.append('<a id="play"><i class="material-icons">play_arrow</i></a>')
     },
     "click #skip": function () {
         Meteor.call("skipPrivateSong", Session.get("privateRoomName"));
@@ -1730,6 +1737,59 @@ Template.privateRoom.events({
         Meteor.setTimeout(function(){
             $(".dropdown-button").click();
         }, 10);
+    },
+    "click .remove-allowed": function(e) {
+        var user = $(e.target).data("user");
+        if (user === undefined) {
+            user = $(e.target).parent().data("user");
+        }
+        Meteor.call("removeAllowedFromPrivateRoom", Session.get("privateRoomName"), user);
+    },
+    "click .edit-playlist-button": function(e) {
+        if ($(e.target).hasClass("edit-playlist-button")) {
+            Session.set("editingPlaylistName", $(e.target).data("playlist"));
+        }
+    },
+    "click #add_playlist_video_submit": function() {
+        var id = $("#add_playlist_video").val();
+        var pp = Session.get("editingPlaylistName");
+        Meteor.call("addVideoToPrivatePlaylist", pp, id);
+        $("#add_playlist_video").val("");
+    },
+    "click .remove_playlist_button": function(e) {
+        var id = $(e.target).data("id");
+        Meteor.call("removeVideoFromPrivatePlaylist", Session.get("editingPlaylistName"), id);
+    },
+    "click #delete_playlist": function() {
+        Meteor.call("deletePrivatePlaylist", Session.get("editingPlaylistName"));
+        $("#edit_playlist_modal").closeModal();
+    },
+    "click #create_playlist_submit": function() {
+        var name = $("#create_playlist_name").val();
+        var displayName = $("#create_playlist_display_name").val();
+        Meteor.call("createPrivatePlaylist", name, displayName);
+        $("#create_playlist_modal").closeModal();
+        $("#create_playlist_name").val("");
+        $("#create_playlist_display_name").val("");
+    },
+    "click .select-playlist": function(e) {
+        e.preventDefault();
+        $("#edit_playlist_modal").closeModal();
+        var name = $(e.target).data("playlist");
+        Meteor.call("setPlaylistForPrivateRoom", Session.get("privateRoomName"), name);
+    }
+});
+
+Template.home.events({
+    "click #create_private_room_submit": function () {
+         var name = $("#create_private_room_name").val();
+         var displayName = $("#create_private_room_display_name").val();
+         var description = $("#create_private_room_description").val();
+         Meteor.call("createPrivateRoom", name, displayName, true, description);
+         $("#create_private_room_name").val("");
+         $("#create_private_room_display_name").val("");
+         $("#create_private_room_description").val("");
+        $("#create_private_room").closeModal();
     }
 });
 // Settings Template

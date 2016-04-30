@@ -194,7 +194,7 @@ Router.route("/private/:name", {
         var room = PrivateRooms.findOne({name: this.params.name});
         if (room !== undefined) {
             if ((room.private === true && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" ||
-                user.profile.rank === "moderator")) || room.private === false || (user !== undefined && user.profile !== undefined && room.allowed.includes(user.profile))) {
+                user.profile.rank === "moderator")) || room.private === false || (user !== undefined && user.profile !== undefined && room.allowed.includes(Meteor.userId())) || room.owner === Meteor.userId()) {
                 Session.set("type", this.params.type);
                 this.render("privateRoom");
             } else {

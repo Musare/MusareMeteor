@@ -4,18 +4,18 @@
             <div class="nav-wrapper teal accent-4">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/"><i class="material-icons">home</i></a></li>
-                    <li><a href="#add_song_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Request a song" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
-                    <li><a href="#report_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Flag a song" id="report-modal-button"><i class="material-icons">flag</i></a></li>
                     <li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
-                    {{#if isAdmin}}
-                        <li><a class='dropdown-button' data-activates='admin-dropdown'><i class="material-icons">control_point</i></a></li>
+                    {{#if isPrivateRoomOwner name}}
+                        <li><a class='dropdown-button' data-activates='control-dropdown'><i class="material-icons">control_point</i></a></li>
                     {{/if}}
                 </ul>
-                <span class="brand-logo center">{{privateRoomDisplayName}}</span>
+                <span class="brand-logo center">{{privateRoomDisplayName}} <small>(by {{privateRoomOwnerName}})</small></span>
                 <ul class="right hide-on-med-and-down">
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout" data-activates="users-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
+                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Allowed" id="allowed-slideout" data-activates="allowed-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
+                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlists" id="playlists-slideout" data-activates="playlists-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
                 </ul>
             </div>
         </nav>
@@ -53,7 +53,7 @@
     <!--Chat slideout-->
     <div id="chat-slide-out" class="side-nav room-slideout">
         <h5>Chat</h5>
-        <ul class="chat-ul">
+        <ul class="list-ul" id="chat-ul">
             {{#each globalChat}}
                 {{#emojione}}
                     <li class="chat-message" style="line-height: 30px">
@@ -88,14 +88,128 @@
             {{/each}}
         </ul>
     </div>
-    <!--Admin room controls-->
-    <ul id='admin-dropdown' style="background-color: #00bfa5 !important; display: none">
-        <li><a id="pause"><i class="material-icons">pause</i></a></li>
+
+    <div id="allowed-slide-out" class="side-nav room-slideout">
+        <h5>Allowed</h5>
+        <ul class="list-ul" id="allowed-ul">
+            {{#each allowed}}
+                <li>
+                    <a href=/u/{{this.name}} target="_blank">
+                        {{this.name}}
+                        {{#if isPrivateRoomOwner name}}
+                            <a href="#" class="right remove-allowed" data-user={{this.id}}>
+                                <i class="material-icons" style="line-height: 64px;">remove</i>
+                            </a>
+                        {{/if}}
+                    </a>
+                </li>
+            {{/each}}
+        </ul>
+        {{#if isPrivateRoomOwner name}}
+        <div>
+            <div class="row" id="chat-input-div">
+                <div class="input-field col s12">
+                    <input id="add-allowed" type="text">
+                    <label for="add-allowed">Add user</label>
+                </div>
+            </div>
+            <a id="add-allowed-submit" class="waves-effect waves-light btn">Add</a>
+        </div>
+        {{/if}}
+    </div>
+
+    <div id="playlists-slide-out" class="side-nav room-slideout">
+        <h5>Playlists</h5>
+        <ul class="list-ul" id="playlists-ul">
+            {{#each playlists}}
+                <li>
+                    <a href="#edit_playlist_modal" class="edit-playlist-button" data-playlist={{this.name}}>
+                        {{this.displayName}}
+                        <a href="#" class="right select-playlist" data-playlist={{this.name}}>
+                            {{#if isPrivateRoomOwner name}}
+                                {{#if isPlaylistSelected name this.name}}
+                                    <i class="material-icons" style="line-height: 64px;">check_circle</i>
+                                {{else}}
+                                    <i class="material-icons" data-playlist={{this.name}} style="line-height: 64px;" title="Select playlist">panorama_fish_eye</i>
+                                {{/if}}
+                            {{/if}}
+                        </a>
+                    </a>
+                </li>
+            {{/each}}
+        </ul>
+        <div>
+            <a id="add-playlist-modal-button" class="waves-effect waves-light btn" href="#create_playlist_modal">Create Playlist</a>
+        </div>
+    </div>
+
+    <!--room controls-->
+    <ul id='control-dropdown' style="background-color: #00bfa5 !important; display: none">
+        {{#if playing}}
+            <li><a id="pause"><i class="material-icons">pause</i></a></li>
+        {{else}}
+            <li><a id="play"><i class="material-icons">play_arrow</i></a></li>
+        {{/if}}
         <li><a id="skip"><i class="material-icons">skip_next</i></a></li>
-        <li><a id="shuffle"><i class="material-icons">shuffle</i></a></li>
-        <li><a id="lock"><i class="material-icons">lock_outline</i></a></li>
+        {{#if private}}
+            <li><a id="unlock"><i class="material-icons">lock_outline</i></a></li>
+        {{else}}
+            <li><a id="lock"><i class="material-icons">lock_open</i></a></li>
+        {{/if}}
     </ul>
+
+
+    <!-- Edit Playlist Modal -->
+    <div id="edit_playlist_modal" class="modal">
+        <div class="modal-content">
+            <h4>Editing: {{editingPlaylist.name}}</h4>
+            {{#each song in editingPlaylist.songs}}
+                <a href="https://youtube.com/watch?v={{song.id}}" target="_blank">{{song.title}}</a> <span class="red-text remove_playlist_button" data-id={{song.id}} style="cursor: pointer">remove</span><br>
+            {{/each}}
+            <div class="input-field">
+                <input id="add_playlist_video" type="text">
+                <label for="add_playlist_video">Video ID</label>
+            </div>
+            <button class="btn waves-effect waves-light" id="add_playlist_video_submit">Add video</button>
+            <button class="btn waves-effect waves-light right red" id="delete_playlist">Delete playlist</button>
+        </div>
+        <div class="divider"></div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn">Close</a>
+        </div>
+    </div>
+    <!-- Create Playlist Modal -->
+    <div id="create_playlist_modal" class="modal">
+        <div class="modal-content">
+            <h4>Create Modal</h4>
+            <div class="input-field">
+                <input id="create_playlist_name" type="text">
+                <label for="create_playlist_name">Name</label>
+            </div>
+            <div class="input-field">
+                <input id="create_playlist_display_name" type="text">
+                <label for="create_playlist_display_name">Display Name</label>
+            </div>
+            <button class="btn waves-effect waves-light" id="create_playlist_submit">Create</button>
+        </div>
+        <div class="divider"></div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn">Close</a>
+        </div>
+    </div>
     <script>
+        $(".edit-playlist-button").leanModal({
+            dismissible: true,
+            opacity: .5,
+            in_duration: 500,
+            out_duration: 200
+        });
+        $("#add-playlist-modal-button").leanModal({
+            dismissible: true,
+            opacity: .5,
+            in_duration: 500,
+            out_duration: 200
+        });
         $(".dropdown-button").dropdown({
             belowOrigin: true
         });
@@ -109,6 +223,15 @@
             edge: 'right'
         });
         $("#users-slideout").sideNav({
+            menuWidth: 350,
+            edge: 'right'
+        });
+
+        $("#allowed-slideout").sideNav({
+            menuWidth: 350,
+            edge: 'right'
+        });
+        $("#playlists-slideout").sideNav({
             menuWidth: 350,
             edge: 'right'
         });

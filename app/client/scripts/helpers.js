@@ -110,6 +110,20 @@ Template.home.helpers({
         var type = this.type;
         var userNum = Rooms.findOne({type: type}).users;
         return userNum;
+    },
+    currentPrivateSong: function () {
+        var name = this.name;
+        var room = PrivateRooms.findOne({name: name});
+        if (room !== undefined) {
+            return room.currentSong;
+        } else {
+            return false;
+        }
+    },
+    userPrivateNum: function () {
+        var name = this.name;
+        var userNum = PrivateRooms.findOne({name: name}).users;
+        return userNum;
     }
 });
 
@@ -521,6 +535,20 @@ Template.room.helpers({
 });
 
 Template.privateRoom.helpers({
+    privateRoomOwnerName: function() {
+        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        if (room !== undefined) {
+            return Meteor.users.findOne(room.owner).profile.username;
+        } else {
+            return "";
+        }
+    },
+    editingPlaylist: function() {
+        return PrivatePlaylists.findOne({owner: Meteor.userId(), name: Session.get("editingPlaylistName")});
+    },
+    isPlaylistSelected: function(roomName, playlistName) {
+        return PrivateRooms.findOne({name: roomName}).playlist === playlistName;
+    },
     globalChat: function () {
         Meteor.setTimeout(function () {
             var elem = document.getElementById('global-chat');
@@ -535,10 +563,27 @@ Template.privateRoom.helpers({
         var id = parts.pop().toLowerCase();
         return PrivateRooms.findOne({name: id}).displayName;
     },
+    name: function () {
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        return id;
+    },
     users: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
         return PrivateRooms.findOne({name: id}).users;
+    },
+    allowed: function () {
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        var arr = [];
+        PrivateRooms.findOne({name: id}).allowed.forEach(function(allowed) {
+            arr.push({name: Meteor.users.findOne(allowed).profile.username, id: allowed});
+        });
+        return arr;
+    },
+    playlists: function () {
+        return PrivatePlaylists.find({owner: Meteor.userId()});
     },
     title: function () {
         return Session.get("title");
@@ -550,23 +595,38 @@ Template.privateRoom.helpers({
         return Session.get("state") === "paused";
     },
     private: function () {
-        return 1;
-        //return Rooms.findOne({type: Session.get("type")}).private === true;
+        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        if (room !== undefined) {
+            return room.private;
+        } else {
+            return 1;
+        }
+    },
+    playing: function() {
+        return Session.get("state") === "playing";
     },
     currentSong: function(){
         return Session.get("currentSong");
     },
     votes: function () {
-        return PrivateRooms.findOne({name: Session.get("privateRoomName")}).votes;
+        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        if (room !== undefined) {
+            return room.votes;
+        } else {
+            return 0;
+        }
     },
     usersInRoom: function(){
         var userList = [];
-        var roomUserList = PrivateRooms.findOne({type: Session.get("privateRoomName")}).userList;
-        roomUserList.forEach(function(user){
-            if(userList.indexOf(user) === -1){
-                userList.push(user);
-            }
-        })
+        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        if (room !== undefined) {
+            var roomUserList = room.userList;
+            roomUserList.forEach(function (user) {
+                if (userList.indexOf(user) === -1) {
+                    userList.push(user);
+                }
+            })
+        }
         return userList;
     }
 });

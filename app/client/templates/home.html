@@ -2,6 +2,8 @@
     {{> header}}
     <main>
         {{> alerts}}
+            <h3 class="center-align">Official Rooms</h3>
+            <hr class="center-block" style="width: 99%">
             <div class="row">
                 {{#each rooms}}
                     {{#if private}}
@@ -51,6 +53,86 @@
                     {{/if}}
                 {{/each}}
             </div>
+            <h3 class="center-align">Private Rooms <a href="#create_private_room" id="create_private_room_modal_button"><i class="material-icons">add</i></a></h3>
+            <hr class="center-block" style="width: 99%">
+            <div class="row">
+                {{#each privateRooms}}
+                    {{#if private}}
+                        {{#if isAllowedInPrivateRoom name}}
+                            <div class="col s6 m4 l2 light-blue">
+                                <div class="card hoverable">
+                                    <div class="card-image waves-effect waves-block waves-light">
+                                        <a href=/private/{{name}}>
+                                        <img src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'>
+                                        <figcaption class="caption center-align">
+                                            <h5>{{currentPrivateSong.song.title}}</h5>
+                                        </figcaption>
+                                        </a>
+                                    </div>
+                                    <div class="card-content">
+                                        <span class="card-title grey-text text-darken-4">{{displayName}}</span><div><span class="user-num">{{userPrivateNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                        <p>{{roomDesc}}</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href=/private/{{name}} class="teal-text text-accent-4">Join Room</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{else}}
+                        <div class="col s6 m4 l2">
+                            <div class="card hoverable">
+                                <div class="card-image waves-effect waves-block waves-light">
+                                    <a href=/private/{{name}}>
+                                        <img src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'>
+                                        <figcaption class="caption center-align">
+                                            <h5>{{currentPrivateSong.song.title}}</h5>
+                                        </figcaption>
+                                    </a>
+                                </div>
+                                <div class="card-content">
+                                    <span class="card-title grey-text text-darken-4">{{display}}</span><div><span class="user-num">{{userPrivateNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                    <p>{{roomDesc}}</p>
+                                </div>
+                                <div class="card-action">
+                                    <a href=/private/{{name}} class="teal-text text-accent-4">Join Room</a>
+                                </div>
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/each}}
+            </div>
     </main>
     {{> footer}}
+
+    <div id="create_private_room" class="modal">
+        <div class="modal-content">
+            <h4>Create Modal</h4>
+            <div class="input-field">
+                <input id="create_private_room_name" type="text">
+                <label for="create_private_room_name">Name</label>
+            </div>
+            <div class="input-field">
+                <input id="create_private_room_display_name" type="text">
+                <label for="create_private_room_display_name">Display Name</label>
+            </div>
+            <div class="input-field">
+                <input id="create_private_room_description" type="text">
+                <label for="create_private_room_description">Description</label>
+            </div>
+            <button class="btn waves-effect waves-light" id="create_private_room_submit">Create</button>
+        </div>
+        <div class="divider"></div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn">Close</a>
+        </div>
+    </div>
+    <script>
+        $("#create_private_room_modal_button").leanModal({
+            dismissible: true,
+            opacity: .5,
+            in_duration: 500,
+            out_duration: 200
+        });
+    </script>
 </template>

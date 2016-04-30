@@ -344,7 +344,7 @@ hr{
     height: 50px;
 }
 
-#submit{
+#submit, #add-allowed-submit, #add-playlist-modal-button{
     color: white;
     height: 36px;
     line-height: 36px;

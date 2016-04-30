@@ -21,8 +21,11 @@ Deps.autorun(function() {
     Meteor.subscribe("songs");
     Meteor.subscribe("alerts");
     Meteor.subscribe("rooms");
+    Meteor.subscribe("private_rooms");
+    Meteor.subscribe("private_playlists");
     Meteor.subscribe("news");
     Meteor.subscribe("userData", Meteor.userId());
+    Meteor.subscribe("usernames");
 });
 
 Handlebars.registerHelper("isAdmin", function(argument){
@@ -35,6 +38,30 @@ Handlebars.registerHelper("isAdmin", function(argument){
 
 Handlebars.registerHelper("isModerator", function(argument){
     if (Meteor.user() && Meteor.user().profile && (Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator")) {
+        return true;
+    } else {
+        return false;
+    }
+});
+
+Handlebars.registerHelper("isAllowedInPrivateRoom", function(name){
+    var room = PrivateRooms.findOne({name: name});
+    if (Meteor.user() &&
+        Meteor.user().profile &&
+        room &&
+        ((Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator") || (room.allowed.indexOf(Meteor.userId()) !== -1 || room.owner === Meteor.userId()))) {
+        return true;
+    } else {
+        return false;
+    }
+});
+
+Handlebars.registerHelper("isPrivateRoomOwner", function(name){
+    var room = PrivateRooms.findOne({name: name});
+    if (Meteor.user() &&
+        Meteor.user().profile &&
+        room &&
+        ((Meteor.user().profile.rank === "admin" || Meteor.user().profile.rank === "moderator") || room.owner === Meteor.userId())) {
         return true;
     } else {
         return false;
@@ -55,6 +82,11 @@ Handlebars.registerHelper("rooms", function(){
     return Rooms.find({});
 });
 
+Handlebars.registerHelper("privateRooms", function(){
+    return PrivateRooms.find({});
+});
+
+
 Handlebars.registerHelper("songs", function(){
     return Songs.find({});
 });
@@ -65,6 +97,10 @@ Handlebars.registerHelper('active', function(path) {
 
 Handlebars.registerHelper('isLoggedIn', function(path) {
     return Meteor.userId();
+});
+
+Handlebars.registerHelper('getUsernameFromId', function(id) {
+    return Meteor.users.findOne(id).profile.username;
 });
 
 UI.registerHelper("formatTime", function(seconds) {

@@ -166,7 +166,7 @@ function createPrivateRoom(name, display, private, desc, owner) {
             displayName: display,
             private: private,
             roomDesc: desc,
-            owner: owner
+            owner: owner,
         }, function (err) {
             if (err) {
                 throw err;
@@ -530,10 +530,24 @@ function PrivateStation(name) {
         if (PrivatePlaylists.findOne({name: plName, owner: _room.owner}) !== undefined) {
             PrivateRooms.update({name: name}, {$set: {"playlist": plName}});
             _room.playlist = plName;
-            playlist = PrivatePlaylists({name: plName, owner: _room.owner});
+            playlist = PrivatePlaylists.findOne({name: plName, owner: _room.owner});
             songs = playlist.songs;
 
             currentSong = 0;
+        }
+    };
+
+    this.addAllowed = function (allowed) {
+        if (_room.allowed.indexOf(allowed) === -1 && _room.owner !== allowed) {
+            PrivateRooms.update({name: name}, {$push: {allowed: allowed}});
+            _room = PrivateRooms.findOne({name: name});
+        }
+    };
+
+    this.removeAllowed = function (allowed) {
+        if (_room.allowed.indexOf(allowed) !== -1) {
+            PrivateRooms.update({name: name}, {$pull: {allowed: allowed}});
+            _room = PrivateRooms.findOne({name: name});
         }
     };
 
@@ -616,6 +630,28 @@ function getSongDuration(query, artistName) {
         }
     }
     return 0;
+}
+
+function getSongDataYT(id) {
+    var res = Meteor.http.get('https://www.googleapis.com/youtube/v3/videos?id=' + encodeURIComponent(id) + '&part=snippet,contentDetails&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY');
+    if (res.data !== undefined && res.data.items.length !== 0) {
+        var dur = res.data.items[0].contentDetails.duration;
+        dur = dur.replace("PT", "");
+        var durInSec = 0;
+        dur = dur.replace(/([\d]*)M/, function(v, v2) {
+            v2 = Number(v2);
+            durInSec = (v2 * 60)
+            return "";
+        });
+        dur = dur.replace(/([\d]*)S/, function(v, v2) {
+            v2 = Number(v2);
+            durInSec += v2;
+            return "";
+        });
+        return {duration: durInSec, title: res.data.items[0].snippet.title};
+    } else {
+        return 0;
+    }
 }
 
 function getSongAlbumArt(query, artistName) {
@@ -710,20 +746,19 @@ Meteor.publish("news", function () {
 
 Meteor.publish("userData", function (userId) {
     if (userId !== undefined) {
-        return Meteor.users.find(userId, {fields: {"services.github.username": 1, "punishments": 1}})
+        return Meteor.users.find(userId, {fields: {"services.github.username": 1, "punishments": 1}});
     } else {
         return undefined;
     }
 });
 
+Meteor.publish("usernames", function () {
+    return Meteor.users.find({}, {fields: {"profile.username": 1}})
+});
+
 Meteor.publish("playlists", function () {
     return Playlists.find({})
 });
-
-Meteor.publish("private_playlists", function () {
-    return PrivatePlaylists.find({})
-});
-
 
 Meteor.publish("rooms", function () {
     return Rooms.find({});
@@ -731,6 +766,14 @@ Meteor.publish("rooms", function () {
 
 Meteor.publish("private_rooms", function () {
     return PrivateRooms.find({});
+});
+
+Meteor.publish("private_playlists", function () {
+    if (this.userId !== undefined) {
+        return PrivatePlaylists.find({owner: this.userId});
+    } else {
+        return null;
+    }
 });
 
 Meteor.publish("songs", function () {
@@ -793,9 +836,8 @@ Meteor.publish("feedback", function(){
 })
 
 function isPrivateRoomOwner(name) {
-    var userData = Meteor.users.find(Meteor.userId());
     var room = PrivateRooms.findOne({name: name});
-    if (Meteor.userId() && userData.count !== 0 && room !== undefined && userData.fetch()[0].profile.username === room.owner) {
+    if (Meteor.userId() && room !== undefined && Meteor.userId() === room.owner) {
         return true;
     } else {
         return false;
@@ -851,6 +893,68 @@ function isMuted() {
 }
 
 Meteor.methods({
+    addVideoToPrivatePlaylist: function(name, id) {
+        if (Meteor.userId() && !isBanned()) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                var copy = false;
+                pl.songs.forEach(function(song) {
+                    if (song.id === id) {
+                        copy = true;
+                    }
+                });
+                if (!copy) {
+                    console.log(getSongDataYT(id));
+                    var data = getSongDataYT(id);
+                    data.id = id;
+                    PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$push: {songs: data}});
+                } else {
+                    throw new Meteor.Error(500, "Video is already in playlist.");
+                }
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    removeVideoFromPrivatePlaylist: function(name, id) {
+        if (Meteor.userId() && !isBanned()) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                var copy = false;
+                var data;
+                pl.songs.forEach(function(song) {
+                    if (song.id === id) {
+                        data = song;
+                        copy = true;
+                    }
+                });
+                if (copy) {
+                    PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$pull: {songs: data}});
+                } else {
+                    throw new Meteor.Error(500, "Video is not in playlist.");
+                }
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    deletePrivatePlaylist: function(name) {
+        if (Meteor.userId() && !isBanned()) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                PrivatePlaylists.remove({owner: Meteor.userId(), name: name});
+                Deleted.insert({type: "PrivatePlaylist", data: pl});
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     activateAlert: function(id) {
         if (isAdmin() && !isBanned()) {
             Alerts.update(id, {$set: {active: true}});
@@ -909,7 +1013,7 @@ Meteor.methods({
         }
     },
     lockPrivateRoom: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner()) && !isBanned()) {
+        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
             getPrivateStation(name, function (station) {
                 station.lock();
             });
@@ -918,7 +1022,7 @@ Meteor.methods({
         }
     },
     unlockPrivateRoom: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner) && !isBanned()) {
+        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
             getPrivateStation(name, function (station) {
                 station.unlock();
             });
@@ -1135,6 +1239,22 @@ Meteor.methods({
             })
         }
     },
+    votePrivateSkip: function (name) {
+        if (Meteor.userId() && !isBanned()) {
+            var user = Meteor.user();
+            getPrivateStation(name, function (station) {
+                if (station.voted.indexOf(user.profile.username) === -1) {
+                    station.voted.push(user.profile.username);
+                    PrivateRooms.update({name: name}, {$set: {votes: station.voted.length}});
+                    if (station.voted.length === 3) {
+                        station.skipSong();
+                    }
+                } else {
+                    throw new Meteor.Error(401, "Already voted.");
+                }
+            })
+        }
+    },
     submitReport: function (room, reportData) {
         if (Meteor.userId() && !isBanned()) {
             room = room.toLowerCase();
@@ -1214,7 +1334,7 @@ Meteor.methods({
         }
     },
     skipPrivateSong: function (name) {
-        if ((isAdmin() || isRoomOwner()) && !isBanned()) {
+        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
             getPrivateStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(404, "Station not found.");
@@ -1225,7 +1345,7 @@ Meteor.methods({
         }
     },
     pausePrivateRoom: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner()) && !isBanned()) {
+        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
             getPrivateStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
@@ -1238,12 +1358,53 @@ Meteor.methods({
         }
     },
     resumePrivateRoom: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner()) && !isBanned()) {
+        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
             getPrivateStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
                     station.resumeRoom();
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    addAllowedToPrivateRoom: function (name, allowed) {
+        if (isPrivateRoomOwner(name) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(403, "Room doesn't exist.");
+                } else {
+                    allowed = allowed.toLowerCase();
+                    allowed = Meteor.users.findOne({"profile.usernameL": allowed})._id;
+                    station.addAllowed(allowed);
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    removeAllowedFromPrivateRoom: function (name, allowed) {
+        if (isPrivateRoomOwner(name) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(403, "Room doesn't exist.");
+                } else {
+                    station.removeAllowed(allowed);
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    setPlaylistForPrivateRoom: function (name, playlist) {
+        if ((isPrivateRoomOwner(name)) && !isBanned()) {
+            getPrivateStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(403, "Room doesn't exist.");
+                } else {
+                    station.setPlaylist(playlist);
                 }
             });
         } else {
@@ -1449,15 +1610,15 @@ Meteor.methods({
     },
     createPrivateRoom: function (name, display, private, desc) {
         if (Meteor.userId() && !isBanned()) {
-            createPrivateRoom(name, display, private, desc, Meteor.user().profile.username);
+            createPrivateRoom(name, display, private, desc, Meteor.userId());
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
     createPrivatePlaylist: function (name, display) {
         if (Meteor.userId() && !isBanned()) {
-            if (PrivatePlaylists.findOne({name: name, owner: Meteor.user().profile.username}) === undefined) {
-                PrivatePlaylists.insert({name: name, displayName: display, songs: [{id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}], owner: Meteor.user().profile.username});
+            if (PrivatePlaylists.findOne({name: name, owner: Meteor.userId()}) === undefined) {
+                PrivatePlaylists.insert({name: name, displayName: display, songs: [{id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}], owner: Meteor.userId()});
             }
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
