@@ -1,3 +1,5 @@
+#Musare is now being developed by [CosmsosNode](https://cosmosnode.com)
+
 ##Visit the official website!
 
 ### https://musare.com/
