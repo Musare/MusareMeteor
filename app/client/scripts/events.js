@@ -1771,6 +1771,14 @@ Template.privateRoom.events({
         $("#create_playlist_modal").closeModal();
         $("#create_playlist_name").val("");
         $("#create_playlist_display_name").val("");
+        setTimeout(function() {
+            $(".edit-playlist-button").leanModal({
+                dismissible: true,
+                opacity: .5,
+                in_duration: 500,
+                out_duration: 200
+            });
+        }, 500);
     },
     "click .select-playlist": function(e) {
         e.preventDefault();
