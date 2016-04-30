@@ -571,7 +571,7 @@ Template.privateRoom.helpers({
     users: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
-        return PrivateRooms.findOne({name: id}).users;
+        return PrivateRooms.findOne({name: id}).userList.length;
     },
     allowed: function () {
         var parts = location.href.split('/');
