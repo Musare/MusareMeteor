@@ -51,3 +51,5 @@ Try these methods first before reporting an issue:
 This did not fix your issue? or you're still not satisfied? Just create a issue ticket at:
 https://github.com/AkiraLaine/musare/issues
 Be sure to be as detailed as possible!
+
+We are protected by [![CLA assistant](https://cla-assistant.io/readme/badge/Musare/Musare)](https://cla-assistant.io/Musare/Musare) so if you want to contribute please accept these terms, if you do not your pull request will be denied.
