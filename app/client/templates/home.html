@@ -2,6 +2,8 @@
     {{> header}}
     <main>
         {{> alerts}}
+            <div class="row">
+            <div class="col m10 offset-m1">
             <h3 class="center-align">Official Rooms</h3>
             <hr class="center-block" style="width: 99%">
             <div class="row">
@@ -12,7 +14,7 @@
                                 <div class="card hoverable">
                                     <div class="card-image waves-effect waves-block waves-light">
                                         <a href=/{{type}}>
-                                        <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
+                                        <img onerror="this.src='https://pixabay.com/static/uploads/photo/2015/12/09/22/09/music-1085655_960_720.png'" src={{currentSong.song.img}}>
                                         <figcaption class="caption center-align">
                                             <h5>{{currentSong.song.title}}</h5>
                                             <h5>{{currentSong.song.artist}}</h5>
@@ -34,7 +36,7 @@
                             <div class="card hoverable">
                                 <div class="card-image waves-effect waves-block waves-light">
                                     <a href=/{{type}}>
-                                    <img onerror="this.src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'" src={{currentSong.song.img}}>
+                                    <img onerror="this.src='https://pixabay.com/static/uploads/photo/2015/12/09/22/09/music-1085655_960_720.png'" src={{currentSong.song.img}}>
                                     <figcaption class="caption center-align">
                                         <h5>{{currentSong.song.title}}</h5>
                                         <h5>{{currentSong.song.artist}}</h5>
@@ -63,7 +65,7 @@
                                 <div class="card hoverable">
                                     <div class="card-image waves-effect waves-block waves-light">
                                         <a href=/private/{{name}}>
-                                        <img src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'>
+                                        <img src='https://pixabay.com/static/uploads/photo/2015/12/09/22/09/music-1085655_960_720.png'>
                                         <figcaption class="caption center-align">
                                             <h5>{{currentPrivateSong.song.title}}</h5>
                                         </figcaption>
@@ -84,7 +86,7 @@
                             <div class="card hoverable">
                                 <div class="card-image waves-effect waves-block waves-light">
                                     <a href=/private/{{name}}>
-                                        <img src='http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg'>
+                                        <img src='https://pixabay.com/static/uploads/photo/2015/12/09/22/09/music-1085655_960_720.png'>
                                         <figcaption class="caption center-align">
                                             <h5>{{currentPrivateSong.song.title}}</h5>
                                         </figcaption>
@@ -101,6 +103,8 @@
                         </div>
                     {{/if}}
                 {{/each}}
+            </div>
+            </div>
             </div>
     </main>
     {{> footer}}
