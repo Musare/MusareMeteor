@@ -5,7 +5,7 @@ Meteor.startup(function() {
 
     Avatar.setOptions({
         fallbackType: "initials",
-        defaultImageUrl: "http://static.boredpanda.com/blog/wp-content/uploads/2014/04/amazing-fox-photos-182.jpg",
+        defaultImageUrl: "/notes.png",
         generateCSS: true,
         imageSizes: {
             'header': 40
