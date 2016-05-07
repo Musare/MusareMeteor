@@ -1,7 +1,7 @@
 <template name="room">
     <header>
         <nav>
-            <div class="nav-wrapper teal accent-4">
+            <div class="nav-wrapper light-blue accent-4">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/"><i class="material-icons">home</i></a></li>
                     <li><a href="#add_song_modal" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Request a song" id="add-song-modal-button"><i class="material-icons">playlist_add</i></a></li>
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                             <div class="seeker-bar-container white" id="preview-progress">
-                                <div class="seeker-bar teal" style="width: 0%"></div>
+                                <div class="seeker-bar light-blue" style="width: 0%"></div>
                             </div>
                         </div>
                         <img alt="Not loading" class="responsive-img song-img col s12 m12 l4"
@@ -100,7 +100,7 @@
         </ul>
     </div>
     <!--Admin room controls-->
-    <ul id='admin-dropdown' style="background-color: #00bfa5 !important; display: none">
+    <ul id='admin-dropdown' style="background-color: #26a69a !important; display: none">
         <li><a id="pause"><i class="material-icons">pause</i></a></li>
         <li><a id="skip"><i class="material-icons">skip_next</i></a></li>
         <li><a id="shuffle"><i class="material-icons">shuffle</i></a></li>
@@ -146,18 +146,18 @@
                                 </div>
                                 <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                                     <i class="material-icons prefix">vpn_key</i>
-                                    <label for="id" class="teal-text">Song ID</label>
+                                    <label for="id" class="light-blue-text">Song ID</label>
                                     <input class="validate" name="id" id="id" type="text" pattern=".{11}"/>
                                 </div>
                                 <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                                     <i class="material-icons prefix">person</i>
-                                    <label for="artist" class="teal-text">Song Artist</label>
+                                    <label for="artist" class="light-blue-text">Song Artist</label>
                                     <input class="validate" name="artist" id="artist" aria-required="true"
                                            type="text"/>
                                 </div>
                                 <div class="input-field col l8 m8 s12 offset-l2 offset-m2">
                                     <i class="material-icons prefix">subject</i>
-                                    <label for="title" class="teal-text">Song Title</label>
+                                    <label for="title" class="light-blue-text">Song Title</label>
                                     <input class="validate required" name="title" id="title" type="text"/>
                                 </div>
                                 <button type="button" id="add-song-button"
@@ -179,7 +179,7 @@
                                 {{#if singleVideoResultsActive}}
                                     <div id="single-video-results">
                                         <div style="overflow: auto; height: 30vh; margin-top: 1rem;">
-                                            <ul class="collection teal-text">
+                                            <ul class="collection light-blue-text">
                                                 {{#each result in singleVideoResults}}
                                                     <li class="collection-item avatar youtube-search-result-li">
                                                         <img src="{{result.image}}"
@@ -235,7 +235,7 @@
                                     $('#genres_pl').material_select();
                                 </script>
                                 <div id="import-playlist-results">
-                                    <ul class="collection teal-text">
+                                    <ul class="collection light-blue-text">
                                         {{#each result in importPlaylistVideos}}
                                             <li class="collection-item avatar youtube-search-result-li">
                                                 <img src="{{result.image}}"
