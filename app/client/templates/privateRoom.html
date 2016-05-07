@@ -30,22 +30,18 @@
                     </div>
                 </div>
                 <div class="col s12 m10 l8 offset-l2 offset-m1">
-                    <div class="row">
-                        <div class="col s12 m12 l8">
-                            <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span></h4>
-                            <h3>{{{title}}}</h3>
-                            <div class="row">
-                                <form action="#" class="left col s4 m4 l4">
-                                    <p class="range-field" style="margin-top: 0">
-                                        <input type="range" id="volume_slider" min="0" max="100"/>
-                                    </p>
-                                </form>
-                            </div>
-                            <div class="seeker-bar-container white" id="preview-progress">
-                                <div class="seeker-bar light-blue" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
+                  <h4 id="time-display"><span id="time-elapsed"></span> / <span id="time-total"></span></h4>
+                  <h3>{{{title}}}</h3>
+                  <div class="row">
+                      <form action="#" class="left col s4 m4 l4">
+                          <p class="range-field" style="margin-top: 0">
+                              <input type="range" id="volume_slider" min="0" max="100"/>
+                          </p>
+                      </form>
+                  </div>
+                  <div class="seeker-bar-container white" id="preview-progress">
+                      <div class="seeker-bar light-blue" style="width: 0%"></div>
+                  </div>
                 </div>
             </div>
         </div>
@@ -144,7 +140,7 @@
     </div>
 
     <!--room controls-->
-    <ul id='control-dropdown' style="background-color: #00bfa5 !important; display: none">
+    <ul id='control-dropdown' style="background-color: rgb(3, 169, 244) !important; display: none">
         {{#if playing}}
             <li><a id="pause"><i class="material-icons">pause</i></a></li>
         {{else}}

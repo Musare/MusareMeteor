@@ -325,7 +325,7 @@ input[type="range"] + .thumb {
 
 .room-slideout h5{
     text-align: center;
-    background-color: #1565c0 !important;
+    background-color: rgb(3, 169, 244) !important;
     margin: 0;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -431,3 +431,41 @@ input[type="range"] + .thumb {
   background-color: #1565c0;
 }
 hr { border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0)); }
+
+.secondary-content {
+    float: right;
+    color: rgb(3, 169, 244);
+}
+
+input:focus:not([type]):not([readonly]) + label, input[type="text"]:focus:not([readonly]) + label, input[type="password"]:focus:not([readonly]) + label, input[type="email"]:focus:not([readonly]) + label, input[type="url"]:focus:not([readonly]) + label, input[type="time"]:focus:not([readonly]) + label, input[type="date"]:focus:not([readonly]) + label, input[type="datetime-local"]:focus:not([readonly]) + label, input[type="tel"]:focus:not([readonly]) + label, input[type="number"]:focus:not([readonly]) + label, input[type="search"]:focus:not([readonly]) + label, textarea.materialize-textarea:focus:not([readonly]) + label {
+	color: rgb(3, 169, 244);
+}
+
+input:not([type]), input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="time"], input[type="date"], input[type="datetime-local"], input[type="tel"], input[type="number"], input[type="search"], textarea.materialize-textarea {
+	background-color: transparent;
+	border: 1px;
+  border-bottom: 1px solid rgb(3, 169, 244) !important;
+  box-shadow: 0 1px 0 0 white !important;
+	border-radius: 0;
+	outline: none;
+	height: 3rem;
+	width: 100%;
+	font-size: 1rem;
+	margin: 0 0 15px 0;
+	padding: 0;
+	box-shadow: none;
+	box-sizing: content-box;
+	transition: all .3s;
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+	font-size: 16px;
+	color: rgb(3, 169, 244);
+	display: block;
+	line-height: 22px;
+	padding: 14px 16px;
+}
+
+.input-field .prefix.active {
+	color: white;
+}
