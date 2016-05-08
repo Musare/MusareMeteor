@@ -2,8 +2,7 @@
     {{> header}}
     <main>
         {{> alerts}}
-            <div class="row">
-            <div class="col m10 offset-m1">
+            <div style="margin-left: 5%;margin-right: 5%;">
             <h3 class="center-align">Official Rooms</h3>
             <hr class="center-block" style="width: 99%">
             <div class="row">
@@ -14,7 +13,7 @@
                                 <div class="card hoverable red white-text">
                                     <div class="card-image waves-effect waves-block waves-light">
                                         <a href=/{{type}}>
-                                        <img onerror="this.src='/notes.png'" src={{currentSong.song.img}}>
+                                        <img onerror="this.src='/notes.png'" src={{currentSong.song.img}} style="width: 100%; height: auto;">
                                         <figcaption class="caption center-align">
                                             <h5>{{currentSong.song.title}}</h5>
                                             <h5>{{currentSong.song.artist}}</h5>
@@ -103,7 +102,6 @@
                         </div>
                     {{/if}}
                 {{/each}}
-            </div>
             </div>
             </div>
     </main>
