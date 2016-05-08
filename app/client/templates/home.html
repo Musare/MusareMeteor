@@ -9,7 +9,7 @@
                 {{#each rooms}}
                     {{#if private}}
                         {{#if isModerator}}
-                            <div class="col m4 l2">
+                            <div class="col s12 m6 l3">
                                 <div class="card hoverable red white-text">
                                     <div class="card-image waves-effect waves-block waves-light">
                                         <a href=/{{type}}>
@@ -31,7 +31,7 @@
                             </div>
                         {{/if}}
                     {{else}}
-                        <div class="col m4 l2">
+                        <div class="col s12 m6 l3">
                             <div class="card hoverable">
                                 <div class="card-image waves-effect waves-block waves-light">
                                     <a href=/{{type}}>
@@ -60,7 +60,7 @@
                 {{#each privateRooms}}
                     {{#if private}}
                         {{#if isAllowedInPrivateRoom name}}
-                            <div class="col m4 l2">
+                            <div class="col s12 m6 l3">
                                 <div class="card hoverable light-blue white-text">
                                     <div class="card-image waves-effect waves-block waves-light">
                                         <a href=/private/{{name}}>
@@ -81,7 +81,7 @@
                             </div>
                         {{/if}}
                     {{else}}
-                        <div class="col m4 l2">
+                        <div class="col s12 m6 l3">
                             <div class="card hoverable">
                                 <div class="card-image waves-effect waves-block waves-light">
                                     <a href=/private/{{name}}>
