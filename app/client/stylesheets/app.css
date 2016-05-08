@@ -469,3 +469,7 @@ input:not([type]), input[type="text"], input[type="password"], input[type="email
 .input-field .prefix.active {
 	color: white;
 }
+[type="checkbox"]:checked+label:before {
+    border-right-color: rgb(3, 169, 244) !important;
+    border-bottom-color: rgb(3, 169, 244) !important;
+}
