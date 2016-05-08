@@ -473,3 +473,11 @@ input:not([type]), input[type="text"], input[type="password"], input[type="email
     border-right-color: rgb(3, 169, 244) !important;
     border-bottom-color: rgb(3, 169, 244) !important;
 }
+
+input[type=range]+.thumb {
+    background-color: rgb(3, 169, 244) !important;
+}
+
+input[type=range]+.thumb .value {
+    color: rgb(3, 169, 244) !important;
+}
