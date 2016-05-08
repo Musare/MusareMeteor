@@ -479,5 +479,16 @@ input[type=range]+.thumb {
 }
 
 input[type=range]+.thumb .value {
-    color: rgb(3, 169, 244) !important;
+    color: white !important;
+}
+input[type=range]::-webkit-slider-thumb {
+  background: rgb(3, 169, 244);
+}
+
+input[type=range]::-moz-range-thumb {
+  background: rgb(3, 169, 244);
+}
+
+input[type=range]::-ms-thumb {
+  background: rgb(3, 169, 244);
 }
