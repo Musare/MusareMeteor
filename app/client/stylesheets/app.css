@@ -333,10 +333,8 @@ input[type="range"] + .thumb {
 }
 
 .chat-ul{
-    height: 100%;
+    height: calc(100% - 164px);
     overflow-y: scroll;
-    display: table;
-    width: 100%;
 }
 
 .chat-message:hover{
@@ -350,11 +348,6 @@ input[type="range"] + .thumb {
 .chat-message a{
     width: 50px;
     height: 50px;
-    display: block;
-}
-
-.chat-message li{
-    display: table-cell;
 }
 
 #submit, #add-allowed-submit, #add-playlist-modal-button{
