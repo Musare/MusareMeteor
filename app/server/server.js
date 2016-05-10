@@ -1119,7 +1119,8 @@ Meteor.methods({
             var time = new Date();
             var rawrank = user.profile.rank;
             var username = user.profile.username;
-            var profanity = false
+            var profanity = false;
+            message = htmlEntities(message);
             if (!message.replace(/\s/g, "").length > 0) {
                 throw new Meteor.Error(406, "Message length cannot be 0.");
             }
@@ -1441,6 +1442,7 @@ Meteor.methods({
                 }
                 delete data.anonymous;
                 data.time =  new Date();
+                data.content = htmlEntities(data.content);
                 News.insert(data, function(err, res) {
                     if (err) {
                         console.log(err);
@@ -1745,3 +1747,7 @@ Meteor.setInterval(function () {
 Meteor.users.after.insert(function (err, user) {
     Accounts.sendVerificationEmail(user._id);
 });
+
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}

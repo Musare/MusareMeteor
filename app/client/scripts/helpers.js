@@ -228,7 +228,12 @@ Template.queues.helpers({
 
 Template.news.helpers({
     articles: function() {
-        return News.find().fetch().reverse();
+        var articles =  News.find().fetch().reverse();
+        articles = articles.map(function(article) {
+            article.content = replaceURLWithHTMLLinks(article.content);
+            return article;
+        });
+        return articles;
     }
 });
 
@@ -347,7 +352,12 @@ Template.room.helpers({
                 elem.scrollTop = elem.scrollHeight;
             }
         }, 100);
-        return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
+        var messages = Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
+        messages = messages.map(function(message) {
+            message.message = replaceURLWithHTMLLinks(message.message);
+            return message;
+        });
+        return messages;
     },
     likes: function () {
         var playlist = Songs.find({"genres": Session.get("type")}).fetch();
@@ -556,7 +566,12 @@ Template.privateRoom.helpers({
                 elem.scrollTop = elem.scrollHeight;
             }
         }, 100);
-        return Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
+        var messages = Chat.find({type: "global"}, {sort: {time: -1}, limit: 50}).fetch().reverse();
+        messages = messages.map(function(message) {
+            message.message = replaceURLWithHTMLLinks(message.message);
+            return message;
+        });
+        return messages;
     },
     privateRoomDisplayName: function () {
         var parts = location.href.split('/');
@@ -640,3 +655,31 @@ Template.settings.helpers({
         }
     }
 });
+
+function replaceURLWithHTMLLinks(text) {
+    var re = /(\(.*?)?\b((?:https?|ftp|file):\/\/[-a-z0-9+&@#\/%?=~_()|!:,.;]*[-a-z0-9+&@#\/%=~_()|])/ig;
+    return text.replace(re, function(match, lParens, url) {
+        var rParens = '';
+        lParens = lParens || '';
+
+        // Try to strip the same number of right parens from url
+        // as there are left parens.  Here, lParenCounter must be
+        // a RegExp object.  You cannot use a literal
+        //     while (/\(/g.exec(lParens)) { ... }
+        // because an object is needed to store the lastIndex state.
+        var lParenCounter = /\(/g;
+        while (lParenCounter.exec(lParens)) {
+            var m;
+            // We want m[1] to be greedy, unless a period precedes the
+            // right parenthesis.  These tests cannot be simplified as
+            //     /(.*)(\.?\).*)/.exec(url)
+            // because if (.*) is greedy then \.? never gets a chance.
+            if (m = /(.*)(\.\).*)/.exec(url) ||
+                    /(.*)(\).*)/.exec(url)) {
+                url = m[1];
+                rParens = m[2] + rParens;
+            }
+        }
+        return lParens + "<a style='font-size: 18px; padding: 0; display: inline;' target='_blank' href='" + url + "'>" + url + "</a>" + rParens;
+    });
+}
