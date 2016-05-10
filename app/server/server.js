@@ -421,7 +421,7 @@ function PrivateStation(name) {
 
     var song = songs[songs.indexOf(currentId)];
     if (song === undefined) {
-        song = {song: {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}, started: 0};
+        song = {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"};
     }
     var res = PrivateRooms.update({name: name}, {
         $set: {
@@ -436,6 +436,10 @@ function PrivateStation(name) {
         PrivateRooms.update({name: name}, {$set: {votes: 0}});
         playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
         if (playlist === undefined) {
+            playlist = default_private_playlist;
+        }
+        if (playlist !== undefined && playlist.songs.length === 0) {
+            PrivateRooms.update({name: name}, {$unset: {"playlist": 1}});
             playlist = default_private_playlist;
         }
         songs = playlist.songs;
