@@ -1107,6 +1107,7 @@ Meteor.methods({
     addAlert: function (description) {
         if (isAdmin()) {
             var username = Meteor.user().profile.username;
+            description = htmlEntities(description);
             Alerts.insert({description: description, active: true, createdBy: username});
             return true;
         } else {
