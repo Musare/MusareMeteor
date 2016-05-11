@@ -152,9 +152,30 @@
         {{else}}
             <li><a id="lock"><i class="material-icons">lock_open</i></a></li>
         {{/if}}
+        <li><a id="edit_room" href="#edit_room_modal"><i class="material-icons">mode_edit</i></a></li>
     </ul>
 
 
+    <!-- Edit Room Modal -->
+    <div id="edit_room_modal" class="modal">
+        <div class="modal-content">
+            <h4>Edit Room</h4>
+            <div class="input-field">
+                <input id="edit_room_description" value={{room.roomDesc}} type="text">
+                <label for="edit_room_description">Description</label>
+            </div>
+            <div class="input-field">
+                <input id="edit_room_display" value={{room.displayName}} type="text">
+                <label for="edit_room_display">Display Name</label>
+            </div>
+            <button class="btn waves-effect waves-light" id="save_edit_room_changes">Save Changes</button>
+            <button class="btn waves-effect waves-light right red" id="delete_room">Delete Room</button>
+        </div>
+        <div class="divider"></div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn">Close</a>
+        </div>
+    </div>
     <!-- Edit Playlist Modal -->
     <div id="edit_playlist_modal" class="modal">
         <div class="modal-content">
@@ -201,6 +222,12 @@
             out_duration: 200
         });
         $("#add-playlist-modal-button").leanModal({
+            dismissible: true,
+            opacity: .5,
+            in_duration: 500,
+            out_duration: 200
+        });
+        $("#edit_room").leanModal({
             dismissible: true,
             opacity: .5,
             in_duration: 500,

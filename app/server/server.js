@@ -392,13 +392,16 @@ function PrivateStation(name) {
                 usersObj[username]++;
             }
             PrivateRooms.update({name: name}, {$push: {userList: username}});
-            this.onStop(function() {
+            this.onStop(function () {
                 usersObj[username]--;
-                var list = PrivateRooms.findOne({name: name}).userList;
-                var index = list.indexOf(username);
-                if (index >= 0) {
-                    list.splice(index, 1);
-                    PrivateRooms.update({name: name}, {$set: {userList: list}});
+                var room = PrivateRooms.findOne({name: name});
+                if (room !== undefined) {
+                    var list = room.userList;
+                    var index = list.indexOf(username);
+                    if (index >= 0) {
+                        list.splice(index, 1);
+                        PrivateRooms.update({name: name}, {$set: {userList: list}});
+                    }
                 }
             });
         }
@@ -407,7 +410,10 @@ function PrivateStation(name) {
     var self = this;
     var startedAt = Date.now();
     var _room = PrivateRooms.findOne({name: name});
-    var playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
+    var playlist;
+    if (_room !== undefined) {
+        playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
+    }
     if (playlist === undefined) {
         playlist = default_private_playlist;
     }
@@ -895,6 +901,31 @@ function isMuted() {
 }
 
 Meteor.methods({
+    deletePrivateRoom: function(roomName) {
+        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
+            PrivateRooms.remove({name: roomName});
+            getPrivateStation(roomName, function(room) {
+                room.cancelTimer();
+                delete privateStations[privateStations.indexOf(room)];
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    changePrivateRoomDescription: function(roomName, newDescription) {
+        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
+            PrivateRooms.update({name: roomName}, {$set: {roomDesc: newDescription}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    changePrivateRoomDisplayName: function(roomName, newDisplayName) {
+        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
+            PrivateRooms.update({name: roomName}, {$set: {displayName: newDisplayName}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     addVideoToPrivatePlaylist: function(name, id) {
         if (Meteor.userId() && !isBanned()) {
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});

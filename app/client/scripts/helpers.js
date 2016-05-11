@@ -636,7 +636,7 @@ Template.privateRoom.helpers({
             return 0;
         }
     },
-    usersInRoom: function(){
+    usersInRoom: function() {
         var userList = [];
         var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
         if (room !== undefined) {
@@ -648,6 +648,14 @@ Template.privateRoom.helpers({
             })
         }
         return userList;
+    },
+    room: function() {
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        setTimeout(function() {
+            Materialize.updateTextFields();
+        }, 100);
+        return PrivateRooms.findOne({name: id});
     }
 });
 

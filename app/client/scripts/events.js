@@ -1632,6 +1632,49 @@ Template.room.events({
 });
 
 Template.privateRoom.events({
+    "click #delete_room": function() {
+        var name = Session.get("privateRoomName");
+        Meteor.call("deletePrivateRoom", name, function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Room not deleted.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Room deleted.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
+        $("#edit_room_modal").closeModal();
+    },
+    "click #save_edit_room_changes": function() {
+        var name = Session.get("privateRoomName");
+        var display = $("#edit_room_display").val();
+        var desc = $("#edit_room_description").val();
+        var room = PrivateRooms.findOne({name: name});
+        if (desc !== room.roomDesc) {
+            Meteor.call("changePrivateRoomDescription", name, desc, function (err) {
+                if (err) {
+                    var $toastContent = $('<span><strong>Description not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>Description changed.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
+        }
+        if (display !== room.displayName) {
+            Meteor.call("changePrivateRoomDisplayName", name, display, function (err) {
+                if (err) {
+                    var $toastContent = $('<span><strong>Display Name not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>Display Name changed.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
+        }
+        $("#edit_room_modal").closeModal();
+    },
     "input #volume_slider": function() {
         var volume = Number($("#volume_slider").val());
         localStorage.setItem("volume", volume);
@@ -1656,12 +1699,30 @@ Template.privateRoom.events({
     "click #lock": function () {
         console.log("Lock");
         console.log(Session.get("privateRoomName"));
-        Meteor.call("lockPrivateRoom", Session.get("privateRoomName"));
+        Meteor.call("lockPrivateRoom", Session.get("privateRoomName"), function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Room not locked.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Room unlocked.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click #unlock": function () {
         console.log("Unlock");
         console.log(Session.get("privateRoomName"));
-        Meteor.call("unlockPrivateRoom", Session.get("privateRoomName"));
+        Meteor.call("unlockPrivateRoom", Session.get("privateRoomName"), function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Room not unlocked.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Room unlocked.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click #submit": function () {
         if(Meteor.userId()){
@@ -1693,7 +1754,16 @@ Template.privateRoom.events({
     "click #add-allowed-submit": function (e) {
         if(Meteor.userId()){
             e.preventDefault();
-            Meteor.call("addAllowedToPrivateRoom", Session.get("privateRoomName"), $("#add-allowed").val());
+            Meteor.call("addAllowedToPrivateRoom", Session.get("privateRoomName"), $("#add-allowed").val(), function(err) {
+                if (err) {
+                    console.log(err);
+                    var $toastContent = $('<span><strong>User not added.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>User added.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
             $("#add-allowed").val("");
         } else {
             var $toastContent = $('<span>User not added. You must log in</span>');
@@ -1709,7 +1779,7 @@ Template.privateRoom.events({
         Meteor.call("votePrivateSkip", Session.get("privateRoomName"), function (err, res) {
             $("#vote-skip").addClass("disabled");
             if(err){
-                var $toastContent = $('<span><strong>Vote not submitted</strong> ' + err.reason + '</span>');
+                var $toastContent = $('<span><strong>Vote not submitted.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 4000);
             }
         });
@@ -1725,13 +1795,40 @@ Template.privateRoom.events({
         }
     },
     "click #play": function () {
-        Meteor.call("resumePrivateRoom", Session.get("privateRoomName"));
+        Meteor.call("resumePrivateRoom", Session.get("privateRoomName"), function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Room not played.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Room played.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click #pause": function () {
-        Meteor.call("pausePrivateRoom", Session.get("privateRoomName"));
+        Meteor.call("pausePrivateRoom", Session.get("privateRoomName"), function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Room not paused.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Room paused.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click #skip": function () {
-        Meteor.call("skipPrivateSong", Session.get("privateRoomName"));
+        Meteor.call("skipPrivateSong", Session.get("privateRoomName"), function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Room not skipped.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Room skipped.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click #admin-dropdown a": function(){
         Meteor.setTimeout(function(){
@@ -1743,31 +1840,85 @@ Template.privateRoom.events({
         if (user === undefined) {
             user = $(e.target).parent().data("user");
         }
-        Meteor.call("removeAllowedFromPrivateRoom", Session.get("privateRoomName"), user);
+        Meteor.call("removeAllowedFromPrivateRoom", Session.get("privateRoomName"), user, function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>User not removed.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>User removed.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click .edit-playlist-button": function(e) {
         if ($(e.target).hasClass("edit-playlist-button")) {
-            Session.set("editingPlaylistName", $(e.target).data("playlist"));
+            Session.set("editingPlaylistName", $(e.target).data("playlist"), function(err) {
+                if (err) {
+                    console.log(err);
+                    var $toastContent = $('<span><strong>Playlist name not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>Playlist name changed.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
         }
     },
     "click #add_playlist_video_submit": function() {
         var id = $("#add_playlist_video").val();
         var pp = Session.get("editingPlaylistName");
-        Meteor.call("addVideoToPrivatePlaylist", pp, id);
+        Meteor.call("addVideoToPrivatePlaylist", pp, id, function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Video not added.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Video added.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
         $("#add_playlist_video").val("");
     },
     "click .remove_playlist_button": function(e) {
         var id = $(e.target).data("id");
-        Meteor.call("removeVideoFromPrivatePlaylist", Session.get("editingPlaylistName"), id);
+        Meteor.call("removeVideoFromPrivatePlaylist", Session.get("editingPlaylistName"), id, function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Video not deleted.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Video deleted.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
     },
     "click #delete_playlist": function() {
-        Meteor.call("deletePrivatePlaylist", Session.get("editingPlaylistName"));
+        Meteor.call("deletePrivatePlaylist", Session.get("editingPlaylistName"), function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Playlist not deleted.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Playlist deleted.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
         $("#edit_playlist_modal").closeModal();
     },
     "click #create_playlist_submit": function() {
         var name = $("#create_playlist_name").val();
         var displayName = $("#create_playlist_display_name").val();
-        Meteor.call("createPrivatePlaylist", name, displayName);
+        Meteor.call("createPrivatePlaylist", name, displayName, function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Playlist not created.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>playlist created.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
         $("#create_playlist_modal").closeModal();
         $("#create_playlist_name").val("");
         $("#create_playlist_display_name").val("");
@@ -1793,7 +1944,16 @@ Template.home.events({
          var name = $("#create_private_room_name").val();
          var displayName = $("#create_private_room_display_name").val();
          var description = $("#create_private_room_description").val();
-         Meteor.call("createPrivateRoom", name, displayName, true, description);
+         Meteor.call("createPrivateRoom", name, displayName, true, description, function(err) {
+             if (err) {
+                 console.log(err);
+                 var $toastContent = $('<span><strong>Private room not created.</strong> ' + err.reason + '</span>');
+                 Materialize.toast($toastContent, 2000);
+             } else {
+                 var $toastContent = $('<span><strong>Private room created.</strong></span>');
+                 Materialize.toast($toastContent, 2000);
+             }
+         });
          $("#create_private_room_name").val("");
          $("#create_private_room_display_name").val("");
          $("#create_private_room_description").val("");

@@ -101,6 +101,11 @@ Template.privateRoom.onRendered(function() {
     }
     Session.set("rTimeInterval", Meteor.setInterval(function() {
         Session.set("time", new Date().getTime());
+        var parts = location.href.split('/');
+        var id = parts.pop().toLowerCase();
+        if (PrivateRooms.findOne({name: id}) === undefined) {
+            location.href = "/";
+        }
     }, 10000));
     window.setTimeout(function(){
         var volume = (localStorage.getItem("volume") !== undefined) ? localStorage.getItem("volume") : 20;
