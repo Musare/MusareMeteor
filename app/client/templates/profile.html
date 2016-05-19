@@ -1,47 +1,43 @@
 <template name="profile">
     {{> header}}
-        <!--{{> avatar userId=profileUserId shape="circle" class="profile-img" initials=initials}}-->
-        <h1 id="profile-name" class="center-align black-text thin">{{username}}</h1>
-        <div class="row hack-container">
-            <div class="col s12 m4 l4">
-                <div class="card blue-grey darken-1 profile-card">
-                    <div class="card-content white-text">
-                        <span class="card-title">User Info</span>
-                        <!--<p>Name: {{real_name}}</p>-->
-                        <p>Username: {{username}}</p>
-                        <p>First Joined: {{first_joined}}</p>
-                        <p>Rank: {{rank}}</p>
-                        <p>Requested Songs: {{songs_requested}}</p>
-                    </div>
+    <div class="row">
+      <div class="col s12 m12 l10 push-l1 pull-l1">
+        <div class="card">
+            <div class="row" style="margin-top: 40px;">
+              <div class="col s12 m8 push-m2 pull-m2 l2 push-l5 pull-l5">
+                <img src="/notes.png" style="width: 100%;background-color: rgb(245, 245, 245);margin-top: 40px;" class="circle center-align" />
+                <h1 id="profile-name" class="center-align black-text thin">{{username}}</h1>
+              </div>
+            </div>
+                <div class="container row center" style="list-style-type: none;">
+                  <div class="col s12 m12 l4">
+                    <h4>User Info</h4>
+                    <!--<p>Name: {{real_name}}</p>-->
+                    <p>Username: {{username}}</p>
+                    <p>First Joined: {{first_joined}}</p>
+                    <p>Rank: {{rank}}</p>
+                    <p>Requested Songs: {{songs_requested}}</p>
+                  </div>
+                  <div class="col s12 m12 l4">
+                    <h4>Liked songs</h4>
+                    {{#each likedSongs}}
+                        <li>
+                            <h5>{{title}}</h5>
+                            <h6>{{artist}}</h6>
+                        </li>
+                    {{/each}}
+                  </div>
+                  <div class="col s12 m12 l4">
+                    <h4>Disliked songs</h4>
+                    {{#each dislikedSongs}}
+                        <li>
+                            <h5>{{title}}</h5>
+                            <h6>{{artist}}</h6>
+                        </li>
+                    {{/each}}
+                  </div>
                 </div>
             </div>
-            <div class="col s12 m4 l4">
-                <div class="card teal accent-3 profile-card">
-                    <div class="card-content white-text">
-                        <span class="card-title">Liked Songs</span>
-                        <ul>
-                           {{#each likedSongs}}
-                               <li>
-                                   <h5>{{title}}</h5>
-                                   <h6>{{artist}}</h6>
-                               </li>
-                           {{/each}}
-                       </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col s12 m4 l4">
-                <div class="card red darken-2 profile-card">
-                    <div class="card-content white-text">
-                        <span class="card-title">Disliked Songs</span>
-                        {{#each dislikedSongs}}
-                            <li>
-                                <h4>{{title}}</h4>
-                                <h5>{{artist}}</h5>
-                            </li>
-                        {{/each}}
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
 </template>

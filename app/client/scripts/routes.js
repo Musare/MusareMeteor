@@ -100,10 +100,10 @@ Router.route("/feedback", {
     name: "feedback"
 })
 
-Router.route("/team", {
-    template: "team",
-    name: "team"
-})
+//Router.route("/team", {
+//    template: "team",
+//    name: "team"
+//})
 
 Router.route("/news", {
     template: "news",

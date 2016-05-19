@@ -180,7 +180,7 @@ Template.profile.helpers({
         return Session.get("username")
     },
     "first_joined": function () {
-        return moment(Session.get("first_joined")).format("DD/MM/YYYY HH:mm:ss");
+        return moment(Session.get("first_joined")).format("DD/MM/YYYY");
     },
     "rank": function () {
         return Session.get("rank");
