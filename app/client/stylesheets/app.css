@@ -151,7 +151,6 @@ hr{
 }
 
 .range-field > input[type="range"] {
-    border-color: #42a5f5;
     border-right: 0;
     border-left: 0;
     color: #42a5f5;
