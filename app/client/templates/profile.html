@@ -20,21 +20,25 @@
                   </div>
                   <div class="col s12 m12 l4">
                     <h4>Liked songs</h4>
+                    <div style="height: 300px;overflow-y: scroll;">
                     {{#each likedSongs}}
                         <li>
                             <h5>{{title}}</h5>
                             <h6>{{artist}}</h6>
                         </li>
                     {{/each}}
+                    </div>
                   </div>
                   <div class="col s12 m12 l4">
                     <h4>Disliked songs</h4>
+                    <div style="height: 300px;overflow-y: scroll;">
                     {{#each dislikedSongs}}
                         <li>
                             <h5>{{title}}</h5>
                             <h6>{{artist}}</h6>
                         </li>
                     {{/each}}
+                    </div>
                   </div>
                 </div>
             </div>
