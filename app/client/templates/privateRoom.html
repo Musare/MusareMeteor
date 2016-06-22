@@ -50,7 +50,7 @@
     <div id="chat-slide-out" class="side-nav room-slideout">
         <h5>Chat</h5>
         <ul class="chat-ul">
-            <!-- {{#each globalChat}}
+            {{#each globalChat}}
                 {{#emojione}}
                     <li class="chat-message" style="line-height: 30px">
                         <span title="{{time}}" style="float: right; margin-top: 15px">{{rtime time}}</span>
@@ -59,14 +59,9 @@
                     </li>
                 {{/emojione}}
                 <div class="divider" style="margin-top: 15px;"></div>
-            {{/each}} -->
-            <li class="chat-message" style="line-height: 30px">
-                <span title="22nd May 2016" style="float: right; margin-top: 15px">22nd May 2016</span>
-                <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500" target="_blank">Musare</a>
-                <p style="clear: both; line-height: 1.2em; margin-left: 13px; margin-bottom: 0; font-size: 1.2em"><span class="red-text">Chat disabled!</span><br>Due to some users abusing it.<br>Messaging can be done on <a style="font-size: 18px; padding: 0; display: inline;" target="_blank" href="https://discord.gg/0b7aUqx2yknng2st">Discord</a>.</p>
-            </li>
+            {{/each}}
         </ul>
-        <!-- <div>
+        <div>
             <div class="row" id="chat-input-div">
                 <div class="input-field col s12">
                   <input id="chat-message" type="text">
@@ -74,7 +69,7 @@
                 </div>
             </div>
             <a id="submit" class="waves-effect waves-light btn">Send</a>
-        </div> -->
+        </div>
     </div>
     <!--Playlist slideout-->
     <div id="playlist-slide-out" class="side-nav room-slideout">
