@@ -1,12 +1,9 @@
-#Musare is now being developed by [CosmsosNode](https://cosmosnode.com)
-
 ##Visit the official website!
 
 ### https://musare.com/
 
 You can also find us on:
 * Twitter: https://twitter.com/musareapp
-* Facebook: https://www.facebook.com/MusareMusic
 
 ##Get started with development!
 
