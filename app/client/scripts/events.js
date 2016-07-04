@@ -1166,6 +1166,7 @@ Template.news.events({
     "click #createArticleButton": function() {
         var title = $("#title").val();
         var content = $("#content").val();
+        var content = content.replace(/(?:\r\n|\r|\n)/g, '</p><p>');
         var anonymous = $("#anonymous").is(":checked");
         Meteor.call("createArticle", {title: title, content: content, anonymous: anonymous}, function(err, res) {
             if (err) {
