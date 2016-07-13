@@ -64,11 +64,20 @@
         <div>
             <div class="row" id="chat-input-div">
                 <div class="input-field col s12">
-                  <input id="chat-message" type="text">
-                  <label for="chat-message">Send a message</label>
+                    {{#if currentUser}}
+                        <input id="chat-message" type="text">
+                        <label for="chat-message">Send a message</label>
+                    {{else}}
+                        <input id="chat-message" class="disabled" disabled type="text">
+                        <label for="chat-message">You have to be logged in to chat.</label>
+                    {{/if}}
                 </div>
             </div>
-            <a id="submit" class="waves-effect waves-light btn">Send</a>
+            {{#if currentUser}}
+                <a id="submit" class="waves-effect waves-light btn">Send</a>
+            {{else}}
+                <a id="submit" class="waves-effect waves-light btn disabled" disabked>Send</a>
+            {{/if}}
         </div>
     </div>
     <!--Playlist slideout-->

@@ -54,7 +54,12 @@
                     {{/if}}
                 {{/each}}
             </div>
-            <h3 class="center-align">Private Rooms <a href="#create_private_room" id="create_private_room_modal_button"><i class="material-icons">add</i></a></h3>
+            <h3 class="center-align">
+                Private Rooms
+                {{#if currentUser}}
+                    <a href="#create_private_room" id="create_private_room_modal_button"><i class="material-icons">add</i></a>
+                {{/if}}
+            </h3>
             <hr class="center-block" style="width: 99%">
             <div class="row">
                 {{#each privateRooms}}
