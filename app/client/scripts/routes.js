@@ -193,7 +193,11 @@ Router.route("/private/:name", {
         var user = Meteor.users.findOne({});
         var room = PrivateRooms.findOne({name: this.params.name});
         if (room !== undefined) {
-            if ((room.privacy === "private" && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) || (user !== undefined && user.profile !== undefined && room.allowed.includes(Meteor.userId())) || room.owner === Meteor.userId()) {
+            if (
+                (room.privacy === "private" && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) ||
+                (user !== undefined && user.profile !== undefined && room.allowed.includes(Meteor.userId())) ||
+                room.privacy === "unlisted" ||
+                room.owner === Meteor.userId()) {
                 Session.set("type", this.params.type);
                 this.render("privateRoom");
             } else {
