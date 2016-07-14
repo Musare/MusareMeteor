@@ -196,7 +196,7 @@ Router.route("/private/:name", {
             if (
                 (room.privacy === "private" && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) ||
                 (user !== undefined && user.profile !== undefined && room.allowed.includes(Meteor.userId())) ||
-                room.privacy === "unlisted" ||
+                room.privacy !== "private" ||
                 room.owner === Meteor.userId()) {
                 Session.set("type", this.params.type);
                 this.render("privateRoom");
