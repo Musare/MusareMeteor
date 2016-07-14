@@ -1709,34 +1709,6 @@ Template.privateRoom.events({
             }
         }
     },
-    "click #lock": function () {
-        console.log("Lock");
-        console.log(Session.get("privateRoomName"));
-        Meteor.call("lockPrivateRoom", Session.get("privateRoomName"), function(err) {
-            if (err) {
-                console.log(err);
-                var $toastContent = $('<span><strong>Room not locked.</strong> ' + err.reason + '</span>');
-                Materialize.toast($toastContent, 2000);
-            } else {
-                var $toastContent = $('<span><strong>Room unlocked.</strong></span>');
-                Materialize.toast($toastContent, 2000);
-            }
-        });
-    },
-    "click #unlock": function () {
-        console.log("Unlock");
-        console.log(Session.get("privateRoomName"));
-        Meteor.call("unlockPrivateRoom", Session.get("privateRoomName"), function(err) {
-            if (err) {
-                console.log(err);
-                var $toastContent = $('<span><strong>Room not unlocked.</strong> ' + err.reason + '</span>');
-                Materialize.toast($toastContent, 2000);
-            } else {
-                var $toastContent = $('<span><strong>Room unlocked.</strong></span>');
-                Materialize.toast($toastContent, 2000);
-            }
-        });
-    },
     "click #submit": function () {
         if(Meteor.userId()){
             sendMessageGlobal();

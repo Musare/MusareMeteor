@@ -76,7 +76,7 @@
             {{#if currentUser}}
                 <a id="submit" class="waves-effect waves-light btn">Send</a>
             {{else}}
-                <a id="submit" class="waves-effect waves-light btn disabled" disabked>Send</a>
+                <a id="submit" class="waves-effect waves-light btn disabled" disabled>Send</a>
             {{/if}}
         </div>
     </div>
@@ -156,13 +156,6 @@
             <li><a id="play"><i class="material-icons">play_arrow</i></a></li>
         {{/if}}
         <li><a id="skip"><i class="material-icons">skip_next</i></a></li>
-        {{#if isModerator}}
-        {{#if private}}
-            <li><a id="unlock"><i class="material-icons">lock_outline</i></a></li>
-        {{else}}
-            <li><a id="lock"><i class="material-icons">lock_open</i></a></li>
-        {{/if}}
-        {{/if}}
         <li><a id="edit_room" href="#edit_room_modal"><i class="material-icons">mode_edit</i></a></li>
     </ul>
 
