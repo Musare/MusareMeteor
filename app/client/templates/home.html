@@ -64,7 +64,7 @@
             <div class="row">
                 {{#each room in privateRooms}}
                     {{#if equals room.privacy 'private'}}
-                        {{#if isAllowedInPrivateRoom name}}
+                        {{#if isAllowedInPrivateRoom room.name}}
                             <div class="col s12 m6 l3">
                                 <div class="card hoverable light-blue white-text">
                                     <div class="card-image waves-effect waves-block waves-light">
@@ -87,7 +87,7 @@
                         {{/if}}
                     {{else}}
                         {{#if equals room.privacy 'unlisted'}}
-                            {{#if isAllowedInPrivateRoom name}}
+                            {{#if isAllowedInPrivateRoom room.name}}
                                     <div class="col s12 m6 l3">
                                         <div class="card hoverable light-blue white-text">
                                             <div class="card-image waves-effect waves-block waves-light">
