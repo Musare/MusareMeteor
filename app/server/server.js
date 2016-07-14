@@ -511,7 +511,7 @@ function PrivateStation(name) {
     };
     this.name = name;
 
-    this.private = private;
+    /*this.private = private;
 
     this.unlock = function () {
         if (self.private) {
@@ -525,7 +525,7 @@ function PrivateStation(name) {
             self.private = true;
             PrivateRooms.update({name: name}, {$set: {"private": true}});
         }
-    };
+    };*/
 
     this.setPlaylist = function (plName) {
         if (PrivatePlaylists.findOne({name: plName, owner: _room.owner}) !== undefined) {
