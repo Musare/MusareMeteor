@@ -511,13 +511,6 @@ function PrivateStation(name) {
     };
     this.name = name;
 
-    var private = PrivateRooms.findOne({name: name}).private;
-
-    if (typeof private !== "boolean") {
-        PrivateRooms.update({name: name}, {$set: {"private": false}});
-        private = false;
-    }
-
     this.private = private;
 
     this.unlock = function () {
