@@ -321,10 +321,11 @@ Schemas.PrivateRoom = new SimpleSchema({
         label: "Current votes to skip current song",
         min: 0
     },
-    private: {
-        type: Boolean,
-        defaultValue: false,
-        label: "Room private or not"
+    privacy: {
+        type: String,
+        defaultValue: "private",
+        label: "Room privacy",
+        allowedValues: ["public", "unlisted", "private"]
     },
     roomDesc: {
         type: String,
@@ -355,7 +356,7 @@ Schemas.PrivateRoom = new SimpleSchema({
     },
     "owner": {
         type: String,
-        label: "Username of owner"
+        label: "User id of owner"
     },
     lastSong: {
         type: Number,

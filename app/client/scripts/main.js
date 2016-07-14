@@ -28,6 +28,15 @@ Deps.autorun(function() {
     Meteor.subscribe("usernames");
 });
 
+Template.registerHelper('equals', function(var1, var2) {
+        if (typeof var1 === "object") {
+            return _.isEqual(var1, var2);
+        } else {
+            return var1 === var2;
+        }
+    }
+);
+
 Handlebars.registerHelper("isAdmin", function(argument){
     if (Meteor.user() && Meteor.user().profile) {
         return Meteor.user().profile.rank === "admin";
@@ -112,6 +121,14 @@ Template.registerHelper("rtime", function(date) {
     Session.get("time");
     if (date) {
         return moment(date).fromNow();
+    }
+});
+
+Template.registerHelper("getSelected", function(val1, val2) {
+    if (val1 === val2) {
+        return "selected";
+    } else {
+        return "";
     }
 });
 

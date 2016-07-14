@@ -773,7 +773,17 @@ Meteor.publish("rooms", function () {
 });
 
 Meteor.publish("private_rooms", function () {
-    return PrivateRooms.find({});
+    var userId = this.userId;
+    if (userId) {
+        var user = Meteor.users.findOne(userId);
+        if (user.profile.rank === "admin" || user.profile.rank === "moderator") {
+            return PrivateRooms.find({});
+        } else {
+            return PrivateRooms.find({$or: [{owner: userId}, {privacy: "public"}]});
+        }
+    } else {
+        return PrivateRooms.find({privacy: "public"});
+    }
 });
 
 Meteor.publish("private_playlists", function () {
@@ -922,6 +932,13 @@ Meteor.methods({
     changePrivateRoomDisplayName: function(roomName, newDisplayName) {
         if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
             PrivateRooms.update({name: roomName}, {$set: {displayName: newDisplayName}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    changePrivateRoomPrivacy: function(roomName, newPrivacy) {
+        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
+            PrivateRooms.update({name: roomName}, {$set: {privacy: newPrivacy}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

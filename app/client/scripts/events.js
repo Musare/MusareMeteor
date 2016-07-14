@@ -1651,6 +1651,7 @@ Template.privateRoom.events({
         var name = Session.get("privateRoomName");
         var display = $("#edit_room_display").val();
         var desc = $("#edit_room_description").val();
+        var privacy = $("#edit_room_privacy").val();
         var room = PrivateRooms.findOne({name: name});
         if (desc !== room.roomDesc) {
             Meteor.call("changePrivateRoomDescription", name, desc, function (err) {
@@ -1670,6 +1671,17 @@ Template.privateRoom.events({
                     Materialize.toast($toastContent, 2000);
                 } else {
                     var $toastContent = $('<span><strong>Display Name changed.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
+        }
+        if (privacy !== room.privacy) {
+            Meteor.call("changePrivateRoomPrivacy", name, privacy, function (err) {
+                if (err) {
+                    var $toastContent = $('<span><strong>Privacy not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>Privacy changed.</strong></span>');
                     Materialize.toast($toastContent, 2000);
                 }
             });

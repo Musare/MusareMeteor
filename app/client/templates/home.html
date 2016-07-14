@@ -62,8 +62,8 @@
             </h3>
             <hr class="center-block" style="width: 99%">
             <div class="row">
-                {{#each privateRooms}}
-                    {{#if private}}
+                {{#each room in privateRooms}}
+                    {{#if equals room.privacy 'private'}}
                         {{#if isAllowedInPrivateRoom name}}
                             <div class="col s12 m6 l3">
                                 <div class="card hoverable light-blue white-text">
@@ -86,25 +86,49 @@
                             </div>
                         {{/if}}
                     {{else}}
-                        <div class="col s12 m6 l3">
-                            <div class="card hoverable">
-                                <div class="card-image waves-effect waves-block waves-light">
-                                    <a href=/private/{{name}}>
-                                        <img src='/notes.png'>
-                                        <figcaption class="caption center-align">
-                                            <h5>{{currentPrivateSong.song.title}}</h5>
-                                        </figcaption>
-                                    </a>
-                                </div>
-                                <div class="card-content">
-                                    <span class="card-title grey-text text-darken-4">{{displayName}}</span><div><span class="user-num">{{userPrivateNum}}</span> <i class="material-icons">perm_identity</i></div>
-                                    <p>{{roomDesc}}</p>
-                                </div>
-                                <div class="card-action">
-                                    <a href=/private/{{name}} class="light-blue-text text-accent-4">Join Room</a>
+                        {{#if equals room.privacy 'unlisted'}}
+                            {{#if isAllowedInPrivateRoom name}}
+                                    <div class="col s12 m6 l3">
+                                        <div class="card hoverable light-blue white-text">
+                                            <div class="card-image waves-effect waves-block waves-light">
+                                                <a href=/private/{{name}}>
+                                                    <img src='/notes.png'>
+                                                    <figcaption class="caption center-align">
+                                                        <h5>{{currentPrivateSong.song.title}}</h5>
+                                                    </figcaption>
+                                                </a>
+                                            </div>
+                                            <div class="card-content" style="overflow-x: hidden;">
+                                                <span class="card-title white-text">{{displayName}}</span><div><span class="user-num">{{userPrivateNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                                <p>{{roomDesc}}</p>
+                                            </div>
+                                            <div class="card-action">
+                                                <a href=/private/{{name}} class="white-text">Join Room</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                            {{/if}}
+                        {{else}}
+                            <div class="col s12 m6 l3">
+                                <div class="card hoverable">
+                                    <div class="card-image waves-effect waves-block waves-light">
+                                        <a href=/private/{{name}}>
+                                            <img src='/notes.png'>
+                                            <figcaption class="caption center-align">
+                                                <h5>{{currentPrivateSong.song.title}}</h5>
+                                            </figcaption>
+                                        </a>
+                                    </div>
+                                    <div class="card-content">
+                                        <span class="card-title grey-text text-darken-4">{{displayName}}</span><div><span class="user-num">{{userPrivateNum}}</span> <i class="material-icons">perm_identity</i></div>
+                                        <p>{{roomDesc}}</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a href=/private/{{name}} class="light-blue-text text-accent-4">Join Room</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {{/if}}
                     {{/if}}
                 {{/each}}
             </div>

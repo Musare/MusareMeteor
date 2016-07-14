@@ -179,6 +179,14 @@
                 <input id="edit_room_display" value={{room.displayName}} type="text">
                 <label for="edit_room_display">Display Name</label>
             </div>
+            <div class="input-field col s12">
+                <select id="edit_room_privacy">
+                    <option value="public" {{getSelected 'public' room.privacy}}>Public</option>
+                    <option value="unlisted" {{getSelected 'unlisted' room.privacy}}>Unlisted</option>
+                    <option value="private" {{getSelected 'private' room.privacy}}>Private</option>
+                </select>
+                <label>Room Privacy</label>
+            </div>
             <button class="btn waves-effect waves-light" id="save_edit_room_changes">Save Changes</button>
             <button class="btn waves-effect waves-light right red" id="delete_room">Delete Room</button>
         </div>
