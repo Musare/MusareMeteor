@@ -311,7 +311,7 @@ Schemas.PrivateRoom = new SimpleSchema({
     },
     state: {
         type: String,
-        defaultValue: "paused",
+        defaultValue: "playing",
         allowedValues: ["paused", "playing"],
         label: "Room State"
     },

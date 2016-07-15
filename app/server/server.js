@@ -164,7 +164,7 @@ function createPrivateRoom(name, display, private, desc, owner) {
             displayName: display,
             private: private,
             roomDesc: desc,
-            owner: owner,
+            owner: owner
         }, function (err) {
             if (err) {
                 throw err;
