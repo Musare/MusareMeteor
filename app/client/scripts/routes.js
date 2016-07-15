@@ -212,7 +212,7 @@ Router.route("/private/:name", {
 
 Router.route("/:type", {
     waitOn: function() {
-        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("rooms")];
+        return [Meteor.subscribe("songsType", this.params.type), Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("rooms")];
     },
     action: function() {
         var user = Meteor.users.findOne({});

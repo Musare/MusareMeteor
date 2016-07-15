@@ -781,8 +781,12 @@ Meteor.publish("private_playlists", function () {
     }
 });
 
+Meteor.publish("songsType", function (type) {
+    return Songs.find({genres: type});
+});
+
 Meteor.publish("songs", function () {
-    return Songs.find({});
+    return Songs.find();
 });
 
 Meteor.publish("queues", function () {

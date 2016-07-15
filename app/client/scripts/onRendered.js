@@ -1,4 +1,5 @@
 Template.queues.onRendered(function() {
+    Meteor.subscribe('queues');
     $("#previewModal").on("hidden.bs.modal", function() {
         if (previewEndSongTimeout !== undefined) {
             Meteor.clearTimeout(previewEndSongTimeout);
@@ -24,6 +25,7 @@ Template.queues.onRendered(function() {
 });
 
 Template.manageStation.onRendered(function() {
+    Meteor.subscribe("songs");
     $("#previewModal").on("hidden.bs.modal", function() {
         if (previewEndSongTimeout !== undefined) {
             Meteor.clearTimeout(previewEndSongTimeout);
@@ -49,6 +51,7 @@ Template.manageStation.onRendered(function() {
 });
 
 Template.manageSongs.onRendered(function() {
+    Meteor.subscribe("songs");
     $("#previewModal").on("hidden.bs.modal", function() {
         if (previewEndSongTimeout !== undefined) {
             Meteor.clearTimeout(previewEndSongTimeout);
