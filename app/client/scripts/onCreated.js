@@ -233,6 +233,16 @@ Template.room.onCreated(function () {
                                         event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
                                         event.target.playVideo();
                                         event.target.setVolume(volume);
+                                        function recursion() {
+                                            Meteor.setTimeout(function() {
+                                                if (event.target.getPlayerState() === 1 && Session.get("state") === "playing") {
+                                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                } else {
+                                                    recursion();
+                                                }
+                                            }, 200);
+                                        }
+                                        recursion();
                                         resizeSeekerbar();
                                     },
                                     'onStateChange': function (event) {
@@ -462,6 +472,16 @@ Template.privateRoom.onCreated(function () {
                                         event.target.seekTo(getTimeElapsed() / 1000);
                                         event.target.playVideo();
                                         event.target.setVolume(volume);
+                                        function recursion() {
+                                            Meteor.setTimeout(function() {
+                                                if (event.target.getPlayerState() === 1 && Session.get("state") === "playing") {
+                                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                } else {
+                                                    recursion();
+                                                }
+                                            }, 200);
+                                        }
+                                        recursion();
                                         resizeSeekerbar();
                                     },
                                     'onStateChange': function (event) {
