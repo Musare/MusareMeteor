@@ -4,14 +4,20 @@
             <div class="nav-wrapper light-blue accent-4">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/"><i class="material-icons">home</i></a></li>
-                    <li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li>
+                    <!--li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li-->
                     {{#if isPrivateRoomOwner name}}
-                        <li><a class='dropdown-button' data-activates='control-dropdown'><i class="material-icons">control_point</i></a></li>
+                        {{#if playing}}
+                            <li><a id="pause" data-position="bottom" data-delay="50" data-tooltip="Pause this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">pause</i></a></li>
+                        {{else}}
+                            <li><a id="play" data-position="bottom" data-delay="50" data-tooltip="Play this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">play_arrow</i></a></li>
+                        {{/if}}
+                        <li><a id="skip" data-position="bottom" data-delay="50" data-tooltip="Skip this song" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">skip_next</i></a></li>
+                        <li><a id="edit_room" href="#edit_room_modal" data-position="bottom" data-delay="50" data-tooltip="Edit this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">settings</i></a></li>
                     {{/if}}
                 </ul>
                 <span class="brand-logo center">{{privateRoomDisplayName}} <small>(by {{privateRoomOwnerName}})</small></span>
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
+                    <!--li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li-->
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout" data-activates="users-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Allowed" id="allowed-slideout" data-activates="allowed-slide-out" class="tooltipped header-collapse"><i class="material-icons">assignment</i></a></li>
@@ -81,10 +87,10 @@
         </div>
     </div>
     <!--Playlist slideout-->
-    <div id="playlist-slide-out" class="side-nav room-slideout">
+    <!--div id="playlist-slide-out" class="side-nav room-slideout">
         <h5>Playlist</h5>
 
-    </div>
+    </div-->
     <div id="users-slide-out" class="side-nav room-slideout">
         <h5>Users In Room</h5>
         <ul>
@@ -147,18 +153,6 @@
             <a id="add-playlist-modal-button" class="waves-effect waves-light btn" href="#create_playlist_modal">Create Playlist</a>
         </div>
     </div>
-
-    <!--room controls-->
-    <ul id='control-dropdown' style="background-color: rgb(3, 169, 244) !important; display: none">
-        {{#if playing}}
-            <li><a id="pause"><i class="material-icons">pause</i></a></li>
-        {{else}}
-            <li><a id="play"><i class="material-icons">play_arrow</i></a></li>
-        {{/if}}
-        <li><a id="skip"><i class="material-icons">skip_next</i></a></li>
-        <li><a id="edit_room" href="#edit_room_modal"><i class="material-icons">mode_edit</i></a></li>
-    </ul>
-
 
     <!-- Edit Room Modal -->
     <div id="edit_room_modal" class="modal">
