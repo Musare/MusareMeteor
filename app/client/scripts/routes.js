@@ -185,13 +185,13 @@ Router.route("/u/:user", {
     name: "profile"
 });
 
-Router.route("/private/:name", {
+Router.route("/community/:name", {
     waitOn: function() {
-        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("private_rooms")];
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("community_stations")];
     },
     action: function() {
         var user = Meteor.users.findOne({});
-        var room = PrivateRooms.findOne({name: this.params.name});
+        var room = CommunityStations.findOne({name: this.params.name});
         if (room !== undefined) {
             if (
                 (room.privacy === "private" && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) ||
@@ -199,7 +199,7 @@ Router.route("/private/:name", {
                 room.privacy !== "private" ||
                 room.owner === Meteor.userId()) {
                 Session.set("type", this.params.type);
-                this.render("privateRoom");
+                this.render("communityStation");
             } else {
                 this.redirect("/");
             }
@@ -207,7 +207,7 @@ Router.route("/private/:name", {
             this.render("404");
         }
     },
-    name: "privateStation"
+    name: "communityStation"
 });
 
 Router.route("/:type", {

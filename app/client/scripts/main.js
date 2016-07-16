@@ -19,7 +19,7 @@ Deps.autorun(function() {
     Meteor.subscribe("playlists");
     Meteor.subscribe("alerts");
     Meteor.subscribe("rooms");
-    Meteor.subscribe("private_rooms");
+    Meteor.subscribe("community_stations");
     Meteor.subscribe("private_playlists");
     Meteor.subscribe("news");
     Meteor.subscribe("userData", Meteor.userId());
@@ -51,8 +51,8 @@ Handlebars.registerHelper("isModerator", function(argument){
     }
 });
 
-Handlebars.registerHelper("isAllowedInPrivateRoom", function(name){
-    var room = PrivateRooms.findOne({name: name});
+Handlebars.registerHelper("isAllowedInCommunityStation", function(name){
+    var room = CommunityStations.findOne({name: name});
     if (Meteor.user() &&
         Meteor.user().profile &&
         room &&
@@ -63,8 +63,8 @@ Handlebars.registerHelper("isAllowedInPrivateRoom", function(name){
     }
 });
 
-Handlebars.registerHelper("isPrivateRoomOwner", function(name){
-    var room = PrivateRooms.findOne({name: name});
+Handlebars.registerHelper("isCommunityStationOwner", function(name){
+    var room = CommunityStations.findOne({name: name});
     if (Meteor.user() &&
         Meteor.user().profile &&
         room &&
@@ -89,8 +89,8 @@ Handlebars.registerHelper("rooms", function(){
     return Rooms.find({});
 });
 
-Handlebars.registerHelper("privateRooms", function(){
-    return PrivateRooms.find({});
+Handlebars.registerHelper("communityStations", function(){
+    return CommunityStations.find({});
 });
 
 

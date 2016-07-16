@@ -55,20 +55,20 @@
                 {{/each}}
             </div>
             <h3 class="center-align">
-                Private Rooms
+                Community Rooms
                 {{#if currentUser}}
-                    <a href="#create_private_room" id="create_private_room_modal_button"><i class="material-icons">add</i></a>
+                    <a href="#create_community_station" id="create_community_station_modal_button"><i class="material-icons">add</i></a>
                 {{/if}}
             </h3>
             <hr class="center-block" style="width: 99%">
             <div class="row">
-                {{#each room in privateRooms}}
+                {{#each room in communityStations}}
                     {{#if equals room.privacy 'private'}}
-                        {{#if isAllowedInPrivateRoom room.name}}
+                        {{#if isAllowedInCommunityStation room.name}}
                             <div class="col s12 m6 l3">
                                 <div class="card hoverable light-blue white-text">
                                     <div class="card-image waves-effect waves-block waves-light">
-                                        <a href=/private/{{room.name}}>
+                                        <a href=/community/{{room.name}}>
                                         <img src='/notes.png'>
                                         <figcaption class="caption center-align">
                                             <h5>{{room.currentSong.song.title}}</h5>
@@ -80,18 +80,18 @@
                                         <p>{{room.roomDesc}}</p>
                                     </div>
                                     <div class="card-action">
-                                        <a href=/private/{{room.name}} class="white-text">Join Room</a>
+                                        <a href=/community/{{room.name}} class="white-text">Join Room</a>
                                     </div>
                                 </div>
                             </div>
                         {{/if}}
                     {{else}}
                         {{#if equals room.privacy 'unlisted'}}
-                            {{#if isAllowedInPrivateRoom room.name}}
+                            {{#if isAllowedInCommunityStation room.name}}
                                     <div class="col s12 m6 l3">
                                         <div class="card hoverable light-blue white-text">
                                             <div class="card-image waves-effect waves-block waves-light">
-                                                <a href=/private/{{room.name}}>
+                                                <a href=/community/{{room.name}}>
                                                     <img src='/notes.png'>
                                                     <figcaption class="caption center-align">
                                                         <h5>{{room.currentSong.song.title}}</h5>
@@ -103,7 +103,7 @@
                                                 <p>{{room.roomDesc}}</p>
                                             </div>
                                             <div class="card-action">
-                                                <a href=/private/{{room.name}} class="white-text">Join Room</a>
+                                                <a href=/community/{{room.name}} class="white-text">Join Room</a>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +112,7 @@
                             <div class="col s12 m6 l3">
                                 <div class="card hoverable">
                                     <div class="card-image waves-effect waves-block waves-light">
-                                        <a href=/private/{{room.name}}>
+                                        <a href=/community/{{room.name}}>
                                             <img src='/notes.png'>
                                             <figcaption class="caption center-align">
                                                 <h5>{{room.currentSong.song.title}}</h5>
@@ -124,7 +124,7 @@
                                         <p>{{room.roomDesc}}</p>
                                     </div>
                                     <div class="card-action">
-                                        <a href=/private/{{room.name}} class="light-blue-text text-accent-4">Join Room</a>
+                                        <a href=/community/{{room.name}} class="light-blue-text text-accent-4">Join Room</a>
                                     </div>
                                 </div>
                             </div>
@@ -136,22 +136,22 @@
     </main>
     {{> footer}}
 
-    <div id="create_private_room" class="modal">
+    <div id="create_community_station" class="modal">
         <div class="modal-content">
-            <h4>Create Modal</h4>
+            <h4>Create Community Room</h4>
             <div class="input-field">
-                <input id="create_private_room_name" type="text">
-                <label for="create_private_room_name">Name</label>
+                <input id="create_community_station_name" type="text">
+                <label for="create_community_station_name">Name</label>
             </div>
             <div class="input-field">
-                <input id="create_private_room_display_name" type="text">
-                <label for="create_private_room_display_name">Display Name</label>
+                <input id="create_community_station_display_name" type="text">
+                <label for="create_community_station_display_name">Display Name</label>
             </div>
             <div class="input-field">
-                <input id="create_private_room_description" type="text">
-                <label for="create_private_room_description">Description</label>
+                <input id="create_community_station_description" type="text">
+                <label for="create_community_station_description">Description</label>
             </div>
-            <button class="btn waves-effect waves-light" id="create_private_room_submit">Create</button>
+            <button class="btn waves-effect waves-light" id="create_community_station_submit">Create</button>
         </div>
         <div class="divider"></div>
         <div class="modal-footer">
@@ -159,7 +159,7 @@
         </div>
     </div>
     <script>
-        $("#create_private_room_modal_button").leanModal({
+        $("#create_community_station_modal_button").leanModal({
             dismissible: true,
             opacity: .5,
             in_duration: 500,

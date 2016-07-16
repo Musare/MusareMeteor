@@ -1,11 +1,11 @@
-<template name="privateRoom">
+<template name="communityStation">
     <header>
         <nav>
             <div class="nav-wrapper light-blue accent-4">
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/"><i class="material-icons">home</i></a></li>
                     <!--li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li-->
-                    {{#if isPrivateRoomOwner name}}
+                    {{#if isCommunityStationOwner name}}
                         {{#if playing}}
                             <li><a id="pause" data-position="bottom" data-delay="50" data-tooltip="Pause this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">pause</i></a></li>
                         {{else}}
@@ -15,7 +15,7 @@
                         <li><a id="edit_room" href="#edit_room_modal" data-position="bottom" data-delay="50" data-tooltip="Edit this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">settings</i></a></li>
                     {{/if}}
                 </ul>
-                <span class="brand-logo center">{{privateRoomDisplayName}} <small>(by {{privateRoomOwnerName}})</small></span>
+                <span class="brand-logo center">{{communityStationDisplayName}} <small>(by {{communityStationOwnerName}})</small></span>
                 <ul class="right hide-on-med-and-down">
                     <!--li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li-->
                     <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
@@ -107,7 +107,7 @@
                 <li>
                     <a href=/u/{{this.name}} target="_blank">
                         {{this.name}}
-                        {{#if isPrivateRoomOwner name}}
+                        {{#if isCommunityStationOwner name}}
                             <a href="#" class="right remove-allowed" data-user={{this.id}}>
                                 <i class="material-icons" style="line-height: 64px;">remove</i>
                             </a>
@@ -116,7 +116,7 @@
                 </li>
             {{/each}}
         </ul>
-        {{#if isPrivateRoomOwner name}}
+        {{#if isCommunityStationOwner name}}
         <div>
             <div class="row" id="chat-input-div">
                 <div class="input-field col s12">
@@ -137,7 +137,7 @@
                     <a href="#edit_playlist_modal" class="edit-playlist-button" data-playlist={{this.name}}>
                         {{this.displayName}}
                         <a href="#" class="right select-playlist" data-playlist={{this.name}}>
-                            {{#if isPrivateRoomOwner name}}
+                            {{#if isCommunityStationOwner name}}
                                 {{#if isPlaylistSelected name this.name}}
                                     <i class="material-icons" style="line-height: 64px;">check_circle</i>
                                 {{else}}
@@ -170,7 +170,7 @@
                 <select id="edit_room_privacy">
                     <option value="public" {{getSelected 'public' room.privacy}}>Public</option>
                     <option value="unlisted" {{getSelected 'unlisted' room.privacy}}>Unlisted</option>
-                    <option value="private" {{getSelected 'private' room.privacy}}>Private</option>
+                    <option value="community" {{getSelected 'community' room.privacy}}>Private</option>
                 </select>
                 <label>Room Privacy</label>
             </div>

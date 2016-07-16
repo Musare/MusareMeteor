@@ -53,7 +53,7 @@ var default_private_playlist = {
 Alerts.update({active: true}, {$set: {active: false}}, {multi: true});
 
 var stations = [];
-var privateStations = [];
+var communityStations = [];
 var voteNum = 0;
 
 var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
@@ -126,8 +126,8 @@ function getStation(type, cb) {
     });
 }
 
-function getPrivateStation(name, cb) {
-    privateStations.forEach(function (station) {
+function getCommunityStation(name, cb) {
+    communityStations.forEach(function (station) {
         if (station.name === name) {
             cb(station);
             return;
@@ -157,9 +157,9 @@ function createRoom(display, tag, private, desc) {
     }
 }
 
-function createPrivateRoom(name, display, private, desc, owner) {
-    if (PrivateRooms.find({name: name}).count() === 0) {
-        PrivateRooms.insert({
+function createCommunityStation(name, display, private, desc, owner) {
+    if (CommunityStations.find({name: name}).count() === 0) {
+        CommunityStations.insert({
             name: name,
             displayName: display,
             private: private,
@@ -169,11 +169,11 @@ function createPrivateRoom(name, display, private, desc, owner) {
             if (err) {
                 throw err;
             } else {
-                privateStations.push(new PrivateStation(name));
+                communityStations.push(new CommunityStation(name));
             }
         });
     } else {
-        return "Private room with that name already exists";
+        return "Community room with that name already exists";
     }
 }
 
@@ -379,9 +379,9 @@ function Station(type) {
     this.voted = [];
 }
 
-function PrivateStation(name) {
+function CommunityStation(name) {
     var usersObj = {};
-    PrivateRooms.update({name: name}, {$set: {userList: []}});
+    CommunityStations.update({name: name}, {$set: {userList: []}});
     Meteor.publish("pr_" + name, function () {
         var user = Meteor.users.findOne(this.userId);
         if (this.userId !== undefined && user !== undefined && user.profile !== undefined && user.profile.username !== undefined) {
@@ -391,16 +391,16 @@ function PrivateStation(name) {
             } else {
                 usersObj[username]++;
             }
-            PrivateRooms.update({name: name}, {$push: {userList: username}});
+            CommunityStations.update({name: name}, {$push: {userList: username}});
             this.onStop(function () {
                 usersObj[username]--;
-                var room = PrivateRooms.findOne({name: name});
+                var room = CommunityStations.findOne({name: name});
                 if (room !== undefined) {
                     var list = room.userList;
                     var index = list.indexOf(username);
                     if (index >= 0) {
                         list.splice(index, 1);
-                        PrivateRooms.update({name: name}, {$set: {userList: list}});
+                        CommunityStations.update({name: name}, {$set: {userList: list}});
                     }
                 }
             });
@@ -409,7 +409,7 @@ function PrivateStation(name) {
     });
     var self = this;
     var startedAt = Date.now();
-    var _room = PrivateRooms.findOne({name: name});
+    var _room = CommunityStations.findOne({name: name});
     var playlist;
     if (_room !== undefined) {
         playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
@@ -429,7 +429,7 @@ function PrivateStation(name) {
     if (song === undefined) {
         song = {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"};
     }
-    var res = PrivateRooms.update({name: name}, {
+    var res = CommunityStations.update({name: name}, {
         $set: {
             currentSong: {song: song, started: startedAt},
             users: 0
@@ -439,13 +439,13 @@ function PrivateStation(name) {
     this.skipSong = function () {
         self.voted = [];
         voteNum = 0;
-        PrivateRooms.update({name: name}, {$set: {votes: 0}});
+        CommunityStations.update({name: name}, {$set: {votes: 0}});
         playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
         if (playlist === undefined) {
             playlist = default_private_playlist;
         }
         if (playlist !== undefined && playlist.songs.length === 0) {
-            PrivateRooms.update({name: name}, {$unset: {"playlist": 1}});
+            CommunityStations.update({name: name}, {$unset: {"playlist": 1}});
             playlist = default_private_playlist;
         }
         songs = playlist.songs;
@@ -458,12 +458,12 @@ function PrivateStation(name) {
             currentSong++;
         } else currentSong = 0;
         currentId = songs[currentSong];
-        PrivateRooms.update({name: name}, {$set: {timePaused: 0}});
+        CommunityStations.update({name: name}, {$set: {timePaused: 0}});
         this.songTimer();
-        PrivateRooms.update({name: name}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
+        CommunityStations.update({name: name}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
     };
 
-    PrivateRooms.update({name: name}, {$set: {timePaused: 0}});
+    CommunityStations.update({name: name}, {$set: {timePaused: 0}});
 
     var timer;
     var timerInitialised = false;
@@ -482,12 +482,12 @@ function PrivateStation(name) {
         }
     };
 
-    var state = PrivateRooms.findOne({name: name}).state;
+    var state = CommunityStations.findOne({name: name}).state;
 
     this.pauseRoom = function () {
         if (state !== "paused") {
             timer.pause();
-            PrivateRooms.update({name: name}, {$set: {state: "paused"}});
+            CommunityStations.update({name: name}, {$set: {state: "paused"}});
             state = "paused";
         }
     };
@@ -499,7 +499,7 @@ function PrivateStation(name) {
                 }, songs[currentSong] * 1000);
             }
             timer.resume();
-            PrivateRooms.update({name: name}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
+            CommunityStations.update({name: name}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
             state = "playing";
         }
     };
@@ -511,19 +511,19 @@ function PrivateStation(name) {
     };
     this.name = name;
 
-    var privacy = PrivateRooms.findOne({name: name}).privacy;
+    var privacy = CommunityStations.findOne({name: name}).privacy;
     this.privacy = privacy;
 
     this.setPrivacy = function (privacy) {
         if (self.privacy !== privacy) {
             self.privacy = privacy;
-            return PrivateRooms.update({name: name}, {$set: {"privacy": privacy}});
+            return CommunityStations.update({name: name}, {$set: {"privacy": privacy}});
         }
     };
 
     this.setPlaylist = function (plName) {
         if (PrivatePlaylists.findOne({name: plName, owner: _room.owner}) !== undefined) {
-            PrivateRooms.update({name: name}, {$set: {"playlist": plName}});
+            CommunityStations.update({name: name}, {$set: {"playlist": plName}});
             _room.playlist = plName;
             playlist = PrivatePlaylists.findOne({name: plName, owner: _room.owner});
             songs = playlist.songs;
@@ -534,15 +534,15 @@ function PrivateStation(name) {
 
     this.addAllowed = function (allowed) {
         if (_room.allowed.indexOf(allowed) === -1 && _room.owner !== allowed) {
-            PrivateRooms.update({name: name}, {$push: {allowed: allowed}});
-            _room = PrivateRooms.findOne({name: name});
+            CommunityStations.update({name: name}, {$push: {allowed: allowed}});
+            _room = CommunityStations.findOne({name: name});
         }
     };
 
     this.removeAllowed = function (allowed) {
         if (_room.allowed.indexOf(allowed) !== -1) {
-            PrivateRooms.update({name: name}, {$pull: {allowed: allowed}});
-            _room = PrivateRooms.findOne({name: name});
+            CommunityStations.update({name: name}, {$pull: {allowed: allowed}});
+            _room = CommunityStations.findOne({name: name});
         }
     };
 
@@ -681,9 +681,9 @@ Rooms.find({}).fetch().forEach(function (room) {
     }
 });
 
-PrivateRooms.find({}).fetch().forEach(function (room) {
+CommunityStations.find({}).fetch().forEach(function (room) {
     var name = room.name;
-    privateStations.push(new PrivateStation(name));
+    communityStations.push(new CommunityStation(name));
 });
 
 Accounts.validateNewUser(function (user) {
@@ -759,17 +759,17 @@ Meteor.publish("rooms", function () {
     return Rooms.find({});
 });
 
-Meteor.publish("private_rooms", function () {
+Meteor.publish("community_stations", function () {
     var userId = this.userId;
     if (userId) {
         var user = Meteor.users.findOne(userId);
         if (user.profile.rank === "admin" || user.profile.rank === "moderator") {
-            return PrivateRooms.find({});
+            return CommunityStations.find({});
         } else {
-            return PrivateRooms.find({$or: [{owner: userId}, {privacy: "public"}]});
+            return CommunityStations.find({$or: [{owner: userId}, {privacy: "public"}]});
         }
     } else {
-        return PrivateRooms.find({privacy: "public"});
+        return CommunityStations.find({privacy: "public"});
     }
 });
 
@@ -844,8 +844,8 @@ Meteor.publish("feedback", function(){
     return Feedback.find();
 })
 
-function isPrivateRoomOwner(name) {
-    var room = PrivateRooms.findOne({name: name});
+function isCommunityStationOwner(name) {
+    var room = CommunityStations.findOne({name: name});
     if (Meteor.userId() && room !== undefined && Meteor.userId() === room.owner) {
         return true;
     } else {
@@ -902,34 +902,34 @@ function isMuted() {
 }
 
 Meteor.methods({
-    deletePrivateRoom: function(roomName) {
-        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
-            PrivateRooms.remove({name: roomName});
-            getPrivateStation(roomName, function(room) {
+    deleteCommunityStation: function(roomName) {
+        if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
+            CommunityStations.remove({name: roomName});
+            getCommunityStation(roomName, function(room) {
                 room.cancelTimer();
-                delete privateStations[privateStations.indexOf(room)];
+                delete communityStations[communityStations.indexOf(room)];
             });
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    changePrivateRoomDescription: function(roomName, newDescription) {
-        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
-            PrivateRooms.update({name: roomName}, {$set: {roomDesc: newDescription}});
+    changeCommunityStationDescription: function(roomName, newDescription) {
+        if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
+            CommunityStations.update({name: roomName}, {$set: {roomDesc: newDescription}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    changePrivateRoomDisplayName: function(roomName, newDisplayName) {
-        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
-            PrivateRooms.update({name: roomName}, {$set: {displayName: newDisplayName}});
+    changeCommunityStationDisplayName: function(roomName, newDisplayName) {
+        if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
+            CommunityStations.update({name: roomName}, {$set: {displayName: newDisplayName}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    changePrivateRoomPrivacy: function(roomName, newPrivacy) {
-        if ((isAdmin() || isPrivateRoomOwner(roomName)) && !isBanned()) {
-            PrivateRooms.update({name: roomName}, {$set: {privacy: newPrivacy}});
+    changeCommunityStationPrivacy: function(roomName, newPrivacy) {
+        if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
+            CommunityStations.update({name: roomName}, {$set: {privacy: newPrivacy}});
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
@@ -1267,10 +1267,10 @@ Meteor.methods({
     votePrivateSkip: function (name) {
         if (Meteor.userId() && !isBanned()) {
             var user = Meteor.user();
-            getPrivateStation(name, function (station) {
+            getCommunityStation(name, function (station) {
                 if (station.voted.indexOf(user.profile.username) === -1) {
                     station.voted.push(user.profile.username);
-                    PrivateRooms.update({name: name}, {$set: {votes: station.voted.length}});
+                    CommunityStations.update({name: name}, {$set: {votes: station.voted.length}});
                     if (station.voted.length === 3) {
                         station.skipSong();
                     }
@@ -1359,8 +1359,8 @@ Meteor.methods({
         }
     },
     skipPrivateSong: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
-            getPrivateStation(name, function (station) {
+        if ((isAdmin() || isCommunityStationOwner(name)) && !isBanned()) {
+            getCommunityStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(404, "Station not found.");
                 } else {
@@ -1369,9 +1369,9 @@ Meteor.methods({
             });
         }
     },
-    pausePrivateRoom: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
-            getPrivateStation(name, function (station) {
+    pauseCommunityStation: function (name) {
+        if ((isAdmin() || isCommunityStationOwner(name)) && !isBanned()) {
+            getCommunityStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
@@ -1382,9 +1382,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    resumePrivateRoom: function (name) {
-        if ((isAdmin() || isPrivateRoomOwner(name)) && !isBanned()) {
-            getPrivateStation(name, function (station) {
+    resumeCommunityStation: function (name) {
+        if ((isAdmin() || isCommunityStationOwner(name)) && !isBanned()) {
+            getCommunityStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
@@ -1395,9 +1395,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    addAllowedToPrivateRoom: function (name, allowed) {
-        if (isPrivateRoomOwner(name) && !isBanned()) {
-            getPrivateStation(name, function (station) {
+    addAllowedToCommunityStation: function (name, allowed) {
+        if (isCommunityStationOwner(name) && !isBanned()) {
+            getCommunityStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
@@ -1410,9 +1410,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    removeAllowedFromPrivateRoom: function (name, allowed) {
-        if (isPrivateRoomOwner(name) && !isBanned()) {
-            getPrivateStation(name, function (station) {
+    removeAllowedFromCommunityStation: function (name, allowed) {
+        if (isCommunityStationOwner(name) && !isBanned()) {
+            getCommunityStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
@@ -1423,9 +1423,9 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    setPlaylistForPrivateRoom: function (name, playlist) {
-        if ((isPrivateRoomOwner(name)) && !isBanned()) {
-            getPrivateStation(name, function (station) {
+    setPlaylistForCommunityStation: function (name, playlist) {
+        if ((isCommunityStationOwner(name)) && !isBanned()) {
+            getCommunityStation(name, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
@@ -1634,10 +1634,10 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    createPrivateRoom: function (name, display, private, desc) {
+    createCommunityStation: function (name, display, private, desc) {
         if (Meteor.userId() && !isBanned()) {
             name = name.toLowerCase();
-            createPrivateRoom(name, display, private, desc, Meteor.userId());
+            createCommunityStation(name, display, private, desc, Meteor.userId());
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }

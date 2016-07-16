@@ -275,7 +275,7 @@ Schemas.Room = new SimpleSchema({
     }
 });
 
-Schemas.PrivateRoom = new SimpleSchema({
+Schemas.CommunityStation = new SimpleSchema({
     name: {
         type: String,
         label: "Room Name",
@@ -680,5 +680,5 @@ Reports.attachSchema(Schemas.Report);
 Feedback.attachSchema(Schemas.Feedback);
 Songs.attachSchema(Schemas.FullSong);
 News.attachSchema(Schemas.Article);
-PrivateRooms.attachSchema(Schemas.PrivateRoom);
+CommunityStations.attachSchema(Schemas.CommunityStation);
 PrivatePlaylists.attachSchema(Schemas.PrivatePlaylist);

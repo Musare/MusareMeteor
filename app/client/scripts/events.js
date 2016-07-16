@@ -1632,10 +1632,10 @@ Template.room.events({
     }
 });
 
-Template.privateRoom.events({
+Template.communityStation.events({
     "click #delete_room": function() {
-        var name = Session.get("privateRoomName");
-        Meteor.call("deletePrivateRoom", name, function(err) {
+        var name = Session.get("CommunityStationName");
+        Meteor.call("deleteCommunityStation", name, function(err) {
             if (err) {
                 console.log(err);
                 var $toastContent = $('<span><strong>Room not deleted.</strong> ' + err.reason + '</span>');
@@ -1648,13 +1648,13 @@ Template.privateRoom.events({
         $("#edit_room_modal").closeModal();
     },
     "click #save_edit_room_changes": function() {
-        var name = Session.get("privateRoomName");
+        var name = Session.get("CommunityStationName");
         var display = $("#edit_room_display").val();
         var desc = $("#edit_room_description").val();
         var privacy = $("#edit_room_privacy").val();
-        var room = PrivateRooms.findOne({name: name});
+        var room = CommunityStations.findOne({name: name});
         if (desc !== room.roomDesc) {
-            Meteor.call("changePrivateRoomDescription", name, desc, function (err) {
+            Meteor.call("changeCommunityStationDescription", name, desc, function (err) {
                 if (err) {
                     var $toastContent = $('<span><strong>Description not changed.</strong> ' + err.reason + '</span>');
                     Materialize.toast($toastContent, 2000);
@@ -1665,7 +1665,7 @@ Template.privateRoom.events({
             });
         }
         if (display !== room.displayName) {
-            Meteor.call("changePrivateRoomDisplayName", name, display, function (err) {
+            Meteor.call("changeCommunityStationDisplayName", name, display, function (err) {
                 if (err) {
                     var $toastContent = $('<span><strong>Display Name not changed.</strong> ' + err.reason + '</span>');
                     Materialize.toast($toastContent, 2000);
@@ -1676,7 +1676,7 @@ Template.privateRoom.events({
             });
         }
         if (privacy !== room.privacy) {
-            Meteor.call("changePrivateRoomPrivacy", name, privacy, function (err) {
+            Meteor.call("changeCommunityStationPrivacy", name, privacy, function (err) {
                 if (err) {
                     var $toastContent = $('<span><strong>Privacy not changed.</strong> ' + err.reason + '</span>');
                     Materialize.toast($toastContent, 2000);
@@ -1700,7 +1700,7 @@ Template.privateRoom.events({
     },
     "click #sync": function () {
         if (Session.get("currentSong") !== undefined) {
-            var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+            var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
             if (room !== undefined) {
                 var timeIn = Date.now() - Session.get("currentSong").started - room.timePaused;
                 if (YTPlayer !== undefined) {
@@ -1739,7 +1739,7 @@ Template.privateRoom.events({
     "click #add-allowed-submit": function (e) {
         if(Meteor.userId()){
             e.preventDefault();
-            Meteor.call("addAllowedToPrivateRoom", Session.get("privateRoomName"), $("#add-allowed").val(), function(err) {
+            Meteor.call("addAllowedToCommunityStation", Session.get("CommunityStationName"), $("#add-allowed").val(), function(err) {
                 if (err) {
                     console.log(err);
                     var $toastContent = $('<span><strong>User not added.</strong> ' + err.reason + '</span>');
@@ -1761,7 +1761,7 @@ Template.privateRoom.events({
         }
     },
     "click #vote-skip": function () {
-        Meteor.call("votePrivateSkip", Session.get("privateRoomName"), function (err, res) {
+        Meteor.call("votePrivateSkip", Session.get("CommunityStationName"), function (err, res) {
             $("#vote-skip").addClass("disabled");
             if(err){
                 var $toastContent = $('<span><strong>Vote not submitted.</strong> ' + err.reason + '</span>');
@@ -1780,7 +1780,7 @@ Template.privateRoom.events({
         }
     },
     "click #play": function () {
-        Meteor.call("resumePrivateRoom", Session.get("privateRoomName"), function(err) {
+        Meteor.call("resumeCommunityStation", Session.get("CommunityStationName"), function(err) {
             if (err) {
                 console.log(err);
                 var $toastContent = $('<span><strong>Room not played.</strong> ' + err.reason + '</span>');
@@ -1792,7 +1792,7 @@ Template.privateRoom.events({
         });
     },
     "click #pause": function () {
-        Meteor.call("pausePrivateRoom", Session.get("privateRoomName"), function(err) {
+        Meteor.call("pauseCommunityStation", Session.get("CommunityStationName"), function(err) {
             if (err) {
                 console.log(err);
                 var $toastContent = $('<span><strong>Room not paused.</strong> ' + err.reason + '</span>');
@@ -1804,7 +1804,7 @@ Template.privateRoom.events({
         });
     },
     "click #skip": function () {
-        Meteor.call("skipPrivateSong", Session.get("privateRoomName"), function(err) {
+        Meteor.call("skipPrivateSong", Session.get("CommunityStationName"), function(err) {
             if (err) {
                 console.log(err);
                 var $toastContent = $('<span><strong>Room not skipped.</strong> ' + err.reason + '</span>');
@@ -1825,7 +1825,7 @@ Template.privateRoom.events({
         if (user === undefined) {
             user = $(e.target).parent().data("user");
         }
-        Meteor.call("removeAllowedFromPrivateRoom", Session.get("privateRoomName"), user, function(err) {
+        Meteor.call("removeAllowedFromCommunityStation", Session.get("CommunityStationName"), user, function(err) {
             if (err) {
                 console.log(err);
                 var $toastContent = $('<span><strong>User not removed.</strong> ' + err.reason + '</span>');
@@ -1900,7 +1900,7 @@ Template.privateRoom.events({
                 var $toastContent = $('<span><strong>Playlist not created.</strong> ' + err.reason + '</span>');
                 Materialize.toast($toastContent, 2000);
             } else {
-                var $toastContent = $('<span><strong>playlist created.</strong></span>');
+                var $toastContent = $('<span><strong>Playlist created.</strong></span>');
                 Materialize.toast($toastContent, 2000);
             }
         });
@@ -1920,29 +1920,29 @@ Template.privateRoom.events({
         e.preventDefault();
         $("#edit_playlist_modal").closeModal();
         var name = $(e.target).data("playlist");
-        Meteor.call("setPlaylistForPrivateRoom", Session.get("privateRoomName"), name);
+        Meteor.call("setPlaylistForCommunityStation", Session.get("CommunityStationName"), name);
     }
 });
 
 Template.home.events({
-    "click #create_private_room_submit": function () {
-         var name = $("#create_private_room_name").val();
-         var displayName = $("#create_private_room_display_name").val();
-         var description = $("#create_private_room_description").val();
-         Meteor.call("createPrivateRoom", name, displayName, true, description, function(err) {
+    "click #create_community_station_submit": function () {
+         var name = $("#create_community_station_name").val();
+         var displayName = $("#create_community_station_display_name").val();
+         var description = $("#create_community_station_description").val();
+         Meteor.call("createCommunityStation", name, displayName, true, description, function(err) {
              if (err) {
                  console.log(err);
-                 var $toastContent = $('<span><strong>Private room not created.</strong> ' + err.reason + '</span>');
+                 var $toastContent = $('<span><strong>Community room not created.</strong> ' + err.reason + '</span>');
                  Materialize.toast($toastContent, 2000);
              } else {
-                 var $toastContent = $('<span><strong>Private room created.</strong></span>');
+                 var $toastContent = $('<span><strong>Community room created.</strong></span>');
                  Materialize.toast($toastContent, 2000);
              }
          });
-         $("#create_private_room_name").val("");
-         $("#create_private_room_display_name").val("");
-         $("#create_private_room_description").val("");
-        $("#create_private_room").closeModal();
+         $("#create_community_station_name").val("");
+         $("#create_community_station_display_name").val("");
+         $("#create_community_station_description").val("");
+        $("#create_community_station").closeModal();
     }
 });
 // Settings Template

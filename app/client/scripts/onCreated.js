@@ -389,7 +389,7 @@ Template.room.onCreated(function () {
     }, 1000);
 });
 
-Template.privateRoom.onCreated(function () {
+Template.communityStation.onCreated(function () {
     Chat.after.find(function(userId, selector) {
         if (selector.type === "global") {
             if (!$("#global-chat-tab").hasClass("active")) {
@@ -418,9 +418,9 @@ Template.privateRoom.onCreated(function () {
     var currentSongR = undefined;
 
     function getTimeElapsed() {
-        var name = Session.get("privateRoomName");
+        var name = Session.get("CommunityStationName");
         if (currentSong !== undefined) {
-            var room = PrivateRooms.findOne({name: name});
+            var room = CommunityStations.findOne({name: name});
             if (room !== undefined) {
                 return Date.now() - currentSong.started - room.timePaused;
             }
@@ -517,18 +517,18 @@ Template.privateRoom.onCreated(function () {
     }
 
     Session.set("loaded", false);
-    Meteor.subscribe("private_rooms", function() {
+    Meteor.subscribe("community_stations", function() {
         var parts = location.href.split('/');
         var id = parts.pop();
         var name = id.toLowerCase();
-        Session.set("privateRoomName", name);
-        if (PrivateRooms.find({name: name}).count() !== 1) {
+        Session.set("CommunityStationName", name);
+        if (CommunityStations.find({name: name}).count() !== 1) {
             window.location = "/";
         } else {
             StationSubscription = Meteor.subscribe("pr_" + name);
             Session.set("loaded", true);
             Session.set("minterval", Meteor.setInterval(function () {
-                var room = PrivateRooms.findOne({name: name});
+                var room = CommunityStations.findOne({name: name});
                 if (room !== undefined) {
                     if (room.state === "paused" || Session.get("pauseVideo")) {
                         Session.set("state", "paused");

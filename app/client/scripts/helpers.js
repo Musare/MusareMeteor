@@ -118,7 +118,7 @@ Template.home.helpers({
     },
     currentPrivateSong: function () {
         var name = this.name;
-        var room = PrivateRooms.findOne({name: name});
+        var room = CommunityStations.findOne({name: name});
         if (room !== undefined) {
             return room.currentSong;
         } else {
@@ -127,7 +127,7 @@ Template.home.helpers({
     },
     userPrivateNum: function () {
         var name = this.name;
-        var userNum = PrivateRooms.findOne({name: name}).users;
+        var userNum = CommunityStations.findOne({name: name}).users;
         return userNum;
     }
 });
@@ -549,9 +549,9 @@ Template.room.helpers({
     }
 });
 
-Template.privateRoom.helpers({
-    privateRoomOwnerName: function() {
-        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+Template.communityStation.helpers({
+    communityStationOwnerName: function() {
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
         if (room !== undefined) {
             return Meteor.users.findOne(room.owner).profile.username;
         } else {
@@ -562,7 +562,7 @@ Template.privateRoom.helpers({
         return PrivatePlaylists.findOne({owner: Meteor.userId(), name: Session.get("editingPlaylistName")});
     },
     isPlaylistSelected: function(roomName, playlistName) {
-        return PrivateRooms.findOne({name: roomName}).playlist === playlistName;
+        return CommunityStations.findOne({name: roomName}).playlist === playlistName;
     },
     globalChat: function () {
         Meteor.setTimeout(function () {
@@ -578,10 +578,10 @@ Template.privateRoom.helpers({
         });
         return messages;
     },
-    privateRoomDisplayName: function () {
+    communityStationDisplayName: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
-        return PrivateRooms.findOne({name: id}).displayName;
+        return CommunityStations.findOne({name: id}).displayName;
     },
     name: function () {
         var parts = location.href.split('/');
@@ -591,13 +591,13 @@ Template.privateRoom.helpers({
     users: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
-        return PrivateRooms.findOne({name: id}).userList.length;
+        return CommunityStations.findOne({name: id}).userList.length;
     },
     allowed: function () {
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();deploy
         var arr = [];
-        PrivateRooms.findOne({name: id}).allowed.forEach(function(allowed) {
+        CommunityStations.findOne({name: id}).allowed.forEach(function(allowed) {
             arr.push({name: Meteor.users.findOne(allowed).profile.username, id: allowed});
         });
         return arr;
@@ -615,7 +615,7 @@ Template.privateRoom.helpers({
         return Session.get("state") === "paused";
     },
     private: function () {
-        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
         if (room !== undefined) {
             return room.private;
         } else {
@@ -629,7 +629,7 @@ Template.privateRoom.helpers({
         return Session.get("currentSong");
     },
     votes: function () {
-        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
         if (room !== undefined) {
             return room.votes;
         } else {
@@ -638,7 +638,7 @@ Template.privateRoom.helpers({
     },
     usersInRoom: function() {
         var userList = [];
-        var room = PrivateRooms.findOne({name: Session.get("privateRoomName")});
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
         if (room !== undefined) {
             var roomUserList = room.userList;
             roomUserList.forEach(function (user) {
@@ -655,7 +655,7 @@ Template.privateRoom.helpers({
         setTimeout(function() {
             Materialize.updateTextFields();
         }, 100);
-        return PrivateRooms.findOne({name: id});
+        return CommunityStations.findOne({name: id});
     }
 });
 

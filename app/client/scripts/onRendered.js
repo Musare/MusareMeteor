@@ -98,7 +98,7 @@ Template.room.onRendered(function() {
     }, 1000)
 });
 
-Template.privateRoom.onRendered(function() {
+Template.communityStation.onRendered(function() {
     if (Session.get("rTimeInterval") !== undefined) {
         Meteor.clearInterval(Session.get("rTimeInterval"))
     }
@@ -106,7 +106,7 @@ Template.privateRoom.onRendered(function() {
         Session.set("time", new Date().getTime());
         var parts = location.href.split('/');
         var id = parts.pop().toLowerCase();
-        if (PrivateRooms.findOne({name: id}) === undefined) {
+        if (CommunityStations.findOne({name: id}) === undefined) {
             location.href = "/";
         }
     }, 10000));
