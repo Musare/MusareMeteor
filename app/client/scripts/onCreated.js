@@ -475,7 +475,7 @@ Template.communityStation.onCreated(function () {
                                         function recursion() {
                                             Meteor.setTimeout(function() {
                                                 if (event.target.getPlayerState() === 1 && Session.get("state") === "playing") {
-                                                    event.target.seekTo(Number(currentSong.skipDuration) + getTimeElapsed() / 1000);
+                                                    event.target.seekTo(getTimeElapsed() / 1000);
                                                 } else {
                                                     recursion();
                                                 }

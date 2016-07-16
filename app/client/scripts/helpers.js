@@ -595,7 +595,7 @@ Template.communityStation.helpers({
     },
     allowed: function () {
         var parts = location.href.split('/');
-        var id = parts.pop().toLowerCase();deploy
+        var id = parts.pop().toLowerCase();
         var arr = [];
         CommunityStations.findOne({name: id}).allowed.forEach(function(allowed) {
             arr.push({name: Meteor.users.findOne(allowed).profile.username, id: allowed});

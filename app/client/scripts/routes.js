@@ -187,18 +187,21 @@ Router.route("/u/:user", {
 
 Router.route("/community/:name", {
     waitOn: function() {
-        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("community_stations")];
+        return [Meteor.subscribe("isModerator", Meteor.userId()), Meteor.subscribe("isAdmin", Meteor.userId()), Meteor.subscribe("community_station", this.params.name)];
     },
     action: function() {
         var user = Meteor.users.findOne({});
         var room = CommunityStations.findOne({name: this.params.name});
         if (room !== undefined) {
             if (
-                (room.privacy === "private" && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) ||
-                (user !== undefined && user.profile !== undefined && room.allowed.includes(Meteor.userId())) ||
-                room.privacy !== "private" ||
-                room.owner === Meteor.userId()) {
-                Session.set("type", this.params.type);
+                (room !== undefined)
+                    &&
+                (
+                    (room.privacy === "private" && user !== undefined && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")) ||
+                    (user !== undefined && user.profile !== undefined && room.allowed.includes(Meteor.userId())) ||
+                    room.privacy !== "private" ||
+                    room.owner === Meteor.userId())
+                ) {
                 this.render("communityStation");
             } else {
                 this.redirect("/");

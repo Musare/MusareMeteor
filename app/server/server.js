@@ -773,6 +773,21 @@ Meteor.publish("community_stations", function () {
     }
 });
 
+Meteor.publish("community_station", function (name) {
+    var userId = this.userId;
+    if (userId) {
+        var user = Meteor.users.findOne(userId);
+        if (user.profile.rank === "admin" || user.profile.rank === "moderator") {
+            return CommunityStations.find({name: name});
+        } else {
+            return CommunityStations.find({name: name, $or: [{owner: userId}, {privacy: "public"}]});
+        }
+    } else {
+        return CommunityStations.find({name: name, $or: [{privacy: "public"}, {privacy: "unlisted"}]});
+    }
+});
+
+
 Meteor.publish("private_playlists", function () {
     if (this.userId !== undefined) {
         return PrivatePlaylists.find({owner: this.userId});
