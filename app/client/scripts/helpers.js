@@ -193,24 +193,30 @@ Template.profile.helpers({
     },
     likedSongs: function () {
         var likedArr = [];
-        Session.get("liked").forEach(function (mid) {
-            Songs.find().forEach(function (data) {
-                if (data.mid === mid) {
-                    likedArr.push({title: data.title, artist: data.artist});
-                }
+        var liked = Session.get("liked");
+        if (liked !== undefined) {
+            liked.forEach(function (mid) {
+                Songs.find().forEach(function (data) {
+                    if (data.mid === mid) {
+                        likedArr.push({title: data.title, artist: data.artist});
+                    }
+                });
             });
-        });
+        }
         return likedArr;
     },
     dislikedSongs: function () {
         var dislikedArr = [];
-        Session.get("disliked").forEach(function (mid) {
-            Songs.find().forEach(function (data) {
-                if (data.mid === mid) {
-                    dislikedArr.push({title: data.title, artist: data.artist});
-                }
+        var disliked = Session.get("disliked");
+        if (disliked !== undefined) {
+            disliked.forEach(function (mid) {
+                Songs.find().forEach(function (data) {
+                    if (data.mid === mid) {
+                        dislikedArr.push({title: data.title, artist: data.artist});
+                    }
+                });
             });
-        });
+        }
         return dislikedArr;
     },
     isUser: function () {

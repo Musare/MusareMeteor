@@ -748,7 +748,7 @@ Meteor.publish("userData", function (userId) {
 });
 
 Meteor.publish("usernames", function () {
-    return Meteor.users.find({}, {fields: {"profile.username": 1}})
+    return Meteor.users.find({}, {fields: {"profile.username": 1, "profile.usernameL": 1}})
 });
 
 Meteor.publish("playlists", function () {
@@ -817,6 +817,20 @@ Meteor.publish("chat", function () {
 });
 
 Meteor.publish("userProfiles", function (username) {
+    username = username.toLowerCase();
+    console.log(username);
+    console.log(Meteor.users.find({"profile.usernameL": username}, {
+        fields: {
+        "profile.username": 1,
+        "profile.usernameL": 1,
+        "profile.rank": 1,
+        createdAt: 1,
+        "profile.liked": 1,
+        "profile.disliked": 1,
+        "profile.settings": 1,
+        "profile.realname": 1
+        }
+    }).fetch());
     var settings = Meteor.users.findOne({"profile.usernameL": username}, {fields: {"profile.settings": 1}});
     if (settings !== undefined && settings.profile.settings) {
         settings = settings.profile.settings;
