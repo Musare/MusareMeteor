@@ -3,13 +3,13 @@
         <nav>
             <div class="nav-wrapper light-blue accent-4">
                 <ul class="left hide-on-med-and-down">
-                    <li><a href="/"><i class="material-icons">home</i></a></li>
+                    <li><a style="margin-left: 0px; padding-left: 20px; padding-right: 20px;" href="/" class="brand-logo">Musare</a></li>
                     <!--li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li-->
                     {{#if isCommunityStationOwner name}}
                         {{#if playing}}
-                            <li><a id="pause" data-position="bottom" data-delay="50" data-tooltip="Pause this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">pause</i></a></li>
+                            <li style="margin-left: 134px;"><a id="pause" data-position="bottom" data-delay="50" data-tooltip="Pause this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">pause</i></a></li>
                         {{else}}
-                            <li><a id="play" data-position="bottom" data-delay="50" data-tooltip="Play this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">play_arrow</i></a></li>
+                            <li style="margin-left: 134px;"><a id="play" data-position="bottom" data-delay="50" data-tooltip="Play this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">play_arrow</i></a></li>
                         {{/if}}
                         <li><a id="skip" data-position="bottom" data-delay="50" data-tooltip="Skip this song" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">skip_next</i></a></li>
                         <li><a id="edit_room" href="#edit_room_modal" data-position="bottom" data-delay="50" data-tooltip="Edit this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">settings</i></a></li>
@@ -18,12 +18,12 @@
                 <span class="brand-logo center">{{communityStationDisplayName}} <small>(by {{communityStationOwnerName}})</small></span>
                 <ul class="right hide-on-med-and-down">
                     <!--li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li-->
-                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
-                    <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout" data-activates="users-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
+                    <!--li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li-->
                     {{#if isCommunityStationOwner name}}
+                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout" data-activates="users-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
                         <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Allowed" id="allowed-slideout" data-activates="allowed-slide-out" class="tooltipped header-collapse"><i class="material-icons">assignment</i></a></li>
+                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlists" id="playlists-slideout" data-activates="playlists-slide-out" class="tooltipped header-collapse"><i class="material-icons">library_music</i></a></li>
                     {{/if}}
-        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlists" id="playlists-slideout" data-activates="playlists-slide-out" class="tooltipped header-collapse"><i class="material-icons">library_music</i></a></li>
                 </ul>
             </div>
         </nav>
