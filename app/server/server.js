@@ -930,7 +930,7 @@ function isMuted() {
     }
 }
 
-Meteor.methods({
+Meteor.updatedMethods({
     deleteCommunityStation: function(roomName) {
         if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
             CommunityStations.remove({name: roomName});
@@ -963,8 +963,8 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    addVideoToPrivatePlaylist: function(name, id) {
-        if (Meteor.userId() && !isBanned()) {
+    addVideoToPrivatePlaylist: {
+        code: function(name, id) {
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
             if (pl !== undefined) {
                 var copy = false;
@@ -984,12 +984,11 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(404, "Playlist not found.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    removeVideoFromPrivatePlaylist: function(name, id) {
-        if (Meteor.userId() && !isBanned()) {
+    removeVideoFromPrivatePlaylist: {
+        code: function(name, id) {
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
             if (pl !== undefined) {
                 var copy = false;
@@ -1008,12 +1007,11 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(404, "Playlist not found.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    deletePrivatePlaylist: function(name) {
-        if (Meteor.userId() && !isBanned()) {
+    deletePrivatePlaylist: {
+        code: function(name) {
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
             if (pl !== undefined) {
                 PrivatePlaylists.remove({owner: Meteor.userId(), name: name});
@@ -1021,69 +1019,61 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(404, "Playlist not found.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    activateAlert: function(id) {
-        if (isAdmin() && !isBanned()) {
+    activateAlert: {
+        code: function(id) {
             Alerts.update(id, {$set: {active: true}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    deactivateAlert: function(id) {
-        if (isAdmin() && !isBanned()) {
+    deactivateAlert: {
+        code: function(id) {
             Alerts.update(id, {$set: {active: false}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    deleteAlert: function(id) {
-        if (isAdmin() && !isBanned()) {
+    deleteAlert: {
+        code: function(id) {
             Alerts.remove(id);
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    fetchSong: function(type) {
-        if (isAdmin() && !isBanned()) {
+    fetchSong: {
+        code: function(type) {
             getStation(type, function (station) {
                 station.fetchSongs();
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    removeSongs: function(type) {
-        if (isAdmin() && !isBanned()) {
+    removeSongs: {
+        code: function(type) {
             getStation(type, function (station) {
                 station.removeSongs();
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    lockRoom: function (type) {
-        if (isAdmin() && !isBanned()) {
+    lockRoom: {
+        code: function (type) {
             getStation(type, function (station) {
                 station.lock();
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    unlockRoom: function (type) {
-        if (isAdmin() && !isBanned()) {
+    unlockRoom: {
+        code: function (type) {
             getStation(type, function (station) {
                 station.unlock();
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    banUser: function (username, period, reason) {
-        if (isAdmin() && !isBanned()) {
+    banUser: {
+        code: function (username, period, reason) {
             var user = Meteor.user();
             var bannedUser = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
             var bannedUntil = (new Date).getTime() + (period * 1000);
@@ -1099,12 +1089,11 @@ Meteor.methods({
             };
             Meteor.users.update({"profile.usernameL": bannedUser.profile.usernameL}, {$set: {"punishments.ban": banObject}});
             Meteor.users.update({"profile.usernameL": bannedUser.profile.usernameL}, {$push: {"punishments.bans": banObject}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    muteUser: function (username, period) {
-        if (isAdmin() && !isBanned()) {
+    muteUser: {
+        code: function (username, period) {
             var user = Meteor.user();
             var mutedUser = Meteor.users.findOne({"profile.usernameL": username.toLowerCase()});
             if (period === undefined || Number(period) === 0) {
@@ -1119,32 +1108,29 @@ Meteor.methods({
             var muteObject = {mutedBy: user.profile.usernameL, mutedAt: new Date(Date.now()), mutedUntil: mutedUntil};
             Meteor.users.update({"profile.usernameL": mutedUser.profile.usernameL}, {$set: {"punishments.mute": muteObject}});
             Meteor.users.update({"profile.usernameL": mutedUser.profile.usernameL}, {$push: {"punishments.mutes": muteObject}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    unbanUser: function (username) {
-        if (isAdmin() && !isBanned()) {
+    unbanUser: {
+        code: function (username) {
             Meteor.users.update({"profile.usernameL": username.toLowerCase()}, {$unset: "punishments.ban"});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    unsilenceUser: function (username) {
-        if (isAdmin() && !isBanned()) {
+    unsilenceUser: {
+        code: function (username) {
             Meteor.users.update({"profile.usernameL": username.toLowerCase()}, {$unset: "punishments.mute"});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
     isBanned: function () {
-        return isBanned();
+        return Meteor.isBanned();
     },
     isMuted: function () {
         return isMuted();
     },
-    updateSettings: function (showRating) {
-        if (Meteor.userId() && !isBanned()) {
+    updateSettings: {
+        code: function (showRating) {
             var user = Meteor.user();
             if (showRating !== true && showRating !== false) {
                 showRating = true;
@@ -1154,22 +1140,20 @@ Meteor.methods({
             } else {
                 Meteor.users.update({"profile.username": user.profile.username}, {$set: {"profile.settings": {showRating: showRating}}});
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    addAlert: function (description) {
-        if (isAdmin()) {
+    addAlert: {
+        code: function (description) {
             var username = Meteor.user().profile.username;
             description = htmlEntities(description);
             Alerts.insert({description: description, active: true, createdBy: username});
             return true;
-        } else {
-            throw Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    sendMessage: function (type, message) {
-        if (Meteor.userId() && !isBanned() && !isMuted()) {
+    sendMessage: {
+        code: function (type, message) {
             var user = Meteor.user();
             var time = new Date();
             var rawrank = user.profile.rank;
@@ -1184,61 +1168,60 @@ Meteor.methods({
             }
             else if (user.profile.rank === "admin") {
                 /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
-                    if (res.content.indexOf("true") > -1) {
-                        return true;
-                    } else {*/
-                        Chat.insert({
-                            type: type,
-                            rawrank: rawrank,
-                            rank: "[A]",
-                            message: message,
-                            time: time,
-                            username: username
-                        });
-                    /*}
-                });*/
+                 if (res.content.indexOf("true") > -1) {
+                 return true;
+                 } else {*/
+                Chat.insert({
+                    type: type,
+                    rawrank: rawrank,
+                    rank: "[A]",
+                    message: message,
+                    time: time,
+                    username: username
+                });
+                /*}
+                 });*/
                 return true;
             }
             else if (user.profile.rank === "moderator") {
                 /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
-                    if (res.content.indexOf("true") > -1) {
-                        return true;
-                    } else {*/
-                        Chat.insert({
-                            type: type,
-                            rawrank: rawrank,
-                            rank: "[M]",
-                            message: message,
-                            time: time,
-                            username: username
-                        });
-                    /*}
-                });*/
+                 if (res.content.indexOf("true") > -1) {
+                 return true;
+                 } else {*/
+                Chat.insert({
+                    type: type,
+                    rawrank: rawrank,
+                    rank: "[M]",
+                    message: message,
+                    time: time,
+                    username: username
+                });
+                /*}
+                 });*/
                 return true;
             }
             else {
                 /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
-                    if (res.content.indexOf("true") > -1) {
-                        return true;
-                    } else {*/
-                        Chat.insert({
-                            type: type,
-                            rawrank: rawrank,
-                            rank: "",
-                            message: message,
-                            time: time,
-                            username: username
-                        });
-                    /*}
-                });*/
+                 if (res.content.indexOf("true") > -1) {
+                 return true;
+                 } else {*/
+                Chat.insert({
+                    type: type,
+                    rawrank: rawrank,
+                    rank: "",
+                    message: message,
+                    time: time,
+                    username: username
+                });
+                /*}
+                 });*/
                 return true;
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login", "noMute"]
     },
-    likeSong: function (mid) {
-        if (Meteor.userId() && !isBanned()) {
+    likeSong: {
+        code: function (mid) {
             var user = Meteor.user();
             if (user.profile.liked.indexOf(mid) === -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.liked": mid}});
@@ -1253,12 +1236,11 @@ Meteor.methods({
                 Songs.update({mid: mid}, {$inc: {dislikes: -1}})
             }
             return true;
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    dislikeSong: function (mid) {
-        if (Meteor.userId() && !isBanned()) {
+    dislikeSong: {
+        code: function (mid) {
             var user = Meteor.user();
             if (user.profile.disliked.indexOf(mid) === -1) {
                 Meteor.users.update({"profile.username": user.profile.username}, {$push: {"profile.disliked": mid}});
@@ -1273,12 +1255,11 @@ Meteor.methods({
                 Songs.update({mid: mid}, {$inc: {likes: -1}});
             }
             return true;
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    voteSkip: function (type) {
-        if (Meteor.userId() && !isBanned()) {
+    voteSkip: {
+        code: function (type) {
             var user = Meteor.user();
             getStation(type, function (station) {
                 if (station.voted.indexOf(user.profile.username) === -1) {
@@ -1290,11 +1271,12 @@ Meteor.methods({
                 } else {
                     throw new Meteor.Error(401, "Already voted.");
                 }
-            })
-        }
+            });
+        },
+        requirements: ["login"]
     },
-    votePrivateSkip: function (name) {
-        if (Meteor.userId() && !isBanned()) {
+    votePrivateSkip: {
+        code: function (name) {
             var user = Meteor.user();
             getCommunityStation(name, function (station) {
                 if (station.voted.indexOf(user.profile.username) === -1) {
@@ -1306,11 +1288,12 @@ Meteor.methods({
                 } else {
                     throw new Meteor.Error(401, "Already voted.");
                 }
-            })
-        }
+            });
+        },
+        requirements: ["login"]
     },
-    submitReport: function (room, reportData) {
-        if (Meteor.userId() && !isBanned()) {
+    submitReport: {
+        code: function (room, reportData) {
             room = room.toLowerCase();
             if (Rooms.find({type: room}).count() === 1) {
                 if (Reports.find({room: room}).count() === 0) {
@@ -1334,12 +1317,11 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(403, "Invalid genre.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    shufflePlaylist: function (type) {
-        if (isAdmin() && !isBanned()) {
+    shufflePlaylist: {
+        code: function (type) {
             getStation(type, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(404, "Station not found.");
@@ -1348,10 +1330,11 @@ Meteor.methods({
                     station.shufflePlaylist();
                 }
             });
-        }
+        },
+        requirements: ["admin"]
     },
-    skipSong: function (type) {
-        if (isAdmin() && !isBanned()) {
+    skipSong: {
+        code: function (type) {
             getStation(type, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(404, "Station not found.");
@@ -1359,10 +1342,11 @@ Meteor.methods({
                     station.skipSong();
                 }
             });
-        }
+        },
+        requirements: ["admin"]
     },
-    pauseRoom: function (type) {
-        if (isAdmin() && !isBanned()) {
+    pauseRoom: {
+        code: function (type) {
             getStation(type, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
@@ -1370,12 +1354,11 @@ Meteor.methods({
                     station.pauseRoom();
                 }
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    resumeRoom: function (type) {
-        if (isAdmin() && !isBanned()) {
+    resumeRoom: {
+        code: function (type) {
             getStation(type, function (station) {
                 if (station === undefined) {
                     throw new Meteor.Error(403, "Room doesn't exist.");
@@ -1383,9 +1366,8 @@ Meteor.methods({
                     station.resumeRoom();
                 }
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
     skipPrivateSong: function (name) {
         if ((isAdmin() || isCommunityStationOwner(name)) && !isBanned()) {
@@ -1465,8 +1447,8 @@ Meteor.methods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
-    createUserMethod: function (formData, captchaData) {
-        if (!isBanned()) {
+    createUserMethod: {
+        code: function (formData, captchaData) {
             var verifyCaptchaResponse = reCAPTCHA.verifyCaptcha(this.connection.clientAddress, captchaData);
             if (!verifyCaptchaResponse.success) {
                 throw new Meteor.Error(422, 'reCAPTCHA Failed: ' + verifyCaptchaResponse.error);
@@ -1478,10 +1460,11 @@ Meteor.methods({
                 });
             }
             return true;
-        }
+        },
+        requirements: []
     },
-    createArticle: function(data) {
-        if (!isBanned() && isModerator()) {
+    createArticle: {
+        code: function(data) {
             var userId = Meteor.userId();
             var requiredProperties = ["title", "content", "anonymous"];
             if (data !== undefined && Object.keys(data).length === requiredProperties.length) {
@@ -1509,12 +1492,11 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(403, "Invalid data.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    addSongToQueue: function (songData) {
-        if (Meteor.userId() && !isBanned()) {
+    addSongToQueue: {
+        code: function (songData) {
             var userId = Meteor.userId();
             var requiredProperties = ["title", "artist", "id", "genres"];
             if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
@@ -1549,12 +1531,11 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(403, "Invalid data.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    updateQueueSong: function (mid, newSong) {
-        if (isModerator() && !isBanned()) {
+    updateQueueSong: {
+        code: function (mid, newSong) {
             Queues.update({mid: mid}, {$set: {
                 "title": newSong.title,
                 "artist": newSong.artist,
@@ -1571,12 +1552,11 @@ Meteor.methods({
                     return true;
                 }
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    updatePlaylistSong: function (mid, newSong) {
-        if (isModerator() && !isBanned()) {
+    updatePlaylistSong: {
+        code: function (mid, newSong) {
             Songs.update({mid: mid}, {$set: {
                 "title": newSong.title,
                 "artist": newSong.artist,
@@ -1595,40 +1575,29 @@ Meteor.methods({
                 }
             });
             return true;
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    removeSongFromQueue: function (mid) {
-        if (isModerator() && !isBanned()) {
+    removeSongFromQueue: {
+        code: function (mid) {
             Queues.remove({mid: mid});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    removeSongFromPlaylist: function (type, mid) {
-        if (isModerator() && !isBanned()) {
+    removeSongFromPlaylist: {
+        code: function (type, mid) {
             Playlists.update({type: type}, {$pull: {songs: mid}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    deleteSong: function (mid) {
-        if (isModerator() && !isBanned()) {
+    deleteSong: {
+        code: function (mid) {
             Songs.remove({mid: mid})
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    deleteSong: function (mid) {
-        if (isModerator() && !isBanned()) {
-            Songs.remove({mid: mid})
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
-    },
-    addSongToPlaylist: function (songData) {
-        if (isModerator() && !isBanned()) {
+    addSongToPlaylist: {
+        code: function (songData) {
             var requiredProperties = ["_id", "mid", "id", "title", "artist", "duration", "skipDuration", "img", "likes", "dislikes", "requestedBy", "genres"];
             if (songData !== undefined && Object.keys(songData).length === requiredProperties.length) {
                 for (var property in requiredProperties) {
@@ -1652,64 +1621,59 @@ Meteor.methods({
             } else {
                 throw new Meteor.Error(403, "Invalid data.");
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["moderator"]
     },
-    createRoom: function (display, tag, private, desc) {
-        if (isAdmin() && !isBanned()) {
+    createRoom: {
+        code: function (display, tag, private, desc) {
             createRoom(display, tag, private, desc);
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    createCommunityStation: function (name, display, private, desc) {
-        if (Meteor.userId() && !isBanned()) {
+    createCommunityStation: {
+        code: function (name, display, private, desc) {
             name = name.toLowerCase();
             createCommunityStation(name, display, private, desc, Meteor.userId());
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    createPrivatePlaylist: function (name, display) {
-        if (Meteor.userId() && !isBanned()) {
-			name = name.toLowerCase();
+    createPrivatePlaylist: {
+        code: function (name, display) {
+            name = name.toLowerCase();
             if (PrivatePlaylists.findOne({name: name, owner: Meteor.userId()}) === undefined) {
                 PrivatePlaylists.insert({name: name, displayName: display, songs: [{id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}], owner: Meteor.userId()});
             }
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    deleteRoom: function (type) {
-        if (isAdmin() && !isBanned()) {
+    deleteRoom: {
+        code: function (type) {
             Rooms.remove({type: type});
             return true;
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    getUserNum: function () {
-        if (!isBanned()) {
+    getUserNum: {
+        code: function () {
             return Object.keys(Meteor.default_server.sessions).length;
-        }
+        },
+        requirements: []
     },
     getTotalUsers: function () {
         return Meteor.users.find().count();
     },
-    updateRealName: function (realname) {
-        if (Meteor.userId()) {
+    updateRealName: {
+        code: function (realname) {
             var oldName = Meteor.users.findOne(Meteor.userId()).profile.realname;
             Meteor.users.update(Meteor.userId(), {
                 $set: {"profile.realname": realname},
                 $push: {"profile.realnames": oldName}
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    updateUserName: function (newUserName) {
-        if (Meteor.userId()) {
+    updateUserName: {
+        code: function (newUserName) {
             var oldUsername = Meteor.users.findOne(Meteor.userId()).profile.username;
             Meteor.users.update(Meteor.userId(), {
                 $set: {
@@ -1718,9 +1682,8 @@ Meteor.methods({
                     "profile.usernameL": newUserName.toLowerCase()
                 }, $push: {"profile.usernames": oldUsername}
             });
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
     /*updateUserRank: function(newRank){
      if (Meteor.userId()) {
@@ -1729,33 +1692,33 @@ Meteor.methods({
      throw new Meteor.Error(403, "Invalid permissions.");
      }
      },*/
-    deleteAccount: function () {
-        if (Meteor.userId()) {
+    deleteAccount: {
+        code: function () {
             var user = Meteor.users.findOne(Meteor.userId());
             Meteor.users.remove({_id: Meteor.userId()});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["login"]
     },
-    sendFeedback: function(message){
-        if(Meteor.userId() && !isBanned()) {
-            HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
+    sendFeedback: {
+        code: function(message){
+            /*HTTP.call("GET", "http://www.wdyl.com/profanity?q=" + encodeURIComponent(message), function (err, res) {
                 if (res.content.indexOf("true") > -1) {
                     return true;
-                } else {
+                } else {*/
                     Feedback.insert({
                         "username": Meteor.user().profile.username,
                         "message": message,
                         "upvotes": 0,
                         "upvotedBy": []
                     })
-                }
-            });
-        }
+                /*}
+            });*/
+        },
+        requirements: ["login"]
     },
-    upvoteFeedback: function(message){
-        if(Meteor.userId() && !isBanned()){
-            console.log(Feedback.findOne({"message": message}));
+    upvoteFeedback: {
+        code: function(message){
+            //TODO Fix feedback upvoting to use Id's
             if(Feedback.findOne({"message": message}).upvotedBy.indexOf(Meteor.user().profile.username) === -1){
                 Feedback.update({"message": message}, {$inc: {"upvotes": 1}});
                 Feedback.update({"message": message}, {$push: {"upvotedBy": Meteor.user().profile.username}});
@@ -1763,35 +1726,32 @@ Meteor.methods({
                 Feedback.update({"message": message}, {$inc: {"upvotes": -1}});
                 Feedback.update({"message": message}, {$pull: {"upvotedBy": Meteor.user().profile.username}});
             }
-        }
+        },
+        requirements: ["login"]
     },
-    deleteFeedback: function(message){
-        if(isAdmin() && !isBanned()){
+    deleteFeedback: {
+        code: function(message){
             Feedback.remove({"message": message});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    updateFeedback: function(oldMessage, newMessage){
-        if(isAdmin() && !isBanned()){
+    updateFeedback: {
+        code: function(oldMessage, newMessage){
             Feedback.update({"message": oldMessage}, {$set: {"message": newMessage}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    editRoomDesc: function(type, description){
-        if(isAdmin() && !isBanned()){
+    editRoomDesc: {
+        code: function(type, description){
             Rooms.update({type: type}, {$set: {"roomDesc": description}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     },
-    removeReport: function(query, obj){
-        if(isAdmin() && !isBanned()){
+    removeReport: {
+        code: function(query, obj){
             Reports.update(query, {$pull: {"report": obj}});
-        } else {
-            throw new Meteor.Error(403, "Invalid permissions.");
-        }
+        },
+        requirements: ["admin"]
     }
 });
 

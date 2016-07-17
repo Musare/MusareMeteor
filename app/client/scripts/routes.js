@@ -39,7 +39,7 @@ Router.route("/login", {
     action: function() {
         var user = Meteor.user();
         if (user === undefined || user === null) {
-            this.render("login");
+            this.render("loginRegister");
         } else {
             this.redirect("/");
         }
@@ -51,7 +51,7 @@ Router.route("/register", {
     action: function() {
         var user = Meteor.user();
         if (user === undefined || user === null) {
-            this.render("register");
+            this.render("loginRegister");
         } else {
             this.redirect("/");
         }

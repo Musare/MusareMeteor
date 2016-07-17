@@ -2,7 +2,8 @@
     <header>
         <!-- Dropdown Structure -->
         <ul id="contributeDrop" class="dropdown-content">
-            <li><a href="https://www.github.com/Musare/Musare" target="_blank" class="grey-text text-darken-4">Github</a></li>
+            <li><a href="https://www.github.com/Musare/Musare" target="_blank"
+                   class="grey-text text-darken-4">Github</a></li>
             <li><a href="/feedback" class="grey-text text-darken-4">Feedback</a></li>
         </ul>
         <ul id="aboutDrop" class="dropdown-content">
@@ -16,8 +17,7 @@
                 <li class="divider"></li>
                 <li class="logout"><a class="grey-text text-darken-4">Logout</a></li>
             {{else}}
-                <li><a href="/login" class="grey-text text-darken-4">Login</a></li>
-                <li><a href="/register" class="grey-text text-darken-4">Register</a></li>
+                <li><a href="/login" class="grey-text text-darken-4">Login / Register</a></li>
             {{/if}}
         </ul>
         <nav>
@@ -25,9 +25,9 @@
                 <a href="/" class="brand-logo"><img src="/logo.png" class="responsive-img" style="height: 60px;"/></a>
                 <a href="#" data-activates="mobile-navi" class="button-collapse white-text"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down scroll-fix">
-                  {{#if isModerator}}
-                    <li><a  class="light-blue-text text-accent-4" href="/admin"><b>Admin</b></a></li>
-                  {{/if}}
+                    {{#if isModerator}}
+                        <li><a class="light-blue-text text-accent-4" href="/admin"><b>Admin</b></a></li>
+                    {{/if}}
                     <li><a href="/news" class="white-text">News</a></li>
                     <li><a class="dropdown-button white-text" href="#!" data-activates="contributeDrop">Contribute<i
                             class="material-icons right">arrow_drop_down</i></a></li>
@@ -43,9 +43,9 @@
                 </ul>
                 <ul class="side-nav" id="mobile-navi" style="width: 240px;">
                     <ul class="collapsible" data-collapsible="accordion">
-                      {{#if isModerator}}
-                        <li><a href="/admin">Admin</a></li>
-                      {{/if}}
+                        {{#if isModerator}}
+                            <li><a href="/admin">Admin</a></li>
+                        {{/if}}
                         <li>
                             <a href="/news">News</a>
                         </li>
@@ -76,8 +76,7 @@
                                 {{/if}}
                             </div>
                             <div class="collapsible-body black-text">
-                                <a href="/login">Login</a>
-                                <a href="/register">Register</a>
+                                <a href="/login">Login / Register</a>
                             </div>
                         </li>
                     </ul>

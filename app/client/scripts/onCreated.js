@@ -25,17 +25,12 @@ Template.home.onCreated(function() {
     Session.set("type", undefined);
 });
 
-Template.login.onCreated(function() {
+Template.loginRegister.onCreated(function() {
     Session.set("github", true);
     Accounts.onLoginFailure(function() {
         if (Session.get("github") === true) {
-            var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to log in with GitHub.</div>');
-            $(".landing").before(errAlert);
-            Meteor.setTimeout(function() {
-                errAlert.fadeOut(5000, function() {
-                    errAlert.remove();
-                });
-            }, 10000);
+            var $toastContent = $('<span><strong>Oh Snap!</strong> Something went wrong when trying to log in/register with GitHub. Maybe an account with that username is already registered?</span>');
+            Materialize.toast($toastContent, 8000);
         }
     });
 });
@@ -116,18 +111,6 @@ Template.manageSongs.onCreated(function() {
                 $("#save-song-button").click();
             }
         }
-    });
-});
-
-Template.register.onCreated(function() {
-    Accounts.onLoginFailure(function() {
-        var errAlert = $('<div style="margin-bottom: 0" class="alert alert-danger" role="alert"><strong>Oh Snap!</strong> Something went wrong when trying to register with GitHub. Maybe an account with that username already exists?</div>');
-        $(".landing").before(errAlert);
-        Meteor.setTimeout(function() {
-            errAlert.fadeOut(5000, function() {
-                errAlert.remove();
-            });
-        }, 10000);
     });
 });
 

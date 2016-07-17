@@ -102,11 +102,16 @@
     </div>
     <div id="users-slide-out" class="side-nav room-slideout">
         <h5>Users In Room</h5>
-        <ul>
+        <ul style="margin-bottom: 64px;">
             {{#each usersInRoom}}
                 <li><a href=/u/{{this}} target="_blank">{{this}}</a></li>
             {{/each}}
         </ul>
+        {{#if currentUser}}
+            <a class="btn btn-block musare white-text waves-effect waves-light" href="#" id="logout" style="position: fixed; bottom: 0; width: 342px;">Logout</a>
+        {{else}}
+            <a class="btn btn-block musare white-text waves-effect waves-light" href="/login" style="position: fixed; bottom: 0; width: 342px;">Login / Register</a>
+        {{/if}}
     </div>
     <!--Admin room controls-->
     <ul id='admin-dropdown' style="background-color: rgb(3, 169, 244) !important; display: none">

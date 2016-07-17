@@ -256,35 +256,9 @@ Template.header.events({
     "click .logout": function(e){
         e.preventDefault();
         Meteor.logout();
-        if (hpSound !== undefined) {
-            hpSound.stop();
-        }
     },
     "click #profile": function(){
         window.location = "/u/" + Meteor.user().profile.username;
-    }
-});
-
-Template.login.events({
-    "submit form": function(e){
-        e.preventDefault();
-        Session.set("github", false);
-        var username = $("#username").val()
-        var password = $("#password").val();
-        Meteor.loginWithPassword(username, password, function(err) {
-            if (err) {
-                var $toastContent = $('<span><strong>Oh snap!</strong> ' + err.reason + '</span>');
-                Materialize.toast($toastContent, 8000);
-            } else {
-                window.location.href = "/";
-            }
-        });
-    },
-
-    "click #github-login": function(){
-        Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
-            console.log(err, res);
-        });
     }
 });
 
@@ -1126,12 +1100,12 @@ Template.manageSongs.events({
     }
 });
 
-Template.register.events({
-    "submit form": function(e){
+Template.loginRegister.events({
+    "submit #register_form": function(e){
         e.preventDefault();
-        var username = $("#username").val();
-        var email = $("#email").val();
-        var password = $("#password").val();
+        var username = $("#register_username").val();
+        var email = $("#register_email").val();
+        var password = $("#register_password").val();
         var acceptedTermsAndPrivacy = $("#termsPrivacyBTN").is(":checked");
         var captchaData = grecaptcha.getResponse();
         if (acceptedTermsAndPrivacy) {
@@ -1154,7 +1128,20 @@ Template.register.events({
             Materialize.toast($toastContent, 8000);
         }
     },
-
+    "submit #login_form": function(e){
+        e.preventDefault();
+        Session.set("github", false);
+        var username = $("#login_username").val()
+        var password = $("#login_password").val();
+        Meteor.loginWithPassword(username, password, function(err) {
+            if (err) {
+                var $toastContent = $('<span><strong>Oh snap!</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 8000);
+            } else {
+                window.location.href = "/";
+            }
+        });
+    },
     "click #github-login": function(){
         Meteor.loginWithGithub({loginStyle: "redirect"}, function(err, res) {
             console.log(err, res);
@@ -1183,6 +1170,9 @@ Template.news.events({
 });
 
 Template.room.events({
+    "click #logout": function() {
+        Meteor.logout();
+    },
     "input #volume_slider": function() {
         var volume = Number($("#volume_slider").val());
         localStorage.setItem("volume", volume);
@@ -1633,6 +1623,9 @@ Template.room.events({
 });
 
 Template.communityStation.events({
+    "click #logout": function() {
+        Meteor.logout();
+    },
     "click #delete_room": function() {
         var name = Session.get("CommunityStationName");
         Meteor.call("deleteCommunityStation", name, function(err) {

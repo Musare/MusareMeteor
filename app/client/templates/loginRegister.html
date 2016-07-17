@@ -1,0 +1,58 @@
+<template name="loginRegister">
+    {{> header}}
+    <main>
+        <div class="container row">
+            <form class="col s12" id="login_form">
+                <h1>Login</h1>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="login_username" type="text" class="validate">
+                        <label for="login_first_name">Username</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="login_password" type="password" class="validate">
+                        <label for="login_password">Password</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </form>
+            <button id="github-login" class="btn waves-effect waves-light grey login-btn">Login With GitHub</button>
+            <hr class="center-block" style="width: 99%">
+            <h1>Register</h1>
+            <form class="col s12" id="register_form">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input id="register_username" type="text" class="validate">
+                        <label for="register_username">Username</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="register_email" type="email" class="validate">
+                        <label for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="register_password" type="password" class="validate">
+                        <label for="password">Password</label>
+                    </div>
+                </div>
+                <div class="row acceptTerms">
+                    <p>
+                        <input type="checkbox" id="termsPrivacyBTN" />
+                        <label for="termsPrivacyBTN">I agree to the <a href="/terms" target="_blank">terms & conditions</a> and <a href="/privacy" target="_blank">privacy policy.</a></label>
+                    </p>
+                </div>
+                {{> reCAPTCHA}}
+                <button class="btn waves-effect waves-light register" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </form>
+            <button id="github-login" class="btn waves-effect waves-light grey login-btn">Login With GitHub</button>
+        </div>
+    </main>
+    {{> footer}}
+</template>

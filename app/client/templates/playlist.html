@@ -7,7 +7,7 @@
         {{#each nextSong}}
             <p style="margin: -20px 0 0 15px; font-weight: 300;">Up Next</p>
             <li class="pl-item" style="color: rgb(3, 169, 244) !important;">
-                <img src={{img}} style="width: 80px; float: left; margin: 0 10px 10px 0;">
+                <img onerror="this.src='/notes.png'" src={{img}} style="width: 80px; float: left; margin: 0 10px 10px 0;">
                 <p style="float:right; margin-top: -20px;">{{formatTime duration}}</p>
                 <p class="pl-title" style="font-size: 1.2em">{{title}}</p>
                 <p id="pl-artist" style="margin-top: -20px; font-size: 0.7em">{{artist}}</p>
