@@ -2,7 +2,7 @@
     {{> header}}
     <main>
         <div class="container row">
-            <form class="col s12" id="login_form">
+            <form class="col s12" id="login_form" style="margin-bottom: 40px;">
                 <h1>Login</h1>
                 <div class="row">
                     <div class="input-field col s6">
@@ -16,14 +16,13 @@
                         <label for="login_password">Password</label>
                     </div>
                 </div>
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                <button class="btn waves-effect waves-light" type="submit" name="action">Log in
                     <i class="material-icons right">send</i>
                 </button>
             </form>
-            <button id="github-login" class="btn waves-effect waves-light grey login-btn">Login With GitHub</button>
             <hr class="center-block" style="width: 99%">
             <h1>Register</h1>
-            <form class="col s12" id="register_form">
+            <form class="col s12" id="register_form" style="margin-bottom: 40px;">
                 <div class="row">
                     <div class="input-field col s6">
                         <input id="register_username" type="text" class="validate">
@@ -47,10 +46,11 @@
                     </p>
                 </div>
                 {{> reCAPTCHA}}
-                <button class="btn waves-effect waves-light register" type="submit" name="action">Submit
+                <button class="btn waves-effect waves-light register" type="submit" name="action">Register
                     <i class="material-icons right">send</i>
                 </button>
             </form>
+            <hr class="center-block" style="width: 99%; margin-bottom: 20px;">
             <button id="github-login" class="btn waves-effect waves-light grey login-btn">Login With GitHub</button>
         </div>
     </main>
