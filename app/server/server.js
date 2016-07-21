@@ -974,7 +974,6 @@ Meteor.updatedMethods({
                     }
                 });
                 if (!copy) {
-                    console.log(getSongDataYT(id));
                     var data = getSongDataYT(id);
                     data.id = id;
                     PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$push: {songs: data}});
@@ -1010,12 +1009,106 @@ Meteor.updatedMethods({
         },
         requirements: ["login"]
     },
+    moveVideoToTopOfPrivatePlaylist: {
+        code: function(name, id) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                var songs = pl.songs;
+                var song;
+                songs.forEach(function(currentSong) {
+                    if (id === currentSong.id) {
+                        song = currentSong;
+                    }
+                });
+                console.log(song);
+                if (song !== undefined) {
+                    var index = songs.indexOf(song);
+                    console.log(index);
+                    console.log(songs.length - 1);
+                    if (index > 0 && songs.length > 1) {
+                        PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$pull: {songs: song}});
+                        PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$push: {
+                            songs: {
+                                $each: [song],
+                                $position: 0
+                            }
+                        }});
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    throw new Meteor.Error(404, "Song not found.");
+                }
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        },
+        requirements: ["login"]
+    },
+    moveVideoToBottomOfPrivatePlaylist: {
+        code: function(name, id) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                var songs = pl.songs;
+                var song;
+                songs.forEach(function(currentSong) {
+                    if (id === currentSong.id) {
+                        song = currentSong;
+                    }
+                });
+                if (song !== undefined) {
+                    var index = songs.indexOf(song);
+                    if (index < (songs.length - 1) && index !== -1) {
+                        PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$pull: {songs: song}});
+                        PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$push: {songs: song}});
+                        return true;
+                    }
+                } else {
+                    throw new Meteor.Error(404, "Song not found.");
+                }
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        },
+        requirements: ["login"]
+    },
     deletePrivatePlaylist: {
         code: function(name) {
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
             if (pl !== undefined) {
                 PrivatePlaylists.remove({owner: Meteor.userId(), name: name});
                 Deleted.insert({type: "PrivatePlaylist", data: pl});
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        },
+        requirements: ["login"]
+    },
+    renamePrivatePlaylistDisplayName: {
+        code: function(name, newDisplayName) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                if (PrivatePlaylists.findOne({owner: Meteor.userId(), displayName: newDisplayName}) === undefined) {
+                    PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$set: {displayName: newDisplayName}});
+                } else {
+                    throw new Meteor.Error(500, "A playlist with that display name already exists.");
+                }
+            } else {
+                throw new Meteor.Error(404, "Playlist not found.");
+            }
+        },
+        requirements: ["login"]
+    },
+    renamePrivatePlaylistName: {
+        code: function(name, newName) {
+            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            if (pl !== undefined) {
+                if (PrivatePlaylists.findOne({owner: Meteor.userId(), name: newName}) === undefined) {
+                    PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$set: {name: newName}});
+                } else {
+                    throw new Meteor.Error(500, "A playlist with that name already exists.");
+                }
             } else {
                 throw new Meteor.Error(404, "Playlist not found.");
             }

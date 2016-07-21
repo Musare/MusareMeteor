@@ -556,6 +556,38 @@ Template.room.helpers({
 });
 
 Template.communityStation.helpers({
+    singleVideoResults: function() {
+        return Session.get("songResults");
+    },
+    singleVideoResultsActive: function() {
+        var songs = Session.get("songResults");
+        if (songs !== undefined && songs.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    hasMoreThanOne: function(array) {
+        if (array.length > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isFirst: function(object, array) {
+        if (_.isEqual(array[0], object) && array.length > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isLast: function(object, array) {
+        if (_.isEqual(array[array.length - 1], object) && array.length > 1) {
+            return true;
+        } else {
+            return false;
+        }
+    },
     communityStationOwnerName: function() {
         var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
         if (room !== undefined) {

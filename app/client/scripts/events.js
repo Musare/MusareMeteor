@@ -1623,6 +1623,23 @@ Template.room.events({
 });
 
 Template.communityStation.events({
+    "click #search-song": function () {
+        var songs = [];
+        Session.set("songResults", songs);
+        $.ajax({
+            type: "GET",
+            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#song-input").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video&maxResults=15",
+            applicationType: "application/json",
+            contentType: "json",
+            success: function (data) {
+                for (var i in data.items) {
+                    var item = data.items[i];
+                    songs.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
+                }
+                Session.set("songResults", songs);
+            }
+        })
+    },
     "click #logout": function() {
         Meteor.logout();
     },
@@ -1829,11 +1846,16 @@ Template.communityStation.events({
             }
         });
     },
-    "click .edit-playlist-button": function(e) {
-        if ($(e.target).hasClass("edit-playlist-button")) {
-            Session.set("editingPlaylistName", $(e.target).data("playlist"), function(err) {
+    "click #rename-playlist-button": function(e) {
+        var newName = $("#rename-playlist-name").val();
+        var newDisplayName = $("#rename-playlist-display-name").val();
+
+        var playlist = PrivatePlaylists.findOne({owner: Meteor.userId(), name: Session.get("editingPlaylistName")});
+        var currentName = playlist.name;
+        var currentDisplayName = playlist.displayName;
+        if (newName !== currentName) {
+            Meteor.call("renamePrivatePlaylistName", Session.get("editingPlaylistName"), newName, function (err) {
                 if (err) {
-                    console.log(err);
                     var $toastContent = $('<span><strong>Playlist name not changed.</strong> ' + err.reason + '</span>');
                     Materialize.toast($toastContent, 2000);
                 } else {
@@ -1842,9 +1864,20 @@ Template.communityStation.events({
                 }
             });
         }
+        if (newDisplayName !== currentDisplayName) {
+            Meteor.call("renamePrivatePlaylistDisplayName", Session.get("editingPlaylistName"), newDisplayName, function (err) {
+                if (err) {
+                    var $toastContent = $('<span><strong>Playlist display name not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>Playlist display name changed.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
+        }
     },
-    "click #add_playlist_video_submit": function() {
-        var id = $("#add_playlist_video").val();
+    "click .addSong": function(e) {
+        var id = $(e.target).attr("data-result");
         var pp = Session.get("editingPlaylistName");
         Meteor.call("addVideoToPrivatePlaylist", pp, id, function(err) {
             if (err) {
@@ -1858,8 +1891,11 @@ Template.communityStation.events({
         });
         $("#add_playlist_video").val("");
     },
-    "click .remove_playlist_button": function(e) {
+    "click .playlistSongRemove": function(e) {
         var id = $(e.target).data("id");
+        if (id === undefined) {
+            id = $(e.target).parent().data("id");
+        }
         Meteor.call("removeVideoFromPrivatePlaylist", Session.get("editingPlaylistName"), id, function(err) {
             if (err) {
                 console.log(err);
@@ -1867,6 +1903,38 @@ Template.communityStation.events({
                 Materialize.toast($toastContent, 2000);
             } else {
                 var $toastContent = $('<span><strong>Video deleted.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
+    },
+    "click .playlistSongDown": function(e) {
+        var id = $(e.target).attr("data-id");
+        if (id === undefined) {
+            id = $(e.target).parent().attr("data-id");
+        }
+        Meteor.call("moveVideoToBottomOfPrivatePlaylist", Session.get("editingPlaylistName"), id, function(err, res) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Video not moved.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else if (res) {
+                var $toastContent = $('<span><strong>Video moved.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
+    },
+    "click .playlistSongUp": function(e) {
+        var id = $(e.target).data("id");
+        if (id === undefined) {
+            id = $(e.target).parent().data("id");
+        }
+        Meteor.call("moveVideoToTopOfPrivatePlaylist", Session.get("editingPlaylistName"), id, function(err, res) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Video not moved.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else if (res) {
+                var $toastContent = $('<span><strong>Video moved.</strong></span>');
                 Materialize.toast($toastContent, 2000);
             }
         });
