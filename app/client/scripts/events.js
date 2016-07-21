@@ -1846,6 +1846,11 @@ Template.communityStation.events({
             }
         });
     },
+    "click .edit-playlist-button": function(e) {
+        if ($(e.target).hasClass("edit-playlist-button")) {
+            Session.set("editingPlaylistName", $(e.target).data("playlist"));
+        }
+    },
     "click #rename-playlist-button": function(e) {
         var newName = $("#rename-playlist-name").val();
         var newDisplayName = $("#rename-playlist-display-name").val();
