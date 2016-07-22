@@ -963,6 +963,14 @@ Meteor.updatedMethods({
             throw new Meteor.Error(403, "Invalid permissions.");
         }
     },
+    setCommunityStationPartyMode: function(roomName, partyMode) {
+        if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
+            partyMode = (typeof partyMode === "boolean") ? partyMode : false;
+            CommunityStations.update({name: roomName}, {$set: {partyModeEnabled: partyMode}});
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
     addVideoToPrivatePlaylist: {
         code: function(name, id) {
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});

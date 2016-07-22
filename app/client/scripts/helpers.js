@@ -556,6 +556,24 @@ Template.room.helpers({
 });
 
 Template.communityStation.helpers({
+    partyModeChecked: function() {
+        var name = Session.get("CommunityStationName");
+        var room = CommunityStations.findOne({name: name});
+        if (room.partyModeEnabled === true) {
+            return "checked";
+        } else {
+            return "";
+        }
+    },
+    partyMode: function() {
+        var name = Session.get("CommunityStationName");
+        var room = CommunityStations.findOne({name: name});
+        if (room.partyModeEnabled === true) {
+            return true;
+        } else {
+            return false;
+        }
+    },
     singleVideoResults: function() {
         return Session.get("songResults");
     },

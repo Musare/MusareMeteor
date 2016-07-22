@@ -362,6 +362,11 @@ Schemas.CommunityStation = new SimpleSchema({
         type: Number,
         label: "Index of the previous song",
         defaultValue: 0
+    },
+    partyModeEnabled: {
+        type: Boolean,
+        label: "Party mode",
+        defaultValue: false
     }
 });
 

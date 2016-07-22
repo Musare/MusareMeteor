@@ -1663,6 +1663,7 @@ Template.communityStation.events({
         var desc = $("#edit_room_description").val();
         var privacy = $("#edit_room_privacy").val();
         var room = CommunityStations.findOne({name: name});
+        var partyMode = $("#partyModeEnabled").is(":checked");
         if (desc !== room.roomDesc) {
             Meteor.call("changeCommunityStationDescription", name, desc, function (err) {
                 if (err) {
@@ -1692,6 +1693,17 @@ Template.communityStation.events({
                     Materialize.toast($toastContent, 2000);
                 } else {
                     var $toastContent = $('<span><strong>Privacy changed.</strong></span>');
+                    Materialize.toast($toastContent, 2000);
+                }
+            });
+        }
+        if (partyMode !== room.partyModeEnabled) {
+            Meteor.call("setCommunityStationPartyMode", name, partyMode, function (err) {
+                if (err) {
+                    var $toastContent = $('<span><strong>Party mode not changed.</strong> ' + err.reason + '</span>');
+                    Materialize.toast($toastContent, 2000);
+                } else {
+                    var $toastContent = $('<span><strong>Party mode changed.</strong></span>');
                     Materialize.toast($toastContent, 2000);
                 }
             });
