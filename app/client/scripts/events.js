@@ -347,13 +347,13 @@ Template.profile.events({
         $("#edit-rank").hide();
         $("#cancel-rank").show();
     },
-    "click #submit-rank": function() {
-        $("#rank").show();
-        $("#rank-div").hide();
-        $("#edit-rank").show();
-        $("#cancel-rank").hide();
-        var newRank = $("#select-rank option:selected").val();
+    "click #promote-rank": function() {
         var username = Session.get("username");
+        Meteor.call("promoteUserRank", username);
+    },
+    "click #demote-rank": function() {
+        var username = Session.get("username");
+        Meteor.call("demoteUserRank", username);
     },
     "click #cancel-rank": function() {
         $("#rank").show();

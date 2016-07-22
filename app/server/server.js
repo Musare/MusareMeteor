@@ -1556,6 +1556,11 @@ Meteor.updatedMethods({
         },
         requirements: []
     },
+    promoteUserMethod: {
+      code: function(user) {
+        Meteor.users.find({"profile.usernameL": username.toLowerCase()})
+      }
+    },
     createArticle: {
         code: function(data) {
             var userId = Meteor.userId();
@@ -1778,13 +1783,24 @@ Meteor.updatedMethods({
         },
         requirements: ["login"]
     },
-    /*updateUserRank: function(newRank){
-     if (Meteor.userId()) {
-     Meteor.users.update(Meteor.userId(), {$set: {"profile.rank": newRank}});
-     } else {
-     throw new Meteor.Error(403, "Invalid permissions.");
-     }
-     },*/
+    promoteUserRank: {
+      code: function(username){
+        if (Meteor.userId()) {
+          Meteor.users.update({"username": username}, {$set: {"profile.rank": "admin"}});
+        } else {
+          throw new Meteor.Error(403, "Invalid permissions.");
+        }
+      }
+    },
+    demoteUserRank: {
+      code: function(username){
+        if (Meteor.userId()) {
+          Meteor.users.update({"username": username}, {$set: {"profile.rank": "default"}});
+        } else {
+          throw new Meteor.Error(403, "Invalid permissions.");
+        }
+      }
+    },
     deleteAccount: {
         code: function () {
             var user = Meteor.users.findOne(Meteor.userId());
