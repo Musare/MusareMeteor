@@ -288,7 +288,8 @@ Schemas.CommunityStation = new SimpleSchema({
     currentSong: {
         type: Object,
         defaultValue: {song: {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"}, started: 0},
-        label: "Current Song Object"
+        label: "Current Song Object",
+        blackbox: true
     },
     "currentSong.song": {
         type: Schemas.UserSong,
@@ -297,6 +298,11 @@ Schemas.CommunityStation = new SimpleSchema({
     "currentSong.started": {
         type: Number,
         label: "Current Song Start Date"
+    },
+    "currentSong.requestedBy": {
+        type: String,
+        label: "Current Song requested by",
+        optional: true
     },
     timePaused: {
         type: Number,
@@ -367,6 +373,24 @@ Schemas.CommunityStation = new SimpleSchema({
         type: Boolean,
         label: "Party mode",
         defaultValue: false
+    },
+    queue: {
+        type: Array,
+        label: "Community station queue",
+        defaultValue: []
+    },
+    "queue.$": {
+        type: new SimpleSchema({
+            song: {
+                type: Schemas.UserSong,
+                label: "Queue song object"
+            },
+            requestedBy: {
+                type: String,
+                label: "User id of person who added song to queue"
+            }
+        }),
+        label: "Queue song"
     }
 });
 

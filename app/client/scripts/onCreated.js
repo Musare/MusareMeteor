@@ -431,11 +431,11 @@ Template.communityStation.onCreated(function () {
         $("#time-elapsed").text("0:00");
         $("#vote-skip").attr("disabled", false);
         if (currentSong !== undefined) {
-            if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined) YTPlayer.stopVideo();
+            if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined && YTPlayer.getPlayerState() === YT.PlayerState.PLAYING) YTPlayer.stopVideo();
 
             var volume = localStorage.getItem("volume") || 20;
-            $("#volume_slider").val(volume);
 
+            $("#volume_slider").val(volume);
             $("#player").show();
             function loadVideo() {
                 if (!Session.get("YTLoaded")) {
@@ -469,7 +469,7 @@ Template.communityStation.onCreated(function () {
                                     },
                                     'onStateChange': function (event) {
                                         if (Session.get("YTLoaded")) {
-                                            if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing") {
+                                            if (event.data == YT.PlayerState.PAUSED && Session.get("state") === "playing" && !Session.get("noCurrentSong")) {
                                                 event.target.seekTo(getTimeElapsed() / 1000);
                                                 event.target.playVideo();
                                             }
@@ -521,7 +521,7 @@ Template.communityStation.onCreated(function () {
                         }
                     } else {
                         Session.set("state", "playing");
-                        if (YTPlayer !== undefined && YTPlayer.getPlayerState !== undefined && YTPlayer.getPlayerState() !== 1) {
+                        if (YTPlayer !== undefined && YTPlayer.getPlayerState !== undefined && YTPlayer.getPlayerState() !== 1 && !Session.get("noCurrentSong")) {
                             YTPlayer.playVideo();
                         }
                     }
@@ -531,14 +531,21 @@ Template.communityStation.onCreated(function () {
                     Session.set("previousSong", currentSong);
                     currentSongR = room.currentSong;
 
-                    currentSong = room.currentSong.song;
-                    currentSong.started = room.currentSong.started;
-                    Session.set("currentSong", currentSong);
-                    Meteor.clearTimeout(Session.get("loadVideoTimeout"));
-                    startSong();
+                    if (!_.isEqual(currentSongR, {})) {
+                        Session.set("noCurrentSong", false);
+                        currentSong = room.currentSong.song;
+                        currentSong.started = room.currentSong.started;
+                        Session.set("currentSong", currentSong);
+                        Meteor.clearTimeout(Session.get("loadVideoTimeout"));
+                        startSong();
+                    } else {
+                        if (YTPlayer !== undefined && YTPlayer.stopVideo !== undefined && YTPlayer.getPlayerState() === YT.PlayerState.PLAYING) YTPlayer.stopVideo();
+                        document.title = "Musare";
+                        Session.set("noCurrentSong", true);
+                    }
                 }
 
-                if (currentSong !== undefined) {
+                if (currentSong !== undefined && !Session.get("noCurrentSong")) {
                     if (room !== undefined) {
                         var duration = (Date.now() - currentSong.started - room.timePaused) / 1000;
                         var song_duration = currentSong.duration;

@@ -491,3 +491,8 @@ input[type=range]::-moz-range-thumb {
 input[type=range]::-ms-thumb {
   background: rgb(3, 169, 244);
 }
+
+.hidden {
+    display: none;
+    height: 0;
+}

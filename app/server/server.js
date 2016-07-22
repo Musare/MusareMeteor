@@ -124,6 +124,7 @@ function getStation(type, cb) {
             return;
         }
     });
+    //TODO Return error
 }
 
 function getCommunityStation(name, cb) {
@@ -133,6 +134,7 @@ function getCommunityStation(name, cb) {
             return;
         }
     });
+    //TODO Return error
 }
 
 function createRoom(display, tag, private, desc) {
@@ -407,6 +409,11 @@ function CommunityStation(name) {
         }
         return undefined;
     });
+
+    this.isPartyModeEnabled = function() {
+        return CommunityStations.findOne({name: name}).partyModeEnabled;
+    };
+
     var self = this;
     var startedAt = Date.now();
     var _room = CommunityStations.findOne({name: name});
@@ -429,38 +436,87 @@ function CommunityStation(name) {
     if (song === undefined) {
         song = {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"};
     }
-    var res = CommunityStations.update({name: name}, {
-        $set: {
-            currentSong: {song: song, started: startedAt},
-            users: 0
-        }
-    });
+    if (this.isPartyModeEnabled()) {
+        var res = CommunityStations.update({name: name}, {
+            $set: {
+                users: 0
+            }
+        });
+    } else {
+        var res = CommunityStations.update({name: name}, {
+            $set: {
+                currentSong: {song: song, started: startedAt},
+                users: 0
+            }
+        });
+    }
+
+    var queue = _room.queue;
 
     this.skipSong = function () {
         self.voted = [];
         voteNum = 0;
         CommunityStations.update({name: name}, {$set: {votes: 0}});
-        playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
-        if (playlist === undefined) {
-            playlist = default_private_playlist;
-        }
-        if (playlist !== undefined && playlist.songs.length === 0) {
-            CommunityStations.update({name: name}, {$unset: {"playlist": 1}});
-            playlist = default_private_playlist;
-        }
-        songs = playlist.songs;
-        songs.forEach(function (id, index) {
-            if (id === currentId) {
-                currentSong = index;
+        //TODO Party mode
+
+        if (this.isPartyModeEnabled()) {
+            var queue = CommunityStations.findOne({name: name}).queue;
+            if (queue.length > 0) {
+                CommunityStations.update({name: name}, {$pop: {queue: -1}});
+                queue.shift();
+
+                if (queue.length > 0) {
+                    CommunityStations.update({name: name}, {
+                        $set: {
+                            currentSong: {
+                                song: queue[0].song,
+                                requestedBy: queue[0].requestedBy,
+                                started: startedAt
+                            }
+                        }
+                    });
+
+                    CommunityStations.update({name: name}, {$set: {timePaused: 0}});
+                    this.songTimer();
+                } else {
+                    CommunityStations.update({name: name}, {
+                        $set: {
+                            currentSong: {},
+                            timePaused: 0
+                        }
+                    });
+                }
             }
-        });
-        if (currentSong < (songs.length - 1)) {
-            currentSong++;
-        } else currentSong = 0;
-        currentId = songs[currentSong];
-        CommunityStations.update({name: name}, {$set: {timePaused: 0}});
-        this.songTimer();
-        CommunityStations.update({name: name}, {$set: {currentSong: {song: songs[currentSong], started: startedAt}}});
+        } else {
+            playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
+            if (playlist === undefined) {
+                playlist = default_private_playlist;
+            }
+            if (playlist !== undefined && playlist.songs.length === 0) {
+                CommunityStations.update({name: name}, {$unset: {"playlist": 1}});
+                playlist = default_private_playlist;
+            }
+            songs = playlist.songs;
+            songs.forEach(function (id, index) {
+                if (id === currentId) {
+                    currentSong = index;
+                }
+            });
+            if (currentSong < (songs.length - 1)) {
+                currentSong++;
+            } else currentSong = 0;
+            currentId = songs[currentSong];
+            CommunityStations.update({name: name}, {$set: {timePaused: 0}});
+            this.songTimer();
+            CommunityStations.update({name: name}, {
+                $set: {
+                    currentSong: {
+                        song: songs[currentSong],
+                        started: startedAt
+                    }
+                }
+            });
+        }
     };
 
     CommunityStations.update({name: name}, {$set: {timePaused: 0}});
@@ -476,9 +532,15 @@ function CommunityStation(name) {
                 timer.pause();
             }
             timerInitialised = true;
-            timer = new Timer(function () {
-                self.skipSong();
-            }, songs[currentSong].duration * 1000);
+            if (this.isPartyModeEnabled()) {
+                timer = new Timer(function () {
+                    self.skipSong();
+                }, queue[0].song.duration * 1000);
+            } else {
+                timer = new Timer(function () {
+                    self.skipSong();
+                }, songs[currentSong].duration * 1000);
+            }
         }
     };
 
@@ -486,7 +548,9 @@ function CommunityStation(name) {
 
     this.pauseRoom = function () {
         if (state !== "paused") {
-            timer.pause();
+            if (timer !== undefined) {
+                timer.pause();
+            }
             CommunityStations.update({name: name}, {$set: {state: "paused"}});
             state = "paused";
         }
@@ -494,12 +558,24 @@ function CommunityStation(name) {
     this.resumeRoom = function () {
         if (state !== "playing") {
             if (!timerInitialised) {
-                timer = new Timer(function () {
-                    self.skipSong();
-                }, songs[currentSong] * 1000);
+                if (this.isPartyModeEnabled()) {
+                    if (queue.length > 0) {
+                        timer = new Timer(function () {
+                            self.skipSong();
+                        }, queue[0].song.duration * 1000);
+                    }
+                } else {
+                    timer = new Timer(function () {
+                        self.skipSong();
+                    }, songs[currentSong].duration * 1000);
+                }
             }
-            timer.resume();
-            CommunityStations.update({name: name}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
+            if (timer !== undefined) {
+                timer.resume();
+                CommunityStations.update({name: name}, {$set: {state: "playing", timePaused: timer.timeWhenPaused()}});
+            } else {
+                CommunityStations.update({name: name}, {$set: {state: "playing"}});
+            }
             state = "playing";
         }
     };
@@ -543,6 +619,51 @@ function CommunityStation(name) {
         if (_room.allowed.indexOf(allowed) !== -1) {
             CommunityStations.update({name: name}, {$pull: {allowed: allowed}});
             _room = CommunityStations.findOne({name: name});
+        }
+    };
+
+    this.setPartyMode = function(partyMode) {
+        partyMode = (typeof partyMode === "boolean") ? partyMode : false;
+        CommunityStations.update({name: name}, {
+            $set: {
+                partyModeEnabled: partyMode,
+                currentSong: {}
+            }
+        });
+    };
+
+    this.addSongToQueue = function(id, userId) {
+        var duplicate = false;
+        queue = CommunityStations.findOne({name: name}).queue;
+        queue.forEach(function(song) {
+            if (song.song.id === id) {
+                duplicate = true;
+            }
+        });
+        if (!duplicate) {
+            var data = getSongDataYT(id);
+            if (data !== 0) {
+                data.id = id;
+                CommunityStations.update({name: name}, {$push: {queue: {requestedBy: userId, song: data}}});
+                queue = CommunityStations.findOne({name: name}).queue;
+                if (queue.length === 1) {
+                    CommunityStations.update({name: name}, {
+                        $set: {
+                            timePaused: 0,
+                            currentSong: {
+                                song: queue[0].song,
+                                requestedBy: queue[0].requestedBy,
+                                started: Date.now()
+                            }
+                        }
+                    });
+                    this.songTimer();
+                }
+            } else {
+                throw new Meteor.Error(500, "Invalid song id.");
+            }
+        } else {
+            throw new Meteor.Error(500, "This song is already in the queue.");
         }
     };
 
@@ -818,19 +939,6 @@ Meteor.publish("chat", function () {
 
 Meteor.publish("userProfiles", function (username) {
     username = username.toLowerCase();
-    console.log(username);
-    console.log(Meteor.users.find({"profile.usernameL": username}, {
-        fields: {
-        "profile.username": 1,
-        "profile.usernameL": 1,
-        "profile.rank": 1,
-        createdAt: 1,
-        "profile.liked": 1,
-        "profile.disliked": 1,
-        "profile.settings": 1,
-        "profile.realname": 1
-        }
-    }).fetch());
     var settings = Meteor.users.findOne({"profile.usernameL": username}, {fields: {"profile.settings": 1}});
     if (settings !== undefined && settings.profile.settings) {
         settings = settings.profile.settings;
@@ -965,11 +1073,24 @@ Meteor.updatedMethods({
     },
     setCommunityStationPartyMode: function(roomName, partyMode) {
         if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
-            partyMode = (typeof partyMode === "boolean") ? partyMode : false;
-            CommunityStations.update({name: roomName}, {$set: {partyModeEnabled: partyMode}});
+            getCommunityStation(roomName, function(room) {
+                if (room !== 0) {
+                    room.setPartyMode(partyMode);
+                } else {
+                    throw new Meteor.Error(500, "Room not found.");
+                }
+            });
         } else {
             throw new Meteor.Error(403, "Invalid permissions.");
         }
+    },
+    addSongToCommunityStationQueue: {
+        code: function(name, id) {
+            getCommunityStation(name, function(station) {
+                station.addSongToQueue(id, Meteor.userId());
+            });
+        },
+        requirements: ["login"]
     },
     addVideoToPrivatePlaylist: {
         code: function(name, id) {
@@ -1028,11 +1149,8 @@ Meteor.updatedMethods({
                         song = currentSong;
                     }
                 });
-                console.log(song);
                 if (song !== undefined) {
                     var index = songs.indexOf(song);
-                    console.log(index);
-                    console.log(songs.length - 1);
                     if (index > 0 && songs.length > 1) {
                         PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$pull: {songs: song}});
                         PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$push: {

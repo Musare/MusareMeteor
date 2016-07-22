@@ -556,10 +556,20 @@ Template.room.helpers({
 });
 
 Template.communityStation.helpers({
+    noCurrentSong: function() {
+        return Session.get("noCurrentSong");
+    },
+    noCurrentSongHidden: function() {
+        if (Session.get("noCurrentSong")) {
+            return "hidden";
+        } else {
+            return "";
+        }
+    },
     partyModeChecked: function() {
         var name = Session.get("CommunityStationName");
         var room = CommunityStations.findOne({name: name});
-        if (room.partyModeEnabled === true) {
+        if (room !== undefined && room.partyModeEnabled === true) {
             return "checked";
         } else {
             return "";
