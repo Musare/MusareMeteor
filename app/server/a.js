@@ -56,11 +56,11 @@ Meteor.updatedMethods = function(methods) {
                         if (Meteor.userId() || Meteor.user()) {
                             throw new Meteor.Error(401, "Invalid permissions.");
                         }
-                    } /*else if (requirement === "noMute") {
-                        if (isMuted()) {
+                    } else if (requirement === "noMute") {
+                        if (Meteor.isMuted()) {
                             throw new Meteor.Error(401, "Invalid permissions.");
                         }
-                    }*/
+                    }
                 });
                 return methods[methodName].code.apply(this, arguments);
             }
