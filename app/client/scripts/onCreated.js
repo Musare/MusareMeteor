@@ -202,7 +202,7 @@ Template.room.onCreated(function () {
                     }, 500));
                 } else {
                     if (YTPlayer === undefined) {
-                        if (YT !== undefined && YT.Player !== undefined) {
+                        if (YT !== undefined && YT !== null && YT.Player !== undefined) {
                             YTPlayer = new YT.Player("player", {
                                 height: 270,
                                 width: 480,
@@ -308,6 +308,8 @@ Template.room.onCreated(function () {
                         var song_duration = currentSong.duration;
                         if (song_duration <= duration) {
                             Session.set("pauseVideo", true);
+                        } else if (Session.get("pauseVideo") === true) {
+                            Session.set("pauseVideo", false);
                         }
                         var d = moment.duration(duration, 'seconds');
                         if (Session.get("state") === "playing") {
@@ -444,7 +446,7 @@ Template.communityStation.onCreated(function () {
                     }, 500));
                 } else {
                     if (YTPlayer === undefined) {
-                        if (YT !== undefined && YT.Player !== undefined) {
+                        if (YT !== undefined && YT !== null && YT.Player !== undefined) {
                             YTPlayer = new YT.Player("player", {
                                 height: 270,
                                 width: 480,

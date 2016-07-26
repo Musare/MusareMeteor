@@ -471,7 +471,7 @@ function CommunityStation(name) {
                             currentSong: {
                                 song: queue[0].song,
                                 requestedBy: queue[0].requestedBy,
-                                started: startedAt
+                                started: Date.now()
                             }
                         }
                     });
@@ -486,6 +486,8 @@ function CommunityStation(name) {
                         }
                     });
                 }
+            } else {
+                CommunityStations.update({name: name}, {$set: {currentSong: {}}});
             }
         } else {
             playlist = PrivatePlaylists.findOne({name: _room.playlist, owner: _room.owner});
@@ -512,7 +514,7 @@ function CommunityStation(name) {
                 $set: {
                     currentSong: {
                         song: songs[currentSong],
-                        started: startedAt
+                        started: Date.now()
                     }
                 }
             });
@@ -527,19 +529,51 @@ function CommunityStation(name) {
     this.songTimer = function () {
         if (state !== "paused") {
             startedAt = Date.now();
-
             if (timer !== undefined) {
                 timer.pause();
             }
             timerInitialised = true;
             if (this.isPartyModeEnabled()) {
+                if (timer !== undefined) {
+                    timer.resetTimeWhenPaused();
+                }
                 timer = new Timer(function () {
                     self.skipSong();
                 }, queue[0].song.duration * 1000);
+                timerInitialised = true;
             } else {
+                if (timer !== undefined) {
+                    timer.resetTimeWhenPaused();
+                }
                 timer = new Timer(function () {
                     self.skipSong();
                 }, songs[currentSong].duration * 1000);
+                timerInitialised = true;
+            }
+        } else {
+            startedAt = Date.now();
+            if (timer !== undefined) {
+                timer.pause();
+            }
+            timerInitialised = true;
+            if (this.isPartyModeEnabled()) {
+                if (timer !== undefined) {
+                    timer.resetTimeWhenPaused();
+                }
+                timer = new Timer(function () {
+                    self.skipSong();
+                }, queue[0].song.duration * 1000);
+                timerInitialised = true;
+                timer.pause();
+            } else {
+                if (timer !== undefined) {
+                    timer.resetTimeWhenPaused();
+                }
+                timer = new Timer(function () {
+                    self.skipSong();
+                }, songs[currentSong].duration * 1000);
+                timerInitialised = true;
+                timer.pause();
             }
         }
     };
@@ -557,17 +591,27 @@ function CommunityStation(name) {
     };
     this.resumeRoom = function () {
         if (state !== "playing") {
+            if (this.isPartyModeEnabled()) {
+                var station = CommunityStations.findOne({name: name});
+                queue = station.queue;
+                if (queue.length === 0) {
+                    CommunityStations.update({name: name}, {$set: {currentSong: {}}});
+                }
+            }
+
             if (!timerInitialised) {
                 if (this.isPartyModeEnabled()) {
                     if (queue.length > 0) {
                         timer = new Timer(function () {
                             self.skipSong();
                         }, queue[0].song.duration * 1000);
+                        timerInitialised = true;
                     }
                 } else {
                     timer = new Timer(function () {
                         self.skipSong();
                     }, songs[currentSong].duration * 1000);
+                    timerInitialised = true;
                 }
             }
             if (timer !== undefined) {
@@ -667,6 +711,28 @@ function CommunityStation(name) {
         }
     };
 
+    this.removeSongFromQueue = function(id) {
+        var exists = false;
+        var obj;
+        var station = CommunityStations.findOne({name: name});
+        queue = station.queue;
+        queue.forEach(function(song) {
+            if (song.song.id === id) {
+                obj = song;
+                exists = true;
+            }
+        });
+        if (exists) {
+            CommunityStations.update({name: name}, {$pull: {queue: obj}});
+            if (station.currentSong.song.id === id) {
+                this.skipSong();
+            }
+            return true;
+        } else {
+            throw new Meteor.Error(500, "This song is not in the queue.");
+        }
+    };
+
     this.skipSong();
     this.voted = [];
 }
@@ -693,19 +759,23 @@ function shuffle(array) {
 function Timer(callback, delay) {
     var timerId, start, remaining = delay;
     var timeWhenPaused = 0;
-    var timePaused = new Date();
+    var timePaused = Date.now();
 
     this.pause = function () {
         Meteor.clearTimeout(timerId);
-        remaining -= new Date() - start;
-        timePaused = new Date();
+        remaining -= Date.now() - start;
+        timePaused = Date.now();
     };
 
     this.resume = function () {
-        start = new Date();
+        start = Date.now();
         Meteor.clearTimeout(timerId);
         timerId = Meteor.setTimeout(callback, remaining);
-        timeWhenPaused += new Date() - timePaused;
+        timeWhenPaused += Date.now() - timePaused;
+    };
+
+    this.resetTimeWhenPaused = function() {
+        timeWhenPaused = 0;
     };
 
     this.timeWhenPaused = function () {
@@ -1619,6 +1689,19 @@ Meteor.updatedMethods({
                     throw new Meteor.Error(403, "Room doesn't exist.");
                 } else {
                     station.resumeRoom();
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    removeIdFromCommunityStationQueue: function (name, id) {
+        if (isCommunityStationOwner(name) && !isBanned()) {
+            getCommunityStation(name, function (station) {
+                if (station === undefined) {
+                    throw new Meteor.Error(403, "Room doesn't exist.");
+                } else {
+                    station.removeSongFromQueue(id);
                 }
             });
         } else {

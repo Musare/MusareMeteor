@@ -29,7 +29,7 @@
                 <span class="brand-logo center">{{communityStationDisplayName}}
                     <small>(by {{communityStationOwnerName}})</small></span>
                 <ul class="right hide-on-med-and-down">
-                    <!--li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlist" id="playlist-slideout" data-activates="playlist-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li-->
+                    <li class="{{partyModeEnabledHidden}}"><a href="#" data-position="bottom" data-delay="50" data-tooltip="Queue" id="playlist-slideout" data-activates="queue-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
                     {{#if isLoggedIn}}
                         <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout"
                                data-activates="chat-slide-out" class="tooltipped header-collapse"><i
@@ -116,10 +116,27 @@
         </div>
     </div>
     <!--Playlist slideout-->
-    <!--div id="playlist-slide-out" class="side-nav room-slideout">
-        <h5>Playlist</h5>
+    <div id="queue-slide-out" class="side-nav room-slideout">
+        <h5>Queue</h5>
 
-    </div-->
+        <ul id="queue-ul" style="max-height: calc(100% - 105px); overflow-y: auto; margin: 0;">
+            {{#each song in queue}}
+                <li class="queue-item" style="clear: both">
+                    <a class="queue-item-remove" style="float:right; height: 0; width: 0;" href="#" data-id={{song.song.id}}><i class="material-icons" data-id={{song.song.id}}>clear</i></a>
+                    <div class="queue-item-text">
+                        <p class="queue-item-title">{{song.song.title}}</p>
+                        <p class="queue-item-username">Added by <a style="display: inline-block; height: 10px; padding: 0; color: #039be5;" href="/profile/{{getUsernameFromId song.requestedBy}}">{{getUsernameFromId song.requestedBy}}</a></p>
+                    </div>
+                    <hr>
+                </li>
+            {{/each}}
+        </ul>
+        <a id="add-song-to-queue-button" class="waves-effect waves-light btn musare white-text" href="#add-song-to-queue">Add song to queue</a>
+    </div>
+
+
+
+
     <div id="users-slide-out" class="side-nav room-slideout">
         <h5>Users In Room</h5>
         <ul style="margin-bottom: 64px;">
@@ -298,6 +315,45 @@
             <button class="btn waves-effect waves-light left red" id="delete_playlist">Delete playlist</button>
         </div>
     </div>
+
+    <!-- Edit Playlist Modal -->
+    <div id="add-song-to-queue" class="modal">
+        <div class="modal-content">
+            <h4>Add song to queue</h4>
+            <div class="input-field">
+                <input id="add-song-to-queue-search" type="text" class="validate">
+                <label for="add-song-to-queue-search">Search for song to add</label>
+            </div>
+            <a class="waves-effect waves-light btn" id="add-song-to-queue-search-button"><i class="material-icons left">search</i>Search</a>
+            <a class="waves-effect waves-light btn orange" id="clear-queue-search"><i class="material-icons left">delete</i>Clear results</a>
+        </div>
+        {{#if singleVideoResultsActiveQueue}}
+            <div id="single-video-results-queue">
+                <div style="overflow: auto; height: 400px; margin-top: 1rem;">
+                    <ul class="collection light-blue-text">
+                        {{#each result in singleVideoResultsQueue}}
+                            <li class="collection-item avatar youtube-search-result-li">
+                                <img src="{{result.image}}" onerror="this.src='/notes.png'" alt=""
+                                     class="video-import-thumbnail">
+                                <span class="title video-import-text">{{result.title}}</span>
+                                <p class="video-import-text">{{result.artist}} <br>
+                                    <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video
+                                        In YouTube</a>
+                                </p>
+                                <a href="#" class="secondary-content addSongQueue" data-result="{{result.id}}"><i
+                                        class="material-icons" data-result="{{result.id}}">add</i></a>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        {{/if}}
+        <div class="divider"></div>
+        <div class="modal-footer">
+            <a class="modal-action modal-close waves-effect btn">Close</a>
+        </div>
+    </div>
+
     <!-- Create Playlist Modal -->
     <div id="create_playlist_modal" class="modal">
         <div class="modal-content">
@@ -318,6 +374,12 @@
         </div>
     </div>
     <script>
+        $("#add-song-to-queue-button").leanModal({
+            dismissible: true,
+            opacity: .5,
+            in_duration: 500,
+            out_duration: 200
+        });
         $(".edit-playlist-button").leanModal({
             dismissible: true,
             opacity: .5,

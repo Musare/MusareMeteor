@@ -556,6 +556,18 @@ Template.room.helpers({
 });
 
 Template.communityStation.helpers({
+    getUsername: function(id) {
+        return Meteor.users.findOne(id).profile.username;
+    },
+    queue: function() {
+        var name = Session.get("CommunityStationName");
+        var room = CommunityStations.findOne({name: name});
+        if (room !== undefined && room.partyModeEnabled === true) {
+            return room.queue;
+        } else {
+            return [];
+        }
+    },
     noCurrentSong: function() {
         return Session.get("noCurrentSong");
     },
@@ -575,20 +587,40 @@ Template.communityStation.helpers({
             return "";
         }
     },
-    partyMode: function() {
+    partyModeEnabled: function() {
         var name = Session.get("CommunityStationName");
         var room = CommunityStations.findOne({name: name});
-        if (room.partyModeEnabled === true) {
+        if (room !== undefined && room.partyModeEnabled === true) {
             return true;
         } else {
             return false;
         }
     },
+    partyModeEnabledHidden: function() {
+        var name = Session.get("CommunityStationName");
+        var room = CommunityStations.findOne({name: name});
+        if (room !== undefined && room.partyModeEnabled === true) {
+            return "";
+        } else {
+            return "hidden";
+        }
+    },
     singleVideoResults: function() {
         return Session.get("songResults");
     },
+    singleVideoResultsQueue: function() {
+        return Session.get("songResultsQueue");
+    },
     singleVideoResultsActive: function() {
         var songs = Session.get("songResults");
+        if (songs !== undefined && songs.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    singleVideoResultsActiveQueue: function() {
+        var songs = Session.get("songResultsQueue");
         if (songs !== undefined && songs.length > 0) {
             return true;
         } else {
@@ -678,7 +710,12 @@ Template.communityStation.helpers({
         return Session.get("loaded");
     },
     paused: function () {
-        return Session.get("state") === "paused";
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
+        if (room !== undefined) {
+            return room.state === "paused";
+        } else {
+            return false;
+        }
     },
     private: function () {
         var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
@@ -689,7 +726,12 @@ Template.communityStation.helpers({
         }
     },
     playing: function() {
-        return Session.get("state") === "playing";
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
+        if (room !== undefined) {
+            return room.state === "playing";
+        } else {
+            return false;
+        }
     },
     currentSong: function(){
         return Session.get("currentSong");

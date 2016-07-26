@@ -313,6 +313,18 @@ input[type="range"] + .thumb {
     vertical-align: middle;
 }
 
+.queue-title {
+    height: 18px !important;
+    line-height: 1.5rem !important;
+    padding: 0 !important;
+}
+
+.queue-icon {
+    position: absolute !important;
+    right: 0 !important;
+    margin-top: 12px !important;
+}
+
 #sidenav-overlay{
     display: none
 }
@@ -383,7 +395,37 @@ input[type="range"] + .thumb {
     overflow-y: scroll;
 }
 
-.pl-item{
+.queue-item {
+    padding-top: 1px !important;
+}
+
+.queue-item:first-child {
+    margin-top: 10px;
+}
+
+.queue-item-title {
+    margin: 0;
+    font-size: 1.3em;
+    line-height: 25px;
+}
+
+.queue-item-username {
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 15px;
+}
+
+.queue-item-remove {
+
+}
+
+.queue-item-text {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 90%;
+}
+
+.pl-item {
     pointer-events: none;
 }
 

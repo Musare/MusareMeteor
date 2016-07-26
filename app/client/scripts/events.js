@@ -1640,6 +1640,23 @@ Template.communityStation.events({
             }
         })
     },
+    "click #add-song-to-queue-search-button": function () {
+        var songs = [];
+        Session.set("songResultsQueue", songs);
+        $.ajax({
+            type: "GET",
+            url: "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + $("#add-song-to-queue-search").val() + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY&type=video&maxResults=15",
+            applicationType: "application/json",
+            contentType: "json",
+            success: function (data) {
+                for (var i in data.items) {
+                    var item = data.items[i];
+                    songs.push({title: item.snippet.title, artist: item.snippet.channelTitle, id: item.id.videoId, image: item.snippet.thumbnails.medium.url});
+                }
+                Session.set("songResultsQueue", songs);
+            }
+        })
+    },
     "click #logout": function() {
         Meteor.logout();
     },
@@ -1858,6 +1875,25 @@ Template.communityStation.events({
             }
         });
     },
+    "click #clear-queue-search": function() {
+        Session.set("songResultsQueue", []);
+    },
+    "click .queue-item-remove": function(e) {
+        var id = $(e.target).attr("data-id");
+        if (id === undefined) {
+            id = $(e.target).parent().attr("data-id");
+        }
+        Meteor.call("removeIdFromCommunityStationQueue", Session.get("CommunityStationName"), id, function(err, res) {
+            console.log(111, err, res);
+            if (err) {
+                var $toastContent = $('<span><strong>Song not removed.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Song removed.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+            }
+        });
+    },
     "click .edit-playlist-button": function(e) {
         if ($(e.target).hasClass("edit-playlist-button")) {
             Session.set("editingPlaylistName", $(e.target).data("playlist"));
@@ -1907,6 +1943,21 @@ Template.communityStation.events({
             }
         });
         $("#add_playlist_video").val("");
+    },
+    "click .addSongQueue": function(e) {
+        var id = $(e.target).attr("data-result");
+        Meteor.call("addSongToCommunityStationQueue", Session.get("CommunityStationName"), id, function(err) {
+            if (err) {
+                console.log(err);
+                var $toastContent = $('<span><strong>Video not added to queue.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 2000);
+            } else {
+                var $toastContent = $('<span><strong>Video added to queue.</strong></span>');
+                Materialize.toast($toastContent, 2000);
+                $("#add-song-to-queue-search").val("");
+                $("#add-song-to-queue").closeModal();
+            }
+        });
     },
     "click .playlistSongRemove": function(e) {
         var id = $(e.target).data("id");
