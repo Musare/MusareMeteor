@@ -7,6 +7,10 @@ Router.onBeforeAction(function() {
     var self = this;
     var next = self.next;
     var isMaintanance = Meteor.settings.public.maintenance;
+    if (Session.get("rTimeInterval") !== undefined) {
+        Meteor.clearInterval(Session.get("rTimeInterval"));
+        Session.set("rTimeInterval", undefined);
+    }
     if(isMaintanance === true){
         var user = Meteor.user();
         if(user !== null && user.profile !== undefined && (user.profile.rank === "admin" || user.profile.rank === "moderator")){
