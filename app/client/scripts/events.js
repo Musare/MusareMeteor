@@ -1938,6 +1938,7 @@ Template.communityStation.events({
                 } else {
                     var $toastContent = $('<span><strong>Playlist name changed.</strong></span>');
                     Materialize.toast($toastContent, 2000);
+                    Session.set("editingPlaylistName", newName)
                 }
             });
         }

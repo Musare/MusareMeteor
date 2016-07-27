@@ -1352,7 +1352,14 @@ Meteor.updatedMethods({
             var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
             if (pl !== undefined) {
                 if (PrivatePlaylists.findOne({owner: Meteor.userId(), name: newName}) === undefined) {
+                    var currentName = pl.name;
                     PrivatePlaylists.update({owner: Meteor.userId(), name: name}, {$set: {name: newName}});
+                    var stations = CommunityStations.find({owner: Meteor.userId(), playlist: currentName}).fetch();
+                    stations.forEach(function(stationObj) {
+                        getCommunityStation(stationObj.name, function(station) {
+                            station.setPlaylist(newName);
+                        });
+                    });
                 } else {
                     throw new Meteor.Error(500, "A playlist with that name already exists.");
                 }
