@@ -122,7 +122,11 @@
                 </li>
             {{/each}}
         </ul>
-        <a id="add-song-to-queue-button" class="waves-effect waves-light btn musare white-text" href="#add-song-to-queue">Add song to queue</a>
+        {{#if currentUser}}
+            <a id="add-song-to-queue-button" class="waves-effect waves-light btn musare white-text" href="#add-song-to-queue">Add a song to the queue</a>
+        {{else}}
+            <a class="waves-effect waves-light btn musare white-text" href="/login" target="_blank">Log in to add a song to the queue</a>
+        {{/if}}
     </div>
 
 
