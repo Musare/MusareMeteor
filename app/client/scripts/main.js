@@ -122,14 +122,6 @@ Template.registerHelper("rtime", function(date) {
     }
 });
 
-Template.registerHelper("getSelected", function(val1, val2) {
-    if (val1 === val2) {
-        return "selected";
-    } else {
-        return "";
-    }
-});
-
 var allAlertSub = undefined;
 var YTPlayer = undefined;
 var previewEndSongTimeout = undefined;

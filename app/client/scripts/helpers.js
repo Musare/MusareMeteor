@@ -662,6 +662,13 @@ Template.communityStation.helpers({
     isPlaylistSelected: function(roomName, playlistName) {
         return CommunityStations.findOne({name: roomName}).playlist === playlistName;
     },
+    getSelected: function(val1, val2) {
+        if (val1 === val2) {
+            return "selected";
+        } else {
+            return "";
+        }
+    },
     globalChat: function () {
         Meteor.setTimeout(function () {
             var elem = document.getElementById('global-chat');
