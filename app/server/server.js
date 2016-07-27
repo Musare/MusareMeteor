@@ -102,17 +102,32 @@ function checkUsersPR() {
         //var usubs = connection._meteorSession._universalSubs;
     });
     var emptyStations = [];
+    var emptyCommunityStations = [];
     stations.forEach(function (station) {
         emptyStations.push(station);
     });
+    communityStations.forEach(function (station) {
+        emptyCommunityStations.push(station);
+    });
     for (var key in output) {
-        getStation(key, function (station) {
-            emptyStations.splice(emptyStations.indexOf(station), 1);
-            Rooms.update({type: key}, {$set: {users: output[key]}});
-        });
+        if (key.startsWith("pr_")) {
+            var tempKey = key.substring(3);
+            getCommunityStation(tempKey, function (station) {
+                emptyCommunityStations.splice(emptyCommunityStations.indexOf(station), 1);
+                CommunityStations.update({name: tempKey}, {$set: {users: output[key]}});
+            });
+        } else {
+            getStation(key, function (station) {
+                emptyStations.splice(emptyStations.indexOf(station), 1);
+                Rooms.update({type: key}, {$set: {users: output[key]}});
+            });
+        }
     }
     emptyStations.forEach(function (emptyStation) {
         Rooms.update({type: emptyStation.type}, {$set: {users: 0}});
+    });
+    emptyCommunityStations.forEach(function (emptyStation) {
+        CommunityStations.update({name: emptyStation.name}, {$set: {users: 0}});
     });
     return output;
 }
