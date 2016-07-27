@@ -277,7 +277,7 @@ function Station(type) {
             Playlists.update({type: type}, {$set: {lastSong: currentSong}});
             Rooms.update({type: type}, {$set: {timePaused: 0}});
             this.songTimer();
-            Rooms.update({type: type}, {$set: {currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt}}});
+            Rooms.update({type: type}, {$set: {currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: Date.now()}}});
         }
     };
 
@@ -296,7 +296,7 @@ function Station(type) {
         Playlists.update({type: type}, {$set: {lastSong: currentSong}});
         Rooms.update({type: type}, {$set: {timePaused: 0}});
         this.songTimer();
-        Rooms.update({type: type}, {$set: {currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: startedAt}}});
+        Rooms.update({type: type}, {$set: {currentSong: {song: Songs.findOne({mid: songs[currentSong]}), started: Date.now()}}});
     };
 
     Rooms.update({type: type}, {$set: {timePaused: 0}});

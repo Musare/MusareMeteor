@@ -553,6 +553,8 @@ Template.communityStation.onCreated(function () {
                         var song_duration = currentSong.duration;
                         if (song_duration <= duration) {
                             Session.set("pauseVideo", true);
+                        } else if (Session.get("pauseVideo") === true) {
+                            Session.set("pauseVideo", false);
                         }
                         var d = moment.duration(duration, 'seconds');
                         if (Session.get("state") === "playing") {
