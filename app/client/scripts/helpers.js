@@ -436,10 +436,20 @@ Template.room.helpers({
         return Session.get("loaded");
     },
     paused: function () {
-        return Session.get("state") === "paused";
+        var room = Rooms.findOne({type: Session.get("type")});
+        if (room !== undefined) {
+            return room.state === "paused";
+        } else {
+            return false;
+        }
     },
     private: function () {
-        return 1;
+        var room = Rooms.findOne({type: Session.get("type")});
+        if (room !== undefined) {
+            return room.private === true;
+        } else {
+            return false;
+        }
         //return Rooms.findOne({type: Session.get("type")}).private === true;
     },
     currentSong: function(){

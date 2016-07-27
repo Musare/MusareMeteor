@@ -1383,16 +1383,26 @@ Template.room.events({
         }
     },
     "click #lock": function () {
-        Meteor.call("lockRoom", Session.get("type"));
-        var $parent = $("#lock").parent();
-        $("#lock").remove();
-        $parent.append('<a id="unlock"><i class="material-icons">lock_open</i></a>')
+        Meteor.call("lockRoom", Session.get("type"), function(err) {
+            if(err){
+                var $toastContent = $('<span><strong>Room not locked.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
+            } else {
+                var $toastContent = $('<span><strong>Room locked.</strong></span>');
+                Materialize.toast($toastContent, 4000);
+            }
+        });
     },
     "click #unlock": function () {
-        Meteor.call("unlockRoom", Session.get("type"));
-        var $parent = $("#unlock").parent();
-        $("#unlock").remove();
-        $parent.append('<a id="lock"><i class="material-icons">lock_outline</i></a>')
+        Meteor.call("unlockRoom", Session.get("type"), function(err) {
+            if(err){
+                var $toastContent = $('<span><strong>Room not unlocked.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
+            } else {
+                var $toastContent = $('<span><strong>Room unlocked.</strong></span>');
+                Materialize.toast($toastContent, 4000);
+            }
+        });
     },
     "click #submit": function () {
         if(Meteor.userId()){
@@ -1558,16 +1568,26 @@ Template.room.events({
         }
     },
     "click #play": function () {
-        Meteor.call("resumeRoom", Session.get("type"));
-        var $parent = $("#play").parent();
-        $("#play").remove();
-        $parent.append('<a id="pause"><i class="material-icons">pause</i></a>')
+        Meteor.call("resumeRoom", Session.get("type"), function (err, res) {
+            if (err) {
+                var $toastContent = $('<span><strong>Room not resumed.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
+            } else {
+                var $toastContent = $('<span><strong>Room resumed.</strong></span>');
+                Materialize.toast($toastContent, 4000);
+            }
+        });
     },
     "click #pause": function () {
-        Meteor.call("pauseRoom", Session.get("type"));
-        var $parent = $("#pause").parent();
-        $("#pause").remove();
-        $parent.append('<a id="play"><i class="material-icons">play_arrow</i></a>')
+        Meteor.call("pauseRoom", Session.get("type"), function (err, res) {
+            if (err) {
+                var $toastContent = $('<span><strong>Room not paused.</strong> ' + err.reason + '</span>');
+                Materialize.toast($toastContent, 4000);
+            } else {
+                var $toastContent = $('<span><strong>Room paused.</strong></span>');
+                Materialize.toast($toastContent, 4000);
+            }
+        });
     },
     "click #skip": function () {
         Meteor.call("skipSong", Session.get("type"));

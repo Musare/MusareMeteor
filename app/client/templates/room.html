@@ -115,10 +115,18 @@
     </div>
     <!--Admin room controls-->
     <ul id='admin-dropdown' style="background-color: rgb(3, 169, 244) !important; display: none">
-        <li><a id="pause"><i class="material-icons">pause</i></a></li>
+        {{#if paused}}
+            <li><a id="play"><i class="material-icons">play_arrow</i></a></li>
+        {{else}}
+            <li><a id="pause"><i class="material-icons">pause</i></a></li>
+        {{/if}}
         <li><a id="skip"><i class="material-icons">skip_next</i></a></li>
         <li><a id="shuffle"><i class="material-icons">shuffle</i></a></li>
-        <li><a id="lock"><i class="material-icons">lock_outline</i></a></li>
+        {{#if private}}
+            <li><a id="unlock"><i class="material-icons">lock_outline</i></a></li>
+        {{else}}
+            <li><a id="lock"><i class="material-icons">lock_open</i></a></li>
+        {{/if}}
     </ul>
     <!--Add song modal-->
     <div id="add_song_modal" class="modal">

@@ -41,11 +41,11 @@ Meteor.updatedMethods = function(methods) {
                 }
                 _.each(methods[methodName].requirements, function(requirement) {
                     if (requirement === "moderator") {
-                        if (!Meteor.userId() || !Meteor.user() || !(Meteor.user().profile.type === "admin" || Meteor.user().profile.type === "moderator")) {
+                        if (!Meteor.userId() || !Meteor.user() || !(Meteor.user().profile.rank === "admin" || Meteor.user().profile.type === "moderator")) {
                             throw new Meteor.Error(401, "Invalid permissions.");
                         }
                     } else if (requirement === "admin") {
-                        if (!Meteor.userId() || !Meteor.user() || Meteor.user().profile.type !== "admin") {
+                        if (!Meteor.userId() || !Meteor.user() || Meteor.user().profile.rank !== "admin") {
                             throw new Meteor.Error(401, "Invalid permissions.");
                         }
                     } else if (requirement === "login") {
