@@ -749,6 +749,22 @@ Template.communityStation.helpers({
             return false;
         }
     },
+    playingHidden: function() {
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
+        if (room !== undefined) {
+            return (room.state === "playing") ? "hidden" : "";
+        } else {
+            return "";
+        }
+    },
+    pausedHidden: function() {
+        var room = CommunityStations.findOne({name: Session.get("CommunityStationName")});
+        if (room !== undefined) {
+            return (room.state === "paused") ? "hidden" : "";
+        } else {
+            return "";
+        }
+    },
     currentSong: function(){
         return Session.get("currentSong");
     },

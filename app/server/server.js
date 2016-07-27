@@ -508,6 +508,8 @@ function CommunityStation(name) {
                 currentSong++;
             } else currentSong = 0;
             currentId = songs[currentSong];
+            console.log(currentSong, currentId);
+            console.log(songs);
             CommunityStations.update({name: name}, {$set: {timePaused: 0}});
             this.songTimer();
             CommunityStations.update({name: name}, {
@@ -674,6 +676,7 @@ function CommunityStation(name) {
                 currentSong: {}
             }
         });
+        this.skipSong();
     };
 
     this.setQueueLocked = function(queueLocked) {
@@ -839,6 +842,11 @@ function getSongDataYT(id) {
         var dur = res.data.items[0].contentDetails.duration;
         dur = dur.replace("PT", "");
         var durInSec = 0;
+        dur = dur.replace(/([\d]*)H/, function(v, v2) {
+            v2 = Number(v2);
+            durInSec = (v2 * 60 * 60)
+            return "";
+        });
         dur = dur.replace(/([\d]*)M/, function(v, v2) {
             v2 = Number(v2);
             durInSec = (v2 * 60)

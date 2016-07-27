@@ -7,17 +7,8 @@
                            class="brand-logo">Musare</a></li>
                     <!--li><a id="vote-skip" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vote to skip this song"><i class="material-icons left">skip_next</i>{{votes}}</a></li-->
                     {{#if isCommunityStationOwner name}}
-                        {{#if playing}}
-                            <li style="margin-left: 144px;"><a id="pause" data-position="bottom" data-delay="50"
-                                                               data-tooltip="Pause this room"
-                                                               data-activates="chat-slide-out" class="tooltipped"><i
-                                    class="material-icons">pause</i></a></li>
-                        {{else}}
-                            <li style="margin-left: 144px;"><a id="play" data-position="bottom" data-delay="50"
-                                                               data-tooltip="Play this room"
-                                                               data-activates="chat-slide-out" class="tooltipped"><i
-                                    class="material-icons">play_arrow</i></a></li>
-                        {{/if}}
+                        <li style="margin-left: 144px;" class={{pausedHidden}}><a id="pause" data-position="bottom" data-delay="50" data-tooltip="Pause this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">pause</i></a></li>
+                        <li style="margin-left: 144px;" class={{playingHidden}}><a id="play" data-position="bottom" data-delay="50" data-tooltip="Play this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">play_arrow</i></a></li>
                         <li><a id="skip" data-position="bottom" data-delay="50" data-tooltip="Skip this song"
                                data-activates="chat-slide-out" class="tooltipped"><i
                                 class="material-icons">skip_next</i></a></li>
