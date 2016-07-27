@@ -13,6 +13,10 @@
                     <div class="col s12 m12 l4">
                         <h4>User Info</h4>
                         <!--<p>Name: {{real_name}}</p>-->
+                        {{#if isModerator}}
+                          <a id="promote-rank" href="">Promote to Admin</a><br>
+                          <a id="demote-rank" href="">Demote to Admin</a>
+                        {{/if}}
                         <p>Username: {{username}}</p>
                         <p>First Joined: {{first_joined}}</p>
                         <p>Rank: {{rank}}</p>

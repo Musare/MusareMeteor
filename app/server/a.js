@@ -57,7 +57,7 @@ Meteor.updatedMethods = function(methods) {
                             throw new Meteor.Error(401, "Invalid permissions.");
                         }
                     } else if (requirement === "noMute") {
-                        if (isMuted()) {
+                        if (Meteor.isMuted()) {
                             throw new Meteor.Error(401, "Invalid permissions.");
                         }
                     }
