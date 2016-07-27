@@ -587,6 +587,15 @@ Template.communityStation.helpers({
             return "";
         }
     },
+    queueLockedChecked: function() {
+        var name = Session.get("CommunityStationName");
+        var room = CommunityStations.findOne({name: name});
+        if (room !== undefined && room.queueLocked === true) {
+            return "checked";
+        } else {
+            return "";
+        }
+    },
     partyModeEnabled: function() {
         var name = Session.get("CommunityStationName");
         var room = CommunityStations.findOne({name: name});

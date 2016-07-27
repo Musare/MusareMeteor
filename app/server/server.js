@@ -676,38 +676,52 @@ function CommunityStation(name) {
         });
     };
 
-    this.addSongToQueue = function(id, userId) {
-        var duplicate = false;
-        queue = CommunityStations.findOne({name: name}).queue;
-        queue.forEach(function(song) {
-            if (song.song.id === id) {
-                duplicate = true;
+    this.setQueueLocked = function(queueLocked) {
+        queueLocked = (typeof queueLocked === "boolean") ? queueLocked : false;
+        CommunityStations.update({name: name}, {
+            $set: {
+                queueLocked: queueLocked
             }
         });
-        if (!duplicate) {
-            var data = getSongDataYT(id);
-            if (data !== 0) {
-                data.id = id;
-                CommunityStations.update({name: name}, {$push: {queue: {requestedBy: userId, song: data}}});
-                queue = CommunityStations.findOne({name: name}).queue;
-                if (queue.length === 1) {
-                    CommunityStations.update({name: name}, {
-                        $set: {
-                            timePaused: 0,
-                            currentSong: {
-                                song: queue[0].song,
-                                requestedBy: queue[0].requestedBy,
-                                started: Date.now()
+        this.queueLocked = queueLocked;
+    };
+
+    this.addSongToQueue = function(id, userId) {
+        if (!this.queueLocked) {
+            var duplicate = false;
+            queue = CommunityStations.findOne({name: name}).queue;
+            queue.forEach(function (song) {
+                if (song.song.id === id) {
+                    duplicate = true;
+                }
+            });
+            if (!duplicate) {
+                var data = getSongDataYT(id);
+                if (data !== 0) {
+                    data.id = id;
+                    CommunityStations.update({name: name}, {$push: {queue: {requestedBy: userId, song: data}}});
+                    queue = CommunityStations.findOne({name: name}).queue;
+                    if (queue.length === 1) {
+                        CommunityStations.update({name: name}, {
+                            $set: {
+                                timePaused: 0,
+                                currentSong: {
+                                    song: queue[0].song,
+                                    requestedBy: queue[0].requestedBy,
+                                    started: Date.now()
+                                }
                             }
-                        }
-                    });
-                    this.songTimer();
+                        });
+                        this.songTimer();
+                    }
+                } else {
+                    throw new Meteor.Error(500, "Invalid song id.");
                 }
             } else {
-                throw new Meteor.Error(500, "Invalid song id.");
+                throw new Meteor.Error(500, "This song is already in the queue.");
             }
         } else {
-            throw new Meteor.Error(500, "This song is already in the queue.");
+            throw new Meteor.Error(500, "The queue is currently locked.");
         }
     };
 
@@ -733,6 +747,7 @@ function CommunityStation(name) {
         }
     };
 
+    this.queuelocked = _room.queueLocked;
     this.skipSong();
     this.voted = [];
 }
@@ -1146,6 +1161,19 @@ Meteor.updatedMethods({
             getCommunityStation(roomName, function(room) {
                 if (room !== 0) {
                     room.setPartyMode(partyMode);
+                } else {
+                    throw new Meteor.Error(500, "Room not found.");
+                }
+            });
+        } else {
+            throw new Meteor.Error(403, "Invalid permissions.");
+        }
+    },
+    setCommunityStationQueueLocked: function(roomName, queueLocked) {
+        if ((isAdmin() || isCommunityStationOwner(roomName)) && !isBanned()) {
+            getCommunityStation(roomName, function(room) {
+                if (room !== 0) {
+                    room.setQueueLocked(queueLocked);
                 } else {
                     throw new Meteor.Error(500, "Room not found.");
                 }

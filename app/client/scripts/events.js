@@ -1725,6 +1725,30 @@ Template.communityStation.events({
                 }
             });
         }
+        if (partyMode) {
+            var queueLocked = $("#queueLocked").is(":checked");
+            if (queueLocked !== room.queueLocked) {
+                Meteor.call("setCommunityStationQueueLocked", name, queueLocked, function (err, res) {
+                    if (err) {
+                        if (queueLocked) {
+                            var $toastContent = $('<span><strong>Queue not locked.</strong> ' + err.reason + '</span>');
+                            Materialize.toast($toastContent, 2000);
+                        } else {
+                            var $toastContent = $('<span><strong>Queue not unlocked.</strong> ' + err.reason + '</span>');
+                            Materialize.toast($toastContent, 2000);
+                        }
+                    } else {
+                        if (queueLocked) {
+                            var $toastContent = $('<span><strong>Queue locked.</strong></span>');
+                            Materialize.toast($toastContent, 2000);
+                        } else {
+                            var $toastContent = $('<span><strong>Queue unlocked.</strong></span>');
+                            Materialize.toast($toastContent, 2000);
+                        }
+                    }
+                });
+            }
+        }
         $("#edit_room_modal").closeModal();
     },
     "input #volume_slider": function() {

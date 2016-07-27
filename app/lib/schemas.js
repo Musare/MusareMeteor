@@ -374,6 +374,11 @@ Schemas.CommunityStation = new SimpleSchema({
         label: "Party mode",
         defaultValue: false
     },
+    queueLocked: {
+        type: Boolean,
+        label: "Queue locked",
+        defaultValue: false
+    },
     queue: {
         type: Array,
         label: "Community station queue",
