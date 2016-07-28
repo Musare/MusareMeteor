@@ -9,12 +9,8 @@
                     {{#if isCommunityStationOwner name}}
                         <li style="margin-left: 144px;" class={{pausedHidden}}><a id="pause" data-position="bottom" data-delay="50" data-tooltip="Pause this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">pause</i></a></li>
                         <li style="margin-left: 144px;" class={{playingHidden}}><a id="play" data-position="bottom" data-delay="50" data-tooltip="Play this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">play_arrow</i></a></li>
-                        <li><a id="skip" data-position="bottom" data-delay="50" data-tooltip="Skip this song"
-                               data-activates="chat-slide-out" class="tooltipped"><i
-                                class="material-icons">skip_next</i></a></li>
-                        <li><a id="edit_room" href="#edit_room_modal" data-position="bottom" data-delay="50"
-                               data-tooltip="Edit this room" data-activates="chat-slide-out" class="tooltipped"><i
-                                class="material-icons">settings</i></a></li>
+                        <li><a id="skip" data-position="bottom" data-delay="50" data-tooltip="Skip this song" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">skip_next</i></a></li>
+                        <li><a id="edit_room" href="#edit_room_modal" data-position="bottom" data-delay="50" data-tooltip="Edit this room" data-activates="chat-slide-out" class="tooltipped"><i class="material-icons">settings</i></a></li>
                     {{/if}}
                 </ul>
                 <span class="brand-logo center">{{communityStationDisplayName}}
@@ -22,20 +18,12 @@
                 <ul class="right hide-on-med-and-down">
                     <li class="{{partyModeEnabledHidden}}"><a href="#" data-position="bottom" data-delay="50" data-tooltip="Queue" id="playlist-slideout" data-activates="queue-slide-out" class="tooltipped header-collapse"><i class="material-icons">queue_music</i></a></li>
                     {{#if isLoggedIn}}
-                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout"
-                               data-activates="chat-slide-out" class="tooltipped header-collapse"><i
-                                class="material-icons">chat</i></a></li>
+                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Chat" id="chat-slideout" data-activates="chat-slide-out" class="tooltipped header-collapse"><i class="material-icons">chat</i></a></li>
                     {{/if}}
                     {{#if isCommunityStationOwner name}}
-                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout"
-                               data-activates="users-slide-out" class="tooltipped header-collapse"><i
-                                class="material-icons">people</i></a></li>
-                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Allowed"
-                               id="allowed-slideout" data-activates="allowed-slide-out"
-                               class="tooltipped header-collapse"><i class="material-icons">assignment</i></a></li>
-                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlists"
-                               id="playlists-slideout" data-activates="playlists-slide-out"
-                               class="tooltipped header-collapse"><i class="material-icons">library_music</i></a></li>
+                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Users" id="users-slideout" data-activates="users-slide-out" class="tooltipped header-collapse"><i class="material-icons">people</i></a></li>
+                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Allowed" id="allowed-slideout" data-activates="allowed-slide-out" class="tooltipped header-collapse"><i class="material-icons">assignment</i></a></li>
+                        <li><a href="#" data-position="bottom" data-delay="50" data-tooltip="Playlists" id="playlists-slideout" data-activates="playlists-slide-out" class="tooltipped header-collapse"><i class="material-icons">library_music</i></a></li>
                     {{/if}}
                 </ul>
             </div>
@@ -78,9 +66,7 @@
                 {{#emojione}}
                     <li class="chat-message" style="line-height: 30px">
                         <span title="{{time}}" style="float: right; margin-top: 15px">{{rtime time}}</span>
-                        <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500"
-                           href="/u/{{this.username}}" target="_blank"><span
-                                class="rank-{{this.rawrank}}">{{this.rank}}</span>{{this.username}}</a>
+                        <a style="text-decoration: none; font-size: 0.9em; height: 0.9em; font-weight: 500" href="/u/{{this.username}}" target="_blank"><span class="rank-{{this.rawrank}}">{{this.rank}}</span>{{this.username}}</a>
                         <p style="clear: both; line-height: 1.2em; margin-left: 13px; margin-bottom: 0; font-size: 1.2em">{{{this.message}}}</p>
                     </li>
                 {{/emojione}}
@@ -141,11 +127,9 @@
         </ul>
 
         {{#if currentUser}}
-            <a class="btn btn-block musare white-text waves-effect waves-light" href="#" id="logout"
-               style="position: fixed; bottom: 0; width: 342px;">Logout</a>
+            <a class="btn btn-block musare white-text waves-effect waves-light" href="#" id="logout" style="position: fixed; bottom: 0; width: 342px;">Logout</a>
         {{else}}
-            <a class="btn btn-block musare white-text waves-effect waves-light" href="/login"
-               style="position: fixed; bottom: 0; width: 342px;">Login / Register</a>
+            <a class="btn btn-block musare white-text waves-effect waves-light" href="/login" style="position: fixed; bottom: 0; width: 342px;">Login / Register</a>
         {{/if}}
     </div>
 
@@ -190,8 +174,7 @@
                                 {{#if isPlaylistSelected name this.name}}
                                     <i class="material-icons" style="line-height: 64px;">check_circle</i>
                                 {{else}}
-                                    <i class="material-icons" data-playlist={{this.name}} style="line-height: 64px;"
-                                    title="Select playlist">panorama_fish_eye</i>
+                                    <i class="material-icons" data-playlist={{this.name}} style="line-height: 64px;" title="Select playlist">panorama_fish_eye</i>
                                 {{/if}}
                             {{/if}}
                         </a>
@@ -200,8 +183,7 @@
             {{/each}}
         </ul>
         <div>
-            <a id="add-playlist-modal-button" class="waves-effect waves-light btn" href="#create_playlist_modal">Create
-                Playlist</a>
+            <a class="waves-effect waves-light btn add-playlist-modal-button" href="#create_playlist_modal">Create Playlist</a>
         </div>
     </div>
 
@@ -253,21 +235,16 @@
                 {{#each song in editingPlaylist.songs}}
                     <li class="collection-item">
                         <a href="https://youtube.com/watch?v={{song.id}}" target="_blank">{{song.title}}</a>
-                        <a href="#" class="secondary-content playlistSongRemove" data-id={{song.id}}><i
-                                class="material-icons" data-id={{song.id}}>delete</i></a>
+                        <a href="#" class="secondary-content playlistSongRemove" data-id={{song.id}}><i class="material-icons" data-id={{song.id}}>delete</i></a>
                         {{#if hasMoreThanOne editingPlaylist.songs}}
                             {{#if isFirst song editingPlaylist.songs}}
-                                <a href="#" class="secondary-content playlistSongDown" data-id={{song.id}}><i
-                                        class="material-icons" data-id={{song.id}}>keyboard_arrow_down</i></a>
+                                <a href="#" class="secondary-content playlistSongDown" data-id={{song.id}}><i class="material-icons" data-id={{song.id}}>keyboard_arrow_down</i></a>
                             {{else}}
                                 {{#if isLast song editingPlaylist.songs}}
-                                    <a href="#" class="secondary-content playlistSongUp" data-id={{song.id}}><i
-                                            class="material-icons" data-id={{song.id}}>keyboard_arrow_up</i></a>
+                                    <a href="#" class="secondary-content playlistSongUp" data-id={{song.id}}><i class="material-icons" data-id={{song.id}}>keyboard_arrow_up</i></a>
                                 {{else}}
-                                    <a href="#" class="secondary-content playlistSongDown" data-id={{song.id}}><i
-                                            class="material-icons" data-id={{song.id}}>keyboard_arrow_down</i></a>
-                                    <a href="#" class="secondary-content playlistSongUp" data-id={{song.id}}><i
-                                            class="material-icons" data-id={{song.id}}>keyboard_arrow_up</i></a>
+                                    <a href="#" class="secondary-content playlistSongDown" data-id={{song.id}}><i class="material-icons" data-id={{song.id}}>keyboard_arrow_down</i></a>
+                                    <a href="#" class="secondary-content playlistSongUp" data-id={{song.id}}><i class="material-icons" data-id={{song.id}}>keyboard_arrow_up</i></a>
                                 {{/if}}
                             {{/if}}
                         {{/if}}
@@ -285,15 +262,12 @@
                         <ul class="collection light-blue-text">
                             {{#each result in singleVideoResults}}
                                 <li class="collection-item avatar youtube-search-result-li">
-                                    <img src="{{result.image}}" onerror="this.src='/notes.png'" alt=""
-                                         class="video-import-thumbnail">
+                                    <img src="{{result.image}}" onerror="this.src='/notes.png'" alt="" class="video-import-thumbnail">
                                     <span class="title video-import-text">{{result.title}}</span>
                                     <p class="video-import-text">{{result.artist}} <br>
-                                        <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video
-                                            In YouTube</a>
+                                        <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View VideoIn YouTube</a>
                                     </p>
-                                    <a href="#" class="secondary-content addSong" data-result="{{result.id}}"><i
-                                            class="material-icons" data-result="{{result.id}}">add</i></a>
+                                    <a href="#" class="secondary-content addSong" data-result="{{result.id}}"><i class="material-icons" data-result="{{result.id}}">add</i></a>
                                 </li>
                             {{/each}}
                         </ul>
@@ -306,8 +280,7 @@
                 <label for="rename-playlist-name">Rename playlist name</label>
             </div>
             <div class="input-field">
-                <input id="rename-playlist-display-name" type="text" class="validate"
-                       value={{editingPlaylist.displayName}}>
+                <input id="rename-playlist-display-name" type="text" class="validate" value={{editingPlaylist.displayName}}>
                 <label for="rename-playlist-display-name">Rename playlist display name</label>
             </div>
             <button class="btn waves-effect waves-light musare" id="rename-playlist-button">Rename playlist</button>
@@ -322,6 +295,31 @@
     <!-- Edit Playlist Modal -->
     <div id="add-song-to-queue" class="modal">
         <div class="modal-content">
+            <h4>Select playlist for queue</h4>
+            <small>
+                Instead of adding one song to the queue, you can also make a playlist and select that to automatically
+                add all the video's from your playlist to the queue. Selecting a playlist will automatically get the first
+                song from your playlist, add it to the queue and then after that song has played, move that song to the bottom of the
+                playlist and add the new top song from your playlist to the queue automatically.<br>
+                Deselecting a playlist or selecting a different playlist does not automatically remove the song already added to the queue.
+            </small>
+            <ul class="collection">
+                {{#each playlist in playlists}}
+                    <li class="collection-item">
+                        <a href="#edit_playlist_modal" class="edit-playlist-button" data-playlist={{playlist.name}}>{{playlist.displayName}}</a>
+                        {{#if playlistQueueSelected playlist.name}}
+                            <a href="#" class="secondary-content playlistQueueDeselect" data-name={{playlist.name}}><i class="material-icons" data-name={{playlist.name}}>check_circle</i></a>
+                        {{else}}
+                            <a href="#" class="secondary-content playlistQueueSelect" data-name={{playlist.name}}><i class="material-icons" data-name={{playlist.name}}>panorama_fish_eye</i></a>
+                        {{/if}}
+                    </li>
+                {{/each}}
+            </ul>
+            <a class="waves-effect waves-light btn add-playlist-modal-button" href="#create_playlist_modal">Create Playlist</a>
+            <br>
+            <br>
+            <br>
+            <br>
             <h4>Add song to queue</h4>
             <div class="input-field">
                 <input id="add-song-to-queue-search" type="text" class="validate">
@@ -336,15 +334,12 @@
                     <ul class="collection light-blue-text">
                         {{#each result in singleVideoResultsQueue}}
                             <li class="collection-item avatar youtube-search-result-li">
-                                <img src="{{result.image}}" onerror="this.src='/notes.png'" alt=""
-                                     class="video-import-thumbnail">
+                                <img src="{{result.image}}" onerror="this.src='/notes.png'" alt="" class="video-import-thumbnail">
                                 <span class="title video-import-text">{{result.title}}</span>
                                 <p class="video-import-text">{{result.artist}} <br>
-                                    <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View Video
-                                        In YouTube</a>
+                                    <a href="https://youtube.com/watch?v={{result.id}}" target="_blank">View VideoIn YouTube</a>
                                 </p>
-                                <a href="#" class="secondary-content addSongQueue" data-result="{{result.id}}"><i
-                                        class="material-icons" data-result="{{result.id}}">add</i></a>
+                                <a href="#" class="secondary-content addSongQueue" data-result="{{result.id}}"><i class="material-icons" data-result="{{result.id}}">add</i></a>
                             </li>
                         {{/each}}
                     </ul>
@@ -389,7 +384,7 @@
             in_duration: 500,
             out_duration: 200
         });
-        $("#add-playlist-modal-button").leanModal({
+        $(".add-playlist-modal-button").leanModal({
             dismissible: true,
             opacity: .5,
             in_duration: 500,

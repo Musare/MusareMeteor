@@ -566,6 +566,9 @@ Template.room.helpers({
 });
 
 Template.communityStation.helpers({
+    playlistQueueSelected: function(name) {
+        return Session.get("playlistQueueName") === name;
+    },
     getUsername: function(id) {
         return Meteor.users.findOne(id).profile.username;
     },

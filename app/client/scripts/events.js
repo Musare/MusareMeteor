@@ -2005,9 +2005,9 @@ Template.communityStation.events({
         });
     },
     "click .playlistSongRemove": function(e) {
-        var id = $(e.target).data("id");
+        var id = $(e.target).attr("data-id");
         if (id === undefined) {
-            id = $(e.target).parent().data("id");
+            id = $(e.target).parent().attr("data-id");
         }
         Meteor.call("removeVideoFromPrivatePlaylist", Session.get("editingPlaylistName"), id, function(err) {
             if (err) {
@@ -2019,6 +2019,32 @@ Template.communityStation.events({
                 Materialize.toast($toastContent, 2000);
             }
         });
+    },"click .playlistQueueSelect": function(e) {
+        var name = $(e.target).attr("data-name");
+        if (name === undefined) {
+            name = $(e.target).parent().attr("data-name");
+        }
+        console.log(name);
+        Session.set("playlistQueueName", name);
+        var currentSong = Session.get("playlistQueueCurrentSong");
+        if (currentSong === undefined) {
+            var playlist = PrivatePlaylists.findOne({owner: Meteor.userId(), name: name});
+            var songs = playlist.songs;
+            var song = songs[0];
+            // Add song to queue
+            Meteor.call("addSongToCommunityStationQueue", Session.get("CommunityStationName"), song.id, function(err) {
+                if (!err) {
+                    Session.set("playlistQueueCurrentSong", song);
+                }
+            });
+        }
+    },"click .playlistQueueDeselect": function(e) {
+        var name = $(e.target).attr("data-name");
+        if (name === undefined) {
+            name = $(e.target).parent().attr("data-name");
+        }
+        console.log(name);
+        Session.set("playlistQueueName", undefined);
     },
     "click .playlistSongDown": function(e) {
         var id = $(e.target).attr("data-id");
@@ -2037,9 +2063,9 @@ Template.communityStation.events({
         });
     },
     "click .playlistSongUp": function(e) {
-        var id = $(e.target).data("id");
+        var id = $(e.target).attr("data-id");
         if (id === undefined) {
-            id = $(e.target).parent().data("id");
+            id = $(e.target).parent().attr("data-id");
         }
         Meteor.call("moveVideoToTopOfPrivatePlaylist", Session.get("editingPlaylistName"), id, function(err, res) {
             if (err) {

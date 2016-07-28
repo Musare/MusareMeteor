@@ -531,6 +531,42 @@ Template.communityStation.onCreated(function () {
 
                 if (currentSongR === undefined || room.currentSong.started !== currentSongR.started) {
                     Session.set("previousSong", currentSong);
+                    if (currentSong !== undefined) {
+                        var playlistQueueName = Session.get("playlistQueueName");
+                        var playlistQueueCurrentSong = Session.get("playlistQueueCurrentSong");
+                        if (playlistQueueCurrentSong !== undefined) {
+                            if (playlistQueueCurrentSong.id === currentSong.id) {
+                                if (playlistQueueName !== undefined) {
+                                    // If someone selects a different playlist this won't work. This is fine.
+                                    Meteor.call("moveVideoToBottomOfPrivatePlaylist", playlistQueueName, playlistQueueCurrentSong.id, function() {
+                                        var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: playlistQueueName});
+                                        var plSongs = pl.songs;
+                                        var plSong = plSongs[0];
+                                        // Add song to queue
+                                        if (plSong !== undefined) {
+                                            Meteor.call("addSongToCommunityStationQueue", Session.get("CommunityStationName"), plSong.id, function (err) {
+                                                if (!err) {
+                                                    Session.set("playlistQueueCurrentSong", plSong);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        } else {
+                            var pl = PrivatePlaylists.findOne({owner: Meteor.userId(), name: playlistQueueName});
+                            var plSongs = pl.songs;
+                            var plSong = plSongs[0];
+                            // Add song to queue
+                            if (plSong !== undefined) {
+                                Meteor.call("addSongToCommunityStationQueue", Session.get("CommunityStationName"), plSong.id, function (err) {
+                                    if (!err) {
+                                        Session.set("playlistQueueCurrentSong", plSong);
+                                    }
+                                });
+                            }
+                        }
+                    }
                     currentSongR = room.currentSong;
 
                     if (!_.isEqual(currentSongR, {})) {
