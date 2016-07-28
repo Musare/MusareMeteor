@@ -523,8 +523,6 @@ function CommunityStation(name) {
                 currentSong++;
             } else currentSong = 0;
             currentId = songs[currentSong];
-            console.log(currentSong, currentId);
-            console.log(songs);
             CommunityStations.update({name: name}, {$set: {timePaused: 0}});
             this.songTimer();
             CommunityStations.update({name: name}, {
