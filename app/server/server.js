@@ -716,21 +716,41 @@ function CommunityStation(name) {
             if (!duplicate) {
                 var data = getSongDataYT(id);
                 if (data !== 0) {
-                    data.id = id;
-                    CommunityStations.update({name: name}, {$push: {queue: {requestedBy: userId, song: data}}});
-                    queue = CommunityStations.findOne({name: name}).queue;
-                    if (queue.length === 1) {
-                        CommunityStations.update({name: name}, {
-                            $set: {
-                                timePaused: 0,
-                                currentSong: {
-                                    song: queue[0].song,
-                                    requestedBy: queue[0].requestedBy,
-                                    started: Date.now()
+                    var duration = data.duration;
+                    if ((this.getQueueDuration() + duration) <= 7200) {
+                        if ((this.getQueueDurationFromUser(userId) + duration) <= 900) {
+                            if ((this.getSongsInQueueFromUser(userId)) <= 1) {
+                                data.id = id;
+                                CommunityStations.update({name: name}, {
+                                    $push: {
+                                        queue: {
+                                            requestedBy: userId,
+                                            song: data
+                                        }
+                                    }
+                                });
+                                queue = CommunityStations.findOne({name: name}).queue;
+                                if (queue.length === 1) {
+                                    CommunityStations.update({name: name}, {
+                                        $set: {
+                                            timePaused: 0,
+                                            currentSong: {
+                                                song: queue[0].song,
+                                                requestedBy: queue[0].requestedBy,
+                                                started: Date.now()
+                                            }
+                                        }
+                                    });
+                                    this.songTimer();
                                 }
+                            } else {
+                                throw new Meteor.Error(500, "Adding this song would exceed your max amount of songs allowed in the queue (2 songs).");
                             }
-                        });
-                        this.songTimer();
+                        } else {
+                            throw new Meteor.Error(500, "Adding this song would exceed the max duration of your songs (15m).");
+                        }
+                    } else {
+                        throw new Meteor.Error(500, "Adding this song would exceed the max duration of the queue (2h).");
                     }
                 } else {
                     throw new Meteor.Error(500, "Invalid song id.");
@@ -763,6 +783,37 @@ function CommunityStation(name) {
         } else {
             throw new Meteor.Error(500, "This song is not in the queue.");
         }
+    };
+
+    this.getQueueDuration = function() {
+        var queue = CommunityStations.findOne({name: name}).queue;
+        var totalDuration = 0;
+        queue.forEach(function(song) {
+            totalDuration += song.song.duration;
+        });
+        return totalDuration;
+    };
+
+    this.getQueueDurationFromUser = function(userId) {
+        var queue = CommunityStations.findOne({name: name}).queue;
+        var totalDuration = 0;
+        queue.forEach(function(song) {
+            if (song.requestedBy === userId) {
+                totalDuration += song.song.duration;
+            }
+        });
+        return totalDuration;
+    };
+
+    this.getSongsInQueueFromUser = function(userId) {
+        var queue = CommunityStations.findOne({name: name}).queue;
+        var totalSongs = 0;
+        queue.forEach(function(song) {
+            if (song.requestedBy === userId) {
+                totalSongs++;
+            }
+        });
+        return totalSongs;
     };
 
     this.queuelocked = _room.queueLocked;
