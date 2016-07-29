@@ -99,7 +99,9 @@
         <ul id="queue-ul" style="max-height: calc(100% - 105px); overflow-y: auto; margin: 0;">
             {{#each song in queue}}
                 <li class="queue-item" style="clear: both">
-                    <a class="queue-item-remove" style="float:right; height: 0; width: 0;" href="#" data-id={{song.song.id}}><i class="material-icons" data-id={{song.song.id}}>clear</i></a>
+                    {{#if isCommunityStationOwner name}}
+                        <a class="queue-item-remove" style="float:right; height: 0; width: 0;" href="#" data-id={{song.song.id}}><i class="material-icons" data-id={{song.song.id}}>clear</i></a>
+                    {{/if}}
                     <div class="queue-item-text">
                         <p class="queue-item-title">{{song.song.title}}</p>
                         <p class="queue-item-username">Added by <a style="display: inline-block; height: 10px; padding: 0; color: #039be5;" href="/profile/{{getUsernameFromId song.requestedBy}}">{{getUsernameFromId song.requestedBy}}</a></p>

@@ -719,7 +719,11 @@ function CommunityStation(name) {
                         if ((this.getQueueDurationFromUser(userId) + duration) <= 900) {
                             if ((this.getSongsInQueueFromUser(userId)) <= 1) {
                                 data.id = id;
-                                CommunityStations.update({name: name}, {
+                                var res = CommunityStations.update(
+                                    {
+                                        name: name,
+                                        "queue.song.id": {"$ne" : data.id}
+                                    }, {
                                     $push: {
                                         queue: {
                                             requestedBy: userId,
@@ -727,6 +731,9 @@ function CommunityStation(name) {
                                         }
                                     }
                                 });
+                                if (res === 0) {
+                                    throw new Meteor.Error(500, "Something went wrong there. Maybe your song is already in the queue?");
+                                }
                                 queue = CommunityStations.findOne({name: name}).queue;
                                 if (queue.length === 1) {
                                     CommunityStations.update({name: name}, {
