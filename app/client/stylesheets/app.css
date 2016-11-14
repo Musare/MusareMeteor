@@ -7,6 +7,7 @@ body {
 
 main {
     flex: 1 0 auto;
+    padding-top: 4.5vw;
 }
 
 main h4.thin{
@@ -55,7 +56,7 @@ hr{
 }
 
 .brand-logo {
-    margin-left: 10px;
+    margin-left: 16px;
     font-weight: 300 !important;
 }
 
@@ -218,10 +219,6 @@ input[type="range"] + .thumb {
     margin-left: 0;
     margin-right: 0;
     /* Weird hack... No clue why this is needed but it is.*/
-}
-
-#room-content {
-  padding-top: 15px;
 }
 
 #thumbs_up, #thumbs_down {
