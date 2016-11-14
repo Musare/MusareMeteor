@@ -2091,6 +2091,96 @@ Template.communityStation.events({
         });
         $("#edit_playlist_modal").closeModal();
     },
+    "click #import-youtube-playlist": function() {
+        if (!Session.get("importingPlaylist")) {
+            Session.set("songResults", []);
+            var playlist_link = $("#import_youtube_playlist_input").val();
+            var playlist_id = gup("list", playlist_link);
+            var ytImportQueue = [];
+            var totalVideos = 0;
+            var videosInPlaylist = 0;
+            var videosInvalid = 0;
+            var ranOnce = false;
+
+            Session.set("importingPlaylist", true);
+
+            $("#import-progress").css({width: "0%"});
+
+            function makeAPICall(playlist_id, nextPageToken) {
+                if (nextPageToken !== undefined) {
+                    nextPageToken = "&pageToken=" + nextPageToken;
+                } else {
+                    nextPageToken = "";
+                }
+                $.ajax({
+                    type: "GET",
+                    url: "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=" + playlist_id + nextPageToken + "&key=AIzaSyAgBdacEWrHCHVPPM4k-AFM7uXg-Q__YXY",
+                    applicationType: "application/json",
+                    contentType: "json",
+                    success: function (data) {
+                        if (!ranOnce) {
+                            ranOnce = true;
+                            totalVideos = data.pageInfo.totalResults;
+                        }
+                        var nextToken = data.nextPageToken;
+                        for (var i in data.items) {
+                            var item = data.items[i];
+                            if (item.snippet.thumbnails !== undefined) {
+                                var name = Session.get("editingPlaylistName");
+                                if (PrivatePlaylists.find({
+                                        type: name,
+                                        "songs.id": item.snippet.resourceId.videoId
+                                    }, {songs: {$elemMatch: {id: item.snippet.resourceId.videoId}}}).count() !== 0) {
+                                    videosInPlaylist++;
+                                } else {
+                                    var percentage = ytImportQueue.length / (totalVideos - videosInvalid) * 100;
+                                    $("#import-progress").css({width: percentage + "%"});
+                                    ytImportQueue.push({id: item.snippet.resourceId.videoId});
+                                }
+                            } else {
+                                videosInvalid++;
+                            }
+                        }
+                        if (nextToken !== undefined) {
+                            makeAPICall(playlist_id, nextToken);
+                        } else {
+                            Session.set("importingPlaylist", false);
+                            $("#import-progress").css({width: "100%"});
+                            var failed = 0;
+                            var successful = 0;
+                            ytImportQueue.forEach(function(item) {
+                                Meteor.call("addVideoToPrivatePlaylist", Session.get("editingPlaylistName"), item.id, function(err, res) {
+                                    if (err) {
+                                        console.log(err);
+                                        failed++;
+                                    } else if (res) {
+                                        successful++;
+                                    }
+                                    checkDone();
+                                });
+                            });
+                            function checkDone() {
+                                if (failed + successful === ytImportQueue.length) {
+                                    var $toastContent = $('<span><strong>Imported songs. Success: ' + successful + '. Failed: ' + failed + '.</strong></span>');
+                                    Materialize.toast($toastContent, 2000);
+                                }
+                            }
+                        }
+                    },
+                    error: function() {
+                        Session.set("importingPlaylist", false);
+                        $("#import-progress").css({width: "0%"});
+                        $("#import-playlist-button").removeAttr("disabled");
+                        $("#import-playlist-button").removeClass("disabled");
+                        $("#playlist-url").removeAttr("disabled");
+                        $("#playlist-url").removeClass("disabled");
+                    }
+                })
+            }
+
+            makeAPICall(playlist_id);
+        }
+    },
     "click #create_playlist_submit": function() {
         var name = $("#create_playlist_name").val();
         var displayName = $("#create_playlist_display_name").val();

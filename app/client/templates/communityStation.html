@@ -258,6 +258,16 @@
                 <label for="search_for_song">Search for song to add</label>
             </div>
             <a class="waves-effect waves-light btn" id="search-song"><i class="material-icons left">search</i>Search</a>
+            <div class="input-field">
+                <input id="import_youtube_playlist_input" type="text" class="validate">
+                <label for="import_youtube_playlist_input">YouTube Playlist URL</label>
+            </div>
+            <a class="waves-effect waves-light btn" id="import-youtube-playlist"><i class="material-icons left">search</i>Import</a>
+            {{#if importingPlaylist}}
+                <div class="progress">
+                    <div class="determinate" id="import-progress" style="width: 0%"></div>
+                </div>
+            {{/if}}
             {{#if singleVideoResultsActive}}
                 <div id="single-video-results">
                     <div style="overflow: auto; height: 400px; margin-top: 1rem;">

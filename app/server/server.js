@@ -448,9 +448,8 @@ function CommunityStation(name) {
     var currentId = songs[currentSong];
 
     var song = songs[songs.indexOf(currentId)];
-    if (song === undefined) {
-        song = {id: "60ItHLz5WEA", duration: 213, title: "Alan Walker - Faded"};
-    }
+    if (song === undefined)
+        song = {};
     if (this.isPartyModeEnabled()) {
         var res = CommunityStations.update({name: name}, {
             $set: {

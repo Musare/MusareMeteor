@@ -809,6 +809,9 @@ Template.communityStation.helpers({
             Materialize.updateTextFields();
         }, 100);
         return CommunityStations.findOne({name: id});
+    },
+    importingPlaylist: function() {
+        return Session.get("importingPlaylist");
     }
 });
 
